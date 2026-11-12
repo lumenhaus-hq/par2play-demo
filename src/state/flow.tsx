@@ -22,6 +22,7 @@ import {
 } from "../data/catalog";
 import { saveQuizToGolfClock } from "../data/business";
 import { type OfferState, type Step } from "../data/journey";
+import { smoothScrollTo } from "../motion/smoothScroll";
 
 export type Layout = "mobile" | "web";
 
@@ -124,7 +125,8 @@ export function FlowProvider({ children }: { children: ReactNode }) {
       const id = pendingSection.current;
       pendingSection.current = null;
       requestAnimationFrame(() => {
-        document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+        const node = document.getElementById(id);
+        if (node) smoothScrollTo(node);
       });
     }
   }, [data.step]);
@@ -266,7 +268,8 @@ export function FlowProvider({ children }: { children: ReactNode }) {
           pendingSection.current = id;
           patch({ step: "landing" });
         } else {
-          document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+          const node = document.getElementById(id);
+          if (node) smoothScrollTo(node);
         }
       },
       openMap: () => {

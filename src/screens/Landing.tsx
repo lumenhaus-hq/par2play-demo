@@ -97,8 +97,10 @@ export function Landing() {
   return (
     <div
       ref={scrollRef}
+      data-smooth-root={mobile ? "" : undefined}
       className={`@container page-grid text-base text-[#0A0F0B] ${scroll} ${chromeReady ? "" : "overflow-hidden"}`}
     >
+      <div data-smooth-content={mobile ? "" : undefined}>
       <JsonLd data={homeGraph()} />
       <JsonLd data={faqGraph()} />
       <header
@@ -341,6 +343,7 @@ export function Landing() {
           </p>
         )}
       </footer>
+      </div>
     </div>
   );
 }

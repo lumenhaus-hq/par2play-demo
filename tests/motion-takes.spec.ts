@@ -44,3 +44,19 @@ test("sound control names the action on the hero", async ({ page }) => {
   await expect(sound).toBeVisible();
   await expect(sound).toContainText(/sound/i);
 });
+
+test("Lenis smooth scroll is live, and Pause motion turns it off", async ({ page }) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "Desktop", exact: true }).click();
+  await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains("lenis"))).toBe(true);
+  const pause = page.getByRole("button", { name: "Pause motion", exact: true });
+  await pause.scrollIntoViewIfNeeded();
+  await pause.click();
+  await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains("lenis"))).toBe(false);
+});
+
+test("reduced motion never starts Lenis", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("./");
+  await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains("lenis"))).toBe(false);
+});

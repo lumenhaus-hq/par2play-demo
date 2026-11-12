@@ -284,6 +284,15 @@ html.hero-scroll-lock body {
   overflow: hidden;
 }
 
+/* Lenis owns scroll animation; keep native anchors from fighting it. */
+html.lenis {
+  scroll-behavior: auto !important;
+}
+
+html.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
 .hero-bay-frame {
   position: relative;
   overflow: hidden;

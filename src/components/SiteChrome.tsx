@@ -104,10 +104,15 @@ export function SiteFooter() {
 export function PageFrame({ children }: { children: ReactNode }) {
   const mobile = useFlow().layout === "mobile";
   return (
-    <div className={`@container page-grid text-base text-[#0A0F0B] ${mobile ? "h-full overflow-y-auto" : "min-h-screen"}`}>
-      <SiteHeader />
-      <main>{children}</main>
-      <SiteFooter />
+    <div
+      data-smooth-root={mobile ? "" : undefined}
+      className={`@container page-grid text-base text-[#0A0F0B] ${mobile ? "h-full overflow-y-auto" : "min-h-screen"}`}
+    >
+      <div data-smooth-content={mobile ? "" : undefined}>
+        <SiteHeader />
+        <main>{children}</main>
+        <SiteFooter />
+      </div>
     </div>
   );
 }

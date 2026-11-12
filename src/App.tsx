@@ -1,6 +1,7 @@
 import { Button } from "@heroui/react";
 import { currentRoute } from "./data/routes";
 import { CookieNotice } from "./components/CookieNotice";
+import { SmoothScroll } from "./components/SmoothScroll";
 import { Landing } from "./screens/Landing";
 import { PrivacyPage } from "./screens/PrivacyPage";
 import { CoachingPage, EventsPage, JuniorsPage, MembershipPage, NotFoundPage, TournamentPage } from "./screens/SitePages";
@@ -124,6 +125,7 @@ function Shell() {
 export default function App() {
   return (
     <FlowProvider>
+      <SmoothScroll />
       <Shell />
       <CookieNotice />
     </FlowProvider>
