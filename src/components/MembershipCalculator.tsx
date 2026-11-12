@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useId, useState, type FormEvent, type ReactNode } from "react";
 import { trackAnchor } from "../analytics/track";
 import { PhoneLink, buttonFocus } from "./Cta";
 import { CompareBoxes, PricingHero } from "./PricingHero";
@@ -45,9 +45,79 @@ function checkoutHref(mode: PracticeMode, fields: CheckoutFields): string {
   return query ? `${base}${base.includes("?") ? "&" : "?"}${query}` : base;
 }
 
+function orderRef(mode: PracticeMode): string {
+  return mode === "unlimited" ? "ord_p2p_practice_unlimited" : "ord_p2p_10_practice_pack";
+}
+
+function SummaryRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-baseline justify-between gap-4 py-2 text-base">
+      <span className="text-[#4B5563]">{label}</span>
+      <span className="font-semibold text-[#0A0F0B] tabular-nums">{value}</span>
+    </div>
+  );
+}
+
+function PaymentMark({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <span
+      className="inline-flex h-10 min-w-[3.25rem] items-center justify-center rounded-md border border-[#D1D5DB] bg-[#F3F4F6] px-2 text-[#9CA3AF] grayscale opacity-70"
+      title={label}
+      aria-label={label}
+    >
+      {children}
+    </span>
+  );
+}
+
+function PaymentsAccepted() {
+  return (
+    <div aria-label="Payments accepted">
+      <p className="text-base font-semibold text-[#0A0F0B]">Payments accepted</p>
+      <p className="mt-1 text-sm text-[#6B7280]">Processed on GolfClock — icons shown for reference only.</p>
+      <ul className="mt-4 flex flex-wrap items-center gap-2">
+        <li>
+          <PaymentMark label="Visa">
+            <span className="font-display text-sm font-bold tracking-wide">VISA</span>
+          </PaymentMark>
+        </li>
+        <li>
+          <PaymentMark label="Mastercard">
+            <svg width="36" height="22" viewBox="0 0 36 22" aria-hidden="true">
+              <circle cx="13" cy="11" r="7.5" fill="#9CA3AF" />
+              <circle cx="23" cy="11" r="7.5" fill="#D1D5DB" />
+            </svg>
+          </PaymentMark>
+        </li>
+        <li>
+          <PaymentMark label="American Express">
+            <span className="font-display text-[0.65rem] font-bold tracking-tight">AMEX</span>
+          </PaymentMark>
+        </li>
+        <li>
+          <PaymentMark label="Apple Pay">
+            <span className="text-sm font-semibold tracking-tight">Apple Pay</span>
+          </PaymentMark>
+        </li>
+        <li>
+          <PaymentMark label="Google Pay">
+            <span className="text-sm font-semibold tracking-tight">GPay</span>
+          </PaymentMark>
+        </li>
+      </ul>
+    </div>
+  );
+}
+
 function MembershipCheckout({ mode }: { mode: PracticeMode }) {
+  const formId = useId();
   const [fields, setFields] = useState<CheckoutFields>(emptyCheckout);
   const [errors, setErrors] = useState<Partial<CheckoutFields>>({});
+  const unlimited = mode === "unlimited";
+  const title = unlimited ? "Unlimited Practice" : "10 Sessions";
+  const line = unlimited ? "Practice Unlimited (monthly)" : "10 × 60-minute bay sessions";
+  const total = unlimited ? money(PRICES.unlimitedMonthly) : money(PRICES.tenPack);
+  const totalLabel = unlimited ? `${total}/mo` : total;
 
   const set = (key: keyof CheckoutFields, value: string) => {
     setFields((current) => ({ ...current, [key]: value }));
@@ -65,79 +135,94 @@ function MembershipCheckout({ mode }: { mode: PracticeMode }) {
     const href = checkoutHref(mode, fields);
     const probe = document.createElement("a");
     probe.href = href;
-    trackAnchor(probe, { membership_tier: mode === "unlimited" ? "gold" : "silver" });
+    trackAnchor(probe, { membership_tier: unlimited ? "gold" : "silver" });
     window.open(href, "_blank", "noopener,noreferrer");
   };
 
   const fieldClass =
-    "aa-focus-ink mt-2 w-full rounded-2xl border border-white/25 bg-white/5 px-3 py-3 text-base text-white outline-none placeholder:text-white/45 focus-visible:border-[#7DFFB0]";
+    "aa-focus mt-2 w-full rounded-xl border border-[#D1D5DB] bg-white px-3 py-3 text-base text-[#0A0F0B] outline-none placeholder:text-[#9CA3AF] focus-visible:border-[#0A0F0B]";
 
   return (
-    <form
-      className="rounded-[2rem] border border-white/10 bg-[#0A0F0B] px-5 py-8 text-white shadow-[0_24px_60px_rgb(10_15_11/0.35)] @3xl:px-10"
-      onSubmit={onSubmit}
-      noValidate
-      aria-labelledby="membership-checkout-heading"
-    >
-      <h2 id="membership-checkout-heading" className="font-display text-2xl font-semibold tracking-tight @3xl:text-3xl">
-        Checkout details
+    <section className="mx-auto w-full max-w-3xl" aria-labelledby={`${formId}-heading`}>
+      <h2 id={`${formId}-heading`} className="font-display text-2xl font-bold uppercase tracking-[0.04em] text-[#0A0F0B] @3xl:text-3xl">
+        Finalize your booking
       </h2>
-      <p className="mt-2 max-w-xl text-base text-white/70">
-        We’ll carry these into GolfClock when you continue. Nothing is charged on this page.
-      </p>
-      <div className="mt-6 grid gap-4 @3xl:grid-cols-3">
-        <label className="block text-sm font-semibold uppercase tracking-[0.12em] text-white/80">
-          Name
-          <input
-            className={fieldClass}
-            name="name"
-            autoComplete="name"
-            value={fields.name}
-            aria-invalid={errors.name ? true : undefined}
-            onChange={(event) => set("name", event.target.value)}
-          />
-          {errors.name ? <span className="mt-2 block text-xs normal-case tracking-normal text-[#ffb4b4]">{errors.name}</span> : null}
-        </label>
-        <label className="block text-sm font-semibold uppercase tracking-[0.12em] text-white/80">
-          Email
-          <input
-            className={fieldClass}
-            name="email"
-            type="email"
-            autoComplete="email"
-            value={fields.email}
-            aria-invalid={errors.email ? true : undefined}
-            onChange={(event) => set("email", event.target.value)}
-          />
-          {errors.email ? <span className="mt-2 block text-xs normal-case tracking-normal text-[#ffb4b4]">{errors.email}</span> : null}
-        </label>
-        <label className="block text-sm font-semibold uppercase tracking-[0.12em] text-white/80">
-          Phone
-          <input
-            className={fieldClass}
-            name="phone"
-            type="tel"
-            autoComplete="tel"
-            value={fields.phone}
-            aria-invalid={errors.phone ? true : undefined}
-            onChange={(event) => set("phone", event.target.value)}
-          />
-          {errors.phone ? <span className="mt-2 block text-xs normal-case tracking-normal text-[#ffb4b4]">{errors.phone}</span> : null}
-        </label>
-      </div>
-      <div className="mt-8 flex flex-wrap items-center gap-4">
-        <button
-          type="submit"
-          className={`cta-shell cta-brand cta-lift inline-flex min-h-12 items-center justify-center rounded-full px-8 text-base font-semibold text-[#0A0F0B] ${buttonFocus}`}
-        >
-          <span className="cta-fill" aria-hidden="true" />
-          <span className="cta-label">
-            <span className="cta-label-text">Continue to checkout</span>
-          </span>
-        </button>
-        <p className="text-sm text-white/60">Opens GolfClock with your details attached.</p>
-      </div>
-    </form>
+
+      <form className="mt-6 grid gap-4" onSubmit={onSubmit} noValidate>
+        <div className="rounded-2xl border border-[#E5E7EB] bg-white px-5 py-5 shadow-[0_8px_30px_rgb(10_15_11/0.06)] @3xl:px-7 @3xl:py-6">
+          <p className="text-lg font-bold text-[#0A0F0B]">{title}</p>
+          <div className="mt-3 divide-y divide-[#E5E7EB]">
+            <SummaryRow label="Offer" value={line} />
+            <SummaryRow label="Access" value={unlimited ? "Up to 1 hour a day" : "10 sessions"} />
+            <SummaryRow label="Billing" value={unlimited ? "Monthly" : "One-time"} />
+            <SummaryRow label={unlimited ? "Membership" : "Pack"} value={totalLabel} />
+          </div>
+          <div className="mt-3 flex items-baseline justify-between gap-4 border-t border-[#E5E7EB] pt-3">
+            <span className="text-base font-bold text-[#0A0F0B]">Total</span>
+            <span className="font-display text-2xl font-semibold tabular-nums text-[#0A0F0B]">{totalLabel}</span>
+          </div>
+          <p className="mt-4 text-right font-mono text-xs text-[#9CA3AF]">{orderRef(mode)}</p>
+        </div>
+
+        <div className="rounded-2xl border border-[#E5E7EB] bg-white px-5 py-5 shadow-[0_8px_30px_rgb(10_15_11/0.06)] @3xl:px-7 @3xl:py-6">
+          <p className="text-base font-semibold text-[#0A0F0B]">Your details</p>
+          <p className="mt-1 text-sm text-[#6B7280]">Carried into GolfClock when you confirm. Nothing is charged here.</p>
+          <div className="mt-4 grid gap-4 @3xl:grid-cols-3">
+            <label className="block text-sm font-semibold text-[#0A0F0B]">
+              Name
+              <input
+                className={fieldClass}
+                name="name"
+                autoComplete="name"
+                value={fields.name}
+                aria-invalid={errors.name ? true : undefined}
+                onChange={(event) => set("name", event.target.value)}
+              />
+              {errors.name ? <span className="mt-2 block text-xs font-normal text-red-700">{errors.name}</span> : null}
+            </label>
+            <label className="block text-sm font-semibold text-[#0A0F0B]">
+              Email
+              <input
+                className={fieldClass}
+                name="email"
+                type="email"
+                autoComplete="email"
+                value={fields.email}
+                aria-invalid={errors.email ? true : undefined}
+                onChange={(event) => set("email", event.target.value)}
+              />
+              {errors.email ? <span className="mt-2 block text-xs font-normal text-red-700">{errors.email}</span> : null}
+            </label>
+            <label className="block text-sm font-semibold text-[#0A0F0B]">
+              Phone
+              <input
+                className={fieldClass}
+                name="phone"
+                type="tel"
+                autoComplete="tel"
+                value={fields.phone}
+                aria-invalid={errors.phone ? true : undefined}
+                onChange={(event) => set("phone", event.target.value)}
+              />
+              {errors.phone ? <span className="mt-2 block text-xs font-normal text-red-700">{errors.phone}</span> : null}
+            </label>
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-[#E5E7EB] bg-white px-5 py-5 shadow-[0_8px_30px_rgb(10_15_11/0.06)] @3xl:px-7 @3xl:py-6">
+          <PaymentsAccepted />
+        </div>
+
+        <div className="flex justify-end pt-2">
+          <button
+            type="submit"
+            className={`inline-flex min-h-12 items-center justify-center rounded-full bg-[#FF6B8A] px-8 text-sm font-bold uppercase tracking-[0.08em] text-white hover:bg-[#ff5a7d] active:bg-[#f0486c] ${buttonFocus}`}
+          >
+            Confirm booking
+          </button>
+        </div>
+      </form>
+    </section>
   );
 }
 
