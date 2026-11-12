@@ -19,10 +19,12 @@ for (const width of [360, 1280]) {
     await panel.getByRole("button", { name: "10 Sessions", exact: true }).click();
     await expect(panel.getByRole("button", { name: "10 Sessions", exact: true })).toHaveAttribute("aria-pressed", "true");
     await expect(panel.locator('[aria-live="polite"] p').last()).toContainText("$400");
-    await expect(page.getByRole("heading", { name: "Checkout details" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Finalize your booking" })).toBeVisible();
     await expect(page.getByLabel("Name")).toBeVisible();
     await expect(page.getByLabel("Email")).toBeVisible();
     await expect(page.getByLabel("Phone")).toBeVisible();
+    await expect(page.getByLabel("Payments accepted")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Confirm booking", exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "compare plans" })).toBeVisible();
     await expect(page.getByRole("link", { name: "compare plans", exact: true })).toBeVisible();
     await expect(page.getByText(/Junior Golf Membership \(\$399/)).toHaveCount(0);
