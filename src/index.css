@@ -60,9 +60,10 @@
   --motion-fast: 180ms;
   --motion-base: 525ms;
   --motion-enter: 700ms;
-  --motion-expand: 1500ms;
+  --motion-expand: 1400ms;
   --motion-chrome: 700ms;
   --bay-radius: 1rem;
+  --hero-poppy: linear-gradient(105deg, #e23d28 0%, #ff6b3d 45%, #ffb347 100%);
 }
 
 /* HeroUI buttons: 16px/600, 44px target, ink on brand green, border that clears 3:1. */
@@ -154,6 +155,42 @@ body {
 /* taste-skill-ignore: local panel so the offer never sits on a bright frame */
 .hero-panel {
   background-color: rgb(6 16 12 / 0.78);
+}
+
+/* Soft 3D glass on the hero offer only (menu reuse stays flat). */
+.hero-panel-depth {
+  border: 1px solid rgb(255 255 255 / 0.12);
+  box-shadow:
+    0 18px 40px rgb(0 0 0 / 0.45),
+    inset 0 1px 0 rgb(255 255 255 / 0.14);
+  transform: perspective(900px) rotateX(3.5deg);
+  transform-origin: center bottom;
+  backdrop-filter: blur(10px);
+}
+
+.hero-poppy {
+  position: relative;
+  padding-bottom: 0.22em;
+}
+
+.hero-poppy .word-in {
+  background-image: var(--hero-poppy);
+  background-clip: text;
+  color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-poppy::after {
+  content: "";
+  position: absolute;
+  right: 0.06em;
+  bottom: 0.04em;
+  left: 0.02em;
+  height: 0.1em;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #e23d28, #ff6b3d, #ffb347);
+  pointer-events: none;
 }
 
 .header-bar {
@@ -294,42 +331,30 @@ html.lenis.lenis-smooth {
 }
 
 .hero-bay-frame {
-  position: relative;
+  position: absolute;
+  inset: 0;
   overflow: hidden;
   background: #0a0f0b;
-  will-change: width, height, border-radius, opacity;
+  transform-origin: 50% 42%;
+  will-change: transform;
 }
 
-.hero-bay-frame--postcard {
-  width: min(16rem, 72vw);
-  height: min(24rem, 58vh);
-  border-radius: var(--bay-radius);
-  opacity: 1;
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1); /* taste-skill-ignore */
+/* Start tight on the opening Earth sphere, then ease out to full bleed. */
+.hero-bay-frame--zoom {
+  transform: perspective(1200px) scale(2.65) rotateX(7deg);
 }
 
-@media (min-width: 768px) {
-  .hero-bay-frame--postcard {
-    width: min(48rem, 72vw);
-    height: min(20.5rem, 46vh);
-  }
+.hero-bay-frame--expand {
+  transform: perspective(1200px) scale(1) rotateX(0deg);
 }
 
-.hero-bay-frame--expand,
 .hero-bay-frame--full {
-  width: 100%;
-  height: 100%;
-  border-radius: 0;
-  opacity: 1;
-  box-shadow: none;
+  transform: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   html:not(.motion-paused) .hero-bay-frame--expand {
-    transition:
-      width var(--motion-expand) var(--motion-ease-wipe),
-      height var(--motion-expand) var(--motion-ease-wipe),
-      border-radius var(--motion-expand) var(--motion-ease-wipe);
+    transition: transform var(--motion-expand) var(--motion-ease-wipe);
   }
 }
 

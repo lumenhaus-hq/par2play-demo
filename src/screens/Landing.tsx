@@ -165,19 +165,16 @@ export function Landing() {
         <div className="hero-top-shade pointer-events-none absolute inset-x-0 top-0" aria-hidden="true" />
         <div
           data-hero-offer
-          className={`relative z-10 flex flex-1 items-end justify-end px-6 pb-4 @3xl:px-12 @3xl:pb-6 ${
+          className={`relative z-10 flex flex-1 items-end justify-end px-6 pb-4 pt-[4.5rem] @3xl:px-12 @3xl:pb-6 ${
             chromeReady ? "hero-chrome-in" : "pointer-events-none opacity-0"
           }`}
           aria-hidden={chromeReady ? undefined : true}
         >
-          <div className="hero-panel pointer-events-auto w-full max-w-[32rem] rounded-2xl px-4 py-3">
-            <div className="flex min-w-0 flex-wrap items-end justify-between gap-4">
+          <div className="hero-panel hero-panel-depth pointer-events-auto max-h-full w-full max-w-[32rem] overflow-y-auto rounded-2xl px-4 py-3">
+            <div className="flex min-w-0 flex-col gap-3 @3xl:flex-row @3xl:flex-wrap @3xl:items-end @3xl:justify-between @3xl:gap-4">
               <div className="min-w-0 max-w-full">
                 <HeroTitle concept={concept} />
-                <p className="mt-3 text-sm font-semibold uppercase tracking-[0.14em] text-white/75">
-                  4 bays · Somerset, NJ · Members first
-                </p>
-                <h1 className="hero-location mt-2 font-semibold leading-tight tracking-wide text-[#7DFFB0]">
+                <h1 className="hero-location mt-3 font-semibold leading-tight tracking-wide text-[#7DFFB0]">
                   Indoor golf in Somerset, NJ
                 </h1>
               </div>
