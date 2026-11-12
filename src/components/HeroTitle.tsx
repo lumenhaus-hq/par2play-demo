@@ -59,11 +59,8 @@ export function HeroTitle({ concept }: { concept: HeroConcept }) {
   return (
     <p className="min-w-0 max-w-full font-display text-[1.35rem] font-semibold leading-[1.05] tracking-tight text-white @3xl:text-[2rem]">
       <MaskLine>A home for </MaskLine>
-      <MaskLine delay={90} className="font-accent text-[1.45em] leading-none">
+      <MaskLine delay={90} className="hero-poppy font-accent text-[1.45em] leading-none">
         all golfers.
-      </MaskLine>{" "}
-      <MaskLine delay={180} className="mt-2 block @3xl:mt-0 @3xl:inline">
-        All year.
       </MaskLine>
     </p>
   );
@@ -73,9 +70,8 @@ function ConceptA() {
   return (
     <p className="min-w-0 max-w-full font-sans text-lg font-semibold leading-tight text-white @3xl:text-2xl">
       {"A home for "}
-      <span className={`font-caveat text-[1.85em] leading-none ${green}`}>all golfers.</span>{" "}
-      <span className="relative inline-block font-caveat text-[1.55em] leading-none">
-        All year.
+      <span className={`relative inline-block font-caveat text-[1.85em] leading-none ${green}`}>
+        all golfers.
         <Swoosh />
       </span>
     </p>
@@ -86,12 +82,7 @@ function ConceptB() {
   return (
     <div className="min-w-0 max-w-full">
       <p className="font-sans text-sm font-semibold text-white @3xl:text-base">A home for</p>
-      <div className="flex min-w-0 flex-wrap items-end gap-x-2 gap-y-1">
-        <p className={`min-w-0 font-caveat text-[clamp(2.5rem,13cqi,4.5rem)] leading-none ${green}`}>all golfers.</p>
-        <p className="mb-1 inline-block -rotate-6 rounded-md border-2 border-[#14D45E] bg-[#06210f]/80 px-2 py-0.5 font-caveat text-xl leading-none text-white">
-          All year.
-        </p>
-      </div>
+      <p className={`min-w-0 font-caveat text-[clamp(2.5rem,13cqi,4.5rem)] leading-none ${green}`}>all golfers.</p>
     </div>
   );
 }
@@ -103,8 +94,7 @@ function ConceptC() {
       <span className="relative inline-block">
         <Marker />
         <span className="relative">all golfers.</span>
-      </span>{" "}
-      <span className="font-caveat text-[1.35em] leading-none">All year.</span>
+      </span>
     </p>
   );
 }
@@ -113,9 +103,8 @@ function ConceptD() {
   return (
     <p className="min-w-0 max-w-full font-sans text-[clamp(1.15rem,5.4cqi,1.65rem)] font-bold uppercase leading-tight tracking-tight text-white">
       {"A home for "}
-      <span className={`font-caveat text-[1.45em] leading-none ${green}`}>all golfers.</span>
-      <span className="relative ml-2 inline-block font-caveat text-[1.15em] leading-none normal-case">
-        All year.
+      <span className={`relative inline-block font-caveat text-[1.45em] leading-none normal-case ${green}`}>
+        all golfers.
         <Scribble />
       </span>
     </p>

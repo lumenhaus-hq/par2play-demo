@@ -4,10 +4,13 @@ import { HERO_MEDIA, type ClipAsset } from "../data/media";
 import type { PhotoAsset } from "../data/photos";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 
-export type HeroIntroPhase = "boot" | "postcard" | "expand" | "arrived";
+export type HeroIntroPhase = "boot" | "zoom" | "expand" | "arrived";
 
 /** Start arrived so prerender (webdriver) HTML matches first client paint. */
 const INITIAL_INTRO: HeroIntroPhase = "arrived";
+
+/** Zoom-out duration; keep in sync with `--motion-expand` in index.css. */
+const EXPAND_MS = 1400;
 
 export function Photo({
   photo,
@@ -96,7 +99,7 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
       fitReady.current = false;
       document.documentElement.classList.add("hero-bay");
       hideLcpPoster();
-      setPhase("postcard");
+      setPhase("zoom");
     } else {
       hideLcpPoster();
     }
@@ -146,13 +149,13 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
       expandTimer = window.setTimeout(() => {
         if (cancel) return;
         armFit();
-      }, 1500);
+      }, EXPAND_MS);
     };
 
     const idle = () => {
       const schedule = window.requestIdleCallback?.bind(window);
       if (schedule) schedule(startFilm, { timeout: 1500 });
-      else arriveTimer = window.setTimeout(startFilm, skipIntro ? 1 : 700);
+      else arriveTimer = window.setTimeout(startFilm, skipIntro ? 1 : 500);
     };
 
     if (document.readyState === "complete") idle();
@@ -195,10 +198,10 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
       ? "hero-bay-frame hero-bay-frame--full"
       : phase === "expand"
         ? "hero-bay-frame hero-bay-frame--expand"
-        : "hero-bay-frame hero-bay-frame--postcard";
+        : "hero-bay-frame hero-bay-frame--zoom";
 
   return (
-    <div ref={bayRef} className={`absolute inset-0 flex items-center justify-center ${phase === "arrived" ? "" : "bg-[#0A0F0B]"}`}>
+    <div ref={bayRef} className={`absolute inset-0 overflow-hidden ${phase === "arrived" ? "" : "bg-[#0A0F0B]"}`}>
       <div className={frameClass}>
         <picture className="absolute inset-0 block h-full w-full">
           <source media="(max-width: 767px)" srcSet={HERO_MEDIA.posterMobileAvif} type="image/avif" />
