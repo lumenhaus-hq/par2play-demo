@@ -5,34 +5,26 @@ test.beforeEach(async ({ page }) => {
 });
 
 for (const width of [360, 1280]) {
-  test(`membership slider, comparison and tier cards agree at ${width}px`, async ({ page }) => {
+  test(`membership practice toggle and checkout fields work at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("membership/");
     if (width === 1280) await page.getByRole("button", { name: "Desktop", exact: true }).click();
     const panel = page.locator("#why-membership");
-    const slider = panel.getByRole("slider");
-    for (const [hours, amount, tier] of [[1, 200, "silver"], [2, 250, "gold"], [5, 375, "platinum"]] as const) {
-      await slider.fill(String(hours));
-      await expect(panel.locator("output")).toHaveText(String(hours));
-      await expect(panel.locator('[aria-live="polite"] p > span').first()).toHaveText(`$${amount}/mo`);
-      const comparison = panel.getByText("Members price", { exact: true }).locator("..");
-      await expect(comparison.locator("p").last()).toHaveText(`$${amount}`);
-      const card = page.locator(`[data-tier="${tier}"]`);
-      await expect(card.getByText(`$${amount}`, { exact: true })).toBeVisible();
-      await expect(card.getByText("Lowest total", { exact: true })).toBeVisible();
-      const cells = await comparison.locator("..").locator(":scope > div").evaluateAll((nodes) => nodes.map((node) => {
-        const rect = node.getBoundingClientRect();
-        return [rect.width, rect.height];
-      }));
-      expect(cells[0]).toEqual(cells[1]);
-    }
-    const cards = await page.locator("[data-tier]").evaluateAll((nodes) => nodes.map((node) => {
-      const rect = node.getBoundingClientRect();
-      return [Math.round(rect.width), Math.round(rect.height)];
-    }));
-    expect(cards[0]).toEqual(cards[1]);
-    expect(cards[1]).toEqual(cards[2]);
+    await expect(panel.getByRole("button", { name: "Unlimited Practice", exact: true })).toHaveAttribute("aria-pressed", "true");
+    await expect(panel.locator('[aria-live="polite"] p').last()).toContainText("$200");
+    await expect(panel.getByRole("slider")).toHaveCount(0);
+    await expect(page.locator("[data-tier]")).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "Compare price & hours" })).toHaveCount(0);
+    await panel.getByRole("button", { name: "10 Sessions", exact: true }).click();
+    await expect(panel.getByRole("button", { name: "10 Sessions", exact: true })).toHaveAttribute("aria-pressed", "true");
+    await expect(panel.locator('[aria-live="polite"] p').last()).toContainText("$400");
+    await expect(page.getByRole("heading", { name: "Checkout details" })).toBeVisible();
+    await expect(page.getByLabel("Name")).toBeVisible();
+    await expect(page.getByLabel("Email")).toBeVisible();
+    await expect(page.getByLabel("Phone")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "compare plans" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "compare plans", exact: true })).toBeVisible();
     await expect(page.getByText(/Junior Golf Membership \(\$399/)).toHaveCount(0);
     await expect(page.getByText(/Estimates for bay hours only/)).toHaveCount(0);
   });
@@ -63,6 +55,8 @@ test("mobile homepage benefits sit below the film on a solid dark background", a
   await expect(page.locator("#events img")).toHaveCount(0);
   await expect(band.getByRole("link", { name: "Try it out", exact: true })).toHaveCSS("background-color", "rgb(255, 255, 255)");
   await expect(page.getByRole("heading", { name: "Around the club" })).toHaveCount(0);
+  await expect(page.locator("#coaching").getByRole("heading", { name: "Get fitted and swinging!" })).toBeVisible();
+  await expect(page.locator("#juniors").getByRole("heading", { name: "Golf for kids" })).toBeVisible();
   await expect(page.locator("#coaching").getByRole("link", { name: "Evaluate my swing" })).toHaveAttribute("data-offer", "swing-evaluation");
   await expect(page.locator("#coaching").getByRole("link", { name: "Try it out" })).toHaveAttribute("data-offer", "bay");
 });
@@ -78,18 +72,11 @@ test("removed sections and junior paragraph stay absent on their pages", async (
   await expect(page.locator("#coaching-offer").getByRole("link", { name: "Try it out" })).toHaveAttribute("data-offer", "bay");
 });
 
-test("membership cards compare only prices and hours", async ({ page }) => {
+test("membership page no longer shows Silver Gold Platinum price cards", async ({ page }) => {
   await page.goto("membership/");
-  const cards = page.locator("[data-tier]");
-  for (const [id, weekly, monthly] of [["silver", "1", "4"], ["gold", "2", "8"], ["platinum", "5", "20"]] as const) {
-    const card = page.locator(`[data-tier="${id}"]`);
-    await expect(card.locator("dt")).toHaveText(["Hours / week", "Hours / month"]);
-    await expect(card.locator("dd")).toHaveText([weekly, monthly]);
-    await expect(card.locator("s")).toBeVisible();
-  }
-  for (const card of await cards.all()) {
-    await expect(card).not.toContainText(/free|rollover|club fitting|swing evaluation|lesson pack|services/i);
-  }
+  await expect(page.locator("[data-tier]")).toHaveCount(0);
+  await expect(page.getByText("Compare price & hours")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "compare plans" })).toBeVisible();
 });
 
 test("coaching defaults to evaluation and has no pictures below pricing", async ({ page }) => {

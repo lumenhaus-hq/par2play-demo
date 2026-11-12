@@ -109,6 +109,7 @@ export const PRICES = {
 export type BookingOffer =
   | "bay"
   | "ten-pack"
+  | "practice-unlimited"
   | "lesson"
   | "swing-evaluation"
   | "swing-lab"
@@ -173,6 +174,8 @@ export function bookingHref(offer: BookingOffer): string {
       return OCLOCK.bayRental;
     case "ten-pack":
       return OCLOCK.tenPracticePack;
+    case "practice-unlimited":
+      return OCLOCK.practiceUnlimited;
     case "lesson":
     case "swing-evaluation":
     case "swing-lab":

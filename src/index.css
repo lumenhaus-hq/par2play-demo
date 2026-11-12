@@ -379,6 +379,16 @@ html.lenis.lenis-smooth {
   transition: transform var(--motion-base) var(--motion-ease-wipe);
 }
 
+/* Soft black crescent under the left edge — matches the lift CTA spec. */
+.cta-lift {
+  box-shadow: -3px 5px 0 0 #0a0f0b;
+}
+
+.cta-lift:active {
+  box-shadow: -1px 2px 0 0 #0a0f0b;
+  transform: translate(1px, 2px) scale(0.985);
+}
+
 .cta-brand {
   background: #14d45e;
   color: #0a0f0b;

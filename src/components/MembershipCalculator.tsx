@@ -1,330 +1,233 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { useState, type FormEvent } from "react";
 import { trackAnchor } from "../analytics/track";
-import { CircleDollarSign } from "lucide-react";
-import { PriceFacts } from "./PriceFacts";
-import { VideoSlot } from "./VideoSlot";
-import { BookLink, CtaPair, PhoneLink, buttonFocus } from "./Cta";
-import { membershipCheckoutHref, NAP } from "../data/business";
+import { PhoneLink, buttonFocus } from "./Cta";
+import { CompareBoxes, PricingHero } from "./PricingHero";
+import { NAP, OCLOCK, PRICES } from "../data/business";
 import { TESTIMONIAL_FILMS } from "../data/films";
-import {
-  ANNUAL_PLAN_DISCOUNT,
-  HOURS_PER_WEEK_MAX,
-  WEEKS_PER_MONTH,
-  effectiveMonthlyFee,
-  money,
-  periodPaceTotal,
-  quoteWeek,
-  type BillingPeriod,
-  type MemberTierId,
-  type TierQuote,
-} from "../data/membershipEstimate";
-import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
+import { money } from "../data/membershipEstimate";
 
 const FILM = TESTIMONIAL_FILMS[0];
+const PAYG_TEN = PRICES.baySession * 10;
 
-function useAnimatedAmount(target: number, reduce: boolean): number {
-  const [value, setValue] = useState(target);
-  const valueRef = useRef(target);
+type PracticeMode = "unlimited" | "pack";
 
-  useEffect(() => {
-    const from = valueRef.current;
-    if (reduce || from === target) {
-      valueRef.current = target;
-      setValue(target);
-      return;
-    }
-    const start = performance.now();
-    const duration = 320;
-    let frame = 0;
-    const step = (now: number) => {
-      const progress = Math.min(1, (now - start) / duration);
-      const eased = 1 - (1 - progress) ** 3;
-      const next = from + (target - from) * eased;
-      valueRef.current = next;
-      setValue(next);
-      if (progress < 1) frame = requestAnimationFrame(step);
-    };
-    frame = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(frame);
-  }, [target, reduce]);
+type CheckoutFields = {
+  name: string;
+  email: string;
+  phone: string;
+};
 
-  return value;
-}
+const emptyCheckout: CheckoutFields = { name: "", email: "", phone: "" };
 
-function periodWord(period: BillingPeriod): string {
-  switch (period) {
-    case "month":
-      return "a month";
-    case "year":
-      return "a year";
-    default: {
-      const exhaustive: never = period;
-      return exhaustive;
-    }
-  }
-}
-
-function MemberLink({ children, className = "", tier }: { children: string; className?: string; tier: "silver" | "gold" | "platinum" }) {
-  const href = membershipCheckoutHref(tier);
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      data-membership="true"
-      onClick={(event) => trackAnchor(event.currentTarget, { membership_tier: tier })}
-      className={`inline-flex min-h-11 items-center justify-center rounded-full bg-[#14D45E] px-5 text-center text-base font-semibold text-[#0A0F0B] hover:bg-[#3dff7c] active:bg-[#0fb852] ${buttonFocus} ${className}`}
-    >
-      {children}
-    </a>
-  );
-}
-
-function sticker(tier: TierQuote, period: BillingPeriod): { price: string; note: string | null } {
-  const monthly = effectiveMonthlyFee(tier, period);
-  if (period === "year") {
-    const yearly = tier.yearlyFee ?? monthly * 12;
-    return { price: `${money(yearly)}/yr`, note: `${money(monthly)}/mo` };
-  }
-  if (tier.yearlyFee != null) {
-    return { price: `${money(tier.monthlyFee)}/mo`, note: `${money(tier.yearlyFee)}/yr, billed yearly` };
-  }
-  return { price: `${money(monthly)}/mo`, note: null };
-}
-
-function TierCard({
-  tier,
-  period,
-  best,
-  selected,
-  onSelect,
-}: {
-  tier: TierQuote;
-  period: BillingPeriod;
-  best: boolean;
-  selected: boolean;
-  onSelect: () => void;
-}) {
-  const label = sticker(tier, period);
+function ModeButton({ pressed, onClick, children }: { pressed: boolean; onClick: () => void; children: string }) {
   return (
     <button
       type="button"
-      onClick={onSelect}
-      aria-pressed={selected}
-      data-tier={tier.id}
-      className={`aa-focus flex h-full min-w-0 flex-col rounded-3xl border-2 p-5 text-left ${
-        best
-          ? "border-[#14D45E] bg-[#020806] text-white shadow-[0_18px_40px_rgb(10_15_11/0.18)]"
-          : "border-[#4b5563] bg-white text-[#0A0F0B]"
-      } ${selected && !best ? "ring-2 ring-[#0A0F0B]" : ""}`}
+      className={`aa-focus-ink min-h-11 rounded-full border-2 px-3 text-base font-semibold transition-[border-color,background-color,color] ${
+        pressed ? "border-[#7DFFB0] bg-white text-[#0A0F0B]" : "border-white/35 text-white"
+      }`}
+      aria-pressed={pressed}
+      onClick={onClick}
     >
-      <div className="flex min-h-16 flex-wrap items-start justify-between gap-2">
-        <h3 className="flex items-center gap-2 font-display text-2xl font-semibold tracking-tight"><CircleDollarSign aria-hidden="true" className={`size-6 shrink-0 ${best ? "text-[#7DFFB0]" : "text-[#17743B]"}`} strokeWidth={1.5} />{tier.name}</h3>
-        {best ? (
-          <span className="rounded-full bg-[#14D45E] px-3 py-1 text-sm font-semibold text-[#0A0F0B]">Lowest total</span>
-        ) : null}
-      </div>
-      <p className={`mt-2 font-display text-3xl font-semibold leading-none tracking-tight tabular-nums @3xl:text-4xl ${best ? "text-[#7DFFB0]" : "text-[#0A0F0B]"}`}>{label.price}</p>
-      {label.note ? (
-        <p className={`mt-1 text-base leading-snug ${best ? "text-white" : "text-[#0A0F0B]"}`}>{label.note}</p>
-      ) : null}
-      <p className={`mt-4 text-lg leading-none tabular-nums ${best ? "text-[#C5D2C9]" : "text-[#4B5563]"}`}><s className="decoration-2">{money(tier.total)}</s></p>
-      <p className={`mt-1 text-sm ${best ? "text-[#C5D2C9]" : "text-[#4B5563]"}`}>
-        this {period === "year" ? "year" : "month"} at your pace
-      </p>
-      <PriceFacts
-        className="mt-auto w-full pt-6"
-        dark={best}
-        items={[
-          { label: "Hours / week", value: String(tier.includedHours / WEEKS_PER_MONTH), icon: "clock" },
-          { label: "Hours / month", value: String(tier.includedHours), icon: "calendar" },
-        ]}
-      />
+      {children}
     </button>
   );
 }
 
-export function MembershipCalculator() {
-  const [hoursPerWeek, setHoursPerWeek] = useState(2);
-  const [picked, setPicked] = useState<MemberTierId>("gold");
-  const [period, setPeriod] = useState<BillingPeriod>("month");
-  const reduce = usePrefersReducedMotion();
-  const sliderId = useId();
-  const pace = quoteWeek(hoursPerWeek);
-  const scale = period === "year" ? 12 : 1;
-  const tiers = pace.tiers.map((tier) => ({ ...tier, total: periodPaceTotal(tier, pace.hours, period) }));
-  const best = tiers.reduce((lowest, tier) => (tier.total < lowest.total ? tier : lowest));
-  const normal = pace.normal * scale;
-  const memberTotal = best.total;
-  const save = normal - memberTotal;
-  const shownNormal = useAnimatedAmount(normal, reduce);
-  const shownMember = memberTotal;
-  const shownSave = useAnimatedAmount(Math.max(0, save), reduce);
-  const shownFee = shownMember;
-  const weekWord = pace.hoursPerWeek === 1 ? "hour" : "hours";
-  const pacePhrase = `${pace.hoursPerWeek} ${weekWord} played per week`;
-  const setPace = (next: number) => {
-    const quote = quoteWeek(next);
-    setHoursPerWeek(quote.hoursPerWeek);
-    const nextTiers = quote.tiers.map((tier) => ({ ...tier, total: periodPaceTotal(tier, quote.hours, period) }));
-    const nextBest = nextTiers.reduce((lowest, tier) => (tier.total < lowest.total ? tier : lowest));
-    setPicked(nextBest.id);
+function checkoutHref(mode: PracticeMode, fields: CheckoutFields): string {
+  const base = mode === "unlimited" ? OCLOCK.practiceUnlimited : OCLOCK.tenPracticePack;
+  const params = new URLSearchParams();
+  if (fields.name.trim()) params.set("name", fields.name.trim());
+  if (fields.email.trim()) params.set("email", fields.email.trim());
+  if (fields.phone.trim()) params.set("phone", fields.phone.trim());
+  params.set("offer", mode === "unlimited" ? "practice_unlimited" : "10_practice_pack");
+  const query = params.toString();
+  return query ? `${base}${base.includes("?") ? "&" : "?"}${query}` : base;
+}
+
+function MembershipCheckout({ mode }: { mode: PracticeMode }) {
+  const [fields, setFields] = useState<CheckoutFields>(emptyCheckout);
+  const [errors, setErrors] = useState<Partial<CheckoutFields>>({});
+
+  const set = (key: keyof CheckoutFields, value: string) => {
+    setFields((current) => ({ ...current, [key]: value }));
   };
-  const paceFill = `${((pace.hoursPerWeek - 1) / (HOURS_PER_WEEK_MAX - 1)) * 100}%`;
-  const feeSuffix = period === "year" ? "/yr" : "/mo";
-  const feeNote =
-    period === "year"
-      ? `${money(memberTotal / 12)}/mo`
-      : best.yearlyFee != null
-        ? `${money(best.yearlyFee)}/yr, billed yearly`
-        : null;
-  const live = `${best.name} ${money(shownFee)}${feeSuffix}. Booked normally ${money(normal)}. Members price ${money(memberTotal)}. ${save > 0 ? `You save ${money(save)} ${periodWord(period)}.` : "Booking normally is less at this pace."}`;
+
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const next: Partial<CheckoutFields> = {};
+    if (fields.name.trim().length < 2) next.name = "Add your name.";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email.trim())) next.email = "Add a valid email.";
+    const digits = fields.phone.replace(/\D/g, "");
+    if (digits.length < 10) next.phone = "Add a phone number.";
+    setErrors(next);
+    if (Object.keys(next).length > 0) return;
+    const href = checkoutHref(mode, fields);
+    const probe = document.createElement("a");
+    probe.href = href;
+    trackAnchor(probe, { membership_tier: mode === "unlimited" ? "gold" : "silver" });
+    window.open(href, "_blank", "noopener,noreferrer");
+  };
+
+  const fieldClass =
+    "aa-focus-ink mt-2 w-full rounded-2xl border border-white/25 bg-white/5 px-3 py-3 text-base text-white outline-none placeholder:text-white/45 focus-visible:border-[#7DFFB0]";
+
+  return (
+    <form
+      className="rounded-[2rem] border border-white/10 bg-[#0A0F0B] px-5 py-8 text-white shadow-[0_24px_60px_rgb(10_15_11/0.35)] @3xl:px-10"
+      onSubmit={onSubmit}
+      noValidate
+      aria-labelledby="membership-checkout-heading"
+    >
+      <h2 id="membership-checkout-heading" className="font-display text-2xl font-semibold tracking-tight @3xl:text-3xl">
+        Checkout details
+      </h2>
+      <p className="mt-2 max-w-xl text-base text-white/70">
+        We’ll carry these into GolfClock when you continue. Nothing is charged on this page.
+      </p>
+      <div className="mt-6 grid gap-4 @3xl:grid-cols-3">
+        <label className="block text-sm font-semibold uppercase tracking-[0.12em] text-white/80">
+          Name
+          <input
+            className={fieldClass}
+            name="name"
+            autoComplete="name"
+            value={fields.name}
+            aria-invalid={errors.name ? true : undefined}
+            onChange={(event) => set("name", event.target.value)}
+          />
+          {errors.name ? <span className="mt-2 block text-xs normal-case tracking-normal text-[#ffb4b4]">{errors.name}</span> : null}
+        </label>
+        <label className="block text-sm font-semibold uppercase tracking-[0.12em] text-white/80">
+          Email
+          <input
+            className={fieldClass}
+            name="email"
+            type="email"
+            autoComplete="email"
+            value={fields.email}
+            aria-invalid={errors.email ? true : undefined}
+            onChange={(event) => set("email", event.target.value)}
+          />
+          {errors.email ? <span className="mt-2 block text-xs normal-case tracking-normal text-[#ffb4b4]">{errors.email}</span> : null}
+        </label>
+        <label className="block text-sm font-semibold uppercase tracking-[0.12em] text-white/80">
+          Phone
+          <input
+            className={fieldClass}
+            name="phone"
+            type="tel"
+            autoComplete="tel"
+            value={fields.phone}
+            aria-invalid={errors.phone ? true : undefined}
+            onChange={(event) => set("phone", event.target.value)}
+          />
+          {errors.phone ? <span className="mt-2 block text-xs normal-case tracking-normal text-[#ffb4b4]">{errors.phone}</span> : null}
+        </label>
+      </div>
+      <div className="mt-8 flex flex-wrap items-center gap-4">
+        <button
+          type="submit"
+          className={`cta-shell cta-brand cta-lift inline-flex min-h-12 items-center justify-center rounded-full px-8 text-base font-semibold text-[#0A0F0B] ${buttonFocus}`}
+        >
+          <span className="cta-fill" aria-hidden="true" />
+          <span className="cta-label">
+            <span className="cta-label-text">Continue to checkout</span>
+          </span>
+        </button>
+        <p className="text-sm text-white/60">Opens GolfClock with your details attached.</p>
+      </div>
+    </form>
+  );
+}
+
+export function MembershipCalculator() {
+  const [mode, setMode] = useState<PracticeMode>("unlimited");
+  const unlimited = mode === "unlimited";
+  const figure = unlimited ? `${money(PRICES.unlimitedMonthly)}/mo` : money(PRICES.tenPack);
+  const heading = unlimited ? "Unlimited Practice" : "10 Sessions";
+  const live = unlimited
+    ? `Unlimited Practice ${money(PRICES.unlimitedMonthly)} a month. Up to 1 hour a day.`
+    : `10 Sessions ${money(PRICES.tenPack)}. Ten 60-minute bay sessions.`;
+  const primaryOffer = unlimited ? ("practice-unlimited" as const) : ("ten-pack" as const);
+  const primaryLabel = unlimited ? "Become a Member" : "Buy 10 Sessions";
 
   return (
     <div className="grid gap-16 @3xl:gap-24">
-      <section id="why-membership" aria-labelledby="why-membership-heading" className="@container min-w-0 overflow-hidden rounded-3xl bg-[#020806] @3xl:grid @3xl:grid-cols-2">
-        <div className="flex min-w-0 flex-col justify-center bg-[radial-gradient(120%_80%_at_0%_0%,rgb(20_212_94/0.16),transparent_52%)] px-5 pt-8 @3xl:px-12 @3xl:py-14">
-          <h1 id="why-membership-heading" className="font-display text-2xl font-semibold tracking-tight text-white @3xl:text-3xl">
-            Indoor golf membership in Somerset, NJ
-          </h1>
-          <div className="mt-3 flex min-w-0 flex-col items-stretch gap-3 @3xl:flex-row @3xl:items-center @3xl:justify-between">
-            <p className="font-display text-lg font-semibold tracking-tight text-[#7DFFB0]">
-              {best.name}
-            </p>
-            <div className="grid w-full min-w-0 grid-cols-2 gap-1 rounded-full bg-white/10 p-1 @3xl:flex @3xl:w-auto" role="group" aria-label="Billing period">
-              <button
-                type="button"
-                className={`aa-focus-ink min-h-11 rounded-full px-3 text-sm font-semibold whitespace-nowrap @3xl:px-4 @3xl:text-base ${period === "month" ? "bg-white text-[#0A0F0B]" : "text-white"}`}
-                aria-pressed={period === "month"}
-                onClick={() => setPeriod("month")}
-              >
-                Monthly
-              </button>
-              <button
-                type="button"
-                className={`aa-focus-ink inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-3 text-sm font-semibold whitespace-nowrap @3xl:px-4 @3xl:text-base ${period === "year" ? "bg-[#14D45E] text-[#0A0F0B]" : "text-white"}`}
-                aria-pressed={period === "year"}
-                onClick={() => setPeriod("year")}
-              >
-                Annual
-                <span
-                  className={`rounded-full px-2 py-0.5 text-xs font-semibold whitespace-nowrap @3xl:text-sm ${period === "year" ? "bg-[#0A0F0B] text-[#7DFFB0]" : "bg-[#14D45E] text-[#0A0F0B]"}`}
-                >
-                  {ANNUAL_PLAN_DISCOUNT == null ? "Best value" : `Save ${Math.round(ANNUAL_PLAN_DISCOUNT * 100)}%`}
-                </span>
-              </button>
-            </div>
+      <PricingHero
+        id="why-membership"
+        pageTitle="Indoor golf membership in Somerset, NJ"
+        heading={heading}
+        figure={figure}
+        live={live}
+        film={FILM}
+        facts={
+          unlimited
+            ? [
+                { label: "Bay access", value: "Daily", icon: "calendar" },
+                { label: "Session length", value: "Up to 1 hr", icon: "clock" },
+              ]
+            : [
+                { label: "Sessions", value: "10", icon: "sessions" },
+                { label: "Minutes / session", value: "60", icon: "clock" },
+              ]
+        }
+        primary={{ offer: primaryOffer, label: primaryLabel }}
+        secondary={{ offer: "bay", label: "Try it out" }}
+        selector={
+          <div className="grid grid-cols-1 gap-1 rounded-3xl bg-white/10 p-1 @3xl:grid-cols-2 @3xl:rounded-full" role="group" aria-label="Practice offer">
+            <ModeButton pressed={unlimited} onClick={() => setMode("unlimited")}>
+              Unlimited Practice
+            </ModeButton>
+            <ModeButton pressed={!unlimited} onClick={() => setMode("pack")}>
+              10 Sessions
+            </ModeButton>
           </div>
-          <div aria-live="polite" aria-atomic="true" className="mt-4 min-w-0">
-            <p className="sr-only">{live}</p>
-            <p className="flex max-w-full flex-wrap items-baseline gap-x-3">
-              <span className="max-w-full whitespace-nowrap font-display text-[clamp(3.15rem,16cqi,6rem)] font-semibold leading-none tracking-tight text-white @3xl:text-8xl">
-                {money(Math.round(shownFee))}
-                {feeSuffix}
-              </span>
-              {feeNote ? <span className="text-xl font-semibold text-white">{feeNote}</span> : null}
-            </p>
-          </div>
-          <div className="mt-6">
-            <label htmlFor={sliderId} className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-base font-semibold text-white">
-                <output htmlFor={sliderId} className="font-display text-4xl font-semibold leading-none text-[#7DFFB0] tabular-nums @3xl:text-5xl">
-                {pace.hoursPerWeek}
-              </output>
-              {weekWord} played per week
-            </label>
-            <div className="mt-3 flex items-center gap-3">
-              <button
-                type="button"
-                className="aa-focus-ink inline-flex size-11 shrink-0 items-center justify-center rounded-full border-2 border-white text-2xl font-semibold text-white"
-                aria-label="Fewer hours"
-                onClick={() => setPace(pace.hoursPerWeek - 1)}
-              >
-                −
-              </button>
-              <input
-                id={sliderId}
-                className="pace-slider pace-slider-on-dark min-w-0 flex-1"
-                type="range"
-                min={1}
-                max={HOURS_PER_WEEK_MAX}
-                step={1}
-                value={pace.hoursPerWeek}
-                style={{ ["--pace" as string]: paceFill }}
-                aria-valuetext={pacePhrase}
-                onChange={(event) => setPace(Number(event.target.value))}
-              />
-              <button
-                type="button"
-                className="aa-focus-ink inline-flex size-11 shrink-0 items-center justify-center rounded-full border-2 border-white text-2xl font-semibold text-white"
-                aria-label="More hours"
-                onClick={() => setPace(pace.hoursPerWeek + 1)}
-              >
-                +
-              </button>
-            </div>
-          </div>
-          <div className="mt-6">
-            <div className="grid min-w-0 grid-cols-2 gap-2 @3xl:gap-3">
-              <div className="min-w-0 rounded-2xl border-2 border-white/25 bg-white/5 p-3 @3xl:p-4">
-                <p className="text-xs font-semibold uppercase leading-tight tracking-[0.04em] text-[#E5E7EB] @3xl:text-sm">Booked normally</p>
-                <p className="mt-3 font-display text-2xl font-semibold leading-none text-[#E5E7EB] tabular-nums @3xl:text-4xl">{money(Math.round(shownNormal))}</p>
-              </div>
-              <div className="min-w-0 rounded-2xl border-2 border-[#14D45E] bg-[#0c2416] p-3 shadow-[0_0_36px_rgb(20_212_94/0.22)] @3xl:p-4">
-                <p className="text-xs font-semibold uppercase leading-tight tracking-[0.04em] text-[#7DFFB0] @3xl:text-sm">Members price</p>
-                <p className="mt-3 font-display text-2xl font-semibold leading-none text-[#7DFFB0] tabular-nums @3xl:text-4xl">{money(Math.round(shownMember))}</p>
-              </div>
-            </div>
-            <p className="mt-3 border-t border-dashed border-white/40 pt-3 text-xl font-semibold text-white">
-              {save > 0 ? (
-                <>
-                  You save <span className="text-[#7DFFB0]">{money(Math.round(shownSave))}</span> {periodWord(period)}
-                </>
-              ) : (
-                "Booking normally is less at this pace."
-              )}
-            </p>
-          </div>
-          <CtaPair className="mt-6">
-            <MemberLink className="w-full" tier={best.id}>Become a Member</MemberLink>
-            <BookLink className="w-full" offer="bay" tone="inverted">
-              Try it out
-            </BookLink>
-          </CtaPair>
-          <PriceFacts className="mt-6 mb-8 @3xl:mb-0" dark items={[
-            { label: "Hours / week", value: String(pace.hoursPerWeek), icon: "clock" },
-            { label: "Hours / month", value: String(pace.hours), icon: "calendar" },
-          ]} />
-        </div>
-        <div className="relative flex min-h-72 w-full min-w-0 flex-col justify-end overflow-hidden @3xl:min-h-full">
-          <VideoSlot src={FILM.src} srcMobile={FILM.srcMobile} poster={FILM.poster} className="absolute inset-0 h-full w-full" pausable />
-
-        </div>
-      </section>
-
-      <section aria-labelledby="tiers-heading">
-        <h2 id="tiers-heading" className="font-display text-3xl font-semibold tracking-tight @5xl:text-4xl">
-          Compare price & hours
-        </h2>
-        <div className="mt-6 grid auto-rows-fr grid-cols-1 items-stretch gap-4 @3xl:grid-cols-3">
-          {tiers.map((tier) => (
-            <TierCard
-              key={tier.id}
-              tier={tier}
-              period={period}
-              best={tier.id === best.id}
-              selected={tier.id === picked}
-              onSelect={() => setPicked(tier.id)}
+        }
+        comparison={
+          unlimited ? (
+            <CompareBoxes
+              mutedLabel="10 Sessions"
+              muted={money(PRICES.tenPack)}
+              highlightLabel="Unlimited / mo"
+              highlight={money(PRICES.unlimitedMonthly)}
+              note="Members keep a bay hour every day for less than a few 10-packs."
             />
-          ))}
-        </div>
-      </section>
+          ) : (
+            <CompareBoxes
+              mutedLabel="Pay as you go"
+              muted={money(PAYG_TEN)}
+              highlightLabel="10 Sessions"
+              highlight={money(PRICES.tenPack)}
+              note={`${money(PRICES.tenPack / 10)} a session in the pack.`}
+            />
+          )
+        }
+      />
+
+      <MembershipCheckout mode={mode} />
 
       <section className="rounded-3xl bg-[#020806] px-6 py-12 text-center text-white @3xl:px-12" aria-labelledby="join-heading">
         <h2 id="join-heading" className="font-display text-4xl font-semibold tracking-tight">
-          See the memberships
+          compare plans
         </h2>
+        <p className="mx-auto mt-3 max-w-lg text-base text-white/75">
+          Silver, Gold, and Platinum live on GolfClock. Pick the bay hours that fit your week.
+        </p>
         <div className="mt-6 flex justify-center">
-          <MemberLink tier={best.id}>Become a Member</MemberLink>
+          <a
+            href={OCLOCK.memberships}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-membership="true"
+            onClick={(event) => trackAnchor(event.currentTarget)}
+            className={`cta-shell cta-line cta-lift inline-flex min-h-12 items-center justify-center rounded-full px-8 text-base font-semibold ${buttonFocus}`}
+          >
+            <span className="cta-fill" aria-hidden="true" />
+            <span className="cta-label">
+              <span className="cta-label-text">compare plans</span>
+            </span>
+          </a>
         </div>
         <p className="mt-6 text-base leading-snug">
           {NAP.street}

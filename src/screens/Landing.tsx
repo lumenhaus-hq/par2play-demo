@@ -207,7 +207,7 @@ export function Landing() {
             pausable
           />
           <div>
-            <h2 className="font-display text-3xl font-semibold leading-none tracking-tight @5xl:text-5xl">Coaching</h2>
+            <h2 className="font-display text-3xl font-semibold leading-none tracking-tight @5xl:text-5xl">Get fitted and swinging!</h2>
             <p className="mt-8 max-w-md font-display text-2xl font-semibold leading-tight tracking-tight">
               {"Two PGA professional coaches, "}
               <a className="underline decoration-2 underline-offset-4" href={`${pageHref("coaching")}#nick-schiavo`}>
@@ -241,7 +241,7 @@ export function Landing() {
       <section id="juniors" className={sectionSpace}>
         <div className="grid items-center gap-10 @3xl:grid-cols-2 @3xl:gap-16">
           <div className="@3xl:order-2">
-            <h2 className="font-display text-4xl font-semibold leading-none tracking-tight @5xl:text-6xl">Junior coaching.</h2>
+            <h2 className="font-display text-4xl font-semibold leading-none tracking-tight @5xl:text-6xl">Golf for kids</h2>
             <p className="mt-6 max-w-md text-base leading-relaxed">Building the golfers of tomorrow.</p>
             <div className="mt-8 grid gap-5">
               <ValuePoint
@@ -261,7 +261,7 @@ export function Landing() {
               />
             </div>
             <div className="mt-8">
-              <BookLink offer="junior">Schedule junior coaching</BookLink>
+              <BookLink offer="junior">Schedule kids golf</BookLink>
             </div>
           </div>
           <VideoSlot
