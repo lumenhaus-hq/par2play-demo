@@ -1,13 +1,12 @@
 import { useId, useState, type FormEvent, type ReactNode } from "react";
 import { trackAnchor } from "../analytics/track";
 import { PhoneLink, buttonFocus } from "./Cta";
-import { CompareBoxes, PricingHero } from "./PricingHero";
+import { PricingHero } from "./PricingHero";
 import { NAP, OCLOCK, PRICES } from "../data/business";
 import { TESTIMONIAL_FILMS } from "../data/films";
 import { money } from "../data/membershipEstimate";
 
 const FILM = TESTIMONIAL_FILMS[0];
-const PAYG_TEN = PRICES.baySession * 10;
 
 type PracticeMode = "unlimited" | "pack";
 
@@ -268,25 +267,6 @@ export function MembershipCalculator() {
               10 Sessions
             </ModeButton>
           </div>
-        }
-        comparison={
-          unlimited ? (
-            <CompareBoxes
-              mutedLabel="10 Sessions"
-              muted={money(PRICES.tenPack)}
-              highlightLabel="Unlimited / mo"
-              highlight={money(PRICES.unlimitedMonthly)}
-              note="Members keep a bay hour every day for less than a few 10-packs."
-            />
-          ) : (
-            <CompareBoxes
-              mutedLabel="Pay as you go"
-              muted={money(PAYG_TEN)}
-              highlightLabel="10 Sessions"
-              highlight={money(PRICES.tenPack)}
-              note={`${money(PRICES.tenPack / 10)} a session in the pack.`}
-            />
-          )
         }
       />
 
