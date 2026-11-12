@@ -63,7 +63,8 @@
   --motion-expand: 1400ms;
   --motion-chrome: 700ms;
   --bay-radius: 1rem;
-  --hero-poppy: linear-gradient(105deg, #e23d28 0%, #ff6b3d 45%, #ffb347 100%);
+  /* Brand greens only — matches hero accents / location line, not warm poppy. */
+  --hero-poppy: linear-gradient(105deg, #14d45e 0%, #7dffb0 55%, #b6ffd4 100%);
 }
 
 /* HeroUI buttons: 16px/600, 44px target, ink on brand green, border that clears 3:1. */
@@ -189,7 +190,7 @@ body {
   left: 0.02em;
   height: 0.1em;
   border-radius: 999px;
-  background: linear-gradient(90deg, #e23d28, #ff6b3d, #ffb347);
+  background: linear-gradient(90deg, #14d45e, #7dffb0, #b6ffd4);
   pointer-events: none;
 }
 
