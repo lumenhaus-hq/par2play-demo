@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { useState } from "react";
 import { Mark } from "./Chrome";
 import { MembershipLink, buttonFocus } from "./Cta";
+import { MotionToggle } from "./MotionToggle";
 import { SoundToggle } from "./SoundToggle";
 import { membershipCheckoutHref, golfClockBookingReady, NAP } from "../data/business";
 import { VisitLine } from "./VisitLine";
@@ -84,7 +85,13 @@ export function SiteFooter() {
           ))}
         </nav>
       </div>
-      <p className="mt-10 text-base">© 2026 Par2Play</p>
+      <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 text-base">
+        <p>© 2026 Par2Play</p>
+        <MotionToggle className="text-[#0A0F0B]" />
+        <a href={pageHref("privacy-policy")} className={navClass}>
+          Privacy
+        </a>
+      </div>
       {!golfClockBookingReady() && (
         <p className="mt-2 max-w-xl text-base text-slate-700">
           GolfClock booking link: TODO. Book calls {NAP.phoneDisplay}.

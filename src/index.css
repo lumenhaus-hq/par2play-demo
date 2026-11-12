@@ -54,6 +54,15 @@
   --accent-foreground: #0a0f0b;
   --focus: #0a0f0b;
   --link: #0a0f0b;
+  --motion-ease-enter: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --motion-ease-wipe: cubic-bezier(0.625, 0.05, 0, 1);
+  --motion-ease-press: cubic-bezier(0.4, 0, 0.2, 1);
+  --motion-fast: 180ms;
+  --motion-base: 525ms;
+  --motion-enter: 700ms;
+  --motion-expand: 1500ms;
+  --motion-chrome: 700ms;
+  --bay-radius: 1rem;
 }
 
 /* HeroUI buttons: 16px/600, 44px target, ink on brand green, border that clears 3:1. */
@@ -190,20 +199,28 @@ h3,
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .word-in {
-    animation: word-in 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  html:not(.motion-paused) .word-in {
+    animation: word-in var(--motion-enter) var(--motion-ease-enter) both;
   }
 
-  .frame-in {
-    animation: frame-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  html:not(.motion-paused) .frame-in {
+    animation: frame-in 0.9s var(--motion-ease-enter) both;
   }
 
-  .quote-fade {
+  html:not(.motion-paused) .quote-fade {
     animation: quote-fade 0.55s ease;
   }
 
-  .nav-link::after {
+  html:not(.motion-paused) .nav-link::after {
     transition: transform 0.2s ease; /* taste-skill-ignore */
+  }
+
+  html:not(.motion-paused) .hero-chrome-in {
+    animation: chrome-in var(--motion-chrome) var(--motion-ease-enter) both;
+  }
+
+  html:not(.motion-paused) .hero-chrome-in--late {
+    animation-delay: 80ms;
   }
 }
 
@@ -256,6 +273,233 @@ h3,
   height: 100svh;
   object-fit: cover;
   pointer-events: none;
+}
+
+#lcp-poster[data-bay="1"] {
+  opacity: 0;
+}
+
+html.hero-scroll-lock,
+html.hero-scroll-lock body {
+  overflow: hidden;
+}
+
+.hero-bay-frame {
+  position: relative;
+  overflow: hidden;
+  background: #0a0f0b;
+  will-change: width, height, border-radius, opacity;
+}
+
+.hero-bay-frame--postcard {
+  width: min(16rem, 72vw);
+  height: min(24rem, 58vh);
+  border-radius: var(--bay-radius);
+  opacity: 1;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1); /* taste-skill-ignore */
+}
+
+@media (min-width: 768px) {
+  .hero-bay-frame--postcard {
+    width: min(48rem, 72vw);
+    height: min(20.5rem, 46vh);
+  }
+}
+
+.hero-bay-frame--expand,
+.hero-bay-frame--full {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  opacity: 1;
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.motion-paused) .hero-bay-frame--expand {
+    transition:
+      width var(--motion-expand) var(--motion-ease-wipe),
+      height var(--motion-expand) var(--motion-ease-wipe),
+      border-radius var(--motion-expand) var(--motion-ease-wipe);
+  }
+}
+
+@keyframes chrome-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* CTA wipe / label slide — fine pointer only; reduced / paused = color swap. */
+.cta-shell {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform var(--motion-fast) var(--motion-ease-press);
+}
+
+.cta-shell:active {
+  transform: scale(0.965);
+}
+
+.cta-fill {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  transform: translate3d(0, 175%, 0) rotate(8deg);
+  transition: transform var(--motion-base) var(--motion-ease-wipe);
+}
+
+.cta-label {
+  position: relative;
+  z-index: 1;
+  display: block;
+  overflow: hidden;
+  line-height: 1.25;
+}
+
+.cta-label-text {
+  display: block;
+  transition: transform var(--motion-base) var(--motion-ease-wipe);
+}
+
+.cta-brand {
+  background: #14d45e;
+  color: #0a0f0b;
+}
+
+.cta-brand .cta-fill {
+  background: #0a0f0b;
+}
+
+.cta-brand:hover,
+.cta-brand:focus-visible {
+  color: #fff;
+}
+
+.cta-inverted {
+  background: #fff;
+  color: #0a0f0b;
+}
+
+.cta-inverted .cta-fill {
+  background: #14d45e;
+}
+
+.cta-line {
+  border: 2px solid #0a0f0b;
+  background: #fff;
+  color: #0a0f0b;
+}
+
+.cta-line .cta-fill {
+  background: #0a0f0b;
+}
+
+.cta-line:hover,
+.cta-line:focus-visible {
+  color: #fff;
+}
+
+.cta-line-muted {
+  border-color: #4b5563;
+}
+
+.cta-solid {
+  background: #0a0f0b;
+  color: #fff;
+}
+
+.cta-solid .cta-fill {
+  background: #14d45e;
+}
+
+.cta-solid:hover,
+.cta-solid:focus-visible {
+  color: #0a0f0b;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  @media (prefers-reduced-motion: no-preference) {
+    html:not(.motion-paused) .cta-shell:hover .cta-fill,
+    html:not(.motion-paused) .cta-shell:focus-visible .cta-fill {
+      transform: none;
+    }
+
+    html:not(.motion-paused) .cta-shell:hover .cta-label-text,
+    html:not(.motion-paused) .cta-shell:focus-visible .cta-label-text {
+      transform: translateY(-1.1em);
+    }
+
+    html:not(.motion-paused) .cta-label-text {
+      text-shadow: 0 1.1em currentColor;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-fill {
+    display: none;
+  }
+
+  .cta-brand:hover,
+  .cta-brand:focus-visible {
+    background: #3dff7c;
+    color: #0a0f0b;
+  }
+
+  .cta-inverted:hover,
+  .cta-inverted:focus-visible {
+    background: #14d45e;
+    color: #0a0f0b;
+  }
+
+  .cta-line:hover,
+  .cta-line:focus-visible {
+    background: #0a0f0b;
+    color: #fff;
+  }
+
+  .cta-solid:hover,
+  .cta-solid:focus-visible {
+    background: #14d45e;
+    color: #0a0f0b;
+  }
+}
+
+html.motion-paused .cta-fill {
+  display: none;
+}
+
+html.motion-paused .cta-brand:hover,
+html.motion-paused .cta-brand:focus-visible {
+  background: #3dff7c;
+  color: #0a0f0b;
+}
+
+html.motion-paused .cta-inverted:hover,
+html.motion-paused .cta-inverted:focus-visible {
+  background: #14d45e;
+  color: #0a0f0b;
+}
+
+html.motion-paused .cta-line:hover,
+html.motion-paused .cta-line:focus-visible {
+  background: #0a0f0b;
+  color: #fff;
+}
+
+html.motion-paused .cta-solid:hover,
+html.motion-paused .cta-solid:focus-visible {
+  background: #14d45e;
+  color: #0a0f0b;
 }
 
 body:has(#lcp-poster) {
@@ -412,6 +656,31 @@ html.ticker-on .benefit-track {
     flex-wrap: nowrap;
     overflow: hidden;
   }
+}
+
+html.motion-paused .draw-stroke {
+  stroke-dashoffset: 0;
+  animation: none;
+}
+
+html.motion-paused .usp-marquee,
+html.motion-paused .benefit-marquee {
+  display: none;
+}
+
+html.motion-paused .usp-static {
+  display: block;
+}
+
+html.motion-paused .benefit-static {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+html.motion-paused .usp-track,
+html.motion-paused .benefit-track {
+  animation: none;
 }
 
 /* Keep the location below the display title smaller than the critical h1 fallback. */

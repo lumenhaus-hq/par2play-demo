@@ -4,6 +4,11 @@ import { HERO_MEDIA, type ClipAsset } from "../data/media";
 import type { PhotoAsset } from "../data/photos";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 
+export type HeroIntroPhase = "boot" | "postcard" | "expand" | "arrived";
+
+/** Start arrived so prerender (webdriver) HTML matches first client paint. */
+const INITIAL_INTRO: HeroIntroPhase = "arrived";
+
 export function Photo({
   photo,
   className = "",
@@ -55,22 +60,57 @@ function endCardFit(box: { width: number; height: number }): EndCardFit | null {
   return { width: Math.round(FRAME_W * fitted), height: Math.round(FRAME_H * fitted) };
 }
 
-export function HeroVideo() {
+function hideLcpPoster() {
+  const poster = document.getElementById("lcp-poster");
+  if (poster) poster.setAttribute("data-bay", "1");
+}
+
+export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => void } = {}) {
   const reduce = usePrefersReducedMotion();
   const ref = useRef<HTMLVideoElement>(null);
+  const bayRef = useRef<HTMLDivElement>(null);
+  const fitReady = useRef(false);
   const [fit, setFit] = useState<EndCardFit | null>(null);
+  const [phase, setPhase] = useState<HeroIntroPhase>(INITIAL_INTRO);
 
   useEffect(() => {
-    if (reduce) {
-      registerHeroVideo(null);
-      bootAmbient();
-      return;
+    onPhase?.(phase);
+  }, [phase, onPhase]);
+
+  useEffect(() => {
+    const skipIntro = reduce || navigator.webdriver;
+
+    if (skipIntro) {
+      fitReady.current = true;
+      setPhase("arrived");
+      hideLcpPoster();
+      document.documentElement.classList.remove("hero-bay");
+      if (reduce) {
+        registerHeroVideo(null);
+        bootAmbient();
+        return;
+      }
     }
+
+    if (!skipIntro) {
+      fitReady.current = false;
+      document.documentElement.classList.add("hero-bay");
+      hideLcpPoster();
+      setPhase("postcard");
+    } else {
+      hideLcpPoster();
+    }
+
     const video = ref.current;
     if (!video) return;
     registerHeroVideo(video);
-    const frame = video.parentElement;
+    const frame = bayRef.current;
+    let cancel = false;
+    let expandTimer = 0;
+    let arriveTimer = 0;
+
     const syncFit = () => {
+      if (!fitReady.current) return;
       const onCard = video.currentTime >= END_CARD_AT;
       const box = frame?.getBoundingClientRect();
       const next = onCard && box ? endCardFit(box) : null;
@@ -80,30 +120,51 @@ export function HeroVideo() {
         return next;
       });
     };
+
     const onVis = () => {
       if (document.hidden) video.pause();
       else if (document.documentElement.classList.contains("media-on")) void video.play().catch(() => undefined);
     };
-    let cancel = false;
-    const start = () => {
-      if (cancel) return;
-      document.documentElement.classList.add("media-on");
+
+    const armFit = () => {
+      fitReady.current = true;
+      setPhase("arrived");
+      document.documentElement.classList.remove("hero-bay");
       video.addEventListener("timeupdate", syncFit);
       video.addEventListener("seeked", syncFit);
-      void video.play().catch(() => undefined);
     };
+
+    const startFilm = () => {
+      if (cancel) return;
+      document.documentElement.classList.add("media-on");
+      // registerHeroVideo already starts playback (unmuted attempt → muted fallback).
+      if (skipIntro) {
+        armFit();
+        return;
+      }
+      setPhase("expand");
+      expandTimer = window.setTimeout(() => {
+        if (cancel) return;
+        armFit();
+      }, 1500);
+    };
+
     const idle = () => {
       const schedule = window.requestIdleCallback?.bind(window);
-      if (schedule) schedule(start, { timeout: 1500 });
-      else window.setTimeout(start, 1);
+      if (schedule) schedule(startFilm, { timeout: 1500 });
+      else arriveTimer = window.setTimeout(startFilm, skipIntro ? 1 : 700);
     };
+
     if (document.readyState === "complete") idle();
     else window.addEventListener("load", idle, { once: true });
     document.addEventListener("visibilitychange", onVis);
     const observer = new ResizeObserver(syncFit);
     if (frame) observer.observe(frame);
+
     return () => {
       cancel = true;
+      window.clearTimeout(expandTimer);
+      window.clearTimeout(arriveTimer);
       document.removeEventListener("visibilitychange", onVis);
       window.removeEventListener("load", idle);
       video.removeEventListener("timeupdate", syncFit);
@@ -111,71 +172,81 @@ export function HeroVideo() {
       observer.disconnect();
       video.pause();
       registerHeroVideo(null);
+      document.documentElement.classList.remove("hero-bay");
     };
   }, [reduce]);
 
   if (reduce) {
     return (
-      <img
-        src={HERO_MEDIA.poster}
-        alt="Indoor golf at Par2Play in Somerset, NJ"
-        width={1920}
-        height={1080}
-        className="absolute inset-0 h-full w-full object-cover"
-      />
-    );
-  }
-
-  return (
-    <>
-      <picture className="absolute inset-0 block h-full w-full">
-        <source media="(max-width: 767px)" srcSet={HERO_MEDIA.posterMobileAvif} type="image/avif" />
-        <source media="(max-width: 767px)" srcSet={HERO_MEDIA.posterMobileWebp} type="image/webp" />
+      <div className="hero-bay-frame hero-bay-frame--full absolute inset-0">
         <img
           src={HERO_MEDIA.poster}
           alt="Indoor golf at Par2Play in Somerset, NJ"
-          width={780}
-          height={439}
-          fetchPriority="high"
-          decoding="async"
+          width={1920}
+          height={1080}
           className="h-full w-full object-cover"
         />
-      </picture>
-      <div
-        aria-hidden="true"
-        className={`pointer-events-none absolute inset-0 bg-black ${fit ? "opacity-100" : "opacity-0"}`}
-      />
-      {!reduce ? (
-      <video
-        ref={ref}
-        className={
-          fit
-            ? "hero-video absolute max-w-none bg-black object-fill opacity-0"
-            : "hero-video absolute inset-0 h-full w-full object-cover opacity-0"
-        }
-        style={
-          fit
-            ? {
-                width: fit.width,
-                height: fit.height,
-                left: "50%",
-                top: "50%",
-                transform: "translate(-50%, -50%)",
-              }
-            : undefined
-        }
-        loop
-        playsInline
-        preload="none"
-        muted
-        aria-hidden="true"
-      >
-        <source src={HERO_MEDIA.mp4Mobile} type="video/mp4" media="(max-width: 767px)" />
-        <source src={HERO_MEDIA.webm} type="video/webm" media="(min-width: 768px)" />
-        <source src={HERO_MEDIA.mp4} type="video/mp4" />
-      </video>
-      ) : null}
-    </>
+      </div>
+    );
+  }
+
+  const frameClass =
+    phase === "arrived"
+      ? "hero-bay-frame hero-bay-frame--full"
+      : phase === "expand"
+        ? "hero-bay-frame hero-bay-frame--expand"
+        : "hero-bay-frame hero-bay-frame--postcard";
+
+  return (
+    <div ref={bayRef} className={`absolute inset-0 flex items-center justify-center ${phase === "arrived" ? "" : "bg-[#0A0F0B]"}`}>
+      <div className={frameClass}>
+        <picture className="absolute inset-0 block h-full w-full">
+          <source media="(max-width: 767px)" srcSet={HERO_MEDIA.posterMobileAvif} type="image/avif" />
+          <source media="(max-width: 767px)" srcSet={HERO_MEDIA.posterMobileWebp} type="image/webp" />
+          <img
+            src={HERO_MEDIA.poster}
+            alt="Indoor golf at Par2Play in Somerset, NJ"
+            width={780}
+            height={439}
+            fetchPriority="high"
+            decoding="async"
+            className="h-full w-full object-cover"
+          />
+        </picture>
+        <div
+          aria-hidden="true"
+          className={`pointer-events-none absolute inset-0 bg-black ${fit ? "opacity-100" : "opacity-0"}`}
+        />
+        <video
+          ref={ref}
+          className={
+            fit
+              ? "hero-video absolute max-w-none bg-black object-fill"
+              : "hero-video absolute inset-0 h-full w-full object-cover"
+          }
+          style={
+            fit
+              ? {
+                  width: fit.width,
+                  height: fit.height,
+                  left: "50%",
+                  top: "50%",
+                  transform: "translate(-50%, -50%)",
+                }
+              : undefined
+          }
+          loop
+          playsInline
+          preload="none"
+          muted
+          aria-hidden="true"
+        >
+          <source src={HERO_MEDIA.mp4Mobile} type="video/mp4" media="(max-width: 767px)" />
+          <source src={HERO_MEDIA.webm} type="video/webm" media="(min-width: 768px)" />
+          <source src={HERO_MEDIA.mp4} type="video/mp4" />
+        </video>
+      </div>
+    </div>
   );
 }
 

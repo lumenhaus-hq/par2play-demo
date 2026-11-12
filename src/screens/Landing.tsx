@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Activity, Shield, Target, UserRound } from "lucide-react";
 import { bindHeroWatch } from "../audio/soundtrack";
 import { Mark } from "../components/Chrome";
-import { trackAnchor } from "../analytics/track";
-import { BookLink, CtaPair, HeroMembershipAction, MembershipLink, buttonFocus } from "../components/Cta";
+import { BookLink, CtaAnchor, CtaPair, HeroMembershipAction, MembershipLink, buttonFocus } from "../components/Cta";
 import { HeroProof } from "../components/HeroProof";
 import { MembershipBand } from "../components/MembershipBand";
-import { HeroVideo } from "../components/Media";
+import { HeroVideo, type HeroIntroPhase } from "../components/Media";
+import { MotionToggle } from "../components/MotionToggle";
 import { SoundToggle } from "../components/SoundToggle";
 import { TournamentForm } from "../components/TournamentForm";
 import { EventTypeList } from "../components/EventTypeList";
@@ -28,21 +28,32 @@ const sectionSpace = "scroll-mt-32 px-6 py-20 @3xl:px-12 @3xl:py-24";
 
 const navButton = `nav-link inline-flex min-h-11 items-center px-1 text-base font-semibold text-[#0A0F0B] ${buttonFocus}`;
 
-
 export function Landing() {
   const flow = useFlow();
   const concept = heroConcept();
   const [menu, setMenu] = useState(false);
   const [onFilm, setOnFilm] = useState(true);
   const [active, setActive] = useState<string | null>(null);
+  // Match prerendered HTML (webdriver captures arrived); HeroVideo drives later phases.
+  const [intro, setIntro] = useState<HeroIntroPhase>("arrived");
   const scrollRef = useRef<HTMLDivElement>(null);
   const mobile = flow.layout === "mobile";
   const scroll = mobile ? "h-full overflow-y-auto" : "";
+  const chromeReady = intro === "arrived";
+
+  const onPhase = useCallback((phase: HeroIntroPhase) => {
+    setIntro(phase);
+  }, []);
 
   useEffect(() => bindHeroWatch("hero", mobile ? scrollRef.current : null), [mobile]);
 
   useEffect(() => {
     const root = mobile ? scrollRef.current : null;
+    if (!chromeReady) {
+      if (root) root.scrollTo(0, 0);
+      else window.scrollTo(0, 0);
+      return;
+    }
     const read = () => {
       const hero = document.getElementById("hero");
       if (!hero) return;
@@ -51,8 +62,9 @@ export function Landing() {
     read();
     const target = root ?? window;
     target.addEventListener("scroll", read, { passive: true });
-    const nodes = SITE_NAV.map((item) => document.getElementById(item.slug))
-      .filter((node): node is HTMLElement => node !== null);
+    const nodes = SITE_NAV.map((item) => document.getElementById(item.slug)).filter(
+      (node): node is HTMLElement => node !== null,
+    );
     const observer = new IntersectionObserver(
       (entries) => {
         const best = entries
@@ -67,19 +79,33 @@ export function Landing() {
       target.removeEventListener("scroll", read);
       observer.disconnect();
     };
-  }, [mobile]);
+  }, [mobile, chromeReady]);
+
+  useEffect(() => {
+    if (chromeReady) {
+      document.documentElement.classList.remove("hero-scroll-lock");
+      return;
+    }
+    document.documentElement.classList.add("hero-scroll-lock");
+    return () => document.documentElement.classList.remove("hero-scroll-lock");
+  }, [chromeReady]);
 
   const filmLink = `nav-link inline-flex min-h-11 items-center px-1 text-base font-semibold ${buttonFocus} ${
     onFilm ? "text-white" : "text-[#0A0F0B]"
   }`;
 
-
   return (
-    <div ref={scrollRef} className={`@container page-grid text-base text-[#0A0F0B] ${scroll}`}>
+    <div
+      ref={scrollRef}
+      className={`@container page-grid text-base text-[#0A0F0B] ${scroll} ${chromeReady ? "" : "overflow-hidden"}`}
+    >
       <JsonLd data={homeGraph()} />
       <JsonLd data={faqGraph()} />
       <header
-        className={`sticky z-30 px-6 py-3 @5xl:px-12 ${mobile ? "top-0" : "top-[4.25rem]"} ${onFilm ? "" : "header-bar"}`}
+        className={`sticky z-30 px-6 py-3 @5xl:px-12 ${mobile ? "top-0" : "top-[4.25rem]"} ${onFilm ? "" : "header-bar"} ${
+          chromeReady ? "hero-chrome-in" : "pointer-events-none opacity-0"
+        }`}
+        aria-hidden={chromeReady ? undefined : true}
       >
         <div className="flex items-center justify-between gap-4">
           <Mark light={onFilm} />
@@ -96,7 +122,7 @@ export function Landing() {
             ))}
           </nav>
           <div className="flex items-center gap-2">
-            <SoundToggle className={onFilm ? "text-white" : "text-[#0A0F0B]"} />
+            <SoundToggle labeled={onFilm} className={onFilm ? "text-white" : "text-[#0A0F0B]"} />
             <span className="hidden @3xl:contents">
               <MembershipLink className="shrink-0">Become a Member</MembershipLink>
             </span>
@@ -131,16 +157,25 @@ export function Landing() {
       </header>
       <section
         id="hero"
-        className={`relative -mt-[4.5rem] flex flex-col overflow-hidden bg-[#06210f] ${mobile ? "h-full" : "h-[calc(100svh-5rem)]"}`}
+        className={`relative -mt-[4.5rem] flex flex-col overflow-hidden bg-[#0A0F0B] ${mobile ? "h-full" : "h-[calc(100svh-5rem)]"}`}
       >
-        <HeroVideo />
+        <HeroVideo onPhase={onPhase} />
         <div className="hero-top-shade pointer-events-none absolute inset-x-0 top-0" aria-hidden="true" />
-        <div data-hero-offer className="relative z-10 flex flex-1 items-end justify-end px-6 pb-4 @3xl:px-12 @3xl:pb-6">
+        <div
+          data-hero-offer
+          className={`relative z-10 flex flex-1 items-end justify-end px-6 pb-4 @3xl:px-12 @3xl:pb-6 ${
+            chromeReady ? "hero-chrome-in" : "pointer-events-none opacity-0"
+          }`}
+          aria-hidden={chromeReady ? undefined : true}
+        >
           <div className="hero-panel pointer-events-auto w-full max-w-[32rem] rounded-2xl px-4 py-3">
             <div className="flex min-w-0 flex-wrap items-end justify-between gap-4">
               <div className="min-w-0 max-w-full">
                 <HeroTitle concept={concept} />
-                <h1 className="hero-location mt-3 font-semibold leading-tight tracking-wide text-[#7DFFB0]">
+                <p className="mt-3 text-sm font-semibold uppercase tracking-[0.14em] text-white/75">
+                  4 bays · Somerset, NJ · Members first
+                </p>
+                <h1 className="hero-location mt-2 font-semibold leading-tight tracking-wide text-[#7DFFB0]">
                   Indoor golf in Somerset, NJ
                 </h1>
               </div>
@@ -149,7 +184,10 @@ export function Landing() {
             <HeroProof />
           </div>
         </div>
-        <div className="relative z-20 shrink-0">
+        <div
+          className={`relative z-20 shrink-0 ${chromeReady ? "hero-chrome-in hero-chrome-in--late" : "pointer-events-none opacity-0"}`}
+          aria-hidden={chromeReady ? undefined : true}
+        >
           <OfferTicker items={HERO_TICKER} />
         </div>
       </section>
@@ -244,22 +282,12 @@ export function Landing() {
           <EventTypeList />
         </div>
         <CtaPair className="mt-8">
-          <a
-            href={pageHref("events")}
-            className={`inline-flex min-h-11 w-full items-center justify-center rounded-full bg-[#14D45E] px-5 text-base font-semibold text-[#0A0F0B] hover:bg-[#3dff7c] ${buttonFocus}`}
-          >
+          <CtaAnchor href={pageHref("events")} className="w-full">
             See events
-          </a>
-          <a
-            href={OCLOCK.events}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-offer="group"
-            onClick={(event) => trackAnchor(event.currentTarget)}
-            className={`inline-flex min-h-11 w-full items-center justify-center rounded-full border-2 border-[#0A0F0B] bg-white px-5 text-base font-semibold text-[#0A0F0B] hover:bg-[#f3f6f1] ${buttonFocus}`}
-          >
+          </CtaAnchor>
+          <CtaAnchor href={OCLOCK.events} tone="line" className="w-full" offer="group" external>
             Check availability
-          </a>
+          </CtaAnchor>
         </CtaPair>
       </section>
 
@@ -272,27 +300,21 @@ export function Landing() {
         </div>
       </section>
 
-      <nav aria-label="Services" className="px-6 pb-4 text-base leading-relaxed @3xl:px-12">
-        <a className={`underline decoration-2 underline-offset-4 ${buttonFocus}`} href={pageHref("coaching")}>
-          Golf lessons in Somerset
-        </a>
-        {" · "}
-        <a className={`underline decoration-2 underline-offset-4 ${buttonFocus}`} href={pageHref("membership")}>
-          Indoor golf membership
-        </a>
-        {" · "}
-        <a className={`underline decoration-2 underline-offset-4 ${buttonFocus}`} href={pageHref("juniors")}>
-          Junior golf
-        </a>
-        {" · "}
-        <a className={`underline decoration-2 underline-offset-4 ${buttonFocus}`} href={pageHref("events")}>
-          Golf simulator parties
-        </a>
-        {" · "}
-        <a className={`underline decoration-2 underline-offset-4 ${buttonFocus}`} href={pageHref("tournament")}>
-          Fall League
-        </a>
-      </nav>
+      <section className="bg-[#020806] px-6 py-24 text-white @3xl:px-12 @3xl:py-28">
+        <div className="mx-auto max-w-3xl text-center">
+          <h2 className="font-display text-4xl font-semibold leading-none tracking-tight @5xl:text-6xl">Your bay is waiting.</h2>
+          <p className="mx-auto mt-6 max-w-md text-base leading-relaxed text-white/80">
+            Book a simulator bay or become a member — Somerset’s indoor golf clubhouse is ready when you are.
+          </p>
+          <CtaPair className="mx-auto mt-10 justify-center">
+            <MembershipLink className="w-full">Become a Member</MembershipLink>
+            <BookLink className="w-full" offer="bay" tone="inverted">
+              Book a bay
+            </BookLink>
+          </CtaPair>
+        </div>
+      </section>
+
       <FaqSection />
 
       <footer className="px-6 py-20 @3xl:px-12 @3xl:py-24">
@@ -306,7 +328,13 @@ export function Landing() {
             ))}
           </nav>
         </div>
-        <p className="mt-10 text-base">© 2026 Par2Play</p>
+        <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 text-base">
+          <p>© 2026 Par2Play</p>
+          <MotionToggle className="text-[#0A0F0B]" />
+          <a href={pageHref("privacy-policy")} className={navButton}>
+            Privacy
+          </a>
+        </div>
         {!golfClockBookingReady() && (
           <p className="mt-2 max-w-xl text-base text-slate-700">
             GolfClock booking link: TODO. Book calls {NAP.phoneDisplay}.

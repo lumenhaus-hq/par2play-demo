@@ -11,7 +11,7 @@ export default defineConfig({
   webServer: {
     command: "VITE_BASE=/par2play-demo/ npm run preview -- --host 127.0.0.1 --port 4180 --strictPort",
     port: 4180,
-    reuseExistingServer: true,
+    reuseExistingServer: false,
     timeout: 30_000,
   },
 });

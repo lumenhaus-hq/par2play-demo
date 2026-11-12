@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem("p2p_consent", JSON.stringify({ v: 1, analytics: false, marketing: false, ts: Date.now() })));
@@ -11,9 +11,10 @@ test("membership montage pauses, resumes, and stays paused off screen", async ({
   await band.scrollIntoViewIfNeeded();
   await expect.poll(() => video.evaluate((node: HTMLVideoElement) => node.paused)).toBe(false);
   await expect.poll(() => video.evaluate((node: HTMLVideoElement) => node.muted)).toBe(true);
-  await band.getByRole("button", { name: "Pause video", exact: true }).click({ position: { x: 20, y: 20 } });
+  // Sticky preview/header sit over the top of the film; hit the mid frame instead.
+  await band.getByRole("button", { name: "Pause video", exact: true }).click({ position: { x: 40, y: 280 } });
   await expect.poll(() => video.evaluate((node: HTMLVideoElement) => node.paused)).toBe(true);
-  await band.getByRole("button", { name: "Play video", exact: true }).click({ position: { x: 20, y: 20 } });
+  await band.getByRole("button", { name: "Play video", exact: true }).click({ position: { x: 40, y: 280 } });
   await expect.poll(() => video.evaluate((node: HTMLVideoElement) => node.paused)).toBe(false);
   await page.locator("footer").last().scrollIntoViewIfNeeded();
   await expect.poll(() => band.evaluate((node) => node.getBoundingClientRect().bottom)).toBeLessThanOrEqual(0);

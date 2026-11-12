@@ -1,4 +1,5 @@
-import { expect, test, type Page } from "@playwright/test";
+import type { Page } from "@playwright/test";
+import { expect, test } from "./fixtures";
 
 type Probe = {
   live: boolean;
@@ -59,9 +60,10 @@ test("rejected autoplay stays muted until one gesture, then the icon matches", a
   await blockFirstUnmutedPlay(page);
   await page.goto("/");
 
-  const sound = page.getByRole("button", { name: "Sound" });
+  const sound = page.getByRole("button", { name: /sound/i });
   const video = page.locator("#hero video");
 
+  await expect(sound).toBeVisible({ timeout: 15_000 });
   await expect.poll(async () => (await probe(page)).armed).toBe(true);
   await expect.poll(async () => (await probe(page)).live).toBe(false);
   await expect(sound).toHaveAttribute("aria-pressed", "false");
@@ -141,7 +143,8 @@ test.describe("touch", () => {
 test("a stored mute never turns itself back on", async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem("par2play-sound", "off"));
   await page.goto("/");
-  const sound = page.getByRole("button", { name: "Sound" });
+  const sound = page.getByRole("button", { name: /sound/i });
+  await expect(sound).toBeVisible({ timeout: 15_000 });
   await expect.poll(async () => (await probe(page)).armed).toBe(false);
   await expect.poll(async () => (await probe(page)).live).toBe(false);
   await expect(sound).toHaveAttribute("aria-pressed", "false");
@@ -162,9 +165,10 @@ test("Sound starts with the soundtrack and the loop takes over past the hero", a
   });
 
   await page.goto("/");
-  const sound = page.getByRole("button", { name: "Sound" });
+  const sound = page.getByRole("button", { name: /sound/i });
   const video = page.locator("#hero video");
 
+  await expect(sound).toBeVisible({ timeout: 15_000 });
   await expect.poll(async () => (await probe(page)).armed || (await probe(page)).live).toBe(true);
   if (!(await probe(page)).live) {
     await page.mouse.click(48, 420);

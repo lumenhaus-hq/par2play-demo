@@ -12,10 +12,13 @@ let browser;
 try {
   browser = await chromium.launch({ channel: "chrome" });
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  // Prefer motion so prerendered markup matches client hydration (videos, Pause motion).
+  // HeroVideo already skips the bay intro under navigator.webdriver.
+  await page.emulateMedia({ reducedMotion: "no-preference" });
 
   for (const route of ROUTES) {
     await page.goto(new URL(route, baseUrl).href, { waitUntil: "networkidle" });
-    await page.locator("h1").first().waitFor();
+    await page.locator("h1").first().waitFor({ state: "visible", timeout: 30_000 });
     await page.evaluate(() => {
       document.documentElement.classList.remove("media-on", "ticker-on");
     });

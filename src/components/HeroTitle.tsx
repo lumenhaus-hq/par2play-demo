@@ -40,6 +40,16 @@ function Scribble() {
   );
 }
 
+function MaskLine({ children, delay = 0, className = "" }: { children: string; delay?: number; className?: string }) {
+  return (
+    <span className={`hero-mask inline-block overflow-hidden align-bottom ${className}`}>
+      <span className="word-in inline-block" style={{ animationDelay: `${delay}ms` }}>
+        {children}
+      </span>
+    </span>
+  );
+}
+
 /** Default title. Concepts A–D are review options and do not replace this. */
 export function HeroTitle({ concept }: { concept: HeroConcept }) {
   if (concept === "a") return <ConceptA />;
@@ -48,10 +58,13 @@ export function HeroTitle({ concept }: { concept: HeroConcept }) {
   if (concept === "d") return <ConceptD />;
   return (
     <p className="min-w-0 max-w-full font-display text-[1.35rem] font-semibold leading-[1.05] tracking-tight text-white @3xl:text-[2rem]">
-      {"A home for "}
-      <span className="font-accent text-[1.45em] leading-none">all golfers.</span>
-      {" "}
-      <span className="mt-2 block @3xl:mt-0 @3xl:inline">All year.</span>
+      <MaskLine>A home for </MaskLine>
+      <MaskLine delay={90} className="font-accent text-[1.45em] leading-none">
+        all golfers.
+      </MaskLine>{" "}
+      <MaskLine delay={180} className="mt-2 block @3xl:mt-0 @3xl:inline">
+        All year.
+      </MaskLine>
     </p>
   );
 }

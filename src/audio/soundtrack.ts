@@ -2,6 +2,7 @@ import { BG_LOOP } from "../data/media";
 
 const STORAGE_KEY = "par2play-sound";
 const FADE_SECONDS = 1;
+const GESTURES = ["pointerdown", "keydown", "touchstart", "scroll"] as const;
 
 type Snapshot = {
   enabled: boolean;
@@ -10,7 +11,8 @@ type Snapshot = {
 
 type Listener = () => void;
 
-let enabled = false;
+let suppressAuto = readStoredChoice() === "off";
+let enabled = !suppressAuto;
 let live = false;
 let heroInView = true;
 let video: HTMLVideoElement | null = null;
@@ -21,6 +23,7 @@ let buffer: AudioBuffer | null = null;
 let loading: Promise<void> | null = null;
 let videoFade = 0;
 let bootToken = 0;
+let attemptStarted = false;
 let armed = false;
 const listeners = new Set<Listener>();
 
@@ -40,6 +43,7 @@ function emit() {
 
 function remember(next: boolean) {
   enabled = next;
+  suppressAuto = !next;
   try {
     localStorage.setItem(STORAGE_KEY, next ? "on" : "off");
   } catch {
@@ -59,31 +63,67 @@ export function subscribeSound(listener: () => void) {
   };
 }
 
-function disarm() {
-  if (!armed) return;
-  armed = false;
-  emit();
+function isSoundControl(event: Event) {
+  const target = event.target;
+  if (!(target instanceof Node)) return false;
+  const element = target instanceof Element ? target : target.parentElement;
+  return Boolean(element?.closest("[data-sound-toggle]"));
 }
 
-function onVideoTap(event: Event) {
-  if (!event.isTrusted || live) return;
+function onGesture(event: Event) {
+  if (!event.isTrusted || isSoundControl(event)) return;
+  if (suppressAuto) {
+    disarm();
+    return;
+  }
+  if (live) {
+    disarm();
+    void ctx?.resume();
+    ensureLoop();
+    return;
+  }
   activateSound();
 }
 
+function armGesture() {
+  if (armed || suppressAuto) return;
+  armed = true;
+  for (const type of GESTURES) {
+    window.addEventListener(type, onGesture, true);
+  }
+  emit();
+}
+
+function disarm() {
+  if (!armed) return;
+  armed = false;
+  for (const type of GESTURES) {
+    window.removeEventListener(type, onGesture, true);
+  }
+  emit();
+}
+
 export function registerHeroVideo(element: HTMLVideoElement | null) {
-  if (video && video !== element) video.removeEventListener("click", onVideoTap);
   video = element;
   if (!element) {
     bootToken += 1;
+    if (!live) attemptStarted = false;
     return;
   }
-  element.muted = true;
-  element.volume = 0;
-  element.addEventListener("click", onVideoTap);
+  if (suppressAuto) {
+    element.muted = true;
+    void element.play().catch(() => undefined);
+    return;
+  }
   if (live) {
     element.muted = false;
     element.volume = heroInView ? 1 : 0;
+    void element.play().catch(() => undefined);
+    return;
   }
+  if (attemptStarted) return;
+  attemptStarted = true;
+  void attemptUnmuted(element);
 }
 
 export function setHeroInView(inView: boolean) {
@@ -232,9 +272,59 @@ function bindVisibility() {
   document.addEventListener("visibilitychange", onVisibility);
 }
 
-/** Reduced motion has no hero video. Sound stays off until a sound control is tapped. */
+function commitLive() {
+  live = true;
+  enabled = true;
+  ensureContext();
+  void ctx?.resume().then(() => {
+    if (!live || suppressAuto) return;
+    ensureLoop();
+    applyFade();
+    if (ctx?.state === "running") disarm();
+    else armGesture();
+  });
+  ensureLoop();
+  applyFade();
+  emit();
+}
+
+/**
+ * Try the hero unmuted. If that play() is rejected, fall back to muted
+ * playback and wait for the first real gesture.
+ */
+async function attemptUnmuted(element: HTMLVideoElement) {
+  const token = bootToken;
+  element.muted = false;
+  element.volume = 1;
+  try {
+    await element.play();
+  } catch {
+    if (token !== bootToken || video !== element || suppressAuto || live) return;
+    element.muted = true;
+    try {
+      await element.play();
+    } catch {
+      /* The element can disappear before muted playback starts. */
+    }
+    if (token !== bootToken || video !== element || suppressAuto || live) return;
+    armGesture();
+    emit();
+    return;
+  }
+  if (token !== bootToken || video !== element || suppressAuto) return;
+  commitLive();
+}
+
+/** Reduced motion has no hero video. Still try the background loop. */
 export function bootAmbient() {
-  return;
+  if (suppressAuto || live || video || attemptStarted) return;
+  attemptStarted = true;
+  ensureContext();
+  void ctx?.resume().then(() => {
+    if (suppressAuto || live) return;
+    if (ctx?.state === "running") commitLive();
+    else armGesture();
+  });
 }
 
 /**
@@ -243,6 +333,7 @@ export function bootAmbient() {
  */
 export function activateSound() {
   bootToken += 1;
+  suppressAuto = false;
   disarm();
   ensureContext();
   void ctx?.resume();
@@ -265,6 +356,7 @@ export function activateSound() {
 }
 
 export function silenceSound() {
+  suppressAuto = true;
   bootToken += 1;
   disarm();
   live = false;

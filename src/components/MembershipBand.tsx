@@ -3,20 +3,29 @@ import { BookLink, CtaPair, MembershipLink } from "./Cta";
 import { MembershipStepIcon, type MembershipStepId } from "./MembershipIcons";
 import { MEMBERSHIP_MONTAGE } from "../data/films";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
+import { useFlow } from "../state/flow";
 
-const benefits: readonly { id: MembershipStepId; word: string; line: string }[] = [
+const benefits: readonly {
+  id: MembershipStepId;
+  eyebrow: string;
+  word: string;
+  line: string;
+}[] = [
   {
     id: "availability",
+    eyebrow: "Availability",
     word: "Member benefits",
     line: "First in line for the times that suit you.",
   },
   {
     id: "progress",
+    eyebrow: "Progress",
     word: "Track your progress",
     line: "Carry, ball speed, and spin.",
   },
   {
     id: "day",
+    eyebrow: "Your day",
     word: "Fit it around your day",
     line: "Dentist visits and school pickup.",
   },
@@ -30,7 +39,6 @@ function MontageFilm({ paused, reduce }: { paused: boolean; reduce: boolean }) {
     const video = ref.current;
     const node = box.current;
     if (!video || !node || reduce) return;
-    // Hydration does not restore media element properties from prerendered HTML.
     video.muted = true;
     video.defaultMuted = true;
     if (paused) {
@@ -72,17 +80,17 @@ function MontageFilm({ paused, reduce }: { paused: boolean; reduce: boolean }) {
         className="absolute inset-0 h-full w-full object-cover object-center"
       />
       {reduce ? null : (
-    <video
-      ref={ref}
-      className="hero-video absolute inset-0 h-full w-full object-cover object-center"
-      muted
-      playsInline
-      loop
-      preload="none"
-    >
-      <source src={MEMBERSHIP_MONTAGE.srcMobile} type="video/mp4" media="(max-width: 767px)" />
-      <source src={MEMBERSHIP_MONTAGE.src} type="video/mp4" />
-    </video>
+        <video
+          ref={ref}
+          className="hero-video absolute inset-0 h-full w-full object-cover object-center"
+          muted
+          playsInline
+          loop
+          preload="none"
+        >
+          <source src={MEMBERSHIP_MONTAGE.srcMobile} type="video/mp4" media="(max-width: 767px)" />
+          <source src={MEMBERSHIP_MONTAGE.src} type="video/mp4" />
+        </video>
       )}
     </div>
   );
@@ -100,35 +108,64 @@ function FilmToggle({ paused, onToggle }: { paused: boolean; onToggle: () => voi
   );
 }
 
-function Benefits() {
+function ChapterList({ active, dimInactive }: { active: number; dimInactive: boolean }) {
   return (
-    <>
-      <CtaPair className="mt-6">
-        <MembershipLink className="w-full">Become a Member</MembershipLink>
-        <BookLink className="w-full" offer="bay" tone="line">
-          Try it out
-        </BookLink>
-      </CtaPair>
-      <ul className="mt-6 grid gap-4 @3xl:mt-8 @3xl:gap-5">
-        {benefits.map((benefit) => (
-          <li key={benefit.id} className="flex gap-3">
+    <ul className="mt-6 grid gap-4 @3xl:gap-5">
+      {benefits.map((benefit, index) => {
+        const on = index === active;
+        return (
+          <li
+            key={benefit.id}
+            data-chapter={index}
+            className={`flex gap-3 ${dimInactive ? (on ? "opacity-100" : "opacity-30") : "opacity-100"}`}
+            aria-current={dimInactive && on ? "true" : undefined}
+          >
             <MembershipStepIcon id={benefit.id} />
             <div>
-              <h3 className="font-display text-xl font-semibold leading-tight tracking-tight text-[#7DFFB0]">{benefit.word}</h3>
+              <p className="font-mono text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[#7DFFB0]">
+                {`${String(index + 1).padStart(2, "0")} / ${String(benefits.length).padStart(2, "0")}`}
+              </p>
+              <p className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-white/70">{benefit.eyebrow}</p>
+              <h3 className="mt-1 font-display text-xl font-semibold leading-tight tracking-tight text-[#7DFFB0]">{benefit.word}</h3>
               <p className="mt-1 text-base leading-relaxed text-white">{benefit.line}</p>
             </div>
           </li>
-        ))}
-      </ul>
-    </>
+        );
+      })}
+    </ul>
   );
 }
 
 export function MembershipBand() {
   const reduce = usePrefersReducedMotion();
+  const mobile = useFlow().layout === "mobile";
   const [paused, setPaused] = useState(false);
+  const [chapter, setChapter] = useState(0);
+  const listRef = useRef<HTMLDivElement>(null);
   const toggle = () => setPaused((value) => !value);
   const showControl = !reduce;
+  const dimInactive = !mobile && !reduce;
+
+  useEffect(() => {
+    if (!dimInactive) return;
+    const root = listRef.current;
+    if (!root) return;
+    const items = [...root.querySelectorAll<HTMLElement>("[data-chapter]")];
+    if (items.length === 0) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const best = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (!best) return;
+        const index = Number((best.target as HTMLElement).dataset.chapter);
+        if (Number.isFinite(index)) setChapter(index);
+      },
+      { root: null, rootMargin: "-40% 0px -40% 0px", threshold: [0.2, 0.6, 1] },
+    );
+    for (const item of items) observer.observe(item);
+    return () => observer.disconnect();
+  }, [dimInactive]);
 
   return (
     <section id="membership" className="@container scroll-mt-32 bg-[#020806] text-white">
@@ -142,9 +179,15 @@ export function MembershipBand() {
           aria-hidden="true"
         />
         <div className="pointer-events-none relative z-20 px-6 pt-6 pb-10 @3xl:flex @3xl:min-h-[36rem] @3xl:items-center @3xl:px-12 @3xl:py-16">
-          <div className="pointer-events-auto max-w-lg">
+          <div ref={listRef} className="pointer-events-auto max-w-lg">
             <h2 className="font-display text-4xl font-semibold leading-none tracking-tight @5xl:text-6xl">Membership</h2>
-            <Benefits />
+            <CtaPair className="mt-6">
+              <MembershipLink className="w-full">Become a Member</MembershipLink>
+              <BookLink className="w-full" offer="bay" tone="line">
+                Try it out
+              </BookLink>
+            </CtaPair>
+            <ChapterList active={chapter} dimInactive={dimInactive} />
           </div>
         </div>
       </div>

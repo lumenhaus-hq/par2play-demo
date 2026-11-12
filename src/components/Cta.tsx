@@ -8,14 +8,14 @@ export const buttonFocus = "aa-focus";
 /** White inner ring for a near-black fill sitting on a light page. */
 export const buttonFocusOnInk = "aa-focus-ink";
 
-const base = `inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-5 text-center text-base font-semibold ${buttonFocus}`;
+const shell = `cta-shell inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-5 text-center text-base font-semibold`;
 
 const tones = {
-  brand: `${base} bg-[#14D45E] text-[#0A0F0B] hover:bg-[#3dff7c] hover:text-[#0A0F0B] active:bg-[#0fb852] active:text-[#0A0F0B] visited:bg-[#14D45E] visited:text-[#0A0F0B]`,
-  line: `${base} border-2 border-[#0A0F0B] bg-white text-[#0A0F0B] hover:bg-[#f3f6f1] hover:text-[#0A0F0B] active:bg-[#e6eee8] visited:bg-white visited:text-[#0A0F0B]`,
-  dark: `${base} border-2 border-[#4b5563] bg-white text-[#0A0F0B] hover:bg-[#f3f6f1] hover:text-[#0A0F0B] active:bg-[#e6eee8] visited:bg-white visited:text-[#0A0F0B]`,
-  inverted: `${base} border-0 bg-white text-[#0A0F0B] hover:bg-[#f3f6f1] hover:text-[#0A0F0B] active:bg-[#e6eee8] visited:bg-white visited:text-[#0A0F0B]`,
-  solid: `${base.replace(buttonFocus, buttonFocusOnInk)} bg-[#0A0F0B] text-white hover:bg-[#1c2822] hover:text-white active:bg-[#000000] active:text-white visited:bg-[#0A0F0B] visited:text-white`,
+  brand: `${shell} cta-brand ${buttonFocus}`,
+  line: `${shell} cta-line ${buttonFocus}`,
+  dark: `${shell} cta-line cta-line-muted ${buttonFocus}`,
+  inverted: `${shell} cta-inverted ${buttonFocus}`,
+  solid: `${shell} cta-solid ${buttonFocusOnInk}`,
   text: `inline-flex min-h-11 items-center text-base font-semibold text-[#0A0F0B] underline decoration-2 underline-offset-4 visited:text-[#0A0F0B] ${buttonFocus}`,
 } as const;
 
@@ -24,6 +24,15 @@ type Tone = keyof typeof tones;
 function externalProps(href: string) {
   if (!href.startsWith("http")) return {};
   return { target: "_blank", rel: "noopener noreferrer" } as const;
+}
+
+function CtaLabel({ children }: { children: ReactNode }) {
+  if (typeof children !== "string") return <>{children}</>;
+  return (
+    <span className="cta-label">
+      <span className="cta-label-text">{children}</span>
+    </span>
+  );
 }
 
 /** Equal-width pair. Stacked full width in a narrow container, side by side once the container is wide. */
@@ -55,7 +64,8 @@ export function BookLink({
       data-offer={offer}
       onClick={(event) => trackAnchor(event.currentTarget)}
     >
-      {children}
+      <span className="cta-fill" aria-hidden="true" />
+      <CtaLabel>{children}</CtaLabel>
     </a>
   );
 }
@@ -83,7 +93,8 @@ export function MembershipLink({
       data-membership="true"
       onClick={(event) => trackAnchor(event.currentTarget, tier ? { membership_tier: tier as "silver" | "gold" | "platinum" } : {})}
     >
-      {children}
+      <span className="cta-fill" aria-hidden="true" />
+      <CtaLabel>{children}</CtaLabel>
     </a>
   );
 }
@@ -100,5 +111,39 @@ export function PhoneLink({ className, children }: { className: string; children
  * Home hero. Opens the on-site membership page so the visit sells Silver, Gold, and Platinum.
  */
 export function HeroMembershipAction({ className = "" }: { className?: string }) {
-  return <MembershipLink tone="inverted" className={className}>Become a Member</MembershipLink>;
+  return (
+    <MembershipLink tone="inverted" className={className}>
+      Become a Member
+    </MembershipLink>
+  );
+}
+
+/** Pill CTA for routes that are not BookLink / MembershipLink. */
+export function CtaAnchor({
+  href,
+  children,
+  tone = "brand",
+  className = "",
+  offer,
+  external = false,
+}: {
+  href: string;
+  children: ReactNode;
+  tone?: Exclude<Tone, "text">;
+  className?: string;
+  offer?: string;
+  external?: boolean;
+}) {
+  return (
+    <a
+      href={href}
+      className={`${tones[tone]} ${className}`}
+      {...(external ? externalProps(href) : {})}
+      data-offer={offer}
+      onClick={(event) => trackAnchor(event.currentTarget)}
+    >
+      <span className="cta-fill" aria-hidden="true" />
+      <CtaLabel>{children}</CtaLabel>
+    </a>
+  );
 }
