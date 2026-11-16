@@ -1,4 +1,4 @@
-import { expect, test } from "./fixtures";
+import { expect, setDemoLayout, test } from "./fixtures";
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem("p2p_consent", JSON.stringify({ v: 1, analytics: false, marketing: false, ts: Date.now() })));
@@ -9,7 +9,7 @@ for (const width of [360, 1280]) {
     await page.setViewportSize({ width, height: 900 });
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("membership/");
-    if (width === 1280) await page.getByRole("button", { name: "Desktop", exact: true }).click();
+    if (width === 1280) await setDemoLayout(page, "web");
     const panel = page.locator("#why-membership");
     await expect(panel.getByRole("button", { name: "Unlimited Practice", exact: true })).toHaveAttribute("aria-pressed", "true");
     await expect(panel.locator('[aria-live="polite"] p').last()).toContainText("$200");
@@ -36,7 +36,7 @@ test("mobile homepage benefits sit below the film on a solid dark background", a
   // The demo's narrow preview must also work in a wide desktop browser.
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("./");
-  await page.getByRole("button", { name: "Mobile", exact: true }).click();
+  await setDemoLayout(page, "mobile");
   const band = page.locator("#membership");
   await band.getByRole("heading", { name: "Track your progress" }).scrollIntoViewIfNeeded();
   const metrics = await band.evaluate((node) => {
