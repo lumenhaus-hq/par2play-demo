@@ -10,7 +10,7 @@ function deferCss() {
     transformIndexHtml: {
       order: "post" as const,
       handler(html: string) {
-        const critical = `<style>body{margin:0}#lcp-poster{position:absolute;top:0;left:0;width:100%;height:100svh;object-fit:cover;z-index:0}h1{font-size:2rem;line-height:1.05;font-weight:600}</style>`;
+        const critical = `<style>body{margin:0}#lcp-poster{position:absolute;top:0;left:0;width:100%;height:100svh;object-fit:cover;z-index:0;pointer-events:none}#root{position:relative;z-index:1}h1{font-size:2rem;line-height:1.05;font-weight:600}</style>`;
         const withCritical = html.includes("#lcp-poster{") ? html : html.replace("</head>", `${critical}</head>`);
         return withCritical.replace(
           /<link rel="stylesheet" crossorigin href="([^"]+)">/g,

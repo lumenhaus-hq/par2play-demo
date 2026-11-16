@@ -1,4 +1,3 @@
-import { Button } from "@heroui/react";
 import { currentRoute } from "./data/routes";
 import { CookieNotice } from "./components/CookieNotice";
 import { SmoothScroll } from "./components/SmoothScroll";
@@ -93,14 +92,6 @@ function Shell() {
   const flow = useFlow();
   return (
     <div className="min-h-screen bg-slate-100">
-      <div className="sticky top-0 z-40 flex items-center justify-center gap-2 bg-white px-4 py-3">
-        <Button className="min-h-11 px-5 text-base font-semibold" variant={flow.layout === "mobile" ? "primary" : "outline"} onPress={() => flow.setLayout("mobile")}>
-          Mobile
-        </Button>
-        <Button className="min-h-11 px-5 text-base font-semibold" variant={flow.layout === "web" ? "primary" : "outline"} onPress={() => flow.setLayout("web")}>
-          Desktop
-        </Button>
-      </div>
       {flow.layout === "mobile" ? (
         <div className="flex justify-center px-4 py-6">
           <div
