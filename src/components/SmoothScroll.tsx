@@ -13,7 +13,12 @@ export function SmoothScroll() {
   const layout = useFlow().layout;
 
   useEffect(() => {
-    if (reduce) {
+    // Prefer the live media query so hydration's reduce=false snapshot cannot
+    // leave Lenis running when the OS (or Playwright) asks for reduce.
+    const osReduce =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce || osReduce) {
       unbindSmoothScroll();
       return;
     }

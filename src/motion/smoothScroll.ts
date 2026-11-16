@@ -34,6 +34,8 @@ function destroy() {
   lenis?.destroy();
   lenis = null;
   rafBound = false;
+  // Lenis should clear these; force-remove so reduced-motion never leaves a sticky class.
+  document.documentElement.classList.remove("lenis", "lenis-smooth", "lenis-scrolling", "lenis-stopped");
 }
 
 /** Active Lenis instance, if smooth scroll is live. */

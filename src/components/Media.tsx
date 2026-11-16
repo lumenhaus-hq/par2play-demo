@@ -9,8 +9,35 @@ export type HeroIntroPhase = "boot" | "zoom" | "expand" | "arrived";
 /** Start arrived so prerender (webdriver) HTML matches first client paint. */
 const INITIAL_INTRO: HeroIntroPhase = "arrived";
 
-/** Zoom-out duration; keep in sync with `--motion-expand` in index.css. */
-const EXPAND_MS = 1400;
+/** Mobile is the primary device: shorter waits, quicker wipe / expand. */
+type IntroTiming = {
+  expandMs: number;
+  zoomHoldMs: number;
+  wipeMs: number;
+  readyBufferS: number;
+  stallMs: number;
+};
+
+function introTiming(): IntroTiming {
+  const mobile = window.matchMedia("(max-width: 767px)").matches;
+  const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+  const slow =
+    Boolean(connection?.saveData) ||
+    connection?.effectiveType === "slow-2g" ||
+    connection?.effectiveType === "2g" ||
+    connection?.effectiveType === "3g";
+  if (mobile || slow) {
+    // Still shorter than desktop, but long enough to read the mark + %.
+    return { expandMs: 1100, zoomHoldMs: 320, wipeMs: 560, readyBufferS: 1.15, stallMs: 3200 };
+  }
+  return { expandMs: 1400, zoomHoldMs: 420, wipeMs: 720, readyBufferS: 2.4, stallMs: 4500 };
+}
+
+function applyIntroMotionVars(timing: IntroTiming) {
+  const root = document.documentElement.style;
+  root.setProperty("--motion-expand", `${timing.expandMs}ms`);
+  root.setProperty("--motion-wipe", `${timing.wipeMs}ms`);
+}
 
 export function Photo({
   photo,
@@ -68,6 +95,56 @@ function hideLcpPoster() {
   if (poster) poster.setAttribute("data-bay", "1");
 }
 
+function frameClassFor(phase: HeroIntroPhase): string {
+  switch (phase) {
+    case "arrived":
+      return "hero-bay-frame hero-bay-frame--full hero-bay-frame--breathe";
+    case "expand":
+      return "hero-bay-frame hero-bay-frame--expand";
+    case "zoom":
+    case "boot":
+      return "hero-bay-frame hero-bay-frame--zoom";
+    default: {
+      const _exhaustive: never = phase;
+      return _exhaustive;
+    }
+  }
+}
+
+function bufferProgress(video: HTMLVideoElement, readyBufferS: number): number {
+  if (video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA && Number.isFinite(video.duration) && video.duration > 0) {
+    const end = video.buffered.length > 0 ? video.buffered.end(video.buffered.length - 1) : 0;
+    return Math.min(1, end / Math.min(video.duration, readyBufferS * 4));
+  }
+  if (video.buffered.length > 0) {
+    const end = video.buffered.end(video.buffered.length - 1);
+    return Math.min(1, end / readyBufferS);
+  }
+  return video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA ? 0.55 : 0.08;
+}
+
+function HeroFilmLoader({ progress, wiping }: { progress: number; wiping: boolean }) {
+  const pct = Math.max(0, Math.min(100, Math.round(progress * 100)));
+  return (
+    <div
+      className={`hero-film-loader ${wiping ? "hero-film-loader--wipe" : ""}`}
+      aria-hidden="true"
+    >
+      <div className="hero-film-loader__mark">
+        <img
+          src={`${import.meta.env.BASE_URL}brand/logo.png`}
+          alt=""
+          className="h-14 w-auto @3xl:h-16"
+          decoding="async"
+        />
+        <p className="hero-film-loader__pct font-display text-sm font-semibold tracking-[0.18em] text-white/85">
+          {`${pct}%`}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => void } = {}) {
   const reduce = usePrefersReducedMotion();
   const ref = useRef<HTMLVideoElement>(null);
@@ -75,17 +152,23 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
   const fitReady = useRef(false);
   const [fit, setFit] = useState<EndCardFit | null>(null);
   const [phase, setPhase] = useState<HeroIntroPhase>(INITIAL_INTRO);
+  const [loadProgress, setLoadProgress] = useState(0);
+  const [wiping, setWiping] = useState(false);
 
   useEffect(() => {
     onPhase?.(phase);
   }, [phase, onPhase]);
 
   useEffect(() => {
-    const skipIntro = reduce || navigator.webdriver;
+    // `?intro=play` forces the cinematic boot for visual QA even under webdriver.
+    const forceIntro = new URLSearchParams(window.location.search).get("intro") === "play";
+    const skipIntro = (reduce || navigator.webdriver) && !forceIntro;
 
     if (skipIntro) {
       fitReady.current = true;
       setPhase("arrived");
+      setWiping(false);
+      setLoadProgress(1);
       hideLcpPoster();
       document.documentElement.classList.remove("hero-bay");
       if (reduce) {
@@ -99,18 +182,26 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
       fitReady.current = false;
       document.documentElement.classList.add("hero-bay");
       hideLcpPoster();
-      setPhase("zoom");
+      setPhase("boot");
+      setWiping(false);
+      setLoadProgress(0.04);
     } else {
       hideLcpPoster();
     }
 
     const video = ref.current;
     if (!video) return;
-    registerHeroVideo(video);
+    if (skipIntro) registerHeroVideo(video);
+    const timing = introTiming();
+    const mobilePrimary = window.matchMedia("(max-width: 767px)").matches;
+    applyIntroMotionVars(timing);
     const frame = bayRef.current;
     let cancel = false;
     let expandTimer = 0;
     let arriveTimer = 0;
+    let wipeTimer = 0;
+    let zoomTimer = 0;
+    let primed = false;
 
     const syncFit = () => {
       if (!fitReady.current) return;
@@ -137,10 +228,11 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
       video.addEventListener("seeked", syncFit);
     };
 
-    const startFilm = () => {
+    const startExpand = () => {
       if (cancel) return;
       document.documentElement.classList.add("media-on");
-      // registerHeroVideo already starts playback (unmuted attempt → muted fallback).
+      // Sound / unmute attempt starts as the bay expands into full bleed.
+      registerHeroVideo(video);
       if (skipIntro) {
         armFit();
         return;
@@ -149,17 +241,61 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
       expandTimer = window.setTimeout(() => {
         if (cancel) return;
         armFit();
-      }, EXPAND_MS);
+      }, timing.expandMs);
     };
 
-    const idle = () => {
+    const leaveBoot = () => {
+      if (cancel || primed) return;
+      primed = true;
+      setLoadProgress(1);
+      setWiping(true);
+      wipeTimer = window.setTimeout(() => {
+        if (cancel) return;
+        setPhase("zoom");
+        setWiping(false);
+        zoomTimer = window.setTimeout(() => {
+          if (cancel) return;
+          startExpand();
+        }, timing.zoomHoldMs);
+      }, timing.wipeMs);
+    };
+
+    const readProgress = () => {
+      if (cancel || primed || skipIntro) return;
+      const next = bufferProgress(video, timing.readyBufferS);
+      setLoadProgress((current) => Math.max(current, next));
+      const buffered =
+        video.buffered.length > 0 && video.buffered.end(video.buffered.length - 1) >= timing.readyBufferS;
+      // Phones leave on first playable frame; desktop waits for a short future buffer.
+      const readyStateFloor = mobilePrimary
+        ? HTMLMediaElement.HAVE_CURRENT_DATA
+        : HTMLMediaElement.HAVE_FUTURE_DATA;
+      if (buffered || video.readyState >= readyStateFloor) leaveBoot();
+    };
+
+    const idleSkip = () => {
       const schedule = window.requestIdleCallback?.bind(window);
-      if (schedule) schedule(startFilm, { timeout: 1500 });
-      else arriveTimer = window.setTimeout(startFilm, skipIntro ? 1 : 500);
+      if (schedule) schedule(startExpand, { timeout: 1500 });
+      else arriveTimer = window.setTimeout(startExpand, 1);
     };
 
-    if (document.readyState === "complete") idle();
-    else window.addEventListener("load", idle, { once: true });
+    if (skipIntro) {
+      if (document.readyState === "complete") idleSkip();
+      else window.addEventListener("load", idleSkip, { once: true });
+    } else {
+      video.muted = true;
+      video.preload = "auto";
+      // Quiet muted play primes the buffer while the branded loader counts up.
+      void video.play().catch(() => undefined);
+      video.addEventListener("progress", readProgress);
+      video.addEventListener("loadeddata", readProgress);
+      video.addEventListener("canplay", readProgress);
+      video.addEventListener("canplaythrough", leaveBoot);
+      // Safety: never trap visitors on the loader if buffering stalls.
+      arriveTimer = window.setTimeout(leaveBoot, timing.stallMs);
+      readProgress();
+    }
+
     document.addEventListener("visibilitychange", onVis);
     const observer = new ResizeObserver(syncFit);
     if (frame) observer.observe(frame);
@@ -168,8 +304,14 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
       cancel = true;
       window.clearTimeout(expandTimer);
       window.clearTimeout(arriveTimer);
+      window.clearTimeout(wipeTimer);
+      window.clearTimeout(zoomTimer);
       document.removeEventListener("visibilitychange", onVis);
-      window.removeEventListener("load", idle);
+      window.removeEventListener("load", idleSkip);
+      video.removeEventListener("progress", readProgress);
+      video.removeEventListener("loadeddata", readProgress);
+      video.removeEventListener("canplay", readProgress);
+      video.removeEventListener("canplaythrough", leaveBoot);
       video.removeEventListener("timeupdate", syncFit);
       video.removeEventListener("seeked", syncFit);
       observer.disconnect();
@@ -193,16 +335,11 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
     );
   }
 
-  const frameClass =
-    phase === "arrived"
-      ? "hero-bay-frame hero-bay-frame--full"
-      : phase === "expand"
-        ? "hero-bay-frame hero-bay-frame--expand"
-        : "hero-bay-frame hero-bay-frame--zoom";
+  const showLoader = phase === "boot" || wiping;
 
   return (
     <div ref={bayRef} className={`absolute inset-0 overflow-hidden ${phase === "arrived" ? "" : "bg-[#0A0F0B]"}`}>
-      <div className={frameClass}>
+      <div className={frameClassFor(phase)}>
         <picture className="absolute inset-0 block h-full w-full">
           <source media="(max-width: 767px)" srcSet={HERO_MEDIA.posterMobileAvif} type="image/avif" />
           <source media="(max-width: 767px)" srcSet={HERO_MEDIA.posterMobileWebp} type="image/webp" />
@@ -240,7 +377,7 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
           }
           loop
           playsInline
-          preload="none"
+          preload={phase === "arrived" ? "none" : "auto"}
           muted
           aria-hidden="true"
         >
@@ -249,6 +386,7 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
           <source src={HERO_MEDIA.mp4} type="video/mp4" />
         </video>
       </div>
+      {showLoader ? <HeroFilmLoader progress={loadProgress} wiping={wiping} /> : null}
     </div>
   );
 }
