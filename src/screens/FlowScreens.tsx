@@ -371,7 +371,7 @@ export function PlanStep() {
               onClick={() => flow.setPlan(item.id)}
               className={`rounded-3xl border p-5 text-left ${selected === item.id ? "border-emerald-600" : "border-slate-200"}`}
             >
-              <span className="text-base font-semibold text-[#0A0F0B]">{item.name}</span>
+              <span className="text-base font-semibold text-ink">{item.name}</span>
               {item.id === recommendedPlan(flow.answers) && (
                 <Chip className="ml-2" color="accent" variant="soft">
                   <Chip.Label>Match</Chip.Label>

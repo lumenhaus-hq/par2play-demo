@@ -9,7 +9,7 @@ export function FaqSection() {
       <h2 id="faq-heading" className="font-display text-3xl font-semibold tracking-tight @3xl:text-4xl">
         Questions about Par2Play
       </h2>
-      <div className="mt-6 max-w-3xl divide-y divide-[#0A0F0B]/15 border-y border-[#0A0F0B]/15">
+      <div className="mt-6 max-w-3xl divide-y divide-[#0A0F0B]/15 border-y border-ink/15">
         {FAQS.map((item, index) => {
           const shown = open === index;
           return (

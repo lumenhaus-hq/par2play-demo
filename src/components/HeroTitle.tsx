@@ -6,12 +6,12 @@ export function heroConcept(): HeroConcept {
   return "current";
 }
 
-const green = "text-[#14D45E]";
+const green = "text-accent";
 
 function Swoosh() {
   return (
     <svg viewBox="0 0 140 18" className="pointer-events-none absolute -bottom-1 left-0 h-3 w-full" aria-hidden="true">
-      <path className="draw-stroke" pathLength="1" d="M2 12 C 28 4, 70 16, 138 6" fill="none" stroke="#14D45E" strokeWidth="3" strokeLinecap="round" />
+      <path className="draw-stroke" pathLength="1" d="M2 12 C 28 4, 70 16, 138 6" fill="none" stroke="var(--accent)" strokeWidth="3" strokeLinecap="round" />
     </svg>
   );
 }
@@ -19,7 +19,7 @@ function Swoosh() {
 function Marker() {
   return (
     <svg viewBox="0 0 160 36" className="pointer-events-none absolute -inset-x-1 bottom-0 h-[0.7em] w-[110%]" aria-hidden="true">
-      <path d="M4 20 C 36 8, 78 28, 120 14 C 136 10, 148 16, 156 18" fill="none" stroke="#7DFFB0" strokeWidth="16" strokeLinecap="round" opacity="0.9" />
+      <path d="M4 20 C 36 8, 78 28, 120 14 C 136 10, 148 16, 156 18" fill="none" stroke="var(--mint)" strokeWidth="16" strokeLinecap="round" opacity="0.9" />
     </svg>
   );
 }
@@ -32,7 +32,7 @@ function Scribble() {
         pathLength="1"
         d="M18 34 C 14 14, 48 8, 78 16 C 108 24, 112 48, 78 54 C 40 62, 8 48, 20 28"
         fill="none"
-        stroke="#14D45E"
+        stroke="var(--accent)"
         strokeWidth="2.5"
         strokeLinecap="round"
       />
@@ -60,7 +60,7 @@ export function HeroTitle({ concept }: { concept: HeroConcept }) {
     <p className="min-w-0 max-w-full font-display text-[1.45rem] font-semibold leading-[1.12] tracking-tight text-white @3xl:text-[2rem]">
       {/* One phrase keeps the space; only the accent line staggers in. */}
       <MaskLine>A home for </MaskLine>
-      <MaskLine delay={140} className="hero-accent font-accent text-[1.4em] leading-none text-[#14D45E]">
+      <MaskLine delay={140} className="hero-accent font-accent text-[1.4em] leading-none text-accent">
         all golfers.
       </MaskLine>
     </p>

@@ -109,7 +109,7 @@ export function EnquiryForm() {
   }
 
   const fieldClass =
-    "aa-focus mt-2 w-full border-2 border-[#4b5563] bg-white px-3 py-3 text-base text-[#0A0F0B] outline-none placeholder:text-[#4b5563] focus-visible:border-[#0A0F0B]";
+    "aa-focus mt-2 w-full border-2 border-[#4b5563] bg-white px-3 py-3 text-base text-ink outline-none placeholder:text-[#4b5563] focus-visible:border-ink";
 
   return (
     <form className="grid max-w-md gap-4" onSubmit={onSubmit} noValidate>
@@ -213,7 +213,7 @@ export function EnquiryForm() {
       <button
         type="submit"
         disabled={status === "sending"}
-        className={`mt-2 inline-flex min-h-11 w-fit items-center rounded-full bg-[#14D45E] px-5 text-base font-semibold text-[#0A0F0B] hover:bg-[#3dff7c] active:bg-[#0fb852] disabled:bg-[#c8f5d8] disabled:text-[#0A0F0B] ${buttonFocus}`}
+        className={`mt-2 inline-flex min-h-11 w-fit items-center rounded-full bg-accent px-5 text-base font-semibold text-accent-foreground hover:bg-accent-hot active:bg-accent disabled:bg-mint/40 disabled:text-ink ${buttonFocus}`}
       >
         {status === "sending" ? "Sending" : "Send"}
       </button>

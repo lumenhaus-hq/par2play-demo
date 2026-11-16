@@ -32,7 +32,7 @@ export function EventGallery() {
 
 export function EventHero() {
   return (
-    <header className="bg-[#020806] text-white">
+    <header className="bg-void text-white">
       <div className="relative aspect-video w-full overflow-hidden">
         <VideoSlot
           src={EVENTS_HERO_FILM.src}
@@ -42,7 +42,7 @@ export function EventHero() {
           pausable
         />
         <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#020806] to-transparent"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-void to-transparent"
           aria-hidden="true"
         />
       </div>

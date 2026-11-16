@@ -23,7 +23,7 @@ export function Clubhouse() {
   const [seat, setSeat] = useState<{ name: string } | null>(null);
   const [error, setError] = useState("");
   const lightNav = `inline-flex min-h-11 items-center text-base font-semibold text-white ${buttonFocus}`;
-  const here = `inline-flex min-h-11 items-center text-base font-semibold text-[#14D45E] ${buttonFocus}`;
+  const here = `inline-flex min-h-11 items-center text-base font-semibold text-accent ${buttonFocus}`;
   const rows = BOARD.filter((row) => role === "All" || row.role === role);
 
   function claim(event: FormEvent<HTMLFormElement>) {
@@ -46,7 +46,7 @@ export function Clubhouse() {
         <img src={IMAGES.clubhouse} alt="A group of players and coaches posing in front of a Par2Play simulator" className="absolute inset-0 h-full w-full object-cover object-center" />
         <div className="absolute inset-0 bg-black/40" />
         <div className="absolute inset-x-0 bottom-0 h-96 bg-gradient-to-t from-black/90 via-black/45 to-transparent" />
-        <div className="relative z-10 flex items-center justify-between bg-[#0A0F0B] px-5 py-4 lg:px-12">
+        <div className="relative z-10 flex items-center justify-between bg-ink px-5 py-4 lg:px-12">
           <Button variant="ghost" className="h-auto min-w-0 bg-transparent px-0" onPress={flow.goHome}>
             <Mark light />
           </Button>
@@ -69,7 +69,7 @@ export function Clubhouse() {
           )}
         </div>
         {menu && flow.layout === "mobile" && (
-          <nav className="relative z-10 flex flex-col items-start gap-1 bg-[#0A0F0B] px-5 py-3 text-base font-semibold text-white">
+          <nav className="relative z-10 flex flex-col items-start gap-1 bg-ink px-5 py-3 text-base font-semibold text-white">
             <button className={lightNav} type="button" onClick={() => { setMenu(false); flow.goHome(); }}>Home</button>
             <button className={here} type="button" aria-current="page">Leagues</button>
             <button className={lightNav} type="button" onClick={() => { setMenu(false); flow.goSection("practice"); }}>Practice</button>
@@ -89,7 +89,7 @@ export function Clubhouse() {
           <CtaPair className="mt-6">
             <a
               href="#seat"
-              className={`inline-flex min-h-11 w-full items-center justify-center rounded-full bg-white px-5 text-base font-semibold text-[#0A0F0B] ${buttonFocus}`}
+              className={`inline-flex min-h-11 w-full items-center justify-center rounded-full bg-white px-5 text-base font-semibold text-ink ${buttonFocus}`}
             >
               Claim a seat
             </a>
@@ -148,7 +148,7 @@ export function Clubhouse() {
                 key={item}
                 type="button"
                 aria-pressed={role === item}
-                className={`inline-flex min-h-11 items-center rounded-full border-2 px-5 text-base font-semibold ${role === item ? `border-[#0A0F0B] bg-[#0A0F0B] text-white ${buttonFocusOnInk}` : `border-[#4b5563] bg-white text-[#0A0F0B] ${buttonFocus}`}`}
+                className={`inline-flex min-h-11 items-center rounded-full border-2 px-5 text-base font-semibold ${role === item ? `border-ink bg-ink text-white ${buttonFocusOnInk}` : `border-[#4b5563] bg-white text-ink ${buttonFocus}`}`}
                 onClick={() => setRole(item)}
               >
                 {item}

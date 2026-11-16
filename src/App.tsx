@@ -1,7 +1,10 @@
 import { Button } from "@heroui/react";
+import { useEffect, useState } from "react";
 import { currentRoute } from "./data/routes";
+import type { StyleId } from "./data/styles";
 import { CookieNotice } from "./components/CookieNotice";
 import { SmoothScroll } from "./components/SmoothScroll";
+import { StyleSwitcher } from "./components/StyleSwitcher";
 import { Landing } from "./screens/Landing";
 import { PrivacyPage } from "./screens/PrivacyPage";
 import { CoachingPage, EventsPage, JuniorsPage, MembershipPage, NotFoundPage, TournamentPage } from "./screens/SitePages";
@@ -23,6 +26,7 @@ import {
   TimeStep,
 } from "./screens/FlowScreens";
 import { FlowProvider, useFlow } from "./state/flow";
+import { applyStyle, resolveInitialStyle } from "./style/applyStyle";
 
 function StepView() {
   const { step } = useFlow();
@@ -91,22 +95,39 @@ function Routed() {
 
 function Shell() {
   const flow = useFlow();
+  // Prerender always bakes Fairway; sync from ?style= / storage after mount.
+  const [style, setStyle] = useState<StyleId>("fairway");
+
+  useEffect(() => {
+    const initial = resolveInitialStyle();
+    setStyle(initial);
+    applyStyle(initial);
+  }, []);
+
+  useEffect(() => {
+    applyStyle(style);
+  }, [style]);
+
   return (
     <div className="min-h-screen bg-slate-100">
-      <div className="sticky top-0 z-40 flex items-center justify-center gap-2 bg-white px-4 py-3">
-        <Button className="min-h-11 px-5 text-base font-semibold" variant={flow.layout === "mobile" ? "primary" : "outline"} onPress={() => flow.setLayout("mobile")}>
-          Mobile
-        </Button>
-        <Button className="min-h-11 px-5 text-base font-semibold" variant={flow.layout === "web" ? "primary" : "outline"} onPress={() => flow.setLayout("web")}>
-          Desktop
-        </Button>
+      <div className="sticky top-0 z-40 flex flex-col items-center gap-3 bg-white px-4 py-3">
+        <div className="flex items-center justify-center gap-2">
+          <Button className="min-h-11 px-5 text-base font-semibold" variant={flow.layout === "mobile" ? "primary" : "outline"} onPress={() => flow.setLayout("mobile")}>
+            Mobile
+          </Button>
+          <Button className="min-h-11 px-5 text-base font-semibold" variant={flow.layout === "web" ? "primary" : "outline"} onPress={() => flow.setLayout("web")}>
+            Desktop
+          </Button>
+        </div>
+        <StyleSwitcher value={style} onChange={setStyle} />
       </div>
       {flow.layout === "mobile" ? (
         <div className="flex justify-center px-4 py-6">
           <div
-            className="phone-frame relative overflow-hidden rounded-[36px] border-8 border-slate-950 bg-white shadow-2xl"
+            className="phone-frame relative overflow-hidden rounded-[36px] border-8 border-slate-950 bg-surface shadow-2xl"
             data-testid="layout"
             data-layout="mobile"
+            data-style={style}
           >
             <div className="h-full">
               <Routed />
@@ -114,7 +135,7 @@ function Shell() {
           </div>
         </div>
       ) : (
-        <div className="bg-white" data-testid="layout" data-layout="web">
+        <div className="bg-surface" data-testid="layout" data-layout="web" data-style={style}>
           <Routed />
         </div>
       )}

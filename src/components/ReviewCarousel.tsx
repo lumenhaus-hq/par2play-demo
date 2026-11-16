@@ -25,7 +25,7 @@ function Stars() {
           <span key={star} className="relative inline-block h-4 w-4">
             <Star className="text-white/30" />
             <span className="absolute inset-y-0 left-0 overflow-hidden" style={{ width: `${amount * 100}%` }}>
-              <Star className="text-[#14D45E]" />
+              <Star className="text-accent" />
             </span>
           </span>
         );
@@ -121,7 +121,7 @@ export function ReviewCarousel() {
               type="button"
               aria-label={`Show review from ${quote.name}`}
               aria-current={quoteIndex === index ? "true" : undefined}
-              className={`h-1.5 w-6 rounded-full ${quoteIndex === index ? "bg-[#14D45E]" : "bg-white/30"}`}
+              className={`h-1.5 w-6 rounded-full ${quoteIndex === index ? "bg-accent" : "bg-white/30"}`}
               onClick={() => setIndex(quoteIndex)}
             />
           ))}

@@ -16,7 +16,7 @@ const tones = {
   dark: `${shell} cta-line cta-line-muted ${buttonFocus}`,
   inverted: `${shell} cta-inverted ${buttonFocus}`,
   solid: `${shell} cta-solid ${buttonFocusOnInk}`,
-  text: `inline-flex min-h-11 items-center text-base font-semibold text-[#0A0F0B] underline decoration-2 underline-offset-4 visited:text-[#0A0F0B] ${buttonFocus}`,
+  text: `inline-flex min-h-11 items-center text-base font-semibold text-ink underline decoration-2 underline-offset-4 visited:text-ink ${buttonFocus}`,
 } as const;
 
 type Tone = keyof typeof tones;

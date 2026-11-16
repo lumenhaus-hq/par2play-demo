@@ -11,7 +11,7 @@ export function ValuePoint({
 }) {
   return (
     <div className="flex gap-3">
-      <Icon aria-hidden="true" strokeWidth={1.5} className="mt-0.5 size-6 shrink-0 text-[#0A0F0B]" />
+      <Icon aria-hidden="true" strokeWidth={1.5} className="mt-0.5 size-6 shrink-0 text-ink" />
       <div>
         <p className="text-base font-semibold">{label}</p>
         <p className="text-base leading-snug">{line}</p>

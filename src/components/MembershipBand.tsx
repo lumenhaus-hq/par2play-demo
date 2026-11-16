@@ -124,7 +124,7 @@ function ChapterList({ active, dimInactive }: { active: number; dimInactive: boo
                 <div className="relative flex gap-3.5">
                   <MembershipStepIcon id={benefit.id} />
                   <div className="min-w-0">
-                    <p className="font-mono text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#7DFFB0]">
+                    <p className="font-mono text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-mint">
                       {`${String(index + 1).padStart(2, "0")} / ${String(benefits.length).padStart(2, "0")}`}
                     </p>
                     <p className="mt-1 text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-white/55">
@@ -177,14 +177,14 @@ export function MembershipBand() {
   }, [dimInactive]);
 
   return (
-    <section id="membership" className="@container scroll-mt-32 bg-[#020806] text-white">
+    <section id="membership" className="@container scroll-mt-32 bg-void text-white">
       <div className="relative overflow-hidden @3xl:min-h-[36rem]">
         <div className="relative aspect-video w-full overflow-hidden @3xl:absolute @3xl:inset-0 @3xl:aspect-auto @3xl:h-full">
           <MontageFilm paused={paused} reduce={reduce} />
           {showControl ? <FilmToggle paused={paused} onToggle={toggle} /> : null}
         </div>
         <div
-          className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-[#020806] via-[#020806]/90 to-transparent @3xl:block"
+          className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-void via-void/90 to-transparent @3xl:block"
           aria-hidden="true"
         />
         <div className="pointer-events-none relative z-20 px-6 pt-6 pb-10 @3xl:flex @3xl:min-h-[36rem] @3xl:items-center @3xl:px-12 @3xl:py-16">
