@@ -57,10 +57,10 @@ export function HeroTitle({ concept }: { concept: HeroConcept }) {
   if (concept === "c") return <ConceptC />;
   if (concept === "d") return <ConceptD />;
   return (
-    <p className="min-w-0 max-w-full font-display text-[1.35rem] font-semibold leading-[1.05] tracking-tight text-white @3xl:text-[2rem]">
-      <MaskLine>A home </MaskLine>
-      <MaskLine delay={110}>for </MaskLine>
-      <MaskLine delay={220} className="hero-poppy font-accent text-[1.45em] leading-none">
+    <p className="min-w-0 max-w-full font-display text-[1.45rem] font-semibold leading-[1.12] tracking-tight text-white @3xl:text-[2rem]">
+      {/* One phrase keeps the space; only the accent line staggers in. */}
+      <MaskLine>A home for </MaskLine>
+      <MaskLine delay={140} className="hero-accent font-accent text-[1.4em] leading-none text-[#14D45E]">
         all golfers.
       </MaskLine>
     </p>

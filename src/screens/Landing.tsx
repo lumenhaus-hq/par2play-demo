@@ -177,21 +177,22 @@ export function Landing() {
         >
           <div
             ref={offerTiltRef}
-            className="hero-panel hero-panel-depth hero-panel-tilt pointer-events-auto max-h-full w-full max-w-[32rem] overflow-y-auto rounded-2xl px-4 py-3"
+            className="hero-panel hero-panel-depth hero-panel-tilt hero-offer-card pointer-events-auto max-h-full w-full max-w-[32rem] overflow-y-auto rounded-[1.35rem] px-5 py-4 @3xl:px-6 @3xl:py-5"
           >
-            <div className="flex min-w-0 flex-col gap-3 @3xl:flex-row @3xl:flex-wrap @3xl:items-end @3xl:justify-between @3xl:gap-4">
+            <div className="hero-offer-sheen" aria-hidden="true" />
+            <div className="relative flex min-w-0 flex-col gap-4">
               <div className="hero-stage hero-stage--copy min-w-0 max-w-full">
                 <HeroTitle concept={concept} />
-                <h1 className="hero-location hero-stage hero-stage--location mt-3 font-semibold leading-tight tracking-wide text-[#7DFFB0]">
+                <h1 className="hero-location hero-stage hero-stage--location mt-2 text-sm font-semibold uppercase tracking-[0.14em] text-[#7DFFB0]/90 @3xl:text-base">
                   Indoor golf in Somerset, NJ
                 </h1>
               </div>
               <div className="hero-stage hero-stage--cta">
-                <HeroMembershipAction className="cta-sheen" />
+                <HeroMembershipAction className="cta-sheen w-full @3xl:w-auto" />
               </div>
-            </div>
-            <div className="hero-stage hero-stage--proof">
-              <HeroProof />
+              <div className="hero-stage hero-stage--proof">
+                <HeroProof />
+              </div>
             </div>
           </div>
         </div>

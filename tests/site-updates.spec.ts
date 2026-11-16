@@ -52,8 +52,10 @@ test("mobile homepage benefits sit below the film on a solid dark background", a
   });
   expect(metrics.headingTop).toBeGreaterThan(metrics.filmBottom);
   expect(metrics.background).toBe("rgb(2, 8, 6)");
-  expect(metrics.text).toBe("rgb(255, 255, 255)");
+  // Benefit body is softened white (brand hierarchy), not pure #fff.
+  expect(metrics.text).toMatch(/^(?:rgb\(255,\s*255,\s*255\)|rgba\(255,\s*255,\s*255,\s*0\.(?:7|8|9)\)|oklab\(.+\/\s*0\.(?:7|8|9)\))$/);
   expect(metrics.fontSize).toBeGreaterThanOrEqual(16);
+  await expect(band.locator(".benefit-card").first()).toBeVisible();
   await expect(page.locator("#events img")).toHaveCount(0);
   await expect(band.getByRole("link", { name: "Try it out", exact: true })).toHaveCSS("background-color", "rgb(255, 255, 255)");
   await expect(page.getByRole("heading", { name: "Around the club" })).toHaveCount(0);

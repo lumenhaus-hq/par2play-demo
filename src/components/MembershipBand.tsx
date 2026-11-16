@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { BookLink, CtaPair, MembershipLink } from "./Cta";
 import { MembershipStepIcon, type MembershipStepId } from "./MembershipIcons";
+import { ScrollReveal } from "./ScrollReveal";
 import { MEMBERSHIP_MONTAGE } from "../data/films";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 import { useFlow } from "../state/flow";
@@ -110,25 +111,33 @@ function FilmToggle({ paused, onToggle }: { paused: boolean; onToggle: () => voi
 
 function ChapterList({ active, dimInactive }: { active: number; dimInactive: boolean }) {
   return (
-    <ul className="mt-6 grid gap-4 @3xl:gap-5">
+    <ul className="mt-6 grid gap-3 @3xl:gap-4">
       {benefits.map((benefit, index) => {
         const on = index === active;
         return (
-          <li
-            key={benefit.id}
-            data-chapter={index}
-            className={`flex gap-3 ${dimInactive ? (on ? "opacity-100" : "opacity-30") : "opacity-100"}`}
-            aria-current={dimInactive && on ? "true" : undefined}
-          >
-            <MembershipStepIcon id={benefit.id} />
-            <div>
-              <p className="font-mono text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[#7DFFB0]">
-                {`${String(index + 1).padStart(2, "0")} / ${String(benefits.length).padStart(2, "0")}`}
-              </p>
-              <p className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-white/70">{benefit.eyebrow}</p>
-              <h3 className="mt-1 font-display text-xl font-semibold leading-tight tracking-tight text-[#7DFFB0]">{benefit.word}</h3>
-              <p className="mt-1 text-base leading-relaxed text-white">{benefit.line}</p>
-            </div>
+          <li key={benefit.id} data-chapter={index} aria-current={dimInactive && on ? "true" : undefined}>
+            <ScrollReveal tone={index === 0 ? "tilt" : "rise"} delay={index * 70}>
+              <article
+                className={`benefit-card ${dimInactive ? (on ? "benefit-card--active" : "benefit-card--dim") : "benefit-card--active"}`}
+              >
+                <span className="benefit-card__sheen" aria-hidden="true" />
+                <div className="relative flex gap-3.5">
+                  <MembershipStepIcon id={benefit.id} />
+                  <div className="min-w-0">
+                    <p className="font-mono text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#7DFFB0]">
+                      {`${String(index + 1).padStart(2, "0")} / ${String(benefits.length).padStart(2, "0")}`}
+                    </p>
+                    <p className="mt-1 text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-white/55">
+                      {benefit.eyebrow}
+                    </p>
+                    <h3 className="mt-1.5 font-display text-xl font-semibold leading-tight tracking-tight text-white">
+                      {benefit.word}
+                    </h3>
+                    <p className="mt-1.5 text-base leading-relaxed text-white/80">{benefit.line}</p>
+                  </div>
+                </div>
+              </article>
+            </ScrollReveal>
           </li>
         );
       })}
@@ -180,13 +189,15 @@ export function MembershipBand() {
         />
         <div className="pointer-events-none relative z-20 px-6 pt-6 pb-10 @3xl:flex @3xl:min-h-[36rem] @3xl:items-center @3xl:px-12 @3xl:py-16">
           <div ref={listRef} className="pointer-events-auto max-w-lg">
-            <h2 className="font-display text-4xl font-semibold leading-none tracking-tight @5xl:text-6xl">Membership</h2>
-            <CtaPair className="mt-6">
-              <MembershipLink className="w-full">Become a Member</MembershipLink>
-              <BookLink className="w-full" offer="bay" tone="line">
-                Try it out
-              </BookLink>
-            </CtaPair>
+            <ScrollReveal tone="rise">
+              <h2 className="font-display text-4xl font-semibold leading-none tracking-tight @5xl:text-6xl">Membership</h2>
+              <CtaPair className="mt-6">
+                <MembershipLink className="cta-sheen w-full">Become a Member</MembershipLink>
+                <BookLink className="w-full" offer="bay" tone="line">
+                  Try it out
+                </BookLink>
+              </CtaPair>
+            </ScrollReveal>
             <ChapterList active={chapter} dimInactive={dimInactive} />
           </div>
         </div>
