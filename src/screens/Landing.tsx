@@ -7,6 +7,7 @@ import { HeroProof } from "../components/HeroProof";
 import { MembershipBand } from "../components/MembershipBand";
 import { HeroVideo, type HeroIntroPhase } from "../components/Media";
 import { MotionToggle } from "../components/MotionToggle";
+import { ScrollReveal } from "../components/ScrollReveal";
 import { SoundToggle } from "../components/SoundToggle";
 import { TournamentForm } from "../components/TournamentForm";
 import { EventTypeList } from "../components/EventTypeList";
@@ -22,6 +23,7 @@ import { VisitLine } from "../components/VisitLine";
 import { faqGraph, homeGraph } from "../data/schema";
 import { COACHING_FILM, JUNIORS_FILM } from "../data/films";
 import { SITE_NAV, pageHref } from "../data/routes";
+import { usePointerTilt } from "../hooks/usePointerTilt";
 import { useFlow } from "../state/flow";
 
 const sectionSpace = "scroll-mt-32 px-6 py-20 @3xl:px-12 @3xl:py-24";
@@ -37,6 +39,8 @@ export function Landing() {
   // Match prerendered HTML (webdriver captures arrived); HeroVideo drives later phases.
   const [intro, setIntro] = useState<HeroIntroPhase>("arrived");
   const scrollRef = useRef<HTMLDivElement>(null);
+  // Desktop-only enrichment; touch devices skip tilt in the hook.
+  const offerTiltRef = usePointerTilt<HTMLDivElement>(5);
   const mobile = flow.layout === "mobile";
   const scroll = mobile ? "h-full overflow-y-auto" : "";
   const chromeReady = intro === "arrived";
@@ -160,6 +164,7 @@ export function Landing() {
       <section
         id="hero"
         className={`relative -mt-[4.5rem] flex flex-col overflow-hidden bg-[#0A0F0B] ${mobile ? "h-full" : "h-[calc(100svh-5rem)]"}`}
+        aria-busy={chromeReady ? undefined : true}
       >
         <HeroVideo onPhase={onPhase} />
         <div className="hero-top-shade pointer-events-none absolute inset-x-0 top-0" aria-hidden="true" />
@@ -170,17 +175,24 @@ export function Landing() {
           }`}
           aria-hidden={chromeReady ? undefined : true}
         >
-          <div className="hero-panel hero-panel-depth pointer-events-auto max-h-full w-full max-w-[32rem] overflow-y-auto rounded-2xl px-4 py-3">
+          <div
+            ref={offerTiltRef}
+            className="hero-panel hero-panel-depth hero-panel-tilt pointer-events-auto max-h-full w-full max-w-[32rem] overflow-y-auto rounded-2xl px-4 py-3"
+          >
             <div className="flex min-w-0 flex-col gap-3 @3xl:flex-row @3xl:flex-wrap @3xl:items-end @3xl:justify-between @3xl:gap-4">
-              <div className="min-w-0 max-w-full">
+              <div className="hero-stage hero-stage--copy min-w-0 max-w-full">
                 <HeroTitle concept={concept} />
-                <h1 className="hero-location mt-3 font-semibold leading-tight tracking-wide text-[#7DFFB0]">
+                <h1 className="hero-location hero-stage hero-stage--location mt-3 font-semibold leading-tight tracking-wide text-[#7DFFB0]">
                   Indoor golf in Somerset, NJ
                 </h1>
               </div>
-              <HeroMembershipAction />
+              <div className="hero-stage hero-stage--cta">
+                <HeroMembershipAction className="cta-sheen" />
+              </div>
             </div>
-            <HeroProof />
+            <div className="hero-stage hero-stage--proof">
+              <HeroProof />
+            </div>
           </div>
         </div>
         <div
@@ -195,15 +207,17 @@ export function Landing() {
 
       <section id="coaching" className={sectionSpace}>
         <div className="grid items-start gap-10 @3xl:grid-cols-2 @3xl:gap-16">
-          <VideoSlot
-            src={COACHING_FILM.src}
-            srcMobile={COACHING_FILM.srcMobile}
-            poster={COACHING_FILM.poster}
-            posterAlt="A golfer hitting a shot in a Par2Play simulator bay"
-            className="aspect-video"
-            pausable
-          />
-          <div>
+          <ScrollReveal tone="tilt">
+            <VideoSlot
+              src={COACHING_FILM.src}
+              srcMobile={COACHING_FILM.srcMobile}
+              poster={COACHING_FILM.poster}
+              posterAlt="A golfer hitting a shot in a Par2Play simulator bay"
+              className="aspect-video"
+              pausable
+            />
+          </ScrollReveal>
+          <ScrollReveal tone="rise" delay={80}>
             <h2 className="font-display text-3xl font-semibold leading-none tracking-tight @5xl:text-5xl">Get fitted and swinging!</h2>
             <p className="mt-8 max-w-md font-display text-2xl font-semibold leading-tight tracking-tight">
               {"Two PGA professional coaches, "}
@@ -231,13 +245,13 @@ export function Landing() {
                 Try it out
               </BookLink>
             </CtaPair>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
 
       <section id="juniors" className={sectionSpace}>
         <div className="grid items-center gap-10 @3xl:grid-cols-2 @3xl:gap-16">
-          <div className="@3xl:order-2">
+          <ScrollReveal className="@3xl:order-2" tone="rise" delay={80}>
             <h2 className="font-display text-4xl font-semibold leading-none tracking-tight @5xl:text-6xl">Golf for kids</h2>
             <p className="mt-6 max-w-md text-base leading-relaxed">Building the golfers of tomorrow.</p>
             <div className="mt-8 grid gap-5">
@@ -260,58 +274,64 @@ export function Landing() {
             <div className="mt-8">
               <BookLink offer="junior">Schedule kids golf</BookLink>
             </div>
-          </div>
-          <VideoSlot
-            src={JUNIORS_FILM.src}
-            srcMobile={JUNIORS_FILM.srcMobile}
-            poster={JUNIORS_FILM.poster}
-            posterAlt="A junior golfer swinging in a Par2Play simulator bay"
-            className="aspect-video @3xl:order-1"
-            pausable
-          />
+          </ScrollReveal>
+          <ScrollReveal className="@3xl:order-1" tone="tilt">
+            <VideoSlot
+              src={JUNIORS_FILM.src}
+              srcMobile={JUNIORS_FILM.srcMobile}
+              poster={JUNIORS_FILM.poster}
+              posterAlt="A junior golfer swinging in a Par2Play simulator bay"
+              className="aspect-video"
+              pausable
+            />
+          </ScrollReveal>
         </div>
       </section>
 
       <section id="events" className={sectionSpace}>
-        <h2 className="font-display text-4xl font-semibold leading-none tracking-tight @5xl:text-6xl">Events</h2>
-        <p className="mt-6 max-w-xl text-base leading-relaxed">
-          Four enclosed bays, with a golf pro for mini-lessons and casual games.
-        </p>
-        <div className="mt-6">
-          <EventTypeList />
-        </div>
-        <CtaPair className="mt-8">
-          <CtaAnchor href={pageHref("events")} className="w-full">
-            See events
-          </CtaAnchor>
-          <CtaAnchor href={OCLOCK.events} tone="line" className="w-full" offer="group" external>
-            Check availability
-          </CtaAnchor>
-        </CtaPair>
+        <ScrollReveal tone="sheen">
+          <h2 className="font-display text-4xl font-semibold leading-none tracking-tight @5xl:text-6xl">Events</h2>
+          <p className="mt-6 max-w-xl text-base leading-relaxed">
+            Four enclosed bays, with a golf pro for mini-lessons and casual games.
+          </p>
+          <div className="mt-6">
+            <EventTypeList />
+          </div>
+          <CtaPair className="mt-8">
+            <CtaAnchor href={pageHref("events")} className="w-full">
+              See events
+            </CtaAnchor>
+            <CtaAnchor href={OCLOCK.events} tone="line" className="w-full" offer="group" external>
+              Check availability
+            </CtaAnchor>
+          </CtaPair>
+        </ScrollReveal>
       </section>
 
       <section id="tournament" className={`${sectionSpace} text-center`}>
-        <h2 className="mx-auto max-w-xl font-display text-4xl font-semibold leading-tight tracking-tight @5xl:text-5xl">
-          Par2Play Fall League Coming Soon!
-        </h2>
-        <div className="mt-10">
-          <TournamentForm />
-        </div>
+        <ScrollReveal tone="rise">
+          <h2 className="mx-auto max-w-xl font-display text-4xl font-semibold leading-tight tracking-tight @5xl:text-5xl">
+            Par2Play Fall League Coming Soon!
+          </h2>
+          <div className="mt-10">
+            <TournamentForm />
+          </div>
+        </ScrollReveal>
       </section>
 
       <section className="bg-[#020806] px-6 py-24 text-white @3xl:px-12 @3xl:py-28">
-        <div className="mx-auto max-w-3xl text-center">
+        <ScrollReveal className="mx-auto max-w-3xl text-center" tone="tilt">
           <h2 className="font-display text-4xl font-semibold leading-none tracking-tight @5xl:text-6xl">Your bay is waiting.</h2>
           <p className="mx-auto mt-6 max-w-md text-base leading-relaxed text-white/80">
             Book a simulator bay or become a member — Somerset’s indoor golf clubhouse is ready when you are.
           </p>
           <CtaPair className="mx-auto mt-10 justify-center">
-            <MembershipLink className="w-full">Become a Member</MembershipLink>
+            <MembershipLink className="cta-sheen w-full">Become a Member</MembershipLink>
             <BookLink className="w-full" offer="bay" tone="inverted">
               Book a bay
             </BookLink>
           </CtaPair>
-        </div>
+        </ScrollReveal>
       </section>
 
       <FaqSection />

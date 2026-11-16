@@ -77,6 +77,11 @@ function bindMedia() {
 function subscribe(listener: () => void) {
   bindMedia();
   listeners.add(listener);
+  // Hydration uses the server snapshot (reduce=false). Push the real client
+  // media query on the next microtask so SmoothScroll / HeroVideo resync.
+  queueMicrotask(() => {
+    emit();
+  });
   return () => {
     listeners.delete(listener);
   };
