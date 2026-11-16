@@ -59,26 +59,29 @@ export function HeroProof() {
 
   return (
     <div
-      className="mt-2 flex w-full min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-sm text-white"
+      className="hero-proof mt-3 flex w-full min-w-0 flex-col gap-2 border-t border-white/10 pt-3 text-sm text-white"
       onMouseEnter={() => setHeld(true)}
       onMouseLeave={() => setHeld(false)}
       onFocus={() => setHeld(true)}
       onBlur={release}
     >
-      <p className="shrink-0 font-display text-lg font-semibold leading-none">{GOOGLE_RATING}</p>
-      <Stars />
-      <span className="sr-only">5 stars on Google.</span>
-      <p key={reduce ? "static" : active.id} className="quote-fade min-w-0 flex-1 truncate">
-        {`${active.name}. ${active.line}`}
+      <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+        <p className="shrink-0 font-display text-lg font-semibold leading-none">{GOOGLE_RATING}</p>
+        <Stars />
+        <span className="sr-only">5 stars on Google.</span>
+        <a
+          href={GOOGLE_REVIEWS_URL}
+          className={`inline-flex min-h-11 shrink-0 items-center text-sm font-semibold text-white underline decoration-2 underline-offset-4 @3xl:text-base ${buttonFocus}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {`${GOOGLE_REVIEW_COUNT} Google reviews`}
+        </a>
+      </div>
+      <p key={reduce ? "static" : active.id} className="quote-fade min-w-0 text-sm leading-snug text-white/80">
+        <span className="font-semibold text-white">{active.name}</span>
+        {`. ${active.line}`}
       </p>
-      <a
-        href={GOOGLE_REVIEWS_URL}
-        className={`inline-flex min-h-11 shrink-0 items-center text-sm font-semibold text-white underline decoration-2 underline-offset-4 @3xl:text-base ${buttonFocus}`}
-        target="_blank"
-        rel="noreferrer"
-      >
-        {`${GOOGLE_REVIEW_COUNT} Google reviews`}
-      </a>
     </div>
   );
 }
