@@ -188,11 +188,11 @@ function MembershipDesktop() {
       <div className="pointer-events-none relative z-20 px-6 pt-6 pb-10 @3xl:flex @3xl:min-h-[36rem] @3xl:items-center @3xl:px-12 @3xl:py-16">
         <div ref={listRef} className="pointer-events-auto max-w-lg">
           <ScrollReveal tone="rise">
-            <h2 className="font-display text-4xl font-semibold leading-none tracking-tight @5xl:text-6xl">Membership</h2>
+            <h2 className="section-title section-title--on-dark text-4xl @5xl:text-6xl">Membership</h2>
             <CtaPair className="mt-6">
               <MembershipLink className="cta-sheen w-full">Become a Member</MembershipLink>
               <BookLink className="w-full" offer="bay" tone="line">
-                Try it out
+                Book a Bay
               </BookLink>
             </CtaPair>
           </ScrollReveal>

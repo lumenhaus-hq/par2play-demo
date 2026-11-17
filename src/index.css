@@ -1130,6 +1130,48 @@ html.lenis.lenis-smooth {
   }
 }
 
+/*
+ * Section titles: stronger display type + soft brand halo.
+ * taste-skill-ignore: owner asked for glow/outline on index titles;
+ * ink stays dark / white so body contrast remains ≥7:1.
+ */
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  text-wrap: balance;
+  text-shadow:
+    0 1px 0 rgb(255 255 255 / 0.55),
+    0 0 1.25rem color-mix(in srgb, var(--accent) 32%, transparent),
+    0 0 2.75rem color-mix(in srgb, var(--mint) 18%, transparent);
+}
+
+.section-title--on-dark {
+  color: #fff;
+  text-shadow:
+    0 1px 0 rgb(0 0 0 / 0.45),
+    0 0 1.5rem color-mix(in srgb, var(--accent) 45%, transparent),
+    0 0 3rem color-mix(in srgb, var(--mint) 28%, transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.motion-paused) .section-title {
+    animation: section-title-glow 4.8s ease-in-out infinite;
+  }
+}
+
+@keyframes section-title-glow {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.04);
+  }
+}
+
 .reveal-block {
   --reveal-delay: 0ms;
 }
@@ -1645,6 +1687,7 @@ html.motion-paused .draw-stroke {
   animation: none;
 }
 
+html.motion-paused .section-title,
 html.motion-paused .reveal-block,
 html.motion-paused .hero-film-loader,
 html.motion-paused .hero-bay-frame--breathe {
@@ -1657,6 +1700,11 @@ html.motion-paused .reveal-block {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .section-title {
+    animation: none !important;
+    filter: none;
+  }
+
   .reveal-block {
     opacity: 1;
     transform: none;
