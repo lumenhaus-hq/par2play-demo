@@ -29,7 +29,7 @@ function inline(text: string, keyPrefix: string): ReactNode[] {
     const key = `${keyPrefix}-${index}`;
     if (match[1]) {
       nodes.push(
-        <span key={key} className="mx-0.5 inline-block rounded bg-[#fff3bf] px-1.5 py-0.5 text-sm font-semibold text-[#0A0F0B]">
+        <span key={key} className="mx-0.5 inline-block rounded bg-[#fff3bf] px-1.5 py-0.5 text-sm font-semibold text-ink">
           TBD — needs Atul/Chandan sign-off: {match[1].trim()}
         </span>,
       );
@@ -130,7 +130,7 @@ export function PrivacyPage() {
       <article className={`${pageSpace} max-w-3xl`}>
         <JsonLd data={privacyGraph()} />
         <Breadcrumbs current="Privacy policy" />
-        <p className="mb-6 rounded-xl border border-[#b45309] bg-[#fff7ed] px-4 py-3 text-base leading-relaxed text-[#0A0F0B]">
+        <p className="mb-6 rounded-xl border border-[#b45309] bg-[#fff7ed] px-4 py-3 text-base leading-relaxed text-ink">
           {`Draft. Not reviewed by a lawyer. ${signOffs} items marked TBD still need Atul and Chandan to sign off. Nothing here is legal advice.`}
         </p>
         {blocks().map((block, index) => {
@@ -158,7 +158,7 @@ export function PrivacyPage() {
                   <thead>
                     <tr>
                       {block.headers.map((header) => (
-                        <th key={header} className="border border-[#0A0F0B]/15 bg-[#f3f6f1] px-2 py-2 font-semibold">
+                        <th key={header} className="border border-ink/15 bg-[#f3f6f1] px-2 py-2 font-semibold">
                           {inline(header, header)}
                         </th>
                       ))}
@@ -168,7 +168,7 @@ export function PrivacyPage() {
                     {block.rows.map((row, rowIndex) => (
                       <tr key={rowIndex}>
                         {row.map((cell, cellIndex) => (
-                          <td key={cellIndex} className="border border-[#0A0F0B]/15 px-2 py-2 align-top">
+                          <td key={cellIndex} className="border border-ink/15 px-2 py-2 align-top">
                             {inline(cell, `c${index}-${rowIndex}-${cellIndex}`)}
                           </td>
                         ))}

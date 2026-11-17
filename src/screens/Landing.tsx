@@ -29,7 +29,7 @@ import { useFlow } from "../state/flow";
 
 const sectionSpace = "scroll-mt-32 px-6 py-20 @3xl:px-12 @3xl:py-24";
 
-const navButton = `nav-link inline-flex min-h-11 items-center px-1 text-base font-semibold text-[#0A0F0B] ${buttonFocus}`;
+const navButton = `nav-link inline-flex min-h-11 items-center px-1 text-base font-semibold text-ink ${buttonFocus}`;
 
 export function Landing() {
   const flow = useFlow();
@@ -96,20 +96,20 @@ export function Landing() {
   }, [chromeReady]);
 
   const filmLink = `nav-link inline-flex min-h-11 items-center px-1 text-base font-semibold ${buttonFocus} ${
-    onFilm ? "text-white" : "text-[#0A0F0B]"
+    onFilm ? "text-white" : "text-ink"
   }`;
 
   return (
     <div
       ref={scrollRef}
       data-smooth-root={mobile ? "" : undefined}
-      className={`@container page-grid text-base text-[#0A0F0B] ${scroll} ${chromeReady ? "" : "overflow-hidden"}`}
+      className={`@container page-grid text-base text-ink ${scroll} ${chromeReady ? "" : "overflow-hidden"}`}
     >
       <div data-smooth-content={mobile ? "" : undefined}>
       <JsonLd data={homeGraph()} />
       <JsonLd data={faqGraph()} />
       <header
-        className={`sticky top-0 z-30 px-6 py-3 @5xl:px-12 ${onFilm ? "" : "header-bar"} ${
+        className={`sticky z-30 px-6 py-3 @5xl:px-12 ${mobile ? "top-0" : "top-[4.25rem]"} ${onFilm ? "" : "header-bar"} ${
           chromeReady ? "hero-chrome-in" : "pointer-events-none opacity-0"
         }`}
         aria-hidden={chromeReady ? undefined : true}
@@ -129,8 +129,8 @@ export function Landing() {
             ))}
           </nav>
           <div className="flex items-center gap-2">
-            <LayoutToggle className={onFilm ? "text-white" : "text-[#0A0F0B]"} />
-            <SoundToggle labeled={onFilm} className={onFilm ? "text-white" : "text-[#0A0F0B]"} />
+            <LayoutToggle className={onFilm ? "text-white" : "text-ink"} />
+            <SoundToggle labeled={onFilm} className={onFilm ? "text-white" : "text-ink"} />
             <span className="hidden @3xl:contents">
               <MembershipLink className="shrink-0">Become a Member</MembershipLink>
             </span>
@@ -165,7 +165,7 @@ export function Landing() {
       </header>
       <section
         id="hero"
-        className={`relative -mt-[4.5rem] flex flex-col overflow-hidden bg-[#0A0F0B] ${mobile ? "h-full" : "h-[calc(100svh-5rem)]"}`}
+        className={`relative -mt-[4.5rem] flex flex-col overflow-hidden bg-ink ${mobile ? "h-full" : "h-[calc(100svh-5rem)]"}`}
         aria-busy={chromeReady ? undefined : true}
       >
         <HeroVideo onPhase={onPhase} />
@@ -185,7 +185,7 @@ export function Landing() {
             <div className="relative flex min-w-0 flex-col gap-4">
               <div className="hero-stage hero-stage--copy min-w-0 max-w-full">
                 <HeroTitle concept={concept} />
-                <h1 className="hero-location hero-stage hero-stage--location mt-2 text-sm font-semibold uppercase tracking-[0.14em] text-[#7DFFB0]/90 @3xl:text-base">
+                <h1 className="hero-location hero-stage hero-stage--location mt-2 text-sm font-semibold uppercase tracking-[0.14em] text-mint/90 @3xl:text-base">
                   Indoor golf in Somerset, NJ
                 </h1>
               </div>
@@ -322,7 +322,7 @@ export function Landing() {
         </ScrollReveal>
       </section>
 
-      <section className="bg-[#020806] px-6 py-24 text-white @3xl:px-12 @3xl:py-28">
+      <section className="bg-void px-6 py-24 text-white @3xl:px-12 @3xl:py-28">
         <ScrollReveal className="mx-auto max-w-3xl text-center" tone="tilt">
           <h2 className="font-display text-4xl font-semibold leading-none tracking-tight @5xl:text-6xl">Your bay is waiting.</h2>
           <p className="mx-auto mt-6 max-w-md text-base leading-relaxed text-white/80">
@@ -352,7 +352,7 @@ export function Landing() {
         </div>
         <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 text-base">
           <p>© 2026 Par2Play</p>
-          <MotionToggle className="text-[#0A0F0B]" />
+          <MotionToggle className="text-ink" />
           <a href={pageHref("privacy-policy")} className={navButton}>
             Privacy
           </a>

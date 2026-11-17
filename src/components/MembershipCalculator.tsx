@@ -24,7 +24,7 @@ function ModeButton({ pressed, onClick, children }: { pressed: boolean; onClick:
     <button
       type="button"
       className={`aa-focus-ink min-h-11 rounded-full border-2 px-3 text-base font-semibold transition-[border-color,background-color,color] ${
-        pressed ? "border-[#7DFFB0] bg-white text-[#0A0F0B]" : "border-white/35 text-white"
+        pressed ? "border-mint bg-white text-ink" : "border-white/35 text-white"
       }`}
       aria-pressed={pressed}
       onClick={onClick}
@@ -53,7 +53,7 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-baseline justify-between gap-4 py-2 text-base">
       <span className="text-[#4B5563]">{label}</span>
-      <span className="font-semibold text-[#0A0F0B] tabular-nums">{value}</span>
+      <span className="font-semibold text-ink tabular-nums">{value}</span>
     </div>
   );
 }
@@ -73,7 +73,7 @@ function PaymentMark({ label, children }: { label: string; children: ReactNode }
 function PaymentsAccepted() {
   return (
     <div aria-label="Payments accepted">
-      <p className="text-base font-semibold text-[#0A0F0B]">Payments accepted</p>
+      <p className="text-base font-semibold text-ink">Payments accepted</p>
       <p className="mt-1 text-sm text-[#6B7280]">Processed on GolfClock — icons shown for reference only.</p>
       <ul className="mt-4 flex flex-wrap items-center gap-2">
         <li>
@@ -140,17 +140,17 @@ function MembershipCheckout({ mode }: { mode: PracticeMode }) {
   };
 
   const fieldClass =
-    "aa-focus mt-2 w-full rounded-xl border border-[#D1D5DB] bg-white px-3 py-3 text-base text-[#0A0F0B] outline-none placeholder:text-[#9CA3AF] focus-visible:border-[#0A0F0B]";
+    "aa-focus mt-2 w-full rounded-xl border border-[#D1D5DB] bg-white px-3 py-3 text-base text-ink outline-none placeholder:text-[#9CA3AF] focus-visible:border-ink";
 
   return (
     <section className="mx-auto w-full max-w-3xl" aria-labelledby={`${formId}-heading`}>
-      <h2 id={`${formId}-heading`} className="font-display text-2xl font-bold uppercase tracking-[0.04em] text-[#0A0F0B] @3xl:text-3xl">
+      <h2 id={`${formId}-heading`} className="font-display text-2xl font-bold uppercase tracking-[0.04em] text-ink @3xl:text-3xl">
         Finalize your booking
       </h2>
 
       <form className="mt-6 grid gap-4" onSubmit={onSubmit} noValidate>
         <div className="rounded-2xl border border-[#E5E7EB] bg-white px-5 py-5 shadow-[0_8px_30px_rgb(10_15_11/0.06)] @3xl:px-7 @3xl:py-6">
-          <p className="text-lg font-bold text-[#0A0F0B]">{title}</p>
+          <p className="text-lg font-bold text-ink">{title}</p>
           <div className="mt-3 divide-y divide-[#E5E7EB]">
             <SummaryRow label="Offer" value={line} />
             <SummaryRow label="Access" value={unlimited ? "Up to 1 hour a day" : "10 sessions"} />
@@ -158,17 +158,17 @@ function MembershipCheckout({ mode }: { mode: PracticeMode }) {
             <SummaryRow label={unlimited ? "Membership" : "Pack"} value={totalLabel} />
           </div>
           <div className="mt-3 flex items-baseline justify-between gap-4 border-t border-[#E5E7EB] pt-3">
-            <span className="text-base font-bold text-[#0A0F0B]">Total</span>
-            <span className="font-display text-2xl font-semibold tabular-nums text-[#0A0F0B]">{totalLabel}</span>
+            <span className="text-base font-bold text-ink">Total</span>
+            <span className="font-display text-2xl font-semibold tabular-nums text-ink">{totalLabel}</span>
           </div>
           <p className="mt-4 text-right font-mono text-xs text-[#9CA3AF]">{orderRef(mode)}</p>
         </div>
 
         <div className="rounded-2xl border border-[#E5E7EB] bg-white px-5 py-5 shadow-[0_8px_30px_rgb(10_15_11/0.06)] @3xl:px-7 @3xl:py-6">
-          <p className="text-base font-semibold text-[#0A0F0B]">Your details</p>
+          <p className="text-base font-semibold text-ink">Your details</p>
           <p className="mt-1 text-sm text-[#6B7280]">Carried into GolfClock when you confirm. Nothing is charged here.</p>
           <div className="mt-4 grid gap-4 @3xl:grid-cols-3">
-            <label className="block text-sm font-semibold text-[#0A0F0B]">
+            <label className="block text-sm font-semibold text-ink">
               Name
               <input
                 className={fieldClass}
@@ -180,7 +180,7 @@ function MembershipCheckout({ mode }: { mode: PracticeMode }) {
               />
               {errors.name ? <span className="mt-2 block text-xs font-normal text-red-700">{errors.name}</span> : null}
             </label>
-            <label className="block text-sm font-semibold text-[#0A0F0B]">
+            <label className="block text-sm font-semibold text-ink">
               Email
               <input
                 className={fieldClass}
@@ -193,7 +193,7 @@ function MembershipCheckout({ mode }: { mode: PracticeMode }) {
               />
               {errors.email ? <span className="mt-2 block text-xs font-normal text-red-700">{errors.email}</span> : null}
             </label>
-            <label className="block text-sm font-semibold text-[#0A0F0B]">
+            <label className="block text-sm font-semibold text-ink">
               Phone
               <input
                 className={fieldClass}
@@ -292,7 +292,7 @@ export function MembershipCalculator() {
 
       <MembershipCheckout mode={mode} />
 
-      <section className="rounded-3xl bg-[#020806] px-6 py-12 text-center text-white @3xl:px-12" aria-labelledby="join-heading">
+      <section className="rounded-3xl bg-void px-6 py-12 text-center text-white @3xl:px-12" aria-labelledby="join-heading">
         <h2 id="join-heading" className="font-display text-4xl font-semibold tracking-tight">
           compare plans
         </h2>

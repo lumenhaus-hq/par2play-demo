@@ -50,7 +50,7 @@ export function TournamentForm() {
 
   if (status === "sent" || status === "held") {
     return (
-      <p className="text-base text-[#0A0F0B]" role="status">
+      <p className="text-base text-ink" role="status">
         {status === "sent"
           ? "Sent. We’ll reply soon."
           : `Thanks! Leagues open soon, so call us on ${NAP.phoneDisplay} to reserve a spot.`}
@@ -60,7 +60,7 @@ export function TournamentForm() {
 
   return (
     <form className="mx-auto grid max-w-md gap-3 text-left" onSubmit={onSubmit} noValidate>
-      <label className="block text-base font-semibold text-[#0A0F0B]" htmlFor="tournament-email">
+      <label className="block text-base font-semibold text-ink" htmlFor="tournament-email">
         Email
         <input
           id="tournament-email"
@@ -72,7 +72,7 @@ export function TournamentForm() {
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? "tournament-email-error" : undefined}
           onChange={(event) => setEmail(event.target.value)}
-        className="aa-focus mt-2 w-full border-2 border-[#4b5563] bg-white px-3 py-3 text-base font-normal text-[#0A0F0B] outline-none placeholder:text-[#4b5563] focus-visible:border-[#0A0F0B]"
+        className="aa-focus mt-2 w-full border-2 border-[#4b5563] bg-white px-3 py-3 text-base font-normal text-ink outline-none placeholder:text-[#4b5563] focus-visible:border-ink"
         />
       </label>
       {error && (
@@ -88,7 +88,7 @@ export function TournamentForm() {
       <button
         type="submit"
         disabled={status === "sending"}
-        className={`mt-2 inline-flex min-h-11 w-fit items-center justify-self-center rounded-full bg-[#14D45E] px-5 text-base font-semibold text-[#0A0F0B] hover:bg-[#3dff7c] active:bg-[#0fb852] disabled:bg-[#c8f5d8] disabled:text-[#0A0F0B] ${buttonFocus}`}
+        className={`mt-2 inline-flex min-h-11 w-fit items-center justify-self-center rounded-full bg-accent px-5 text-base font-semibold text-accent-foreground hover:bg-accent-hot active:bg-accent disabled:bg-mint/40 disabled:text-ink ${buttonFocus}`}
       >
         {status === "sending" ? "Sending" : "Reserve your tournament spot"}
       </button>

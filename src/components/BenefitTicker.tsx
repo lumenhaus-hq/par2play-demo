@@ -13,7 +13,7 @@ const BENEFITS: readonly { id: BenefitId; label: string }[] = [
   { id: "baytime", label: "Bay time every month" },
 ];
 
-const badge = "inline-flex size-11 shrink-0 items-center justify-center rounded-2xl bg-[#10281A] text-[#14D45E]";
+const badge = "inline-flex size-11 shrink-0 items-center justify-center rounded-2xl bg-bay text-accent";
 
 function Mark({ children }: { children: ReactNode }) {
   return (
@@ -29,22 +29,22 @@ function Glyph({ id }: { id: BenefitId }) {
       return (
         <Mark>
           <path fill="currentColor" d="M16 5a11 11 0 0 1 9.2 5H21v4h8V6h-4.1A13 13 0 0 0 3.2 14l3.7 1.2A9.2 9.2 0 0 1 16 5Z" />
-          <path fill="#7DFFB0" d="M16 27a11 11 0 0 1-9.2-5H11v-4H3v8h4.1A13 13 0 0 0 28.8 18l-3.7-1.2A9.2 9.2 0 0 1 16 27Z" />
+          <path fill="var(--mint)" d="M16 27a11 11 0 0 1-9.2-5H11v-4H3v8h4.1A13 13 0 0 0 28.8 18l-3.7-1.2A9.2 9.2 0 0 1 16 27Z" />
         </Mark>
       );
     case "swing":
       return (
         <Mark>
           <circle cx="16" cy="16" r="9" fill="currentColor" />
-          <circle cx="16" cy="16" r="4.2" fill="#7DFFB0" />
-          <circle cx="12.2" cy="12.4" r="1.6" fill="#10281A" />
+          <circle cx="16" cy="16" r="4.2" fill="var(--mint)" />
+          <circle cx="12.2" cy="12.4" r="1.6" fill="var(--bay)" />
         </Mark>
       );
     case "fitting":
       return (
         <Mark>
           <path fill="currentColor" d="M7.2 4.5h3.6l1.1 9.2H8.3L7.2 4.5Z" />
-          <path fill="#7DFFB0" d="M10.4 13.4 17.8 22l2.4-2.1-7.4-8.6-2.4 2.1Z" />
+          <path fill="var(--mint)" d="M10.4 13.4 17.8 22l2.4-2.1-7.4-8.6-2.4 2.1Z" />
           <path fill="currentColor" d="M16.6 20.6c2.6-1 6.2 0 7.4 1.8 1.1 1.7.1 3.4-2.4 4-3.2.8-6.8-.4-7.8-2-.9-1.4.2-3 2.8-3.8Z" />
         </Mark>
       );
@@ -52,45 +52,45 @@ function Glyph({ id }: { id: BenefitId }) {
       return (
         <Mark>
           <path fill="currentColor" d="M8 4h3.2v24H8V4Z" />
-          <path fill="#7DFFB0" d="M11.2 5.5 24 10.2 11.2 16.2V5.5Z" />
+          <path fill="var(--mint)" d="M11.2 5.5 24 10.2 11.2 16.2V5.5Z" />
         </Mark>
       );
     case "services":
       return (
         <Mark>
           <path fill="currentColor" d="M10 7h12v7.2a6 6 0 0 1-12 0V7Z" />
-          <path fill="#7DFFB0" d="M10 9H7.2a3.4 3.4 0 0 0 3.2 4.4V9Zm12 0h2.8a3.4 3.4 0 0 1-3.2 4.4V9Z" />
+          <path fill="var(--mint)" d="M10 9H7.2a3.4 3.4 0 0 0 3.2 4.4V9Zm12 0h2.8a3.4 3.4 0 0 1-3.2 4.4V9Z" />
           <path fill="currentColor" d="M14.4 20.2h3.2V23h-3.2z" />
-          <path fill="#7DFFB0" d="M10 23.2h12v3.2a1 1 0 0 1-1 1H11a1 1 0 0 1-1-1v-3.2Z" />
+          <path fill="var(--mint)" d="M10 23.2h12v3.2a1 1 0 0 1-1 1H11a1 1 0 0 1-1-1v-3.2Z" />
         </Mark>
       );
     case "event":
       return (
         <Mark>
           <path fill="currentColor" d="M7 25.5 15.2 13.2l5.2 3.6L7 25.5Z" />
-          <path fill="#7DFFB0" d="M15.6 12.6 19.4 15l2.2-2.4-3.6-2.6-2.4 2.6Z" />
-          <circle cx="23.2" cy="8.2" r="1.7" fill="#7DFFB0" />
+          <path fill="var(--mint)" d="M15.6 12.6 19.4 15l2.2-2.4-3.6-2.6-2.4 2.6Z" />
+          <circle cx="23.2" cy="8.2" r="1.7" fill="var(--mint)" />
           <circle cx="26.4" cy="13.4" r="1.5" fill="currentColor" />
           <circle cx="20.2" cy="6.2" r="1.2" fill="currentColor" />
-          <path fill="#7DFFB0" d="M24.2 17.2h4.2v2.2h-4.2zm1.6 3.2h3.4v2.2h-3.4z" />
+          <path fill="var(--mint)" d="M24.2 17.2h4.2v2.2h-4.2zm1.6 3.2h3.4v2.2h-3.4z" />
         </Mark>
       );
     case "lessons":
       return (
         <Mark>
           <rect x="6" y="8" width="16" height="16" rx="2" fill="currentColor" />
-          <path fill="#7DFFB0" d="M9 12h10v2.2H9Zm0 4.2h10v2.2H9Zm0 4.2h6.4V23H9Z" />
-          <path fill="#7DFFB0" d="M22 6.5 26 8v8l-4-1.4V6.5Z" />
+          <path fill="var(--mint)" d="M9 12h10v2.2H9Zm0 4.2h10v2.2H9Zm0 4.2h6.4V23H9Z" />
+          <path fill="var(--mint)" d="M22 6.5 26 8v8l-4-1.4V6.5Z" />
         </Mark>
       );
     case "baytime":
       return (
         <Mark>
           <rect x="5" y="8" width="22" height="18" rx="3" fill="currentColor" />
-          <path fill="#7DFFB0" d="M5 8h22v5H5Z" />
-          <rect x="10" y="5" width="2.4" height="6" rx="1" fill="#7DFFB0" />
-          <rect x="19.6" y="5" width="2.4" height="6" rx="1" fill="#7DFFB0" />
-          <circle cx="16" cy="19" r="3.2" fill="#10281A" />
+          <path fill="var(--mint)" d="M5 8h22v5H5Z" />
+          <rect x="10" y="5" width="2.4" height="6" rx="1" fill="var(--mint)" />
+          <rect x="19.6" y="5" width="2.4" height="6" rx="1" fill="var(--mint)" />
+          <circle cx="16" cy="19" r="3.2" fill="var(--bay)" />
         </Mark>
       );
     default: {
@@ -113,7 +113,7 @@ function Item({ id, label }: { id: BenefitId; label: string }) {
 
 export function BenefitTicker() {
   return (
-    <div className="relative z-20 border-t border-white/10 bg-[#020806]">
+    <div className="relative z-20 border-t border-white/10 bg-void">
       <ul className="benefit-static flex flex-wrap gap-x-8 gap-y-3 px-4 py-3">
         {BENEFITS.map((item) => (
           <Item key={item.id} id={item.id} label={item.label} />

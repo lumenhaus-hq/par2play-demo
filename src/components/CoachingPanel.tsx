@@ -57,7 +57,7 @@ export function CoachingPanel() {
           {mode === "lessons" ? (
             <div className="mt-6">
               <label htmlFor={sliderId} className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-base font-semibold text-white">
-                <output htmlFor={sliderId} className="font-display text-5xl font-semibold leading-none text-[#7DFFB0] tabular-nums">
+                <output htmlFor={sliderId} className="font-display text-5xl font-semibold leading-none text-mint tabular-nums">
                   {pack.count}
                 </output>
                 {lessonWord} in the pack
@@ -95,7 +95,7 @@ function ModeButton({ pressed, onClick, children }: { pressed: boolean; onClick:
   return (
     <button
       type="button"
-      className={`aa-focus-ink min-h-11 rounded-full px-3 text-base font-semibold ${pressed ? "bg-white text-[#0A0F0B]" : "text-white"}`}
+      className={`aa-focus-ink min-h-11 rounded-full px-3 text-base font-semibold ${pressed ? "bg-white text-ink" : "text-white"}`}
       aria-pressed={pressed}
       onClick={onClick}
     >

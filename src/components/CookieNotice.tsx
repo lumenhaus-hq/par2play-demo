@@ -66,7 +66,7 @@ export function CookieNotice() {
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 flex justify-center p-3 @3xl:p-6">
       {mode === "banner" ? (
-        <div className="pointer-events-auto w-full max-w-3xl rounded-2xl border border-[#0A0F0B]/15 bg-[#f6f6f4] px-4 py-3 text-[#0A0F0B] shadow-[0_12px_40px_rgb(10_15_11/0.18)]">
+        <div className="pointer-events-auto w-full max-w-3xl rounded-2xl border border-ink/15 bg-paper px-4 py-3 text-ink shadow-[0_12px_40px_color-mix(in_srgb,var(--ink)_18%,transparent)]">
           <p className="text-base font-semibold">Cookies at Par2Play</p>
           <p className="mt-1 text-sm leading-snug">
             {`We use cookies to keep this site working. With your OK, we’d also like to use analytics cookies to see how the site is used, and marketing cookies to measure our ads on Google, Facebook and Instagram. Non-essential cookies stay off unless you turn them on. You can change your mind anytime in “Cookie settings” at the bottom of the page. `}
@@ -87,7 +87,7 @@ export function CookieNotice() {
         <div
           role="dialog"
           aria-labelledby="cookie-settings-title"
-          className="pointer-events-auto max-h-[70vh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-[#0A0F0B]/15 bg-[#f6f6f4] px-4 py-3 text-[#0A0F0B] shadow-[0_12px_40px_rgb(10_15_11/0.18)]"
+          className="pointer-events-auto max-h-[70vh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-ink/15 bg-paper px-4 py-3 text-ink shadow-[0_12px_40px_color-mix(in_srgb,var(--ink)_18%,transparent)]"
         >
           <p id="cookie-settings-title" className="text-base font-semibold">
             Cookie settings
@@ -148,7 +148,7 @@ function BannerButton({ children, onClick }: { children: string; onClick: () => 
   return (
     <button
       type="button"
-      className={`min-h-11 rounded-full border-2 border-[#0A0F0B] bg-white px-4 text-base font-semibold text-[#0A0F0B] ${buttonFocus}`}
+      className={`min-h-11 rounded-full border-2 border-ink bg-white px-4 text-base font-semibold text-ink ${buttonFocus}`}
       onClick={onClick}
     >
       {children}
@@ -170,7 +170,7 @@ function Category({
   onChange?: (value: boolean) => void;
 }) {
   return (
-    <li className="rounded-xl border border-[#0A0F0B]/10 bg-white px-3 py-3">
+    <li className="rounded-xl border border-ink/10 bg-white px-3 py-3">
       <div className="flex items-center justify-between gap-3">
         <p className="text-base font-semibold">{title}</p>
         <button
@@ -178,7 +178,7 @@ function Category({
           role="switch"
           aria-checked={on}
           disabled={locked}
-          className={`min-h-11 min-w-16 rounded-full px-3 text-sm font-semibold ${on ? "bg-[#14D45E] text-[#0A0F0B]" : "bg-[#e6eee8] text-[#0A0F0B]"} ${locked ? "opacity-70" : ""} ${buttonFocus}`}
+          className={`min-h-11 min-w-16 rounded-full px-3 text-sm font-semibold ${on ? "bg-accent text-ink" : "bg-[#e6eee8] text-ink"} ${locked ? "opacity-70" : ""} ${buttonFocus}`}
           onClick={() => onChange?.(!on)}
         >
           {locked ? "Always on" : on ? "On" : "Off"}

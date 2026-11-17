@@ -26,7 +26,7 @@ function CheckoutLink({ href, children }: { href: string; children: string }) {
       target="_blank"
       rel="noopener noreferrer"
       onClick={(event) => trackAnchor(event.currentTarget)}
-      className={`inline-flex min-h-11 items-center justify-center rounded-full bg-[#14D45E] px-5 text-base font-semibold text-[#0A0F0B] hover:bg-[#3dff7c] hover:text-[#0A0F0B] active:bg-[#0fb852] visited:bg-[#14D45E] visited:text-[#0A0F0B] ${buttonFocus}`}
+      className={`inline-flex min-h-11 items-center justify-center rounded-full bg-accent px-5 text-base font-semibold text-accent-foreground hover:bg-accent-hot hover:text-ink active:bg-accent visited:bg-accent visited:text-ink ${buttonFocus}`}
     >
       {children}
     </a>
@@ -71,11 +71,11 @@ export function CoachingPage() {
         <h2 className="mt-16 font-display text-3xl font-semibold tracking-tight">Lesson packs</h2>
         <ul aria-label="Lesson pack prices" className="mt-6 grid auto-rows-fr grid-cols-1 gap-4 @xl:grid-cols-2 @5xl:grid-cols-5">
           {lessonTiers.map((tier) => (
-            <li key={tier.count} className="rounded-3xl border border-[#0A0F0B]/15 bg-white p-5">
+            <li key={tier.count} className="rounded-3xl border border-ink/15 bg-white p-5">
               <span className="inline-flex size-10 items-center justify-center rounded-xl bg-[#E4F3E8] text-[#17743B]"><Layers3 aria-hidden="true" className="size-5" strokeWidth={1.7} /></span>
               <p className="mt-5 text-sm font-semibold text-[#4B5563]">{tier.count}</p>
               <p className="mt-2 font-display text-3xl font-semibold tracking-tight tabular-nums">{money(tier.price)}</p>
-              <p className="mt-5 flex items-center gap-2 border-t border-[#0A0F0B]/10 pt-4 text-sm text-[#4B5563]"><Clock3 aria-hidden="true" className="size-4 shrink-0" />{PRICES.lessonMinutes} min / lesson</p>
+              <p className="mt-5 flex items-center gap-2 border-t border-ink/10 pt-4 text-sm text-[#4B5563]"><Clock3 aria-hidden="true" className="size-4 shrink-0" />{PRICES.lessonMinutes} min / lesson</p>
             </li>
           ))}
         </ul>
@@ -103,7 +103,7 @@ export function CoachingPage() {
         </p>
         <div className="mt-6 grid gap-6 @3xl:grid-cols-2">
           {PUBLISHED_COACHES.map((coach) => (
-            <article id={coach.id} key={coach.id} className="border-2 border-[#0A0F0B] bg-white p-5">
+            <article id={coach.id} key={coach.id} className="border-2 border-ink bg-white p-5">
               <h3 className="font-display text-2xl font-semibold">{coach.name}</h3>
               <p className="mt-3 text-base leading-relaxed">{coach.line}</p>
             </article>
@@ -177,13 +177,13 @@ export function NotFoundPage() {
         <CtaPair className="mt-8">
           <a
             href={pageHref("membership")}
-            className={`inline-flex min-h-11 w-full items-center justify-center rounded-full bg-[#14D45E] px-5 text-base font-semibold text-[#0A0F0B] ${buttonFocus}`}
+            className={`inline-flex min-h-11 w-full items-center justify-center rounded-full bg-accent px-5 text-base font-semibold text-accent-foreground ${buttonFocus}`}
           >
             Membership
           </a>
           <a
             href={pageHref("")}
-            className={`inline-flex min-h-11 w-full items-center justify-center rounded-full border-2 border-[#0A0F0B] bg-white px-5 text-base font-semibold text-[#0A0F0B] ${buttonFocus}`}
+            className={`inline-flex min-h-11 w-full items-center justify-center rounded-full border-2 border-ink bg-white px-5 text-base font-semibold text-ink ${buttonFocus}`}
           >
             Home
           </a>

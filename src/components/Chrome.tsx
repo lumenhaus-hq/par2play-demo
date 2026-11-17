@@ -24,14 +24,14 @@ export function Mark({ light = false }: { light?: boolean }) {
 export function ClubHeader({ light = false }: { light?: boolean }) {
   const flow = useFlow();
   const [open, setOpen] = useState(false);
-  const link = `inline-flex min-h-11 items-center text-base font-semibold ${buttonFocus} ${light ? "text-white" : "text-[#0A0F0B]"}`;
+  const link = `inline-flex min-h-11 items-center text-base font-semibold ${buttonFocus} ${light ? "text-white" : "text-ink"}`;
   const jump = (id?: string) => {
     setOpen(false);
     if (id) flow.goSection(id);
     else flow.goHome();
   };
   return (
-    <header className={`relative px-5 py-4 lg:px-8 ${light ? "bg-[#0A0F0B] text-white" : "text-[#0A0F0B]"}`}>
+    <header className={`relative px-5 py-4 lg:px-8 ${light ? "bg-ink text-white" : "text-ink"}`}>
       <div className="flex items-center justify-between gap-4">
         <Button variant="ghost" className="h-auto min-w-0 bg-transparent px-0" onPress={flow.goHome}>
           <Mark light={light} />
@@ -55,7 +55,7 @@ export function ClubHeader({ light = false }: { light?: boolean }) {
             </button>
           </nav>
         ) : (
-          <Button variant="ghost" className={`min-h-11 px-4 text-base font-semibold ${light ? "text-white" : "text-[#0A0F0B]"}`} onPress={() => setOpen((value) => !value)}>
+          <Button variant="ghost" className={`min-h-11 px-4 text-base font-semibold ${light ? "text-white" : "text-ink"}`} onPress={() => setOpen((value) => !value)}>
             {open ? "Close" : "Menu"}
           </Button>
         )}
@@ -64,7 +64,7 @@ export function ClubHeader({ light = false }: { light?: boolean }) {
         )}
       </div>
       {flow.layout === "mobile" && open && (
-        <nav className={`mt-4 flex flex-col gap-1 text-base font-semibold ${light ? "text-white" : "text-[#0A0F0B]"}`}>
+        <nav className={`mt-4 flex flex-col gap-1 text-base font-semibold ${light ? "text-white" : "text-ink"}`}>
           <button className={link} onClick={() => jump()} type="button">Home</button>
           <button className={link} onClick={() => jump("practice")} type="button">Practice</button>
           <button className={link} onClick={() => jump("coaching")} type="button">Coaching</button>

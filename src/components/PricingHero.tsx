@@ -34,12 +34,12 @@ export function PricingHero({
   facts: readonly PriceFact[];
 }) {
   return (
-    <section id={id} aria-labelledby={`${id}-heading`} className="@container min-w-0 overflow-hidden rounded-3xl bg-[#020806] @3xl:grid @3xl:grid-cols-2">
+    <section id={id} aria-labelledby={`${id}-heading`} className="@container min-w-0 overflow-hidden rounded-3xl bg-void @3xl:grid @3xl:grid-cols-2">
       <div className="flex min-w-0 flex-col justify-center bg-[radial-gradient(120%_80%_at_0%_0%,rgb(20_212_94/0.16),transparent_52%)] px-5 pt-8 pb-8 @3xl:px-12 @3xl:py-14">
         <h1 id={`${id}-heading`} className="font-display text-2xl font-semibold tracking-tight text-white @3xl:text-3xl">
           {pageTitle}
         </h1>
-        <p className="mt-2 font-display text-lg font-semibold tracking-tight text-[#7DFFB0]">
+        <p className="mt-2 font-display text-lg font-semibold tracking-tight text-mint">
           {heading}
         </p>
         <div aria-live="polite" aria-atomic="true" className="mt-2">
@@ -72,12 +72,12 @@ function PriceCell({ label, value, hot }: { label: string; value: string; hot: b
     <div
       className={
         hot
-          ? "min-w-0 rounded-2xl border-2 border-[#14D45E] bg-[#0c2416] p-3 shadow-[0_0_36px_rgb(20_212_94/0.22)] @3xl:p-4"
+          ? "min-w-0 rounded-2xl border-2 border-accent bg-bay p-3 shadow-[0_0_36px_rgb(20_212_94/0.22)] @3xl:p-4"
           : "min-w-0 rounded-2xl border-2 border-white/25 bg-white/5 p-3 @3xl:p-4"
       }
     >
-      <p className={`flex min-h-8 items-center gap-2 text-xs font-semibold uppercase leading-tight tracking-[0.04em] @3xl:text-sm ${hot ? "text-[#7DFFB0]" : "text-[#E5E7EB]"}`}><Banknote aria-hidden="true" className="size-4 shrink-0" />{label}</p>
-      <p className={`mt-3 font-display text-2xl font-semibold leading-none tabular-nums @3xl:text-4xl ${hot ? "text-[#7DFFB0]" : "text-[#E5E7EB]"}`}>{value}</p>
+      <p className={`flex min-h-8 items-center gap-2 text-xs font-semibold uppercase leading-tight tracking-[0.04em] @3xl:text-sm ${hot ? "text-mint" : "text-[#E5E7EB]"}`}><Banknote aria-hidden="true" className="size-4 shrink-0" />{label}</p>
+      <p className={`mt-3 font-display text-2xl font-semibold leading-none tabular-nums @3xl:text-4xl ${hot ? "text-mint" : "text-[#E5E7EB]"}`}>{value}</p>
     </div>
   );
 }

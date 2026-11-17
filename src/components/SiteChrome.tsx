@@ -10,7 +10,7 @@ import { VisitLine } from "./VisitLine";
 import { SITE_NAV, currentRoute, pageHref } from "../data/routes";
 import { useFlow } from "../state/flow";
 
-const navClass = `nav-link inline-flex min-h-11 items-center px-1 text-base font-semibold text-[#0A0F0B] ${buttonFocus}`;
+const navClass = `nav-link inline-flex min-h-11 items-center px-1 text-base font-semibold text-ink ${buttonFocus}`;
 
 export function SiteHeader() {
   const [menu, setMenu] = useState(false);
@@ -35,8 +35,8 @@ export function SiteHeader() {
           ))}
         </nav>
         <div className="flex items-center gap-2">
-          <LayoutToggle className="text-[#0A0F0B]" />
-          <SoundToggle className="text-[#0A0F0B]" />
+          <LayoutToggle className="text-ink" />
+          <SoundToggle className="text-ink" />
           <span className="hidden @3xl:contents">
             <MembershipLink href={route === "membership" ? membershipCheckoutHref() : undefined} className="shrink-0">
               Become a Member
@@ -88,7 +88,7 @@ export function SiteFooter() {
       </div>
       <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 text-base">
         <p>© 2026 Par2Play</p>
-        <MotionToggle className="text-[#0A0F0B]" />
+        <MotionToggle className="text-ink" />
         <a href={pageHref("privacy-policy")} className={navClass}>
           Privacy
         </a>
@@ -107,7 +107,7 @@ export function PageFrame({ children }: { children: ReactNode }) {
   return (
     <div
       data-smooth-root={mobile ? "" : undefined}
-      className={`@container page-grid text-base text-[#0A0F0B] ${mobile ? "h-full overflow-y-auto" : "min-h-screen"}`}
+      className={`@container page-grid text-base text-ink ${mobile ? "h-full overflow-y-auto" : "min-h-screen"}`}
     >
       <div data-smooth-content={mobile ? "" : undefined}>
         <SiteHeader />

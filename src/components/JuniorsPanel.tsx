@@ -37,7 +37,7 @@ export function JuniorsPanel() {
             <button
               key={item.id}
               type="button"
-              className={`aa-focus-ink min-h-11 rounded-full px-3 text-base font-semibold ${item.id === planId ? "bg-[#14D45E] text-[#0A0F0B]" : "text-white"}`}
+              className={`aa-focus-ink min-h-11 rounded-full px-3 text-base font-semibold ${item.id === planId ? "bg-accent text-ink" : "text-white"}`}
               aria-pressed={item.id === planId}
               onClick={() => setPlanId(item.id)}
             >

@@ -38,7 +38,7 @@ export function EventsPanel() {
       selector={
         <div>
           <label htmlFor={sliderId} className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-base font-semibold text-white">
-            <output htmlFor={sliderId} className="font-display text-5xl font-semibold leading-none text-[#7DFFB0] tabular-nums">
+            <output htmlFor={sliderId} className="font-display text-5xl font-semibold leading-none text-mint tabular-nums">
               {guests}
             </output>
             {guestWord} in the group
@@ -68,7 +68,7 @@ export function EventsPanel() {
               <button
                 key={choice}
                 type="button"
-                className={`aa-focus-ink min-h-11 rounded-full px-3 text-sm font-semibold whitespace-nowrap @3xl:text-base ${hours === choice ? "bg-white text-[#0A0F0B]" : "text-white"}`}
+                className={`aa-focus-ink min-h-11 rounded-full px-3 text-sm font-semibold whitespace-nowrap @3xl:text-base ${hours === choice ? "bg-white text-ink" : "text-white"}`}
                 aria-pressed={hours === choice}
                 onClick={() => setHours(choice)}
               >

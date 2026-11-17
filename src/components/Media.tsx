@@ -338,7 +338,7 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
   const showLoader = phase === "boot" || wiping;
 
   return (
-    <div ref={bayRef} className={`absolute inset-0 overflow-hidden ${phase === "arrived" ? "" : "bg-[#0A0F0B]"}`}>
+    <div ref={bayRef} className={`absolute inset-0 overflow-hidden ${phase === "arrived" ? "" : "bg-ink"}`}>
       <div className={frameClassFor(phase)}>
         <picture className="absolute inset-0 block h-full w-full">
           <source media="(max-width: 767px)" srcSet={HERO_MEDIA.posterMobileAvif} type="image/avif" />

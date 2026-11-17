@@ -7,14 +7,14 @@ function Chip({ label, webp, jpg }: { label: string; webp: string; jpg: string }
         <source srcSet={webp} type="image/webp" />
         <img src={jpg} alt="" width={44} height={44} className="size-11 rounded-xl object-cover" />
       </picture>
-      <span className="text-base font-semibold text-[#0A0F0B]">{label}</span>
+      <span className="text-base font-semibold text-ink">{label}</span>
     </li>
   );
 }
 
 export function UspTicker() {
   return (
-    <section aria-label="What Par2Play offers" className="border-y border-[#0A0F0B]/10 bg-[#f6f6f4]">
+    <section aria-label="What Par2Play offers" className="border-y border-ink/10 bg-paper">
       <ul className="usp-static flex flex-wrap gap-x-8 gap-y-3 px-6 py-4 @3xl:px-12">
         {TICKER_CHIPS.map((item) => (
           <Chip key={item.id} label={item.label} webp={item.webp} jpg={item.jpg} />
