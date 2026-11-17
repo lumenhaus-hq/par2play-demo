@@ -26,3 +26,7 @@ dist-ssr
 # Browser test artifacts
 test-results/
 playwright-report/
+
+# Local agent skill kits (reinstall via npx skills add)
+.agents/
+.taste-skill/

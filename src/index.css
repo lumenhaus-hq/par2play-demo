@@ -847,10 +847,9 @@ html.lenis.lenis-smooth {
   will-change: transform;
 }
 
-/* Start tight on the opening Earth sphere, then ease out to full bleed. */
+/* Soft open zoom — extreme scale made the poster/early frames look soft. */
 .hero-bay-frame--zoom {
-  /* Portrait phones: less extreme scale so the bay stays readable mid-wipe. */
-  transform: perspective(900px) scale(1.85) rotateX(4deg);
+  transform: perspective(900px) scale(1.28) rotateX(2deg);
 }
 
 .hero-bay-frame--expand {
@@ -859,7 +858,7 @@ html.lenis.lenis-smooth {
 
 @media (min-width: 768px) {
   .hero-bay-frame--zoom {
-    transform: perspective(1200px) scale(2.65) rotateX(7deg);
+    transform: perspective(1200px) scale(1.48) rotateX(3deg);
   }
 
   .hero-bay-frame--expand {
@@ -1244,6 +1243,10 @@ body:has(#lcp-poster) #hero {
 
 .hero-video {
   opacity: 0;
+  transition:
+    opacity 480ms var(--motion-ease-enter),
+    transform 700ms var(--motion-ease-wipe);
+  will-change: opacity, transform;
 }
 
 html.media-on .hero-video {
