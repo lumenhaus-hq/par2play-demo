@@ -416,26 +416,27 @@ body {
   position: absolute;
   inset: 0;
   z-index: 0;
-  overflow: hidden;
+  overflow: visible;
   pointer-events: none;
-  contain: paint;
+  /* No contain:paint — that traps position:fixed floaters to the page box. */
   --atmosphere-wash: 0.7;
-  /* Soft ink silhouettes on light paper — visible polish, still below content. */
-  --atmosphere-icon: 0.22;
+  /* Soft ink silhouettes on light paper — readable as ambient polish. */
+  --atmosphere-icon: 0.3;
   --atmosphere-icon-scale: 1;
   --floater-shift: 0rem;
+  --frame-h: 100vh;
 }
 
 .page-atmosphere--strong {
   --atmosphere-wash: 0.85;
-  --atmosphere-icon: 0.28;
-  --atmosphere-icon-scale: 1.08;
+  --atmosphere-icon: 0.38;
+  --atmosphere-icon-scale: 1.06;
 }
 
 .page-atmosphere--max {
   --atmosphere-wash: 1;
-  --atmosphere-icon: 0.34;
-  --atmosphere-icon-scale: 1.18;
+  --atmosphere-icon: 0.44;
+  --atmosphere-icon-scale: 1.12;
 }
 
 .page-atmosphere__wash {
@@ -456,11 +457,25 @@ body {
 }
 
 .page-atmosphere__floaters {
-  position: absolute;
+  /* Fixed to the viewport so all glyphs stay in the hovering field while scrolling.
+     z-index sits above full-bleed section fills but below sticky chrome (z-30). */
+  position: fixed;
   inset: 0;
+  z-index: 5;
   margin: 0;
   padding: 0;
   list-style: none;
+  pointer-events: none;
+}
+
+/* Phone-frame demo: keep the field inside the scrollport, not the outer desktop chrome. */
+.page-atmosphere--framed .page-atmosphere__floaters {
+  position: sticky;
+  top: 0;
+  inset: auto;
+  width: 100%;
+  height: var(--frame-h);
+  z-index: 5;
 }
 
 .page-atmosphere__floater {
@@ -477,11 +492,11 @@ body {
 }
 
 .page-atmosphere__floater--far {
-  opacity: calc(var(--atmosphere-icon) * 0.78);
+  opacity: calc(var(--atmosphere-icon) * 0.72);
 }
 
 .page-atmosphere__floater--mid {
-  opacity: calc(var(--atmosphere-icon) * 0.95);
+  opacity: calc(var(--atmosphere-icon) * 0.9);
 }
 
 .page-atmosphere__floater--near {
@@ -504,7 +519,9 @@ body {
 }
 
 [data-style="nocturne"] .page-atmosphere__floater img {
-  filter: brightness(1.25) contrast(0.92);
+  /* Keep light glyphs on dark paper. */
+  filter: none;
+  opacity: 0.9;
 }
 
 @keyframes page-atmosphere-drift {
@@ -513,7 +530,7 @@ body {
     transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translate3d(0.15rem, -0.95rem, 0);
+    transform: translate3d(0.2rem, -1.1rem, 0);
   }
 }
 
@@ -538,25 +555,21 @@ html.motion-paused .page-atmosphere__floater img {
 }
 
 @media (max-width: 639px) {
-  .page-atmosphere--base .page-atmosphere__floater {
-    opacity: 0.06;
-    width: 2.5rem !important;
+  .page-atmosphere {
+    --atmosphere-icon: 0.22;
   }
 
-  .page-atmosphere--strong .page-atmosphere__floater,
-  .page-atmosphere--max .page-atmosphere__floater {
-    opacity: calc(var(--atmosphere-icon) * 0.7);
-    width: 2.85rem !important;
+  .page-atmosphere--strong,
+  .page-atmosphere--max {
+    --atmosphere-icon: 0.28;
   }
 
-  /* Keep the field sparse on phones — far layer only. */
-  .page-atmosphere--base .page-atmosphere__floater--mid,
-  .page-atmosphere--base .page-atmosphere__floater--near {
-    display: none;
+  .page-atmosphere__floater {
+    width: 2.75rem !important;
   }
 
-  .page-atmosphere--strong .page-atmosphere__floater--near,
-  .page-atmosphere--max .page-atmosphere__floater--near {
+  /* Sparse phone field — keep far + mid, drop near. */
+  .page-atmosphere__floater--near {
     display: none;
   }
 }

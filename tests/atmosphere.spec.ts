@@ -28,6 +28,14 @@ test("homepage atmosphere floaters sit behind content with depth layers", async 
   expect(stacking.pointerEvents).toBe("none");
   expect(stacking.ariaHidden).toBe("true");
   expect(stacking.contentZ).toBe("10");
+  const inView = await atmosphere.locator(".page-atmosphere__floater").evaluateAll((nodes) =>
+    nodes.filter((node) => {
+      const rect = node.getBoundingClientRect();
+      return rect.bottom > 0 && rect.top < window.innerHeight && rect.width > 0;
+    }).length,
+  );
+  // Viewport-fixed field: most glyphs should be on-screen at once.
+  expect(inView).toBeGreaterThanOrEqual(7);
 });
 
 test("scroll shifts near floaters more than far ones", async ({ page }) => {
