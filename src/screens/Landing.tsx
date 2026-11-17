@@ -17,7 +17,8 @@ import { VideoSlot } from "../components/VideoSlot";
 import { ValuePoint } from "../components/ValuePoint";
 import { NAP, OCLOCK, golfClockBookingReady } from "../data/business";
 import { HERO_TICKER } from "../data/heroTicker";
-import { HeroTitle, heroConcept } from "../components/HeroTitle";
+import { HeroLocation, HeroTitle } from "../components/HeroTitle";
+import type { HeroTypeId } from "../data/heroType";
 import { JsonLd } from "../components/JsonLd";
 import { FaqSection } from "../components/FaqSection";
 import { VisitLine } from "../components/VisitLine";
@@ -31,9 +32,8 @@ const sectionSpace = "scroll-mt-32 px-6 py-20 @3xl:px-12 @3xl:py-24";
 
 const navButton = `nav-link inline-flex min-h-11 items-center px-1 text-base font-semibold text-ink ${buttonFocus}`;
 
-export function Landing() {
+export function Landing({ heroType = "pulse" }: { heroType?: HeroTypeId }) {
   const flow = useFlow();
-  const concept = heroConcept();
   const [menu, setMenu] = useState(false);
   const [onFilm, setOnFilm] = useState(true);
   const [active, setActive] = useState<string | null>(null);
@@ -188,11 +188,9 @@ export function Landing() {
           >
             <div className="hero-offer-sheen" aria-hidden="true" />
             <div className="relative flex min-w-0 flex-col gap-2.5 @3xl:gap-4">
-              <div className="hero-stage hero-stage--copy min-w-0 max-w-full">
-                <HeroTitle concept={concept} />
-                <h1 className="hero-location hero-stage hero-stage--location mt-1.5 text-mint/90 @3xl:mt-2">
-                  Indoor golf in Somerset, NJ
-                </h1>
+              <div className="hero-stage hero-stage--copy min-w-0 max-w-full" data-hero-type={heroType}>
+                <HeroTitle concept={heroType} />
+                <HeroLocation concept={heroType} />
               </div>
               <div className="hero-stage hero-stage--cta">
                 <HeroMembershipAction className="cta-sheen w-full @3xl:w-auto" />
