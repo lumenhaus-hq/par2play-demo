@@ -1500,8 +1500,8 @@ html.motion-paused .benefit-card--dim {
   grid-area: dock;
   display: flex;
   align-items: center;
-  min-height: 7.5rem;
-  padding: 0.75rem;
+  min-height: 8.5rem;
+  padding: 0.65rem;
 }
 
 .membership-bento__eyebrow {
@@ -1684,23 +1684,22 @@ html.motion-paused .benefit-card--dim {
   color: rgb(244 246 245 / 0.6);
 }
 
-.membership-bento__club-chip {
-  display: block;
-  width: 1.55rem;
-  height: 1.15rem;
-  margin-top: 0.7rem;
-  border-radius: 0.3rem;
-  background: linear-gradient(135deg, #d7dde3, #8b949e);
-}
-
 .membership-bento__club-icon {
   position: absolute;
-  right: 0.7rem;
-  bottom: 0.55rem;
-  width: 2.1rem;
-  height: 2.1rem;
-  color: #e8ecea;
-  opacity: 0.9;
+  right: 0.55rem;
+  bottom: 0.45rem;
+  width: 2.4rem;
+  height: auto;
+  opacity: 0.95;
+  filter: drop-shadow(0 2px 6px rgb(0 0 0 / 0.35));
+}
+
+.membership-bento__glyph {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
 }
 
 .membership-bento__chart-head {
@@ -1852,8 +1851,8 @@ html.motion-paused .benefit-card--dim {
 
 .membership-bento__dock {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.28rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.3rem;
   width: 100%;
   margin: 0;
   padding: 0.4rem;
@@ -1866,20 +1865,35 @@ html.motion-paused .benefit-card--dim {
   display: grid;
   place-items: center;
   width: 100%;
-  aspect-ratio: 1;
-  border-radius: 1.05rem;
+  aspect-ratio: 1.15;
+  padding: 0.28rem;
+  border-radius: 0.95rem;
   background: rgb(255 255 255 / 0.08);
   color: #eef2f0;
 }
 
-.membership-bento__dock-icon--ball .membership-bento__spin svg {
-  width: 1.15rem;
-  height: 1.15rem;
+.membership-bento__dock-icon .membership-bento__glyph {
+  width: 78%;
+  max-height: 1.55rem;
+}
+
+.membership-bento__dock-icon--ball .membership-bento__spin-glyph {
+  width: 1.35rem;
+  height: auto;
 }
 
 .membership-bento__spin {
   display: inline-flex;
   line-height: 0;
+}
+
+.membership-bento__spin-glyph {
+  width: 1.75rem;
+  height: auto;
+}
+
+.membership-bento__brand-ball .membership-bento__spin-glyph {
+  width: 2rem;
 }
 
 .membership-bento__benefits {

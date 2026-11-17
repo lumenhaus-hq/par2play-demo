@@ -16,14 +16,43 @@ const driveBars: readonly { day: string; value: number; highlight?: boolean; tip
   { day: "TODAY", value: 88, highlight: true, tip: "275" },
 ];
 
-const dockItems = [
-  { id: "bag", label: "Bag" },
-  { id: "stats", label: "Stats" },
-  { id: "sim", label: "Simulator" },
-  { id: "social", label: "Social" },
+const golfIconBase = `${import.meta.env.BASE_URL}media/membership-icons`;
+
+const golfIcons = [
+  { id: "bag", label: "Bag", file: "bag.png" },
+  { id: "swing", label: "Swing", file: "swing.png" },
+  { id: "ball", label: "Ball", file: "ball.png" },
+  { id: "club-strike", label: "Strike", file: "club-strike.png" },
+  { id: "crossed-clubs", label: "Clubs", file: "crossed-clubs.png" },
+  { id: "flag", label: "Pin", file: "flag.png" },
+  { id: "putter", label: "Putt", file: "putter.png" },
+  { id: "grass", label: "Turf", file: "grass.png" },
+  { id: "cart", label: "Cart", file: "cart.png" },
 ] as const;
 
-type DockId = (typeof dockItems)[number]["id"];
+type GolfIconId = (typeof golfIcons)[number]["id"];
+
+function MembershipGolfIcon({
+  id,
+  className = "",
+}: {
+  id: GolfIconId;
+  className?: string;
+}) {
+  const icon = golfIcons.find((item) => item.id === id) ?? golfIcons[0];
+  return (
+    <img
+      src={`${golfIconBase}/${icon.file}`}
+      alt=""
+      aria-hidden="true"
+      className={`membership-bento__glyph ${className}`}
+      width={48}
+      height={38}
+      decoding="async"
+      loading="lazy"
+    />
+  );
+}
 
 function Tile({
   className = "",
@@ -108,17 +137,12 @@ function ClubStack() {
       <div className="membership-bento__club membership-bento__club--back">
         <p className="membership-bento__club-label">Driver</p>
         <p className="membership-bento__club-meta">460cc · Stiff</p>
-        <span className="membership-bento__club-chip" />
+        <MembershipGolfIcon id="club-strike" className="membership-bento__club-icon" />
       </div>
       <div className="membership-bento__club membership-bento__club--front">
         <p className="membership-bento__club-label">Iron · 7</p>
         <p className="membership-bento__club-meta">Launch · Spin</p>
-        <span className="membership-bento__club-chip" />
-        <svg className="membership-bento__club-icon" viewBox="0 0 48 48" aria-hidden="true">
-          <path fill="currentColor" d="M14 6h5l2 16H16L14 6Z" />
-          <path fill="var(--accent)" d="M18 22 30 36l4-3.4L22 18.6 18 22Z" />
-          <path fill="currentColor" d="M28 34c4-1.6 9.2 0 11 2.8 1.6 2.4.2 5-3.6 5.8-4.8 1.2-10-.6-11.6-3-1.4-2 .4-4.4 4.2-5.6Z" />
-        </svg>
+        <MembershipGolfIcon id="crossed-clubs" className="membership-bento__club-icon" />
       </div>
     </div>
   );
@@ -127,61 +151,9 @@ function ClubStack() {
 function SpinningBall({ reduce }: { reduce: boolean }) {
   return (
     <span className={`membership-bento__spin ${reduce ? "" : "membership-bento__spin--live"}`} aria-hidden="true">
-      <svg viewBox="0 0 32 32" className="size-7">
-        <circle cx="16" cy="16" r="13" fill="#f2f5f3" />
-        <circle cx="16" cy="16" r="5" fill="var(--mint)" />
-        <circle cx="12.2" cy="12.4" r="1.8" fill="var(--bay)" />
-        <path
-          d="M8 18c3 2 6 3 10 2M18 9c2 2 3 5 2 8"
-          fill="none"
-          stroke="var(--bay)"
-          strokeWidth="1.4"
-          strokeLinecap="round"
-          opacity="0.45"
-        />
-      </svg>
+      <MembershipGolfIcon id="ball" className="membership-bento__spin-glyph" />
     </span>
   );
-}
-
-function DockGlyph({ id }: { id: DockId }) {
-  switch (id) {
-    case "bag":
-      return (
-        <svg viewBox="0 0 24 24" className="size-5" aria-hidden="true">
-          <path fill="currentColor" d="M8 10h8l1 10H7L8 10Z" />
-          <path fill="var(--accent)" d="M10 4h4l1 6h-6L10 4Z" />
-        </svg>
-      );
-    case "stats":
-      return (
-        <svg viewBox="0 0 24 24" className="size-5" aria-hidden="true">
-          <rect x="4" y="13" width="3.5" height="7" rx="1" fill="currentColor" />
-          <rect x="10.2" y="9" width="3.5" height="11" rx="1" fill="var(--accent)" />
-          <rect x="16.4" y="5" width="3.5" height="15" rx="1" fill="currentColor" />
-        </svg>
-      );
-    case "sim":
-      return (
-        <svg viewBox="0 0 24 24" className="size-5" aria-hidden="true">
-          <rect x="3" y="5" width="18" height="12" rx="2" fill="currentColor" />
-          <path fill="var(--accent)" d="M8 19h8v2H8z" />
-          <circle cx="12" cy="11" r="2.4" fill="var(--accent)" />
-        </svg>
-      );
-    case "social":
-      return (
-        <svg viewBox="0 0 24 24" className="size-5" aria-hidden="true">
-          <circle cx="9" cy="9" r="3" fill="currentColor" />
-          <circle cx="16" cy="10" r="2.4" fill="var(--accent)" />
-          <path fill="currentColor" d="M4 19c.5-3 2.8-4.6 5-4.6s4.5 1.6 5 4.6H4Z" />
-        </svg>
-      );
-    default: {
-      const exhaustive: never = id;
-      return exhaustive;
-    }
-  }
 }
 
 function Stars() {
@@ -328,10 +300,10 @@ export function MembershipBento() {
 
         <Tile className="membership-bento__tile--dock" label="Member shortcuts">
           <ul className="membership-bento__dock">
-            {dockItems.map((item) => (
+            {golfIcons.map((item) => (
               <li key={item.id}>
-                <span className={`membership-bento__dock-icon${item.id === "sim" ? " membership-bento__dock-icon--ball" : ""}`}>
-                  {item.id === "sim" ? <SpinningBall reduce={reduce} /> : <DockGlyph id={item.id} />}
+                <span className={`membership-bento__dock-icon${item.id === "ball" ? " membership-bento__dock-icon--ball" : ""}`}>
+                  {item.id === "ball" ? <SpinningBall reduce={reduce} /> : <MembershipGolfIcon id={item.id} />}
                 </span>
                 <span className="sr-only">{item.label}</span>
               </li>
