@@ -11,17 +11,17 @@ export const HERO_TYPES: readonly HeroTypeMeta[] = [
   {
     id: "pulse",
     label: "Pulse",
-    blurb: "Varsity block + Yellowtail script overlap",
+    blurb: "Two-line varsity + Yellowtail script mark",
   },
   {
     id: "plate",
     label: "Plate",
-    blurb: "Syne block + Permanent Marker brush hit",
+    blurb: "Syne stack + Permanent Marker brush hit",
   },
   {
     id: "drive",
     label: "Drive",
-    blurb: "Mega outlined word + tucked connector + script",
+    blurb: "Mega ALL + tucked connector + script",
   },
 ] as const;
 

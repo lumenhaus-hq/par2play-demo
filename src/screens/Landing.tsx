@@ -184,10 +184,10 @@ export function Landing({ heroType = "pulse" }: { heroType?: HeroTypeId }) {
         >
           <div
             ref={offerTiltRef}
-            className="hero-panel hero-panel-depth hero-panel-tilt hero-offer-card pointer-events-auto max-h-full w-full max-w-[32rem] overflow-y-auto rounded-[1.35rem] px-4 py-3 @3xl:px-6 @3xl:py-5"
+            className="hero-panel hero-panel-depth hero-panel-tilt hero-offer-card pointer-events-auto max-h-full w-full max-w-[36rem] overflow-y-auto rounded-[1.35rem] px-4 py-3.5 @3xl:px-7 @3xl:py-6"
           >
             <div className="hero-offer-sheen" aria-hidden="true" />
-            <div className="relative flex min-w-0 flex-col gap-2.5 @3xl:gap-4">
+            <div className="relative flex min-w-0 flex-col gap-3 @3xl:gap-5">
               <div className="hero-stage hero-stage--copy min-w-0 max-w-full" data-hero-type={heroType}>
                 <HeroTitle concept={heroType} />
                 <HeroLocation concept={heroType} />
