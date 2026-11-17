@@ -1405,16 +1405,26 @@ html.lenis.lenis-smooth {
   }
 }
 
-/* CTA wipe / label slide — fine pointer only; reduced / paused = color swap. */
+/*
+ * CTA wipe / label slide — fine pointer only; reduced / paused = color swap.
+ * Hard offset stamp shadow (compare-plans look) distinguishes CTAs from joint toggles.
+ * taste-skill-ignore: owner asked for solid block shadow on CTAs; 0-blur drop-shadow
+ * keeps overflow:hidden for the wipe without clipping the stamp.
+ */
 .cta-shell {
+  --cta-stamp: var(--ink);
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  transition: transform var(--motion-fast) var(--motion-ease-press);
+  filter: drop-shadow(-4px 4px 0 var(--cta-stamp));
+  transition:
+    transform var(--motion-fast) var(--motion-ease-press),
+    filter var(--motion-fast) var(--motion-ease-press);
 }
 
 .cta-shell:active {
-  transform: scale(0.965);
+  filter: drop-shadow(-1px 2px 0 var(--cta-stamp));
+  transform: translate(1px, 2px) scale(0.985);
 }
 
 .cta-fill {
@@ -1439,13 +1449,13 @@ html.lenis.lenis-smooth {
   transition: transform var(--motion-base) var(--motion-ease-wipe);
 }
 
-/* Soft black crescent under the left edge — matches the lift CTA spec. */
+/* Alias kept for markup that still names the stamp lift. */
 .cta-lift {
-  box-shadow: -3px 5px 0 0 var(--ink);
+  filter: drop-shadow(-4px 4px 0 var(--cta-stamp, var(--ink)));
 }
 
 .cta-lift:active {
-  box-shadow: -1px 2px 0 0 var(--ink);
+  filter: drop-shadow(-1px 2px 0 var(--cta-stamp, var(--ink)));
   transform: translate(1px, 2px) scale(0.985);
 }
 
@@ -1464,6 +1474,7 @@ html.lenis.lenis-smooth {
 }
 
 .cta-inverted {
+  border: 2px solid var(--ink);
   background: var(--surface);
   color: var(--ink);
 }
