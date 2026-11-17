@@ -32,15 +32,15 @@ export const REVIEW_QUOTES: ReviewQuote[] = [
   {
     id: "jeric",
     excerpt:
-      "Thank you Nick for the best coaching experience and for helping me improve so much every lesson.",
-    line: "Thank you Nick for the best coaching experience and for helping me improve so much.",
+      "Thank you for the best coaching experience and for helping me improve so much every lesson.",
+    line: "Thank you for the best coaching experience and for helping me improve so much.",
     name: "Jeric",
     sourceUrl: "https://golfsim.co/venues/par2play-somerset/",
   },
   {
     id: "ali",
-    excerpt: "Nick was amazing at helping me plan my husband’s surprise 40th birthday party.",
-    line: "Nick was amazing at helping me plan my husband’s surprise 40th birthday party.",
+    excerpt: "The team was amazing at helping me plan my husband’s surprise 40th birthday party.",
+    line: "The team was amazing at helping me plan my husband’s surprise 40th birthday party.",
     name: "Ali",
     sourceUrl: "https://golfsim.co/venues/par2play-somerset/",
   },

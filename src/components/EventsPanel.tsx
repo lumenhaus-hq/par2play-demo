@@ -29,10 +29,6 @@ export function EventsPanel() {
       figure={figure}
       live={live}
       film={EVENTS_HERO_FILM}
-      facts={[
-        { label: "Duration", value: `${hours} hours`, icon: "clock" },
-        { label: "Package price", value: "On request", icon: "price" },
-      ]}
       primary={{ offer: "group", label: "Check availability" }}
       secondary={{ offer: "bay", label: "Try it out" }}
       selector={

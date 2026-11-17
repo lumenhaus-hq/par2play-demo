@@ -214,7 +214,7 @@ export function PlaceStep() {
       photo={IMAGES.green}
       options={[
         { id: "simulator", label: "A simulator bay", detail: "One session. $70, tax included. Midday is off-peak." },
-        { id: "both", label: "Bay and a lesson", detail: "Practice, and time with Nick or Sean." },
+        { id: "both", label: "Bay and a lesson", detail: "Practice, and time with a PGA professional." },
       ]}
     />
   );
@@ -396,7 +396,7 @@ export function PlanStep() {
 
 const PRODUCTS: { id: Product; label: string; detail: string }[] = [
   { id: "simulator", label: "Bay session", detail: `${money(RATES.baySession)} tax included.` },
-  { id: "coaching", label: "Lesson", detail: `30 minutes with Nick or Sean. Single price TBD. A 3-pack is ${money(RATES.lessonPack3)}.` },
+  { id: "coaching", label: "Lesson", detail: `30 minutes with a PGA professional. Single price TBD.` },
 ];
 
 export function BookStep() {

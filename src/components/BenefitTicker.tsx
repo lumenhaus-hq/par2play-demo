@@ -1,15 +1,13 @@
 import type { ReactNode } from "react";
 
-type BenefitId = "rollover" | "swing" | "fitting" | "bays" | "services" | "event" | "lessons" | "baytime";
+type BenefitId = "rollover" | "swing" | "bays" | "services" | "event" | "baytime";
 
 const BENEFITS: readonly { id: BenefitId; label: string }[] = [
   { id: "rollover", label: "Hours that roll over" },
   { id: "swing", label: "Swing evaluation" },
-  { id: "fitting", label: "Club fitting" },
   { id: "bays", label: "Member pricing on bays" },
   { id: "services", label: "Discounts on lessons & services" },
   { id: "event", label: "Free 3-hour event" },
-  { id: "lessons", label: "5-lesson pack" },
   { id: "baytime", label: "Bay time every month" },
 ];
 
@@ -40,14 +38,6 @@ function Glyph({ id }: { id: BenefitId }) {
           <circle cx="12.2" cy="12.4" r="1.6" fill="var(--bay)" />
         </Mark>
       );
-    case "fitting":
-      return (
-        <Mark>
-          <path fill="currentColor" d="M7.2 4.5h3.6l1.1 9.2H8.3L7.2 4.5Z" />
-          <path fill="var(--mint)" d="M10.4 13.4 17.8 22l2.4-2.1-7.4-8.6-2.4 2.1Z" />
-          <path fill="currentColor" d="M16.6 20.6c2.6-1 6.2 0 7.4 1.8 1.1 1.7.1 3.4-2.4 4-3.2.8-6.8-.4-7.8-2-.9-1.4.2-3 2.8-3.8Z" />
-        </Mark>
-      );
     case "bays":
       return (
         <Mark>
@@ -73,14 +63,6 @@ function Glyph({ id }: { id: BenefitId }) {
           <circle cx="26.4" cy="13.4" r="1.5" fill="currentColor" />
           <circle cx="20.2" cy="6.2" r="1.2" fill="currentColor" />
           <path fill="var(--mint)" d="M24.2 17.2h4.2v2.2h-4.2zm1.6 3.2h3.4v2.2h-3.4z" />
-        </Mark>
-      );
-    case "lessons":
-      return (
-        <Mark>
-          <rect x="6" y="8" width="16" height="16" rx="2" fill="currentColor" />
-          <path fill="var(--mint)" d="M9 12h10v2.2H9Zm0 4.2h10v2.2H9Zm0 4.2h6.4V23H9Z" />
-          <path fill="var(--mint)" d="M22 6.5 26 8v8l-4-1.4V6.5Z" />
         </Mark>
       );
     case "baytime":

@@ -58,10 +58,10 @@ for (const width of [320, 360, 390, 430, 1280]) {
     await page.goto("membership/");
     const panel = page.locator("#why-membership");
     for (const [label, amount] of [
-      ["Unlimited Practice", "$200"],
-      ["10 Sessions", "$400"],
+      [/Unlimited \/ mo/i, "$200"],
+      [/10 Sessions/i, "$400"],
     ] as const) {
-      await panel.getByRole("button", { name: label, exact: true }).click();
+      await panel.getByRole("button", { name: label }).click();
       const fee = panel.locator('[aria-live="polite"] p').last();
       await expect(fee).toContainText(amount);
       const layout = await fee.evaluate((node) => {

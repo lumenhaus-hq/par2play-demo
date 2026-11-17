@@ -25,11 +25,11 @@ export const ADDRESS_LINE = `${NAP.street}, ${NAP.city}, ${NAP.region} ${NAP.pos
 export { HOURS_LABEL, SITE_URL } from "./site";
 
 export const COACHES = [
-  { id: "nick-schiavo", name: "Nick Schiavo" },
-  { id: "nick-monticello", name: "Nick Monticello" },
+  { id: "coach-a", name: "PGA Professional" },
+  { id: "coach-b", name: "PGA Professional" },
 ] as const;
 
-export const COACH_LINE = "Nick Schiavo and Nick Monticello, PGA professionals";
+export const COACH_LINE = "PGA professionals";
 
 /**
  * Full Swing course library. The live bay-rental page says "more than 100

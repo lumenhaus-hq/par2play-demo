@@ -209,7 +209,7 @@ export function OrbitLanding() {
       <section className="take-orbit-proof">
         <TakeEyebrow>From the bay</TakeEyebrow>
         <blockquote className="take-orbit-quote">
-          “{REVIEW_QUOTES[0]?.line ?? "Thank you Nick for the best coaching experience."}”
+          “{REVIEW_QUOTES[0]?.line ?? "Thank you for the best coaching experience."}”
           <footer>— {REVIEW_QUOTES[0]?.name ?? "Jeric"}</footer>
         </blockquote>
         <Magnetic className="mt-10 inline-flex">

@@ -107,7 +107,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
       data-smooth-root={mobile ? "" : undefined}
       className={`@container page-grid text-base text-ink ${scroll} ${chromeReady ? "" : "overflow-hidden"}`}
     >
-      <PageAtmosphere scrollRoot={mobile ? scrollRef : undefined} />
+      <PageAtmosphere scrollRoot={mobile ? scrollRef : undefined} intensity="strong" />
       <div
         data-smooth-content={mobile ? "" : undefined}
         className={`relative z-10 ${mobile ? "flex min-h-full flex-col" : ""}`}
@@ -229,14 +229,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
           <ScrollReveal tone="rise" delay={80}>
             <h2 className="font-display text-3xl font-semibold leading-none tracking-tight @5xl:text-5xl">Get fitted and swinging!</h2>
             <p className="mt-8 max-w-md font-display text-2xl font-semibold leading-tight tracking-tight">
-              {"Two PGA professional coaches, "}
-              <a className="underline decoration-2 underline-offset-4" href={`${pageHref("coaching")}#nick-schiavo`}>
-                Nick Schiavo
-              </a>
-              {" and "}
-              <a className="underline decoration-2 underline-offset-4" href={`${pageHref("coaching")}#nick-monticello`}>
-                Nick Monticello
-              </a>
+              PGA professional coaches for 1:1 lessons and swing evaluations.
             </p>
             <div className="mt-8 grid gap-5">
               <ValuePoint icon={Target} label="1:1 lessons" line="A plan you can track month to month." />
@@ -267,7 +260,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
               <ValuePoint
                 icon={UserRound}
                 label="Future pros"
-                line="1:1 coaching with PGA pros Nick Schiavo and Nick Monticello, once or twice a week."
+                line="1:1 coaching with PGA professionals, once or twice a week."
               />
               <ValuePoint
                 icon={Shield}
