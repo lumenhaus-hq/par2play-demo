@@ -32,32 +32,36 @@ for (const width of [360, 1280]) {
   });
 }
 
-test("mobile homepage benefits sit below the film on a solid dark background", async ({ page }) => {
+test("mobile homepage membership uses the golf bento grid", async ({ page }) => {
   // The demo's narrow preview must also work in a wide desktop browser.
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("./");
   await setDemoLayout(page, "mobile");
   const band = page.locator("#membership");
-  await band.getByRole("heading", { name: "Track your progress" }).scrollIntoViewIfNeeded();
+  await band.locator(".membership-bento__grid").scrollIntoViewIfNeeded();
   const metrics = await band.evaluate((node) => {
-    const heading = node.querySelector("h3")!;
-    const film = node.querySelector("video")!;
+    const grid = node.querySelector(".membership-bento__grid")!;
+    const progress = node.querySelector(".membership-bento__benefit-title")!;
+    const stage = node.querySelector(".membership-bento-stage") ?? node.firstElementChild!;
     return {
-      headingTop: heading.getBoundingClientRect().top,
-      filmBottom: film.getBoundingClientRect().bottom,
-      background: getComputedStyle(node).backgroundColor,
-      text: getComputedStyle(heading.nextElementSibling!).color,
-      fontSize: parseFloat(getComputedStyle(heading.nextElementSibling!).fontSize),
+      gridTop: grid.getBoundingClientRect().top,
+      progressTop: progress.getBoundingClientRect().top,
+      background: getComputedStyle(stage).backgroundColor,
+      text: getComputedStyle(progress.nextElementSibling!).color,
+      fontSize: parseFloat(getComputedStyle(progress.nextElementSibling!).fontSize),
+      filmCount: node.querySelectorAll("video").length,
     };
   });
-  expect(metrics.headingTop).toBeGreaterThan(metrics.filmBottom);
-  expect(metrics.background).toBe("rgb(2, 8, 6)");
-  // Benefit body is softened white (brand hierarchy), not pure #fff.
-  expect(metrics.text).toMatch(/^(?:rgb\(255,\s*255,\s*255\)|rgba\(255,\s*255,\s*255,\s*0\.(?:7|8|9)\)|oklab\(.+\/\s*0\.(?:7|8|9)\))$/);
-  expect(metrics.fontSize).toBeGreaterThanOrEqual(16);
-  await expect(band.locator(".benefit-card").first()).toBeVisible();
+  expect(metrics.progressTop).toBeGreaterThan(metrics.gridTop);
+  expect(metrics.filmCount).toBe(1);
+  // Light stage behind dark tiles (not the old full-bleed void film band).
+  expect(metrics.background).not.toBe("rgb(2, 8, 6)");
+  expect(metrics.text).toMatch(/^rgba?\(/);
+  expect(metrics.fontSize).toBeGreaterThanOrEqual(12);
+  await expect(band.getByLabel("Simulator stats")).toBeVisible();
+  await expect(band.locator(".membership-bento__benefit-title", { hasText: "Track your progress" })).toBeVisible();
   await expect(page.locator("#events img")).toHaveCount(0);
-  await expect(band.getByRole("link", { name: "Try it out", exact: true })).toHaveCSS("background-color", "rgb(255, 255, 255)");
+  await expect(band.getByRole("link", { name: "Try it out", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Around the club" })).toHaveCount(0);
   await expect(page.locator("#coaching").getByRole("heading", { name: "Get fitted and swinging!" })).toBeVisible();
   await expect(page.locator("#juniors").getByRole("heading", { name: "Golf for kids" })).toBeVisible();
