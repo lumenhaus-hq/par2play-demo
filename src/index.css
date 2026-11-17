@@ -1423,18 +1423,21 @@ html.motion-paused .benefit-track {
 }
 
 .hero-location--pulse {
-  font-family: var(--font-manrope);
-  color: rgb(255 255 255 / 0.68);
+  font-family: var(--font-syne);
+  font-weight: 600;
+  color: rgb(255 255 255 / 0.7);
 }
 
 .hero-location--plate {
   font-family: var(--font-outfit);
-  color: rgb(255 255 255 / 0.66);
+  font-weight: 500;
+  color: rgb(255 255 255 / 0.68);
 }
 
 .hero-location--drive {
-  font-family: var(--font-sans);
-  color: rgb(255 255 255 / 0.64);
+  font-family: var(--font-sora);
+  font-weight: 600;
+  color: rgb(255 255 255 / 0.66);
 }
 
 @container (min-width: 48rem) {
