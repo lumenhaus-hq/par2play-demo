@@ -406,14 +406,58 @@ body {
   overflow: hidden;
 }
 
+/*
+ * Dock the offer in the bottom third of the hero shell so the film stays
+ * readable. Works for both the phone-frame preview and real narrow viewports.
+ */
+.hero-shell {
+  justify-content: flex-end;
+}
+
+.hero-offer-dock {
+  box-sizing: border-box;
+  width: 100%;
+  max-height: 34%;
+  margin-top: auto;
+}
+
+/*
+ * Phone-frame preview: match .phone-frame height so the offer can dock to the
+ * bottom third with a definite containing block (percentage max-height works).
+ */
+[data-layout="mobile"] .hero-shell {
+  height: min(844px, calc(100vh - 88px));
+  min-height: min(844px, calc(100vh - 88px));
+}
+
+@container (min-width: 48rem) {
+  .hero-offer-dock {
+    max-height: none;
+    flex: 1 1 auto;
+    align-items: flex-end;
+  }
+}
+
+/* Small corner glaze — keep the film readable behind the offer plate. */
 .hero-offer-sheen {
   pointer-events: none;
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  width: min(7.5rem, 42%);
+  height: min(4.25rem, 38%);
+  border-radius: 0 1.35rem 0 100%;
   background:
-    linear-gradient(135deg, rgb(255 255 255 / 0.1) 0%, transparent 42%),
-    linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--accent) 8%, transparent) 50%, transparent 100%);
-  opacity: 0.9;
+    linear-gradient(135deg, rgb(255 255 255 / 0.16) 0%, transparent 72%),
+    linear-gradient(200deg, color-mix(in srgb, var(--accent) 14%, transparent) 0%, transparent 70%);
+  opacity: 0.75;
+}
+
+@media (min-width: 768px) {
+  .hero-offer-sheen {
+    width: min(10rem, 46%);
+    height: min(5.5rem, 40%);
+  }
 }
 
 /* Wider viewports get the 3D lay-on; phones keep a stable touch surface. */
@@ -1282,9 +1326,62 @@ html.motion-paused .benefit-track {
   animation: none;
 }
 
-/* Location is a tracked label, not a third script font. */
+/* Location label — beat HeroUI h1 { font-size: 2rem } so it stays a caption. */
 .hero-location {
   font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  max-width: 100%;
+  text-wrap: balance;
+}
+
+@container (min-width: 48rem) {
+  .hero-location {
+    font-size: 1rem;
+  }
+}
+
+/* Keep offer plate + proof compact so the film stays readable above. */
+[data-hero-offer] .hero-offer-card {
+  padding-block: 0.7rem;
+  padding-inline: 0.9rem;
+}
+
+@container (min-width: 48rem) {
+  [data-hero-offer] .hero-offer-card {
+    padding-block: 1.25rem;
+    padding-inline: 1.5rem;
+  }
+}
+
+[data-hero-offer] .hero-proof {
+  margin-top: 0.35rem;
+  padding-top: 0.45rem;
+  gap: 0.25rem;
+}
+
+[data-hero-offer] .hero-proof p:last-child {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
+@container (min-width: 48rem) {
+  [data-hero-offer] .hero-proof {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    gap: 0.5rem;
+  }
+
+  [data-hero-offer] .hero-proof p:last-child {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+  }
 }
 
 /* Membership benefit plates — elevated surfaces with brand-edge sheen. */
