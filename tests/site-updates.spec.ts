@@ -93,7 +93,7 @@ test("coaching is evaluation-only without lesson packs or fitting", async ({ pag
   await page.goto("coaching/");
   const panel = page.locator("#coaching-offer");
   await expect(panel.getByText("Swing evaluation", { exact: true })).toBeVisible();
-  await expect(panel.getByText("$100")).toBeVisible();
+  await expect(panel.locator('[aria-live="polite"] p').last()).toHaveText("$100");
   await expect(panel.locator("dd")).toHaveCount(0);
   await expect(panel.getByRole("slider")).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "Lesson packs" })).toHaveCount(0);
