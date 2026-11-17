@@ -1,12 +1,12 @@
 import type { ReactNode } from "react";
 import { useRef, useState } from "react";
 import { Mark } from "./Chrome";
-import { MembershipLink, buttonFocus } from "./Cta";
+import { BookLink, buttonFocus } from "./Cta";
 import { LayoutToggle } from "./LayoutToggle";
 import { MotionToggle } from "./MotionToggle";
 import { PageAtmosphere, type AtmosphereIntensity } from "./PageAtmosphere";
 import { SoundToggle } from "./SoundToggle";
-import { membershipCheckoutHref, golfClockBookingReady, NAP } from "../data/business";
+import { golfClockBookingReady, NAP } from "../data/business";
 import { VisitLine } from "./VisitLine";
 import { SITE_NAV, currentRoute, pageHref, type SiteRoute } from "../data/routes";
 import { useFlow } from "../state/flow";
@@ -59,9 +59,9 @@ export function SiteHeader() {
           <LayoutToggle className="text-ink" />
           <SoundToggle className="text-ink" />
           <span className="hidden @3xl:contents">
-            <MembershipLink href={route === "membership" ? membershipCheckoutHref() : undefined} className="shrink-0">
-              Become a Member
-            </MembershipLink>
+            <BookLink offer="bay" className="shrink-0">
+              Book a Bay
+            </BookLink>
           </span>
           <button
             type="button"
@@ -85,9 +85,9 @@ export function SiteHeader() {
               {item.label}
             </a>
           ))}
-          <MembershipLink href={route === "membership" ? membershipCheckoutHref() : undefined} className="mt-2 w-fit">
-            Become a Member
-          </MembershipLink>
+          <BookLink offer="bay" className="mt-2 w-fit">
+            Book a Bay
+          </BookLink>
         </nav>
       )}
     </header>
