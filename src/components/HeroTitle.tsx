@@ -1,43 +1,16 @@
-export type HeroConcept = "current" | "a" | "b" | "c" | "d";
+import type { HeroTypeId } from "../data/heroType";
 
+export type HeroConcept = HeroTypeId;
+
+/** Resolve initial type from ?type= (legacy ?hero= maps onto recipes). */
 export function heroConcept(): HeroConcept {
-  const value = new URLSearchParams(window.location.search).get("hero");
-  if (value === "a" || value === "b" || value === "c" || value === "d") return value;
-  return "current";
-}
-
-const green = "text-accent";
-
-function Swoosh() {
-  return (
-    <svg viewBox="0 0 140 18" className="pointer-events-none absolute -bottom-1 left-0 h-3 w-full" aria-hidden="true">
-      <path className="draw-stroke" pathLength="1" d="M2 12 C 28 4, 70 16, 138 6" fill="none" stroke="var(--accent)" strokeWidth="3" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function Marker() {
-  return (
-    <svg viewBox="0 0 160 36" className="pointer-events-none absolute -inset-x-1 bottom-0 h-[0.7em] w-[110%]" aria-hidden="true">
-      <path d="M4 20 C 36 8, 78 28, 120 14 C 136 10, 148 16, 156 18" fill="none" stroke="var(--mint)" strokeWidth="16" strokeLinecap="round" opacity="0.9" />
-    </svg>
-  );
-}
-
-function Scribble() {
-  return (
-    <svg viewBox="0 0 120 64" className="pointer-events-none absolute -inset-x-3 -inset-y-2 h-[140%] w-[130%]" aria-hidden="true">
-      <path
-        className="draw-stroke"
-        pathLength="1"
-        d="M18 34 C 14 14, 48 8, 78 16 C 108 24, 112 48, 78 54 C 40 62, 8 48, 20 28"
-        fill="none"
-        stroke="var(--accent)"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
+  const value = new URLSearchParams(window.location.search).get("type");
+  if (value === "pulse" || value === "plate" || value === "drive") return value;
+  if (value === "strike") return "drive";
+  const legacy = new URLSearchParams(window.location.search).get("hero");
+  if (legacy === "b" || legacy === "c") return "plate";
+  if (legacy === "d" || legacy === "a") return "drive";
+  return "pulse";
 }
 
 function MaskLine({ children, delay = 0, className = "" }: { children: string; delay?: number; className?: string }) {
@@ -50,64 +23,136 @@ function MaskLine({ children, delay = 0, className = "" }: { children: string; d
   );
 }
 
-/** Default title. Concepts A–D are review options and do not replace this. */
+/** Hand underline — taste-skill type moment, draws once with hero chrome. */
+function ScriptMark({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      className={`hero-mark ${className}`}
+      viewBox="0 0 120 14"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        className="hero-mark-stroke"
+        pathLength={1}
+        d="M2 9 C 22 2, 48 13, 68 6 S 102 3, 118 8"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="3.2"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+/**
+ * Larger-than-life sports lockups (BASEBALL / Hits Different energy):
+ * Pulse — two-line varsity block + overlapping Yellowtail
+ * Plate — condensed Syne stack + Permanent Marker brush hit
+ * Drive — mega outlined word + tucked connector + script
+ */
 export function HeroTitle({ concept }: { concept: HeroConcept }) {
-  if (concept === "a") return <ConceptA />;
-  if (concept === "b") return <ConceptB />;
-  if (concept === "c") return <ConceptC />;
-  if (concept === "d") return <ConceptD />;
-  return (
-    <p className="min-w-0 max-w-full font-display text-[1.45rem] font-semibold leading-[1.12] tracking-tight text-white @3xl:text-[2rem]">
-      {/* One phrase keeps the space; only the accent line staggers in. */}
-      <MaskLine>A home for </MaskLine>
-      <MaskLine delay={140} className="hero-accent font-accent text-[1.4em] leading-none text-accent">
-        all golfers.
-      </MaskLine>
-    </p>
-  );
+  switch (concept) {
+    case "pulse":
+      return <PulseTitle />;
+    case "plate":
+      return <PlateTitle />;
+    case "drive":
+      return <DriveTitle />;
+    default: {
+      const exhaustive: never = concept;
+      return exhaustive;
+    }
+  }
 }
 
-function ConceptA() {
-  return (
-    <p className="min-w-0 max-w-full font-sans text-lg font-semibold leading-tight text-white @3xl:text-2xl">
-      {"A home for "}
-      <span className={`relative inline-block font-caveat text-[1.85em] leading-none ${green}`}>
-        all golfers.
-        <Swoosh />
-      </span>
-    </p>
-  );
+export function HeroLocation({ concept }: { concept: HeroConcept }) {
+  switch (concept) {
+    case "pulse":
+      return (
+        <h1 className="hero-location hero-location--pulse hero-stage hero-stage--location">
+          <span className="hero-location__lead">Indoor golf</span>
+          <span className="hero-location__sep" aria-hidden="true">
+            ·
+          </span>
+          <span className="hero-location__place">Somerset, NJ</span>
+        </h1>
+      );
+    case "plate":
+      return (
+        <h1 className="hero-location hero-location--plate hero-stage hero-stage--location">
+          <span className="hero-location__lead">Indoor golf</span>
+          <span className="hero-location__sep" aria-hidden="true">
+            ·
+          </span>
+          <span className="hero-location__place">Somerset, NJ</span>
+        </h1>
+      );
+    case "drive":
+      return (
+        <h1 className="hero-location hero-location--drive hero-stage hero-stage--location">
+          <span className="hero-location__lead">Indoor golf</span>
+          <span className="hero-location__sep" aria-hidden="true">
+            ·
+          </span>
+          <span className="hero-location__place">Somerset, NJ</span>
+        </h1>
+      );
+    default: {
+      const exhaustive: never = concept;
+      return exhaustive;
+    }
+  }
 }
 
-function ConceptB() {
+/** Varsity stack: two outlined lines + slanted script overlap. */
+function PulseTitle() {
   return (
-    <div className="min-w-0 max-w-full">
-      <p className="font-sans text-sm font-semibold text-white @3xl:text-base">A home for</p>
-      <p className={`min-w-0 font-caveat text-[clamp(2.5rem,13cqi,4.5rem)] leading-none ${green}`}>all golfers.</p>
+    <div className="hero-title hero-title--pulse hero-lockup min-w-0 max-w-full">
+      <p className="hero-sticker hero-sticker--block hero-font-space text-[clamp(2.05rem,10.5cqi,3.65rem)] font-bold uppercase leading-[0.86] tracking-[-0.035em]">
+        <MaskLine>{"A\u00A0HOME"}</MaskLine>
+        <br />
+        <MaskLine delay={70}>{"FOR\u00A0ALL"}</MaskLine>
+      </p>
+      <p className="hero-sticker hero-sticker--script hero-font-yellowtail relative z-10 -mt-3 ml-2 w-fit rotate-[-5deg] text-[clamp(2.15rem,11cqi,3.75rem)] leading-none">
+        <MaskLine delay={150}>{"golfers."}</MaskLine>
+        <ScriptMark className="hero-mark--pulse" />
+      </p>
     </div>
   );
 }
 
-function ConceptC() {
+/** Brush stamp energy — Marker script rides over a condensed block. */
+function PlateTitle() {
   return (
-    <p className="min-w-0 max-w-full font-sans text-xl font-bold leading-tight text-white @3xl:text-3xl">
-      {"A home for "}
-      <span className="relative inline-block">
-        <Marker />
-        <span className="relative">all golfers.</span>
-      </span>
-    </p>
+    <div className="hero-title hero-title--plate hero-lockup min-w-0 max-w-full">
+      <p className="hero-sticker hero-sticker--block hero-font-syne text-[clamp(1.95rem,9.8cqi,3.4rem)] font-bold uppercase leading-[0.88] tracking-[-0.03em]">
+        <MaskLine>{"A\u00A0HOME"}</MaskLine>
+        <br />
+        <MaskLine delay={70}>{"FOR"}</MaskLine>
+      </p>
+      <p className="hero-sticker hero-sticker--brush hero-font-marker relative z-10 -mt-4 ml-1 w-fit rotate-[-4deg] text-[clamp(2rem,10cqi,3.45rem)] leading-none">
+        <MaskLine delay={140}>{"all golfers."}</MaskLine>
+        <ScriptMark className="hero-mark--plate" />
+      </p>
+    </div>
   );
 }
 
-function ConceptD() {
+/** Mega block + tucked connector + script (THAT-under-BASEBALL pattern). */
+function DriveTitle() {
   return (
-    <p className="min-w-0 max-w-full font-sans text-[clamp(1.15rem,5.4cqi,1.65rem)] font-bold uppercase leading-tight tracking-tight text-white">
-      {"A home for "}
-      <span className={`relative inline-block font-caveat text-[1.45em] leading-none normal-case ${green}`}>
-        all golfers.
-        <Scribble />
-      </span>
-    </p>
+    <div className="hero-title hero-title--drive hero-lockup relative min-w-0 max-w-full pt-4">
+      <p className="hero-sticker hero-sticker--connect hero-font-outfit absolute left-0.5 top-0 text-[clamp(0.78rem,3.2cqi,1.05rem)] font-bold uppercase italic tracking-[0.14em]">
+        <MaskLine>{"a home for"}</MaskLine>
+      </p>
+      <p className="hero-sticker hero-sticker--mega hero-font-space text-[clamp(2.55rem,13.5cqi,4.35rem)] font-bold uppercase leading-[0.8] tracking-[-0.045em]">
+        <MaskLine delay={80}>{"ALL"}</MaskLine>
+      </p>
+      <p className="hero-sticker hero-sticker--script hero-font-yellowtail relative z-10 -mt-3 ml-4 w-fit rotate-[-4deg] text-[clamp(1.95rem,9.5cqi,3.2rem)] leading-none">
+        <MaskLine delay={160}>{"golfers."}</MaskLine>
+        <ScriptMark className="hero-mark--drive" />
+      </p>
+    </div>
   );
 }

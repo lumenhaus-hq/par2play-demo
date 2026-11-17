@@ -137,11 +137,35 @@
   src: url("../public/fonts/plus-jakarta-600.woff2") format("woff2");
 }
 
+@font-face {
+  font-family: "Permanent Marker";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../public/fonts/permanent-marker-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Yellowtail";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../public/fonts/yellowtail-400.woff2") format("woff2");
+}
+
 @theme {
   --font-sans: var(--font-body-stack);
   --font-display: var(--font-display-stack);
   --font-accent: var(--font-accent-stack);
   --font-caveat: "Caveat", var(--font-body-stack);
+  --font-syne: "Syne", ui-sans-serif, system-ui, sans-serif;
+  --font-space: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sora: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-manrope: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-outfit: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-marker: "Permanent Marker", "Caveat", cursive;
+  --font-yellowtail: "Yellowtail", "Kaushan Script", cursive;
+  --font-permanent-marker: var(--font-marker);
   --color-ink: var(--ink);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
@@ -406,14 +430,58 @@ body {
   overflow: hidden;
 }
 
+/*
+ * Dock the offer in the bottom third of the hero shell so the film stays
+ * readable. Works for both the phone-frame preview and real narrow viewports.
+ */
+.hero-shell {
+  justify-content: flex-end;
+}
+
+.hero-offer-dock {
+  box-sizing: border-box;
+  width: 100%;
+  max-height: 38%;
+  margin-top: auto;
+}
+
+/*
+ * Phone-frame preview: match .phone-frame height so the offer can dock to the
+ * bottom third with a definite containing block (percentage max-height works).
+ */
+[data-layout="mobile"] .hero-shell {
+  height: min(844px, calc(100vh - 88px));
+  min-height: min(844px, calc(100vh - 88px));
+}
+
+@container (min-width: 48rem) {
+  .hero-offer-dock {
+    max-height: none;
+    flex: 1 1 auto;
+    align-items: flex-end;
+  }
+}
+
+/* Small corner glaze — keep the film readable behind the offer plate. */
 .hero-offer-sheen {
   pointer-events: none;
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  width: min(7.5rem, 42%);
+  height: min(4.25rem, 38%);
+  border-radius: 0 1.35rem 0 100%;
   background:
-    linear-gradient(135deg, rgb(255 255 255 / 0.1) 0%, transparent 42%),
-    linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--accent) 8%, transparent) 50%, transparent 100%);
-  opacity: 0.9;
+    linear-gradient(135deg, rgb(255 255 255 / 0.16) 0%, transparent 72%),
+    linear-gradient(200deg, color-mix(in srgb, var(--accent) 14%, transparent) 0%, transparent 70%);
+  opacity: 0.75;
+}
+
+@media (min-width: 768px) {
+  .hero-offer-sheen {
+    width: min(10rem, 46%);
+    height: min(5.5rem, 40%);
+  }
 }
 
 /* Wider viewports get the 3D lay-on; phones keep a stable touch surface. */
@@ -468,22 +536,143 @@ body {
   }
 }
 
-/* Brand accent phrase — green, not the old orange poppy clash. */
+/* Brand accent phrase — legacy utility kept for other surfaces. */
 .hero-accent {
   position: relative;
-  padding-bottom: 0.18em;
+  padding-bottom: 0.12em;
 }
 
 .hero-accent::after {
   content: "";
   position: absolute;
-  right: 0.04em;
-  bottom: 0.02em;
-  left: 0.02em;
-  height: 0.09em;
+  right: 0.06em;
+  bottom: 0.04em;
+  left: 0.04em;
+  height: 0.055em;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--accent), var(--mint));
+  background: color-mix(in srgb, var(--accent) 70%, white);
+  opacity: 0.85;
   pointer-events: none;
+}
+
+/* Hero type recipe faces — real 700 files, not fake-bold Chakra. */
+.hero-font-syne {
+  font-family: var(--font-syne);
+}
+
+.hero-font-space {
+  font-family: var(--font-space);
+}
+
+.hero-font-sora {
+  font-family: var(--font-sora);
+}
+
+.hero-font-manrope {
+  font-family: var(--font-manrope);
+}
+
+.hero-font-outfit {
+  font-family: var(--font-outfit);
+}
+
+.hero-font-yellowtail {
+  font-family: var(--font-yellowtail);
+}
+
+.hero-font-marker {
+  font-family: var(--font-marker);
+}
+
+/* Larger-than-life sticker lockups — thick white stroke reads on busy film. */
+.hero-lockup {
+  isolation: isolate;
+  width: 100%;
+}
+
+.hero-sticker {
+  paint-order: stroke fill;
+  text-wrap: balance;
+}
+
+/* Solid white fill + dark stroke — hollow outline vanished on the dark plate. */
+.hero-sticker--block {
+  color: #ffffff;
+  -webkit-text-stroke: 0.055em #06110b;
+  text-shadow:
+    0.08em 0.1em 0 rgb(0 0 0 / 0.55),
+    0 0 0.45em rgb(0 0 0 / 0.28);
+  word-spacing: 0.14em;
+}
+
+.hero-sticker--mega {
+  color: #ffffff;
+  -webkit-text-stroke: 0.045em #06110b;
+  text-shadow:
+    0.09em 0.11em 0 rgb(0 0 0 / 0.58),
+    0 0 0.5em rgb(0 0 0 / 0.3);
+  word-spacing: 0.16em;
+}
+
+.hero-sticker--connect {
+  color: #ffffff;
+  -webkit-text-stroke: 0.07em #06110b;
+  text-shadow: 0.05em 0.06em 0 rgb(0 0 0 / 0.45);
+}
+
+.hero-sticker--script {
+  color: var(--accent-hot);
+  -webkit-text-stroke: 0.04em #06110b;
+  text-shadow:
+    0.06em 0.08em 0 rgb(0 0 0 / 0.45),
+    0 0.02em 0.3em rgb(0 0 0 / 0.25);
+}
+
+.hero-sticker--brush {
+  color: var(--accent);
+  -webkit-text-stroke: 0.042em #06110b;
+  text-shadow:
+    0.06em 0.09em 0 rgb(0 0 0 / 0.48),
+    0 0.02em 0.32em rgb(0 0 0 / 0.28);
+}
+
+/* Hand-drawn accent marks under script (type moment). */
+.hero-mark {
+  display: block;
+  width: 92%;
+  max-width: 11rem;
+  height: auto;
+  margin-top: -0.12em;
+  margin-left: 0.15em;
+  color: color-mix(in srgb, var(--accent-hot) 88%, white);
+  overflow: visible;
+}
+
+.hero-mark--plate {
+  color: color-mix(in srgb, var(--accent) 90%, white);
+  max-width: 13rem;
+}
+
+.hero-mark--drive {
+  max-width: 10rem;
+}
+
+.hero-mark-stroke {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.motion-paused) .hero-chrome-in .hero-mark-stroke {
+    stroke-dashoffset: 1;
+    animation: hero-mark-draw 820ms var(--motion-ease-enter) 280ms forwards;
+  }
+}
+
+@keyframes hero-mark-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 .header-bar {
@@ -697,10 +886,9 @@ html.lenis.lenis-smooth {
   will-change: transform;
 }
 
-/* Start tight on the opening Earth sphere, then ease out to full bleed. */
+/* Soft open zoom — extreme scale made the poster/early frames look soft. */
 .hero-bay-frame--zoom {
-  /* Portrait phones: less extreme scale so the bay stays readable mid-wipe. */
-  transform: perspective(900px) scale(1.85) rotateX(4deg);
+  transform: perspective(900px) scale(1.28) rotateX(2deg);
 }
 
 .hero-bay-frame--expand {
@@ -709,7 +897,7 @@ html.lenis.lenis-smooth {
 
 @media (min-width: 768px) {
   .hero-bay-frame--zoom {
-    transform: perspective(1200px) scale(2.65) rotateX(7deg);
+    transform: perspective(1200px) scale(1.48) rotateX(3deg);
   }
 
   .hero-bay-frame--expand {
@@ -1094,6 +1282,10 @@ body:has(#lcp-poster) #hero {
 
 .hero-video {
   opacity: 0;
+  transition:
+    opacity 480ms var(--motion-ease-enter),
+    transform 700ms var(--motion-ease-wipe);
+  will-change: opacity, transform;
 }
 
 html.media-on .hero-video {
@@ -1291,9 +1483,99 @@ html.motion-paused .benefit-track {
   animation: none;
 }
 
-/* Location is a tracked label, not a third script font. */
+/* Lockup titles — keep word gaps readable inside sticker strokes. */
+.hero-title {
+  word-spacing: 0.12em;
+}
+
+/* Location — sports caption type moment (tracked uppercase, not body copy). */
 .hero-location {
-  font-family: var(--font-sans);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35em 0.55em;
+  margin-top: 0.85rem;
+  max-width: 100%;
+  font-size: clamp(0.72rem, 2.6cqi, 0.92rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.hero-location__sep {
+  letter-spacing: 0;
+  opacity: 0.55;
+}
+
+.hero-location__place {
+  letter-spacing: 0.14em;
+}
+
+.hero-location--pulse {
+  font-family: var(--font-syne);
+  color: rgb(255 255 255 / 0.82);
+}
+
+.hero-location--plate {
+  font-family: var(--font-outfit);
+  letter-spacing: 0.18em;
+  color: rgb(255 255 255 / 0.8);
+}
+
+.hero-location--drive {
+  font-family: var(--font-sora);
+  letter-spacing: 0.2em;
+  color: rgb(255 255 255 / 0.84);
+}
+
+@container (min-width: 48rem) {
+  .hero-location {
+    margin-top: 1rem;
+    font-size: clamp(0.85rem, 1.8cqi, 1.05rem);
+    white-space: normal;
+  }
+}
+
+/* Keep offer plate + proof compact so the film stays readable above. */
+[data-hero-offer] .hero-offer-card {
+  padding-block: 0.7rem;
+  padding-inline: 0.9rem;
+}
+
+@container (min-width: 48rem) {
+  [data-hero-offer] .hero-offer-card {
+    padding-block: 1.25rem;
+    padding-inline: 1.5rem;
+  }
+}
+
+[data-hero-offer] .hero-proof {
+  margin-top: 0.35rem;
+  padding-top: 0.45rem;
+  gap: 0.25rem;
+}
+
+[data-hero-offer] .hero-proof p:last-child {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
+@container (min-width: 48rem) {
+  [data-hero-offer] .hero-proof {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    gap: 0.5rem;
+  }
+
+  [data-hero-offer] .hero-proof p:last-child {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+  }
 }
 
 /* Membership benefit plates — elevated surfaces with brand-edge sheen. */

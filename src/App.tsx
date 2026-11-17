@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { currentRoute } from "./data/routes";
+import type { HeroTypeId } from "./data/heroType";
+import { heroTypeFromSearch } from "./data/heroType";
 import type { StyleId } from "./data/styles";
 import type { TakeId } from "./data/takes";
 import { CookieNotice } from "./components/CookieNotice";
+import { HeroTypeSwitcher } from "./components/HeroTypeSwitcher";
 import { SmoothScroll } from "./components/SmoothScroll";
 import { StyleSwitcher } from "./components/StyleSwitcher";
 import { Landing } from "./screens/Landing";
@@ -34,10 +37,10 @@ import { LedgerLanding } from "./takes/LedgerLanding";
 import { StrikeLanding } from "./takes/StrikeLanding";
 import "./takes/takes.css";
 
-function HomeTake({ take }: { take: TakeId }) {
+function HomeTake({ take, heroType }: { take: TakeId; heroType: HeroTypeId }) {
   switch (take) {
     case "classic":
-      return <Landing />;
+      return <Landing heroType={heroType} />;
     case "orbit":
       return <OrbitLanding />;
     case "ledger":
@@ -51,11 +54,11 @@ function HomeTake({ take }: { take: TakeId }) {
   }
 }
 
-function StepView({ take }: { take: TakeId }) {
+function StepView({ take, heroType }: { take: TakeId; heroType: HeroTypeId }) {
   const { step } = useFlow();
   switch (step) {
     case "landing":
-      return <HomeTake take={take} />;
+      return <HomeTake take={take} heroType={heroType} />;
     case "clubhouse":
       return <Clubhouse />;
     case "intent":
@@ -90,11 +93,18 @@ function StepView({ take }: { take: TakeId }) {
   }
 }
 
-function Routed({ take }: { take: TakeId }) {
+function syncHeroTypeParam(id: HeroTypeId) {
+  const url = new URL(window.location.href);
+  if (id === "pulse") url.searchParams.delete("type");
+  else url.searchParams.set("type", id);
+  window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+}
+
+function Routed({ take, heroType }: { take: TakeId; heroType: HeroTypeId }) {
   const route = currentRoute();
   switch (route) {
     case "home":
-      return <StepView take={take} />;
+      return <StepView take={take} heroType={heroType} />;
     case "membership":
       return <MembershipPage />;
     case "coaching":
@@ -120,12 +130,14 @@ function Shell() {
   const flow = useFlow();
   const [take, setTake] = useState<TakeId>("classic");
   const [style, setStyle] = useState<StyleId>("signal");
+  const [heroType, setHeroType] = useState<HeroTypeId>(() => heroTypeFromSearch());
 
   useEffect(() => {
     const initialTake = resolveInitialTake();
     const initialStyle = resolveInitialStyle();
     setTake(initialTake);
     setStyle(initialStyle);
+    setHeroType(heroTypeFromSearch());
     applyTake(initialTake);
     applyStyle(initialStyle);
   }, []);
@@ -138,11 +150,21 @@ function Shell() {
     applyStyle(style);
   }, [style]);
 
+  useEffect(() => {
+    document.documentElement.dataset.heroType = heroType;
+    syncHeroTypeParam(heroType);
+  }, [heroType]);
+
   return (
     <div className="min-h-screen bg-slate-100">
       <div className="sticky top-0 z-40 flex flex-col items-center gap-2 bg-white px-4 py-3">
         <TakeSwitcher value={take} onChange={setTake} />
-        {take === "classic" ? <StyleSwitcher value={style} onChange={setStyle} /> : null}
+        {take === "classic" ? (
+          <>
+            <StyleSwitcher value={style} onChange={setStyle} />
+            <HeroTypeSwitcher value={heroType} onChange={setHeroType} />
+          </>
+        ) : null}
       </div>
       {flow.layout === "mobile" ? (
         <div className="flex justify-center px-4 py-6">
@@ -152,15 +174,23 @@ function Shell() {
             data-layout="mobile"
             data-take={take}
             data-style={style}
+            data-hero-type={heroType}
           >
             <div className="h-full overflow-y-auto">
-              <Routed take={take} />
+              <Routed take={take} heroType={heroType} />
             </div>
           </div>
         </div>
       ) : (
-        <div className="bg-surface" data-testid="layout" data-layout="web" data-take={take} data-style={style}>
-          <Routed take={take} />
+        <div
+          className="bg-surface"
+          data-testid="layout"
+          data-layout="web"
+          data-take={take}
+          data-style={style}
+          data-hero-type={heroType}
+        >
+          <Routed take={take} heroType={heroType} />
         </div>
       )}
     </div>
