@@ -6,6 +6,12 @@
       (function () {
         try {
           var params = new URLSearchParams(location.search);
+          var takeUrl = params.get("take");
+          var takes = { classic: 1, orbit: 1, ledger: 1, strike: 1 };
+          var take = takes[takeUrl] ? takeUrl : localStorage.getItem("par2play-take");
+          if (!takes[take]) take = "classic";
+          document.documentElement.dataset.take = take;
+          window.__par2playTake = take;
           var fromUrl = params.get("style");
           var allowed = { fairway: 1, signal: 1, nocturne: 1, mist: 1 };
           var id = allowed[fromUrl] ? fromUrl : localStorage.getItem("par2play-style");

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { currentRoute } from "./data/routes";
 import type { StyleId } from "./data/styles";
+import type { TakeId } from "./data/takes";
 import { CookieNotice } from "./components/CookieNotice";
 import { SmoothScroll } from "./components/SmoothScroll";
 import { StyleSwitcher } from "./components/StyleSwitcher";
@@ -26,12 +27,35 @@ import {
 } from "./screens/FlowScreens";
 import { FlowProvider, useFlow } from "./state/flow";
 import { applyStyle, resolveInitialStyle } from "./style/applyStyle";
+import { applyTake, resolveInitialTake } from "./takes/applyTake";
+import { TakeSwitcher } from "./takes/TakeSwitcher";
+import { OrbitLanding } from "./takes/OrbitLanding";
+import { LedgerLanding } from "./takes/LedgerLanding";
+import { StrikeLanding } from "./takes/StrikeLanding";
+import "./takes/takes.css";
 
-function StepView() {
+function HomeTake({ take }: { take: TakeId }) {
+  switch (take) {
+    case "classic":
+      return <Landing />;
+    case "orbit":
+      return <OrbitLanding />;
+    case "ledger":
+      return <LedgerLanding />;
+    case "strike":
+      return <StrikeLanding />;
+    default: {
+      const exhaustive: never = take;
+      return exhaustive;
+    }
+  }
+}
+
+function StepView({ take }: { take: TakeId }) {
   const { step } = useFlow();
   switch (step) {
     case "landing":
-      return <Landing />;
+      return <HomeTake take={take} />;
     case "clubhouse":
       return <Clubhouse />;
     case "intent":
@@ -66,11 +90,11 @@ function StepView() {
   }
 }
 
-function Routed() {
+function Routed({ take }: { take: TakeId }) {
   const route = currentRoute();
   switch (route) {
     case "home":
-      return <StepView />;
+      return <StepView take={take} />;
     case "membership":
       return <MembershipPage />;
     case "coaching":
@@ -94,14 +118,21 @@ function Routed() {
 
 function Shell() {
   const flow = useFlow();
-  // Prerender always bakes Fairway; sync from ?style= / storage after mount.
+  const [take, setTake] = useState<TakeId>("classic");
   const [style, setStyle] = useState<StyleId>("fairway");
 
   useEffect(() => {
-    const initial = resolveInitialStyle();
-    setStyle(initial);
-    applyStyle(initial);
+    const initialTake = resolveInitialTake();
+    const initialStyle = resolveInitialStyle();
+    setTake(initialTake);
+    setStyle(initialStyle);
+    applyTake(initialTake);
+    applyStyle(initialStyle);
   }, []);
+
+  useEffect(() => {
+    applyTake(take);
+  }, [take]);
 
   useEffect(() => {
     applyStyle(style);
@@ -109,9 +140,9 @@ function Shell() {
 
   return (
     <div className="min-h-screen bg-slate-100">
-      {/* Demo chrome: style variants. Layout (mobile/desktop) lives in the site toolbar. */}
-      <div className="sticky top-0 z-40 flex items-center justify-center bg-white px-4 py-3">
-        <StyleSwitcher value={style} onChange={setStyle} />
+      <div className="sticky top-0 z-40 flex flex-col items-center gap-2 bg-white px-4 py-3">
+        <TakeSwitcher value={take} onChange={setTake} />
+        {take === "classic" ? <StyleSwitcher value={style} onChange={setStyle} /> : null}
       </div>
       {flow.layout === "mobile" ? (
         <div className="flex justify-center px-4 py-6">
@@ -119,16 +150,17 @@ function Shell() {
             className="phone-frame relative overflow-hidden rounded-[36px] border-8 border-slate-950 bg-surface shadow-2xl"
             data-testid="layout"
             data-layout="mobile"
+            data-take={take}
             data-style={style}
           >
-            <div className="h-full">
-              <Routed />
+            <div className="h-full overflow-y-auto">
+              <Routed take={take} />
             </div>
           </div>
         </div>
       ) : (
-        <div className="bg-surface" data-testid="layout" data-layout="web" data-style={style}>
-          <Routed />
+        <div className="bg-surface" data-testid="layout" data-layout="web" data-take={take} data-style={style}>
+          <Routed take={take} />
         </div>
       )}
     </div>

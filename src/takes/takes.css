@@ -1,0 +1,795 @@
+/* Shared take chrome + three rebuild directions (Orbit / Ledger / Strike). */
+
+.take-magnetic {
+  display: inline-flex;
+  transform: translate3d(var(--mx, 0px), var(--my, 0px), 0);
+  transition: transform 180ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: transform;
+}
+
+.take-eyebrow {
+  margin: 0 0 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.take-display {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 1.2rem + 4vw, 4.5rem);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.take-split {
+  perspective: 800px;
+}
+
+.take-split__mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.take-split__word {
+  display: inline-block;
+  transform-origin: 50% 100%;
+}
+
+.take-nav {
+  position: sticky;
+  top: 4.25rem;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.5rem;
+  backdrop-filter: blur(14px);
+}
+
+.take-nav--light {
+  color: #fff;
+}
+
+.take-nav__link {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.take-footer {
+  padding: 4rem 1.5rem 5rem;
+  border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+}
+
+.take-footer__grid {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 900px) {
+  .take-nav {
+    padding-inline: 3rem;
+  }
+
+  .take-footer {
+    padding-inline: 3rem;
+  }
+
+  .take-footer__grid {
+    grid-template-columns: 1.4fr 1fr 1fr;
+  }
+}
+
+/* Custom cursors */
+.take-cursor-on,
+.take-cursor-on * {
+  cursor: none !important;
+}
+
+.take-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 80;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  pointer-events: none;
+  mix-blend-mode: difference;
+}
+
+.take-cursor__core {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: #fff;
+  transition: transform 220ms ease;
+}
+
+.take-cursor[data-hover="1"] .take-cursor__core {
+  transform: scale(2.4);
+}
+
+.take-cursor--crosshair .take-cursor__arm {
+  position: absolute;
+  background: #fff;
+}
+
+.take-cursor--crosshair .take-cursor__arm--h {
+  top: 50%;
+  left: -14px;
+  width: 46px;
+  height: 1px;
+}
+
+.take-cursor--crosshair .take-cursor__arm--v {
+  left: 50%;
+  top: -14px;
+  width: 1px;
+  height: 46px;
+}
+
+.take-cursor--blob .take-cursor__core {
+  inset: -10px;
+  background: color-mix(in srgb, #e2a33a 70%, white);
+  filter: blur(0.5px);
+  mix-blend-mode: normal;
+  opacity: 0.85;
+}
+
+.take-cursor--trail .take-cursor__wake {
+  position: absolute;
+  inset: -4px;
+  border-radius: 999px;
+  border: 1px solid #fff;
+  width: calc(18px + var(--trail, 0px));
+  height: calc(18px + var(--trail, 0px) * 0.35);
+  opacity: 0.55;
+}
+
+/* -------- ORBIT -------- */
+.take--orbit {
+  --take-bg: #050d1c;
+  --take-ink: #f4f7fb;
+  --take-accent: #c6ff1a;
+  background: var(--take-bg);
+  color: var(--take-ink);
+  font-family: "Outfit", var(--font-sans);
+}
+
+.take--orbit .font-display,
+.take--orbit .take-display,
+.take--orbit h1,
+.take--orbit h2,
+.take--orbit h3 {
+  font-family: "Syne", "Outfit", sans-serif;
+}
+
+.take--orbit .button--primary,
+.take--orbit .cta-brand {
+  background: var(--take-accent);
+  color: #071428;
+}
+
+.take-boot {
+  position: fixed;
+  /* Stay under the demo take switcher (z-40) so reviewers can flip takes mid-intro. */
+  inset: 4.5rem 0 0;
+  z-index: 30;
+  display: grid;
+  place-content: center;
+  gap: 0.75rem;
+  background: #050d1c;
+  color: #c6ff1a;
+  transition: opacity 500ms ease, visibility 500ms ease;
+}
+
+.take-boot--out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.take-boot__mark {
+  margin: 0;
+  font-family: "Syne", sans-serif;
+  font-size: clamp(2rem, 6vw, 4rem);
+  letter-spacing: 0.12em;
+}
+
+.take-boot__pct {
+  margin: 0;
+  text-align: center;
+  font-size: 1rem;
+  letter-spacing: 0.2em;
+}
+
+.take-orbit-hero {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  align-items: end;
+  overflow: hidden;
+  padding: 6rem 1.5rem 4rem;
+}
+
+.take-orbit-hero__media {
+  position: absolute;
+  inset: 0;
+  transform-origin: center center;
+}
+
+.take-orbit-hero__shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, rgb(5 13 28 / 0.92) 0%, rgb(5 13 28 / 0.35) 45%, rgb(5 13 28 / 0.55) 100%),
+    linear-gradient(90deg, rgb(5 13 28 / 0.7), transparent 55%);
+}
+
+.take-orbit-hero__copy {
+  position: relative;
+  z-index: 1;
+  max-w: 40rem;
+}
+
+.take-orbit-hero__title {
+  margin: 0;
+  font-size: clamp(2.8rem, 1rem + 7vw, 6rem);
+  line-height: 0.92;
+}
+
+.take-orbit-hero__sub {
+  margin: 1.25rem 0 0;
+  max-width: 34rem;
+  font-size: 1.125rem;
+  line-height: 1.55;
+  color: rgb(244 247 251 / 0.82);
+}
+
+.take-orbit-knock {
+  position: absolute;
+  right: -4vw;
+  bottom: 8vh;
+  z-index: 0;
+  margin: 0;
+  font-family: "Syne", sans-serif;
+  font-size: clamp(5rem, 18vw, 16rem);
+  font-weight: 700;
+  letter-spacing: -0.06em;
+  line-height: 0.8;
+  color: rgb(198 255 26 / 0.08);
+  pointer-events: none;
+  user-select: none;
+}
+
+.take-orbit-rail {
+  min-height: 100svh;
+  padding: 4rem 0 3rem;
+  overflow: hidden;
+}
+
+.take-orbit-rail__head {
+  padding: 0 1.5rem 2rem;
+  max-width: 40rem;
+}
+
+.take-orbit-track {
+  display: flex;
+  gap: 1.25rem;
+  width: max-content;
+  padding: 0 1.5rem 2rem;
+  will-change: transform;
+}
+
+.take-orbit-bay {
+  width: min(78vw, 28rem);
+  flex: none;
+  padding: 1.25rem;
+  border: 1px solid rgb(198 255 26 / 0.28);
+  border-radius: 1.25rem;
+  background: linear-gradient(160deg, rgb(12 28 58 / 0.95), rgb(5 13 28 / 0.9));
+  box-shadow: 0 24px 60px rgb(0 0 0 / 0.35);
+}
+
+.take-orbit-bay__index {
+  margin: 0 0 0.75rem;
+  font-family: "Syne", sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.16em;
+  color: #c6ff1a;
+}
+
+.take-orbit-bay__img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: 0.85rem;
+}
+
+.take-orbit-bay__title {
+  margin: 1rem 0 0.35rem;
+  font-size: 1.75rem;
+}
+
+.take-orbit-bay__line {
+  margin: 0;
+  opacity: 0.75;
+}
+
+.take-orbit-moments,
+.take-orbit-proof,
+.take-orbit-visit {
+  padding: 5rem 1.5rem;
+}
+
+.take-orbit-moments__grid {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+}
+
+.take-orbit-card {
+  display: grid;
+  gap: 1rem;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  background: rgb(8 18 36 / 0.9);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 280ms ease, transform 280ms ease;
+}
+
+.take-orbit-card:hover {
+  border-color: rgb(198 255 26 / 0.55);
+  transform: translateY(-4px);
+}
+
+.take-orbit-card__img {
+  width: 100%;
+  aspect-ratio: 16 / 11;
+  object-fit: cover;
+}
+
+.take-orbit-card__body {
+  padding: 0 1.25rem 1.35rem;
+}
+
+.take-orbit-card__body h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1.35rem;
+}
+
+.take-orbit-card__body p {
+  margin: 0;
+  opacity: 0.75;
+}
+
+.take-orbit-quote {
+  margin: 1.5rem 0 0;
+  max-width: 40rem;
+  font-family: "Syne", sans-serif;
+  font-size: clamp(1.6rem, 1rem + 2vw, 2.6rem);
+  line-height: 1.2;
+}
+
+.take-orbit-quote footer {
+  margin-top: 1rem;
+  font-family: "Outfit", sans-serif;
+  font-size: 1rem;
+  opacity: 0.7;
+}
+
+.take-orbit-visit {
+  background: #071428;
+}
+
+@media (min-width: 900px) {
+  .take-orbit-hero,
+  .take-orbit-rail__head,
+  .take-orbit-moments,
+  .take-orbit-proof,
+  .take-orbit-visit {
+    padding-inline: 3rem;
+  }
+
+  .take-orbit-moments__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .take-orbit-track {
+    padding-inline: 3rem;
+  }
+}
+
+/* -------- LEDGER -------- */
+.take--ledger {
+  --take-bg: #f3eee6;
+  --take-ink: #1a1510;
+  --take-accent: #e2a33a;
+  background: var(--take-bg);
+  color: var(--take-ink);
+  font-family: "Manrope", var(--font-sans);
+}
+
+.take--ledger .font-display,
+.take--ledger .take-display,
+.take--ledger h1,
+.take--ledger h2,
+.take--ledger h3 {
+  font-family: "Space Grotesk", "Manrope", sans-serif;
+}
+
+.take--ledger .button--primary,
+.take--ledger .cta-brand {
+  background: var(--take-accent);
+  color: #1a1510;
+}
+
+.take-ledger-hero {
+  min-height: 88svh;
+  display: grid;
+  align-content: end;
+  padding: 6rem 1.5rem 4rem;
+  background:
+    radial-gradient(ellipse 70% 50% at 80% 0%, rgb(226 163 58 / 0.22), transparent 55%),
+    var(--take-bg);
+}
+
+.take-ledger-hero__title {
+  margin: 0;
+  max-width: 14ch;
+  font-size: clamp(2.8rem, 1rem + 6vw, 5.5rem);
+  line-height: 0.95;
+}
+
+.take-ledger-hero__sub {
+  margin: 1.25rem 0 0;
+  max-width: 34rem;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  opacity: 0.8;
+}
+
+.take-ledger-chapter {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  overflow: hidden;
+}
+
+.take-ledger-chapter__media {
+  position: absolute;
+  inset: 0;
+}
+
+.take-ledger-chapter__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.take-ledger-chapter__copy {
+  position: relative;
+  z-index: 1;
+  align-self: end;
+  margin: 0 1.5rem 3rem;
+  max-width: 32rem;
+  padding: 1.5rem 1.35rem;
+  border-radius: 1.25rem;
+  background: rgb(243 238 230 / 0.92);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 18px 40px rgb(26 21 16 / 0.18);
+}
+
+.take-ledger-chapter__no {
+  margin: 0;
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  color: #8a6230;
+}
+
+.take-ledger-chapter__title {
+  margin: 0.5rem 0;
+  font-size: clamp(2.4rem, 1rem + 4vw, 4rem);
+}
+
+.take-ledger-chapter__line {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+
+.take-ledger-peels,
+.take-ledger-quote,
+.take-ledger-close {
+  padding: 5rem 1.5rem;
+}
+
+.take-ledger-peels__grid {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+  perspective: 1200px;
+}
+
+.take-ledger-peel {
+  overflow: hidden;
+  border-radius: 1.25rem;
+  background: #fff;
+  border: 1px solid rgb(26 21 16 / 0.08);
+  box-shadow: 0 16px 40px rgb(26 21 16 / 0.08);
+  transform-style: preserve-3d;
+}
+
+.take-ledger-peel img {
+  width: 100%;
+  aspect-ratio: 16 / 11;
+  object-fit: cover;
+}
+
+.take-ledger-peel h3,
+.take-ledger-peel p {
+  margin: 0;
+  padding: 0 1.15rem;
+}
+
+.take-ledger-peel h3 {
+  margin-top: 1rem;
+  font-size: 1.35rem;
+}
+
+.take-ledger-peel p {
+  padding-bottom: 1.25rem;
+  margin-top: 0.4rem;
+  opacity: 0.75;
+}
+
+.take-ledger-quote blockquote {
+  margin: 0;
+  max-width: 38rem;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(1.6rem, 1rem + 2.2vw, 2.5rem);
+  line-height: 1.25;
+}
+
+.take-ledger-quote footer {
+  margin-top: 1rem;
+  font-family: "Manrope", sans-serif;
+  font-size: 1rem;
+  opacity: 0.7;
+}
+
+.take-ledger-close {
+  background: #1c1916;
+  color: #f3eee6;
+}
+
+@media (min-width: 900px) {
+  .take-ledger-hero,
+  .take-ledger-peels,
+  .take-ledger-quote,
+  .take-ledger-close {
+    padding-inline: 3rem;
+  }
+
+  .take-ledger-chapter__copy {
+    margin-left: 3rem;
+  }
+
+  .take-ledger-peels__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* -------- STRIKE -------- */
+.take--strike {
+  --take-bg: #0a0806;
+  --take-ink: #f6f1e8;
+  --take-accent: #ff6a3d;
+  background: var(--take-bg);
+  color: var(--take-ink);
+  font-family: "Manrope", var(--font-sans);
+}
+
+.take--strike .font-display,
+.take--strike .take-display,
+.take--strike h1,
+.take--strike h2,
+.take--strike h3 {
+  font-family: "Space Grotesk", "Manrope", sans-serif;
+}
+
+.take--strike .button--primary,
+.take--strike .cta-brand {
+  background: var(--take-accent);
+  color: #0a0806;
+}
+
+.take-strike-hero {
+  min-height: 92svh;
+  display: grid;
+  align-content: center;
+  padding: 6rem 1.5rem 3rem;
+}
+
+.take-strike-hero__kicker,
+.take-strike-close__kicker {
+  margin: 0;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(1rem, 0.6rem + 2vw, 1.4rem);
+  font-weight: 700;
+  color: var(--take-accent);
+}
+
+.take-strike-hero__title {
+  margin: 0.75rem 0 0;
+  max-width: 12ch;
+  font-size: clamp(3rem, 1.2rem + 8vw, 7rem);
+  line-height: 0.9;
+}
+
+.take-strike-hero__sub {
+  margin: 1.25rem 0 0;
+  max-width: 34rem;
+  font-size: 1.125rem;
+  line-height: 1.55;
+  opacity: 0.8;
+}
+
+.take-strike-marquee {
+  overflow: hidden;
+  border-block: 1px solid rgb(255 106 61 / 0.35);
+  padding: 0.85rem 0;
+}
+
+.take-strike-marquee__track {
+  display: flex;
+  width: max-content;
+  gap: 0;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+  color: rgb(246 241 232 / 0.7);
+}
+
+.take-strike-panel {
+  display: grid;
+  min-height: 85svh;
+  gap: 0;
+}
+
+.take-strike-panel__media img {
+  width: 100%;
+  height: 100%;
+  min-height: 18rem;
+  object-fit: cover;
+}
+
+.take-strike-panel__copy {
+  display: grid;
+  align-content: center;
+  padding: 3rem 1.5rem;
+  background: #120e0b;
+}
+
+.take-strike-panel__title {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 1rem + 4vw, 3.75rem);
+  line-height: 0.95;
+}
+
+.take-strike-panel__copy p {
+  margin: 0;
+  max-width: 34rem;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  opacity: 0.8;
+}
+
+.take-strike-records,
+.take-strike-quote,
+.take-strike-close {
+  padding: 5rem 1.5rem;
+}
+
+.take-strike-records__grid {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+
+.take-strike-stat {
+  padding: 1.35rem 1.2rem;
+  border: 1px solid rgb(255 106 61 / 0.35);
+  border-radius: 0.35rem;
+  background: linear-gradient(145deg, rgb(255 106 61 / 0.08), transparent 55%);
+}
+
+.take-strike-stat__label {
+  margin: 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.take-strike-stat__value {
+  margin: 0.55rem 0 0.25rem;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(2.4rem, 1rem + 4vw, 3.6rem);
+  line-height: 1;
+}
+
+.take-strike-stat__value span {
+  font-size: 0.45em;
+  margin-left: 0.15em;
+}
+
+.take-strike-stat__note {
+  margin: 0;
+  opacity: 0.7;
+}
+
+.take-strike-quote blockquote {
+  margin: 0;
+  max-width: 38rem;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(1.6rem, 1rem + 2.2vw, 2.5rem);
+  line-height: 1.2;
+}
+
+.take-strike-quote footer {
+  margin-top: 1rem;
+  font-family: "Manrope", sans-serif;
+  font-size: 1rem;
+  opacity: 0.7;
+}
+
+.take-strike-close {
+  background: #160f0c;
+}
+
+@media (min-width: 900px) {
+  .take-strike-hero,
+  .take-strike-records,
+  .take-strike-quote,
+  .take-strike-close {
+    padding-inline: 3rem;
+  }
+
+  .take-strike-panel {
+    grid-template-columns: 1.15fr 1fr;
+  }
+
+  .take-strike-panel--flip .take-strike-panel__media {
+    order: 2;
+  }
+
+  .take-strike-panel__copy {
+    padding: 4rem 3rem;
+  }
+
+  .take-strike-records__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .take-magnetic {
+    transform: none !important;
+  }
+
+  .take-boot {
+    display: none;
+  }
+}
