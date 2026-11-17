@@ -115,7 +115,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
       <JsonLd data={homeGraph()} />
       <JsonLd data={faqGraph()} />
       <header
-        className={`sticky z-30 shrink-0 px-6 py-3 @5xl:px-12 ${mobile ? "top-0" : "top-[4.25rem]"} ${onFilm ? "hero-toolbar" : "header-bar"} ${
+        className={`sticky top-0 z-30 shrink-0 px-6 py-3 @5xl:px-12 ${onFilm ? "hero-toolbar" : "header-bar"} ${
           chromeReady ? "hero-chrome-in" : "pointer-events-none opacity-0"
         }`}
         aria-hidden={chromeReady ? undefined : true}
@@ -137,11 +137,9 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
           <div className="flex items-center gap-2">
             <LayoutToggle className={onFilm ? "text-white" : "text-ink"} />
             <SoundToggle labeled={onFilm} className={onFilm ? "text-white" : "text-ink"} />
-            <span className="hidden @3xl:contents">
-              <BookLink offer="bay" tone={onFilm ? "inverted" : "brand"} className="shrink-0">
-                Book a Bay
-              </BookLink>
-            </span>
+            <BookLink offer="bay" tone={onFilm ? "inverted" : "brand"} className="shrink-0">
+              Book a Bay
+            </BookLink>
             <button
               type="button"
               className={`${filmLink} @3xl:hidden`}
@@ -167,16 +165,13 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
                 {item.label}
               </a>
             ))}
-            <BookLink offer="bay" tone={onFilm ? "inverted" : "brand"} className="mt-2 w-fit">
-              Book a Bay
-            </BookLink>
           </nav>
         )}
       </header>
       <section
         id="hero"
         className={`hero-shell relative -mt-[4.5rem] flex flex-col overflow-hidden bg-ink ${
-          mobile ? "min-h-full shrink-0" : "h-[calc(100svh-5rem)]"
+          mobile ? "min-h-full shrink-0" : "h-svh"
         }`}
         aria-busy={chromeReady ? undefined : true}
       >
@@ -231,7 +226,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
             />
           </ScrollReveal>
           <ScrollReveal tone="rise" delay={80}>
-            <h2 className="section-title text-3xl @5xl:text-5xl">Get fitted and swinging!</h2>
+            <h2 className="section-title offer-title text-3xl @5xl:text-5xl">Get fitted and swinging!</h2>
             <p className="mt-8 max-w-md font-display text-2xl font-semibold leading-tight tracking-tight">
               PGA professional coaches for 1:1 lessons and swing evaluations.
             </p>
@@ -258,7 +253,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
       <section id="juniors" className={sectionSpace}>
         <div className="grid items-start gap-10 @3xl:grid-cols-2 @3xl:gap-16">
           <ScrollReveal tone="rise">
-            <h2 className="section-title text-4xl @5xl:text-6xl">Golf for kids</h2>
+            <h2 className="section-title offer-title text-4xl @5xl:text-6xl">Golf for kids</h2>
             <p className="mt-6 max-w-md text-base leading-relaxed">Building the golfers of tomorrow.</p>
             <VideoSlot
               src={JUNIORS_FILM.src}

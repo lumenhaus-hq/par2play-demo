@@ -23,18 +23,39 @@ for (const width of [360, 1280]) {
     await panel.getByRole("button", { name: "10 Sessions", exact: true }).click();
     await expect(panel.getByRole("button", { name: "10 Sessions", exact: true })).toHaveAttribute("aria-pressed", "true");
     await expect(panel.locator('[aria-live="polite"] p').last()).toContainText("$400");
-    await expect(page.getByRole("heading", { name: "Finalize your booking" })).toBeVisible();
-    await expect(page.getByLabel("Name")).toBeVisible();
-    await expect(page.getByLabel("Email")).toBeVisible();
-    await expect(page.getByLabel("Phone")).toBeVisible();
-    await expect(page.getByLabel("Payments accepted")).toBeVisible();
-    await expect(page.getByRole("button", { name: "Confirm booking", exact: true })).toBeVisible();
+    await expect(panel.getByRole("heading", { name: "Become a Member" })).toBeVisible();
+    await expect(panel.getByRole("heading", { name: "Finalize your booking" })).toBeVisible();
+    await expect(panel.getByLabel("Name")).toBeVisible();
+    await expect(panel.getByLabel("Email")).toBeVisible();
+    await expect(panel.getByLabel("Phone")).toBeVisible();
+    await expect(panel.getByLabel("Payments accepted")).toBeVisible();
+    await expect(panel.getByRole("button", { name: "Confirm booking", exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "compare plans" })).toBeVisible();
     await expect(page.getByRole("link", { name: "compare plans", exact: true })).toBeVisible();
     await expect(page.getByText(/Junior Golf Membership \(\$399/)).toHaveCount(0);
     await expect(page.getByText(/Estimates for bay hours only/)).toHaveCount(0);
   });
 }
+
+test("navbar shows Golf for Kids and Book a Bay on mobile widths", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("membership/");
+  const header = page.locator("header").first();
+  await expect(header.getByRole("link", { name: "Book a Bay", exact: true })).toBeVisible();
+  await header.getByRole("button", { name: "Menu" }).click();
+  await expect(page.getByRole("navigation", { name: "Page" }).getByRole("link", { name: "Golf for Kids", exact: true })).toBeVisible();
+});
+
+test("coaching and juniors checkout forms live inside the pricing panel", async ({ page }) => {
+  await page.goto("coaching/");
+  const coaching = page.locator("#coaching-offer");
+  await expect(coaching.getByRole("heading", { name: "Finalize your booking" })).toBeVisible();
+  await expect(coaching.getByLabel("Name")).toBeVisible();
+  await page.goto("juniors/");
+  const juniors = page.locator("#juniors-offer");
+  await expect(juniors.getByRole("heading", { name: "Golf for Kids" })).toBeVisible();
+  await expect(juniors.getByRole("heading", { name: "Finalize your booking" })).toBeVisible();
+});
 
 test("mobile homepage membership uses the golf bento grid", async ({ page }) => {
   // The demo's narrow preview must also work in a wide desktop browser.

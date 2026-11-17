@@ -205,12 +205,12 @@ export function membershipGraph() {
       {
         "@type": "WebPage",
         url: absoluteUrl("membership/"),
-        name: "Indoor golf membership in Somerset, NJ",
+        name: "Become a Member",
         about: { "@id": id("/#location") },
       },
       {
         "@type": "Service",
-        name: "Indoor golf membership in Somerset, NJ",
+        name: "Become a Member",
         provider: { "@id": id("/#location") },
         offers: [
           offer("Silver membership", 200, OCLOCK.memberships, "MONTH"),
@@ -230,12 +230,12 @@ export function juniorsGraph() {
       {
         "@type": "WebPage",
         url: absoluteUrl("juniors/"),
-        name: "Junior golf in Somerset, NJ",
+        name: "Golf for Kids",
         about: { "@id": id("/#location") },
       },
       {
         "@type": "Service",
-        name: "Junior golf coaching in Somerset, NJ",
+        name: "Golf for Kids coaching in Somerset, NJ",
         serviceType: "Junior golf instruction",
         provider: { "@id": id("/#location") },
         description: "Age-group junior golf sessions: lessons, training, leagues, tournaments, practice time and fitting.",
@@ -244,7 +244,7 @@ export function juniorsGraph() {
           offer("Junior Golf Membership (twice a week)", PRICES.juniorTwoLessonsWeekly, OCLOCK.lessons, "MONTH"),
         ],
       },
-      breadcrumb("Junior golf", "juniors/"),
+      breadcrumb("Golf for Kids", "juniors/"),
     ],
   };
 }

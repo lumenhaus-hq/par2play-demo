@@ -6,19 +6,21 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test("demo chrome locks Classic homepage to Signal tokens", async ({ page }) => {
+test("demo chrome locks Classic homepage to Signal tokens without style togglebar", async ({ page }) => {
   await page.goto("./");
   const layout = page.getByTestId("layout");
   await expect(layout).toHaveAttribute("data-layout", "web");
   await expect(layout).toHaveAttribute("data-style", "signal");
   await expect(layout).toHaveAttribute("data-take", "classic");
+  await expect(layout).toHaveAttribute("data-hero-type", "plate");
 
-  await expect(page.getByRole("button", { name: "Classic", exact: true })).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByRole("button", { name: "Signal", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: "Classic", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Signal", exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Orbit", exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Fairway", exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Nocturne", exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Mist", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Plate", exact: true })).toHaveCount(0);
 
   await expect
     .poll(async () => layout.evaluate((node) => getComputedStyle(node).getPropertyValue("--accent").trim()))
@@ -31,9 +33,6 @@ test("demo chrome locks Classic homepage to Signal tokens", async ({ page }) => 
 test("?style= query still selects a variant on load", async ({ page }) => {
   await page.goto("./?style=signal");
   await expect(page.getByTestId("layout")).toHaveAttribute("data-style", "signal");
-  await expect
-    .poll(async () => page.getByRole("button", { name: "Signal", exact: true }).getAttribute("aria-pressed"))
-    .toBe("true");
   await expect
     .poll(async () =>
       page.getByTestId("layout").evaluate((node) => getComputedStyle(node).getPropertyValue("--accent").trim()),

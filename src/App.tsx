@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import { currentRoute } from "./data/routes";
 import type { HeroTypeId } from "./data/heroType";
-import { DEFAULT_HERO_TYPE, heroTypeFromSearch } from "./data/heroType";
+import { DEFAULT_HERO_TYPE } from "./data/heroType";
 import type { StyleId } from "./data/styles";
 import type { TakeId } from "./data/takes";
 import { CookieNotice } from "./components/CookieNotice";
-import { HeroTypeSwitcher } from "./components/HeroTypeSwitcher";
 import { SmoothScroll } from "./components/SmoothScroll";
-import { StyleSwitcher } from "./components/StyleSwitcher";
 import { Landing } from "./screens/Landing";
 import { PrivacyPage } from "./screens/PrivacyPage";
 import { CoachingPage, EventsPage, JuniorsPage, MembershipPage, NotFoundPage, TournamentPage } from "./screens/SitePages";
@@ -31,7 +29,6 @@ import {
 import { FlowProvider, useFlow } from "./state/flow";
 import { applyStyle, resolveInitialStyle } from "./style/applyStyle";
 import { applyTake, resolveInitialTake } from "./takes/applyTake";
-import { TakeSwitcher } from "./takes/TakeSwitcher";
 import { OrbitLanding } from "./takes/OrbitLanding";
 import { LedgerLanding } from "./takes/LedgerLanding";
 import { StrikeLanding } from "./takes/StrikeLanding";
@@ -93,13 +90,6 @@ function StepView({ take, heroType }: { take: TakeId; heroType: HeroTypeId }) {
   }
 }
 
-function syncHeroTypeParam(id: HeroTypeId) {
-  const url = new URL(window.location.href);
-  if (id === DEFAULT_HERO_TYPE) url.searchParams.delete("type");
-  else url.searchParams.set("type", id);
-  window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
-}
-
 function Routed({ take, heroType }: { take: TakeId; heroType: HeroTypeId }) {
   const route = currentRoute();
   switch (route) {
@@ -130,14 +120,13 @@ function Shell() {
   const flow = useFlow();
   const [take, setTake] = useState<TakeId>("classic");
   const [style, setStyle] = useState<StyleId>("signal");
-  const [heroType, setHeroType] = useState<HeroTypeId>(() => heroTypeFromSearch());
+  const heroType = DEFAULT_HERO_TYPE;
 
   useEffect(() => {
     const initialTake = resolveInitialTake();
     const initialStyle = resolveInitialStyle();
     setTake(initialTake);
     setStyle(initialStyle);
-    setHeroType(heroTypeFromSearch());
     applyTake(initialTake);
     applyStyle(initialStyle);
   }, []);
@@ -152,20 +141,13 @@ function Shell() {
 
   useEffect(() => {
     document.documentElement.dataset.heroType = heroType;
-    syncHeroTypeParam(heroType);
+    const url = new URL(window.location.href);
+    url.searchParams.delete("type");
+    window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
   }, [heroType]);
 
   return (
     <div className="min-h-screen bg-slate-100">
-      <div className="sticky top-0 z-40 flex flex-col items-center gap-2 bg-white px-4 py-3">
-        <TakeSwitcher value={take} onChange={setTake} />
-        {take === "classic" ? (
-          <>
-            <StyleSwitcher value={style} onChange={setStyle} />
-            <HeroTypeSwitcher value={heroType} onChange={setHeroType} />
-          </>
-        ) : null}
-      </div>
       {flow.layout === "mobile" ? (
         <div className="flex justify-center px-4 py-6">
           <div
