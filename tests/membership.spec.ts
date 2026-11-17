@@ -12,16 +12,15 @@ test("mobile membership shows the golf bento grid", async ({ page }) => {
   await expect(band.locator(".membership-bento__grid")).toBeVisible();
   await expect(band.getByRole("heading", { name: "Membership", exact: true })).toBeVisible();
   await expect(band.getByLabel("Club lineup")).toBeVisible();
-  await expect(band.getByLabel("Google reviews")).toBeVisible();
+  await expect(band.getByLabel("Preferred availability")).toBeVisible();
   await expect(band.getByLabel("Simulator stats")).toBeVisible();
+  await expect(band.getByLabel("Progress")).toBeVisible();
   await expect(band.getByText("Clubs on standby", { exact: true })).toBeVisible();
+  await expect(band.getByText("Your times, held", { exact: true })).toBeVisible();
   await expect(band.getByText("Cool session stats", { exact: true })).toBeVisible();
   await expect(band.getByText("275", { exact: true })).toBeVisible();
-  await expect(band.getByRole("link", { name: /Google reviews/i })).toBeVisible();
   await expect(band.getByText("Your bag", { exact: true })).toHaveCount(0);
-  await expect(band.getByLabel("Par2Play")).toHaveCount(0);
-  await expect(band.getByLabel("Member shortcuts")).toHaveCount(0);
-  await expect(band.locator(".membership-bento__benefit-title", { hasText: "Member benefits" })).toBeVisible();
+  await expect(band.locator(".membership-bento__benefits")).toHaveCount(0);
   await expect(band.getByRole("button", { name: /^(Play|Pause) video$/ })).toHaveCount(0);
 });
 

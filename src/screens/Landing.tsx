@@ -219,7 +219,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
               src={COACHING_FILM.src}
               srcMobile={COACHING_FILM.srcMobile}
               poster={COACHING_FILM.poster}
-              posterAlt="A golfer hitting a shot in a Par2Play simulator bay"
+              posterAlt="An adult golfer reviewing shot data in a Par2Play simulator bay"
               className="aspect-video"
               pausable
             />
