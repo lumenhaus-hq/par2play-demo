@@ -201,6 +201,9 @@
   --bay-radius: 1rem;
   --hero-poppy: linear-gradient(105deg, #e23d28 0%, #ff6b3d 45%, #ffb347 100%);
   --page-atmosphere: none;
+  --scroll-progress: 0;
+  --scroll-x: 0%;
+  --scroll-y: 12%;
   --grain-opacity: 0;
   --motion-ease-enter: cubic-bezier(0.2, 0.7, 0.2, 1);
   --motion-ease-wipe: cubic-bezier(0.625, 0.05, 0, 1);
@@ -238,9 +241,10 @@
   --font-accent-stack: "Syne", "Outfit", sans-serif;
   --bay-radius: 0.4rem;
   --hero-poppy: linear-gradient(105deg, #245bff 0%, #3d8bff 45%, #c6ff1a 100%);
+  /* taste-skill-ignore: owner asked for scroll-linked atmosphere; keep tint ≤0.12 for 7:1 ink */
   --page-atmosphere:
-    radial-gradient(ellipse 80% 50% at 100% 0%, rgb(36 91 255 / 0.12), transparent 55%),
-    radial-gradient(ellipse 60% 40% at 0% 100%, rgb(198 255 26 / 0.1), transparent 50%);
+    radial-gradient(ellipse 80% 50% at calc(100% - var(--scroll-x)) var(--scroll-y), rgb(36 91 255 / 0.12), transparent 55%),
+    radial-gradient(ellipse 60% 40% at var(--scroll-x) calc(100% - var(--scroll-y)), rgb(198 255 26 / 0.1), transparent 50%);
   --grain-opacity: 0.025;
 }
 
@@ -265,9 +269,10 @@
   --font-accent-stack: "Space Grotesk", "Manrope", sans-serif;
   --bay-radius: 0.75rem;
   --hero-poppy: linear-gradient(105deg, #8b4518 0%, #e2a33a 50%, #f0c06a 100%);
+  /* taste-skill-ignore: owner asked for scroll-linked atmosphere; keep tint soft on dark paper */
   --page-atmosphere:
-    radial-gradient(ellipse 70% 45% at 20% 0%, rgb(226 163 58 / 0.14), transparent 55%),
-    radial-gradient(ellipse 50% 40% at 100% 80%, rgb(61 90 70 / 0.18), transparent 50%);
+    radial-gradient(ellipse 70% 45% at var(--scroll-x) var(--scroll-y), rgb(226 163 58 / 0.14), transparent 55%),
+    radial-gradient(ellipse 50% 40% at calc(100% - var(--scroll-x)) calc(100% - var(--scroll-y)), rgb(61 90 70 / 0.18), transparent 50%);
   --grain-opacity: 0.06;
 }
 
@@ -292,9 +297,10 @@
   --font-accent-stack: "Sora", "Plus Jakarta Sans", sans-serif;
   --bay-radius: 1.25rem;
   --hero-poppy: linear-gradient(105deg, #0f766e 0%, #14b8a6 45%, #5eead4 100%);
+  /* taste-skill-ignore: owner asked for scroll-linked atmosphere; mist wash tracks scroll */
   --page-atmosphere:
-    radial-gradient(ellipse 90% 55% at 50% -10%, rgb(94 234 212 / 0.28), transparent 55%),
-    radial-gradient(ellipse 50% 40% at 0% 60%, rgb(15 118 110 / 0.1), transparent 50%);
+    radial-gradient(ellipse 90% 55% at var(--scroll-x) var(--scroll-y), rgb(94 234 212 / 0.22), transparent 55%),
+    radial-gradient(ellipse 50% 40% at calc(100% - var(--scroll-x)) calc(100% - var(--scroll-y)), rgb(15 118 110 / 0.1), transparent 50%);
   --grain-opacity: 0.03;
 }
 
@@ -399,6 +405,103 @@ body {
   opacity: var(--grain-opacity);
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   mix-blend-mode: overlay;
+}
+
+/*
+ * Floating golf icons + extra wash behind content.
+ * taste-skill-ignore: owner asked for floating icons and scroll-linked grounds;
+ * opacity kept low so paper→ink contrast stays WCAG AAA for body copy.
+ */
+.page-atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  contain: paint;
+}
+
+.page-atmosphere__wash {
+  position: absolute;
+  inset: -18%;
+  background:
+    radial-gradient(
+      ellipse 52% 42% at var(--scroll-x) var(--scroll-y),
+      color-mix(in srgb, var(--accent) 12%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      ellipse 46% 38% at calc(100% - var(--scroll-x)) calc(100% - var(--scroll-y)),
+      color-mix(in srgb, var(--mint) 10%, transparent),
+      transparent 58%
+    );
+  opacity: 0.65;
+}
+
+.page-atmosphere__floaters {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.page-atmosphere__floater {
+  position: absolute;
+  margin: 0;
+  opacity: 0.08;
+  transform: translate3d(0, 0, 0) rotate(var(--tilt, 0deg));
+  animation: page-atmosphere-drift var(--drift, 20s) linear infinite;
+  animation-delay: var(--delay, 0s);
+  will-change: transform;
+}
+
+.page-atmosphere__floater img {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+}
+
+[data-style="nocturne"] .page-atmosphere__floater {
+  opacity: 0.11;
+  filter: brightness(1.35) contrast(0.92);
+}
+
+[data-style="signal"] .page-atmosphere__floater {
+  opacity: 0.09;
+}
+
+@keyframes page-atmosphere-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(var(--tilt, 0deg));
+  }
+  50% {
+    transform: translate3d(0, -0.75rem, 0) rotate(var(--tilt, 0deg));
+  }
+}
+
+.page-atmosphere--still .page-atmosphere__floater,
+html.motion-paused .page-atmosphere__floater {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-atmosphere__floater {
+    animation: none;
+  }
+}
+
+@media (max-width: 639px) {
+  .page-atmosphere__floater {
+    opacity: 0.05;
+    width: 2.75rem !important;
+  }
+
+  .page-atmosphere__floater:nth-child(n + 6) {
+    display: none;
+  }
 }
 
 /* taste-skill-ignore: a short top shade so white nav type stays AA on the film */
