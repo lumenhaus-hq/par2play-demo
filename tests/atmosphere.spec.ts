@@ -28,14 +28,36 @@ test("homepage atmosphere floaters sit behind content with depth layers", async 
   expect(stacking.pointerEvents).toBe("none");
   expect(stacking.ariaHidden).toBe("true");
   expect(stacking.contentZ).toBe("10");
-  const inView = await atmosphere.locator(".page-atmosphere__floater").evaluateAll((nodes) =>
-    nodes.filter((node) => {
-      const rect = node.getBoundingClientRect();
-      return rect.bottom > 0 && rect.top < window.innerHeight && rect.width > 0;
-    }).length,
+  const spread = await atmosphere.locator(".page-atmosphere__floater").evaluateAll((nodes) => {
+    const rects = nodes.map((node) => node.getBoundingClientRect());
+    const inView = rects.filter((rect) => rect.bottom > 0 && rect.top < window.innerHeight && rect.width > 0);
+    const lefts = inView.map((rect) => rect.left + rect.width / 2);
+    const tops = inView.map((rect) => rect.top + rect.height / 2);
+    return {
+      inView: inView.length,
+      leftSpan: Math.max(...lefts) - Math.min(...lefts),
+      topSpan: Math.max(...tops) - Math.min(...tops),
+      viewportW: window.innerWidth,
+      viewportH: window.innerHeight,
+    };
+  });
+  // Scattered field: all glyphs on-screen and spread across the viewport, not edge-only.
+  expect(spread.inView).toBe(9);
+  expect(spread.leftSpan).toBeGreaterThan(spread.viewportW * 0.45);
+  expect(spread.topSpan).toBeGreaterThan(spread.viewportH * 0.45);
+});
+
+test("mobile preview keeps the scattered glyph field inside the phone frame", async ({ page }) => {
+  await page.goto("./");
+  await setDemoLayout(page, "mobile");
+  const atmosphere = page.getByTestId("page-atmosphere");
+  await expect(atmosphere).toHaveClass(/page-atmosphere--framed/);
+  await expect(atmosphere.locator(".page-atmosphere__floater")).toHaveCount(9);
+  await expect(atmosphere.locator(".page-atmosphere__floater--near")).toHaveCount(2);
+  const visibleNear = await atmosphere.locator(".page-atmosphere__floater--near").evaluateAll((nodes) =>
+    nodes.filter((node) => getComputedStyle(node).display !== "none").length,
   );
-  // Viewport-fixed field: most glyphs should be on-screen at once.
-  expect(inView).toBeGreaterThanOrEqual(7);
+  expect(visibleNear).toBe(2);
 });
 
 test("scroll shifts near floaters more than far ones", async ({ page }) => {
