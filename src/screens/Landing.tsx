@@ -32,7 +32,7 @@ const sectionSpace = "scroll-mt-32 px-6 py-20 @3xl:px-12 @3xl:py-24";
 
 const navButton = `nav-link inline-flex min-h-11 items-center px-1 text-base font-semibold text-ink ${buttonFocus}`;
 
-export function Landing({ heroType = "pulse" }: { heroType?: HeroTypeId }) {
+export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
   const flow = useFlow();
   const [menu, setMenu] = useState(false);
   const [onFilm, setOnFilm] = useState(true);
@@ -44,7 +44,8 @@ export function Landing({ heroType = "pulse" }: { heroType?: HeroTypeId }) {
   const offerTiltRef = usePointerTilt<HTMLDivElement>(5);
   const mobile = flow.layout === "mobile";
   const scroll = mobile ? "h-full overflow-y-auto" : "";
-  const chromeReady = intro === "arrived";
+  // Offer + toolbar appear as the bay expands — don't wait for expand to finish.
+  const chromeReady = intro === "expand" || intro === "arrived";
 
   const onPhase = useCallback((phase: HeroIntroPhase) => {
     setIntro(phase);
@@ -184,19 +185,19 @@ export function Landing({ heroType = "pulse" }: { heroType?: HeroTypeId }) {
         >
           <div
             ref={offerTiltRef}
-            className="hero-panel hero-panel-depth hero-panel-tilt hero-offer-card pointer-events-auto max-h-full w-full max-w-[36rem] overflow-y-auto rounded-[1.35rem] px-4 py-3.5 @3xl:px-7 @3xl:py-6"
+            className="hero-panel hero-panel-depth hero-panel-tilt hero-offer-card pointer-events-auto max-h-full w-full max-w-[36rem] overflow-hidden rounded-[1.35rem] px-4 py-3 @3xl:overflow-y-auto @3xl:px-7 @3xl:py-6"
           >
             <div className="hero-offer-sheen" aria-hidden="true" />
-            <div className="relative flex min-w-0 flex-col gap-3 @3xl:gap-5">
+            <div className="relative flex min-w-0 flex-col gap-2.5 @3xl:gap-5">
               <div className="hero-stage hero-stage--copy min-w-0 max-w-full" data-hero-type={heroType}>
                 <HeroTitle concept={heroType} />
                 <HeroLocation concept={heroType} />
               </div>
-              <div className="hero-stage hero-stage--cta">
-                <HeroMembershipAction className="cta-sheen w-full @3xl:w-auto" />
-              </div>
               <div className="hero-stage hero-stage--proof">
                 <HeroProof />
+              </div>
+              <div className="hero-stage hero-stage--cta">
+                <HeroMembershipAction className="cta-sheen w-full @3xl:w-auto" />
               </div>
             </div>
           </div>

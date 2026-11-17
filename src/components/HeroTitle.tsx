@@ -1,4 +1,4 @@
-import type { HeroTypeId } from "../data/heroType";
+import { DEFAULT_HERO_TYPE, type HeroTypeId } from "../data/heroType";
 
 export type HeroConcept = HeroTypeId;
 
@@ -10,7 +10,7 @@ export function heroConcept(): HeroConcept {
   const legacy = new URLSearchParams(window.location.search).get("hero");
   if (legacy === "b" || legacy === "c") return "plate";
   if (legacy === "d" || legacy === "a") return "drive";
-  return "pulse";
+  return DEFAULT_HERO_TYPE;
 }
 
 function MaskLine({ children, delay = 0, className = "" }: { children: string; delay?: number; className?: string }) {
