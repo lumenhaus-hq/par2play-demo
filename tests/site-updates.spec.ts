@@ -47,15 +47,28 @@ test("mobile homepage membership uses the golf bento grid", async ({ page }) => 
     const grid = node.querySelector(".membership-bento__grid")!;
     const availability = node.querySelector('[aria-label="Preferred availability"]')!;
     const stage = node.querySelector(".membership-bento-stage") ?? node.firstElementChild!;
+    const tiles = [...grid.querySelectorAll(".membership-bento__tile")].map((tile) =>
+      Math.round(tile.getBoundingClientRect().height),
+    );
+    const gridRect = grid.getBoundingClientRect();
     return {
-      gridTop: grid.getBoundingClientRect().top,
+      gridTop: gridRect.top,
+      gridBottom: gridRect.bottom,
       availabilityTop: availability.getBoundingClientRect().top,
       background: getComputedStyle(stage).backgroundColor,
       filmCount: node.querySelectorAll("video").length,
+      tileHeights: tiles,
+      viewportHeight: window.innerHeight,
     };
   });
   expect(metrics.availabilityTop).toBeGreaterThanOrEqual(metrics.gridTop);
   expect(metrics.filmCount).toBe(1);
+  const [firstHeight, ...restHeights] = metrics.tileHeights;
+  expect(firstHeight).toBeGreaterThan(0);
+  for (const height of restHeights) {
+    expect(Math.abs(height - firstHeight)).toBeLessThanOrEqual(2);
+  }
+  expect(metrics.gridBottom - metrics.gridTop).toBeLessThanOrEqual(metrics.viewportHeight * 0.72);
   // Light stage behind dark tiles (not the old full-bleed void film band).
   expect(metrics.background).not.toBe("rgb(2, 8, 6)");
   await expect(band.getByLabel("Simulator stats")).toBeVisible();
