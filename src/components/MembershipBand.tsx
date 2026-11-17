@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { BookLink, CtaPair, MembershipLink } from "./Cta";
+import { MembershipBento } from "./MembershipBento";
 import { MembershipStepIcon, type MembershipStepId } from "./MembershipIcons";
 import { ScrollReveal } from "./ScrollReveal";
 import { MEMBERSHIP_MONTAGE } from "../data/films";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
-import { useFlow } from "../state/flow";
 
 const benefits: readonly {
   id: MembershipStepId;
@@ -145,15 +145,14 @@ function ChapterList({ active, dimInactive }: { active: number; dimInactive: boo
   );
 }
 
-export function MembershipBand() {
+function MembershipDesktop() {
   const reduce = usePrefersReducedMotion();
-  const mobile = useFlow().layout === "mobile";
   const [paused, setPaused] = useState(false);
   const [chapter, setChapter] = useState(0);
   const listRef = useRef<HTMLDivElement>(null);
   const toggle = () => setPaused((value) => !value);
   const showControl = !reduce;
-  const dimInactive = !mobile && !reduce;
+  const dimInactive = !reduce;
 
   useEffect(() => {
     if (!dimInactive) return;
@@ -177,30 +176,41 @@ export function MembershipBand() {
   }, [dimInactive]);
 
   return (
-    <section id="membership" className="@container scroll-mt-32 bg-void text-white">
-      <div className="relative overflow-hidden @3xl:min-h-[36rem]">
-        <div className="relative aspect-video w-full overflow-hidden @3xl:absolute @3xl:inset-0 @3xl:aspect-auto @3xl:h-full">
-          <MontageFilm paused={paused} reduce={reduce} />
-          {showControl ? <FilmToggle paused={paused} onToggle={toggle} /> : null}
+    <div className="relative overflow-hidden @3xl:min-h-[36rem]">
+      <div className="relative aspect-video w-full overflow-hidden @3xl:absolute @3xl:inset-0 @3xl:aspect-auto @3xl:h-full">
+        <MontageFilm paused={paused} reduce={reduce} />
+        {showControl ? <FilmToggle paused={paused} onToggle={toggle} /> : null}
+      </div>
+      <div
+        className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-void via-void/90 to-transparent @3xl:block"
+        aria-hidden="true"
+      />
+      <div className="pointer-events-none relative z-20 px-6 pt-6 pb-10 @3xl:flex @3xl:min-h-[36rem] @3xl:items-center @3xl:px-12 @3xl:py-16">
+        <div ref={listRef} className="pointer-events-auto max-w-lg">
+          <ScrollReveal tone="rise">
+            <h2 className="font-display text-4xl font-semibold leading-none tracking-tight @5xl:text-6xl">Membership</h2>
+            <CtaPair className="mt-6">
+              <MembershipLink className="cta-sheen w-full">Become a Member</MembershipLink>
+              <BookLink className="w-full" offer="bay" tone="line">
+                Try it out
+              </BookLink>
+            </CtaPair>
+          </ScrollReveal>
+          <ChapterList active={chapter} dimInactive={dimInactive} />
         </div>
-        <div
-          className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-void via-void/90 to-transparent @3xl:block"
-          aria-hidden="true"
-        />
-        <div className="pointer-events-none relative z-20 px-6 pt-6 pb-10 @3xl:flex @3xl:min-h-[36rem] @3xl:items-center @3xl:px-12 @3xl:py-16">
-          <div ref={listRef} className="pointer-events-auto max-w-lg">
-            <ScrollReveal tone="rise">
-              <h2 className="font-display text-4xl font-semibold leading-none tracking-tight @5xl:text-6xl">Membership</h2>
-              <CtaPair className="mt-6">
-                <MembershipLink className="cta-sheen w-full">Become a Member</MembershipLink>
-                <BookLink className="w-full" offer="bay" tone="line">
-                  Try it out
-                </BookLink>
-              </CtaPair>
-            </ScrollReveal>
-            <ChapterList active={chapter} dimInactive={dimInactive} />
-          </div>
-        </div>
+      </div>
+    </div>
+  );
+}
+
+export function MembershipBand() {
+  return (
+    <section id="membership" className="scroll-mt-32">
+      <div className="membership-bento-stage @3xl:hidden">
+        <MembershipBento />
+      </div>
+      <div className="hidden bg-void text-white @3xl:block">
+        <MembershipDesktop />
       </div>
     </section>
   );

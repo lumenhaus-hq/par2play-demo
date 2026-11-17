@@ -1,7 +1,23 @@
-import { expect, test } from "./fixtures";
+import { expect, setDemoLayout, test } from "./fixtures";
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem("p2p_consent", JSON.stringify({ v: 1, analytics: false, marketing: false, ts: Date.now() })));
+});
+
+test("mobile membership shows the golf bento grid", async ({ page }) => {
+  await page.goto("./");
+  await setDemoLayout(page, "mobile");
+  const band = page.locator("#membership");
+  await band.scrollIntoViewIfNeeded();
+  await expect(band.locator(".membership-bento__grid")).toBeVisible();
+  await expect(band.getByRole("heading", { name: "Membership", exact: true })).toBeVisible();
+  await expect(band.getByLabel("Member profile")).toBeVisible();
+  await expect(band.getByLabel("Simulator stats")).toBeVisible();
+  await expect(band.getByText("Meet the member kit", { exact: true })).toBeVisible();
+  await expect(band.getByText("Cool session stats", { exact: true })).toBeVisible();
+  await expect(band.getByText("275", { exact: true })).toBeVisible();
+  await expect(band.locator(".membership-bento__benefit-title", { hasText: "Member benefits" })).toBeVisible();
+  await expect(band.getByRole("button", { name: /^(Play|Pause) video$/ })).toHaveCount(0);
 });
 
 test("membership montage pauses, resumes, and stays paused off screen", async ({ page }) => {
