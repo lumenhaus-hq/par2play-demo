@@ -136,8 +136,8 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
           </nav>
           <div className="flex items-center gap-2">
             <LayoutToggle className={onFilm ? "text-white" : "text-ink"} />
-            <SoundToggle labeled={onFilm} className={onFilm ? "text-white" : "text-ink"} />
-            <BookLink offer="bay" tone={onFilm ? "inverted" : "brand"} className="shrink-0">
+            <SoundToggle className={onFilm ? "text-white" : "text-ink"} />
+            <BookLink offer="bay" tone="brand" className="shrink-0">
               Book a Bay
             </BookLink>
             <button
