@@ -165,6 +165,7 @@
   --font-outfit: "Outfit", ui-sans-serif, system-ui, sans-serif;
   --font-marker: "Permanent Marker", "Caveat", cursive;
   --font-yellowtail: "Yellowtail", "Kaushan Script", cursive;
+  --font-permanent-marker: var(--font-marker);
   --color-ink: var(--ink);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
@@ -440,7 +441,7 @@ body {
 .hero-offer-dock {
   box-sizing: border-box;
   width: 100%;
-  max-height: 34%;
+  max-height: 38%;
   margin-top: auto;
 }
 
@@ -577,6 +578,52 @@ body {
 
 .hero-font-yellowtail {
   font-family: var(--font-yellowtail);
+}
+
+.hero-font-marker {
+  font-family: var(--font-marker);
+}
+
+/* Larger-than-life sticker lockups — white stroke + shadow for busy film. */
+.hero-lockup {
+  isolation: isolate;
+}
+
+.hero-sticker {
+  paint-order: stroke fill;
+  text-wrap: balance;
+}
+
+.hero-sticker--block {
+  color: #07140c;
+  -webkit-text-stroke: 0.085em #ffffff;
+  text-shadow: 0.06em 0.08em 0 rgb(0 0 0 / 0.4);
+  word-spacing: 0.1em;
+}
+
+.hero-sticker--mega {
+  color: #07140c;
+  -webkit-text-stroke: 0.07em #ffffff;
+  text-shadow: 0.05em 0.07em 0 rgb(0 0 0 / 0.45);
+  word-spacing: 0.12em;
+}
+
+.hero-sticker--connect {
+  color: #07140c;
+  -webkit-text-stroke: 0.1em #ffffff;
+  text-shadow: 0.05em 0.06em 0 rgb(0 0 0 / 0.35);
+}
+
+.hero-sticker--script {
+  color: var(--accent-hot);
+  -webkit-text-stroke: 0.055em #ffffff;
+  text-shadow: 0.05em 0.07em 0 rgb(0 0 0 / 0.35);
+}
+
+.hero-sticker--brush {
+  color: var(--accent);
+  -webkit-text-stroke: 0.06em #ffffff;
+  text-shadow: 0.05em 0.07em 0 rgb(0 0 0 / 0.38);
 }
 
 /* Hand-drawn accent marks (benchmark ring / underline). */
@@ -1394,18 +1441,9 @@ html.motion-paused .benefit-track {
   animation: none;
 }
 
-/* Keep bold display faces from visually gluing “for all”. */
+/* Lockup titles — keep word gaps readable inside sticker strokes. */
 .hero-title {
-  word-spacing: 0.14em;
-}
-
-.hero-title--pulse,
-.hero-title--drive {
-  letter-spacing: 0.01em;
-}
-
-.hero-title--plate {
-  letter-spacing: 0.015em;
+  word-spacing: 0.08em;
 }
 
 /* Location — sentence case, same-family quiet caption, one-line fit on phones. */

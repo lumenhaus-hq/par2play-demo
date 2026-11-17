@@ -23,58 +23,11 @@ function MaskLine({ children, delay = 0, className = "" }: { children: string; d
   );
 }
 
-/** Hand-drawn oval — one accent mark. */
-function AccentRing() {
-  return (
-    <svg
-      viewBox="0 0 120 48"
-      className="pointer-events-none absolute -inset-x-[0.18em] -inset-y-[0.12em] h-[1.35em] w-[116%]"
-      aria-hidden="true"
-    >
-      <ellipse
-        className="hero-mark-stroke"
-        cx="60"
-        cy="24"
-        rx="54"
-        ry="18"
-        fill="none"
-        stroke="var(--accent)"
-        strokeWidth="3"
-        strokeLinecap="round"
-        pathLength="1"
-      />
-    </svg>
-  );
-}
-
-/** Hand-drawn underline mark. */
-function AccentStroke() {
-  return (
-    <svg
-      viewBox="0 0 140 18"
-      className="pointer-events-none absolute -bottom-[0.05em] left-0 h-[0.28em] w-full"
-      aria-hidden="true"
-    >
-      <path
-        className="hero-mark-stroke"
-        d="M3 12 C 32 5, 78 16, 137 7"
-        fill="none"
-        stroke="var(--accent)"
-        strokeWidth="3.2"
-        strokeLinecap="round"
-        pathLength="1"
-      />
-    </svg>
-  );
-}
-
 /**
- * Spaces live INSIDE each MaskLine string — splitting “for”|“all” across
- * inline-blocks was collapsing into “forall”.
- *
- * Pulse — Syne phrase + ring on golfers + Manrope location
- * Plate — Outfit lead + Space “all” + Yellowtail golfers
- * Drive — Sora “A home for all” / “golfers.”
+ * Larger-than-life sports lockups (BASEBALL / Hits Different energy):
+ * Pulse — varsity block + overlapping Yellowtail script
+ * Plate — Permanent Marker brush hit over Space Grotesk block
+ * Drive — mega outlined word + small italic connector
  */
 export function HeroTitle({ concept }: { concept: HeroConcept }) {
   switch (concept) {
@@ -107,44 +60,46 @@ export function HeroLocation({ concept }: { concept: HeroConcept }) {
   }
 }
 
+/** Varsity stack: outlined block + slanted script overlap. */
 function PulseTitle() {
   return (
-    <p className="hero-title hero-title--pulse hero-font-syne min-w-0 max-w-full text-[clamp(1.5rem,6cqi,2.2rem)] font-bold leading-[1.1] text-white">
-      {/* nbsp joins — normal trailing spaces collapse between inline-blocks */}
-      <MaskLine>{"A home for all\u00A0\u00A0"}</MaskLine>
-      <span className="relative inline-block whitespace-nowrap">
-        <MaskLine delay={120}>{"golfers."}</MaskLine>
-        <AccentRing />
-      </span>
-    </p>
-  );
-}
-
-function PlateTitle() {
-  return (
-    <p className="hero-title hero-title--plate min-w-0 max-w-full text-[clamp(1.35rem,5.4cqi,1.95rem)] leading-[1.15]">
-      <MaskLine className="hero-font-outfit font-semibold text-white/72">{"A home for\u00A0\u00A0"}</MaskLine>
-      <MaskLine delay={90} className="hero-font-space font-bold text-white">
-        {"all\u00A0\u00A0"}
-      </MaskLine>
-      <span className="relative inline-block whitespace-nowrap">
-        <MaskLine delay={150} className="hero-font-yellowtail text-[1.2em] font-normal leading-none text-accent">
-          {"golfers."}
-        </MaskLine>
-        <AccentStroke />
-      </span>
-    </p>
-  );
-}
-
-function DriveTitle() {
-  return (
-    <div className="hero-title hero-title--drive min-w-0 max-w-full">
-      <p className="hero-font-sora text-[clamp(1.3rem,5.2cqi,1.75rem)] font-bold leading-[1.12] text-white">
+    <div className="hero-title hero-title--pulse hero-lockup min-w-0 max-w-full">
+      <p className="hero-sticker hero-sticker--block hero-font-space text-[clamp(1.65rem,7.5cqi,2.55rem)] font-bold uppercase leading-[0.88] tracking-[-0.02em]">
         <MaskLine>{"A home for all"}</MaskLine>
       </p>
-      <p className="hero-font-sora mt-1 text-[clamp(1.75rem,8cqi,2.55rem)] font-bold leading-[0.92] text-white">
-        <MaskLine delay={120}>{"golfers."}</MaskLine>
+      <p className="hero-sticker hero-sticker--script hero-font-yellowtail relative z-10 -mt-2 ml-1 w-fit text-[clamp(1.85rem,8.5cqi,2.85rem)] leading-none">
+        <MaskLine delay={140}>{"golfers."}</MaskLine>
+      </p>
+    </div>
+  );
+}
+
+/** Brush stamp energy — Marker script rides over a condensed block. */
+function PlateTitle() {
+  return (
+    <div className="hero-title hero-title--plate hero-lockup min-w-0 max-w-full">
+      <p className="hero-sticker hero-sticker--block hero-font-syne text-[clamp(1.55rem,7cqi,2.4rem)] font-bold uppercase leading-[0.9] tracking-[-0.015em]">
+        <MaskLine>{"A home for"}</MaskLine>
+      </p>
+      <p className="hero-sticker hero-sticker--brush hero-font-marker relative z-10 -mt-3 ml-2 w-fit rotate-[-3deg] text-[clamp(1.7rem,7.8cqi,2.6rem)] leading-none">
+        <MaskLine delay={130}>{"all golfers."}</MaskLine>
+      </p>
+    </div>
+  );
+}
+
+/** Mega block + tucked connector + script (THAT-under-BASEBALL pattern). */
+function DriveTitle() {
+  return (
+    <div className="hero-title hero-title--drive hero-lockup relative min-w-0 max-w-full pt-3">
+      <p className="hero-sticker hero-sticker--connect hero-font-outfit absolute left-0 top-0 text-[clamp(0.7rem,2.8cqi,0.95rem)] font-bold uppercase italic tracking-[0.08em]">
+        <MaskLine>{"a home"}</MaskLine>
+      </p>
+      <p className="hero-sticker hero-sticker--mega hero-font-space text-[clamp(2rem,10.5cqi,3.2rem)] font-bold uppercase leading-[0.82] tracking-[-0.03em]">
+        <MaskLine delay={80}>{"for all"}</MaskLine>
+      </p>
+      <p className="hero-sticker hero-sticker--script hero-font-yellowtail relative z-10 -mt-2 ml-3 w-fit rotate-[-3deg] text-[clamp(1.65rem,7.2cqi,2.4rem)] leading-none">
+        <MaskLine delay={160}>{"golfers."}</MaskLine>
       </p>
     </div>
   );
