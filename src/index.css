@@ -1692,10 +1692,8 @@ html.motion-paused .benefit-card--dim {
   display: grid;
   grid-template-columns: 1.18fr 1fr;
   grid-template-areas:
-    "hero stats"
-    "hero brand"
-    "clubs chart"
-    "social dock";
+    "clubs rating"
+    "stats chart";
   gap: 0.75rem;
   align-items: stretch;
 }
@@ -1711,14 +1709,6 @@ html.motion-paused .benefit-card--dim {
     0 14px 28px rgb(10 15 11 / 0.18),
     inset 0 1px 0 rgb(255 255 255 / 0.06);
   min-width: 0;
-}
-
-.membership-bento__tile--hero {
-  grid-area: hero;
-  display: flex;
-  flex-direction: column;
-  min-height: 18.5rem;
-  padding: 1rem 0.9rem 0.75rem;
 }
 
 .membership-bento__tile--stats {
@@ -1738,27 +1728,22 @@ html.motion-paused .benefit-card--dim {
   gap: 0.4rem;
 }
 
-.membership-bento__tile--brand {
-  grid-area: brand;
-  display: grid;
-  place-content: center;
-  justify-items: center;
-  gap: 0.2rem;
-  min-height: 7.25rem;
-  padding: 0.85rem;
-  text-align: center;
-}
-
-.membership-bento__brand-ball {
-  margin-top: 0.35rem;
-}
-
 .membership-bento__tile--clubs {
   grid-area: clubs;
   display: flex;
   flex-direction: column;
-  min-height: 13.5rem;
+  min-height: 12.5rem;
   padding: 1rem 0.85rem 0.75rem;
+}
+
+.membership-bento__tile--rating {
+  grid-area: rating;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.65rem;
+  min-height: 12.5rem;
+  padding: 1rem 0.9rem;
 }
 
 .membership-bento__tile--chart {
@@ -1768,24 +1753,6 @@ html.motion-paused .benefit-card--dim {
   justify-content: space-between;
   min-height: 9.75rem;
   padding: 0.9rem 0.8rem 0.75rem;
-}
-
-.membership-bento__tile--social {
-  grid-area: social;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 0.55rem;
-  min-height: 7.5rem;
-  padding: 0.9rem;
-}
-
-.membership-bento__tile--dock {
-  grid-area: dock;
-  display: flex;
-  align-items: center;
-  min-height: 8.5rem;
-  padding: 0.65rem;
 }
 
 .membership-bento__eyebrow {
@@ -2118,19 +2085,25 @@ html.motion-paused .benefit-card--dim {
   gap: 0.45rem;
 }
 
+.membership-bento__tile--rating .membership-bento__rating {
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
 .membership-bento__rating-score {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 1.55rem;
+  font-size: 2.35rem;
   font-weight: 700;
   line-height: 1;
 }
 
 .membership-bento__rating-note {
-  font-size: 0.68rem;
-  color: rgb(244 246 245 / 0.58);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgb(244 246 245 / 0.72);
   text-decoration: underline;
-  text-underline-offset: 2px;
+  text-underline-offset: 3px;
 }
 
 .membership-bento__dock {
@@ -2239,10 +2212,6 @@ html.motion-paused .benefit-card--dim {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  html:not(.motion-paused) .membership-bento__spin--live {
-    animation: membership-bento-spin 2.8s linear infinite;
-  }
-
   html:not(.motion-paused) .membership-bento__gauge-arc {
     animation: membership-bento-gauge 1.1s var(--motion-ease-enter) both;
   }
@@ -2251,32 +2220,20 @@ html.motion-paused .benefit-card--dim {
     animation: membership-bento-rise 700ms var(--motion-ease-enter) both;
   }
 
-  html:not(.motion-paused) .membership-bento__tile--hero {
+  html:not(.motion-paused) .membership-bento__tile--clubs {
     animation-delay: 40ms;
   }
 
+  html:not(.motion-paused) .membership-bento__tile--rating {
+    animation-delay: 90ms;
+  }
+
   html:not(.motion-paused) .membership-bento__tile--stats {
-    animation-delay: 100ms;
-  }
-
-  html:not(.motion-paused) .membership-bento__tile--brand {
-    animation-delay: 150ms;
-  }
-
-  html:not(.motion-paused) .membership-bento__tile--clubs {
-    animation-delay: 190ms;
+    animation-delay: 140ms;
   }
 
   html:not(.motion-paused) .membership-bento__tile--chart {
-    animation-delay: 230ms;
-  }
-
-  html:not(.motion-paused) .membership-bento__tile--social {
-    animation-delay: 270ms;
-  }
-
-  html:not(.motion-paused) .membership-bento__tile--dock {
-    animation-delay: 310ms;
+    animation-delay: 190ms;
   }
 
   html:not(.motion-paused) .membership-bento__club--front {
