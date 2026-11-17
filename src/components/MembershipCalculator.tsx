@@ -1,5 +1,4 @@
 import { useId, useState, type FormEvent, type ReactNode } from "react";
-import { CalendarDays, Clock3 } from "lucide-react";
 import { trackAnchor } from "../analytics/track";
 import { BookLink, PhoneLink, buttonFocus } from "./Cta";
 import { NAP, OCLOCK, PRICES } from "../data/business";
@@ -18,6 +17,21 @@ type CheckoutFields = {
 };
 
 const emptyCheckout: CheckoutFields = { name: "", email: "", phone: "" };
+
+function ModeButton({ pressed, onClick, children }: { pressed: boolean; onClick: () => void; children: string }) {
+  return (
+    <button
+      type="button"
+      className={`aa-focus min-h-11 flex-1 rounded-full border-2 px-3 text-base font-semibold transition-[border-color,background-color,color] ${
+        pressed ? "border-ink bg-ink text-white" : "border-[#D1D5DB] bg-white text-ink hover:border-ink"
+      }`}
+      aria-pressed={pressed}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+}
 
 function checkoutHref(mode: PracticeMode, fields: CheckoutFields): string {
   const base = mode === "unlimited" ? OCLOCK.practiceUnlimited : OCLOCK.tenPracticePack;
@@ -39,63 +53,6 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
     <div className="flex items-baseline justify-between gap-4 py-2 text-base">
       <span className="text-[#4B5563]">{label}</span>
       <span className="font-semibold text-ink tabular-nums">{value}</span>
-    </div>
-  );
-}
-
-function FeatureFact({ label, value, icon }: { label: string; value: string; icon: "calendar" | "clock" }) {
-  const Icon = icon === "calendar" ? CalendarDays : Clock3;
-  return (
-    <div className="min-w-0 rounded-2xl border border-[#E5E7EB] bg-[#F3F4F6] p-3 @3xl:p-4">
-      <p className="flex items-center gap-2 text-xs font-semibold text-[#4B5563]">
-        <Icon aria-hidden="true" className="size-4 shrink-0 text-[#17743B]" strokeWidth={1.7} />
-        {label}
-      </p>
-      <p className="mt-3 font-display text-2xl font-semibold leading-tight tracking-tight text-ink @3xl:text-3xl">{value}</p>
-    </div>
-  );
-}
-
-function OfferToggle({
-  mode,
-  onChange,
-}: {
-  mode: PracticeMode;
-  onChange: (mode: PracticeMode) => void;
-}) {
-  return (
-    <div className="mt-5" role="group" aria-label="Practice offer">
-      <div className="grid grid-cols-2 gap-3">
-        <button
-          type="button"
-          className={`membership-offer-card aa-focus ${mode === "pack" ? "is-active" : ""}`}
-          aria-pressed={mode === "pack"}
-          onClick={() => onChange("pack")}
-        >
-          <p className={`text-xs font-semibold uppercase tracking-[0.04em] ${mode === "pack" ? "text-[#17743B]" : "text-[#6B7280]"}`}>
-            10 Sessions
-          </p>
-          <p className="mt-2 font-display text-2xl font-semibold tabular-nums text-ink @3xl:text-3xl">{money(PRICES.tenPack)}</p>
-        </button>
-        <button
-          type="button"
-          className={`membership-offer-card aa-focus ${mode === "unlimited" ? "is-active" : ""}`}
-          aria-pressed={mode === "unlimited"}
-          onClick={() => onChange("unlimited")}
-        >
-          <p className={`text-xs font-semibold uppercase tracking-[0.04em] ${mode === "unlimited" ? "text-[#17743B]" : "text-[#6B7280]"}`}>
-            Unlimited / mo
-          </p>
-          <p className="mt-2 font-display text-2xl font-semibold tabular-nums text-ink @3xl:text-3xl">
-            {money(PRICES.unlimitedMonthly)}
-          </p>
-        </button>
-      </div>
-      <p className="mt-3 text-sm font-semibold leading-snug text-ink/75">
-        {mode === "unlimited"
-          ? "Members keep a bay hour every day for less than a few 10-packs."
-          : `${money(PRICES.tenPack / 10)} a session in the pack.`}
-      </p>
     </div>
   );
 }
@@ -166,6 +123,9 @@ export function MembershipCalculator() {
   const totalLabel = unlimited ? `${money(PRICES.unlimitedMonthly)}/mo` : money(PRICES.tenPack);
   const primaryOffer = unlimited ? ("practice-unlimited" as const) : ("ten-pack" as const);
   const primaryLabel = unlimited ? "Become a Member" : "Buy 10 Sessions";
+  const note = unlimited
+    ? "Members keep a bay hour every day for less than a few 10-packs."
+    : `${money(PRICES.tenPack / 10)} a session in the pack.`;
 
   const set = (key: keyof CheckoutFields, value: string) => {
     setFields((current) => ({ ...current, [key]: value }));
@@ -211,12 +171,16 @@ export function MembershipCalculator() {
             </p>
           </div>
 
-          <div className="mt-6 grid grid-cols-2 gap-3">
-            <FeatureFact label="Bay access" value="Daily" icon="calendar" />
-            <FeatureFact label="Session length" value="Up to 1 hr" icon="clock" />
+          <div className="mt-6 flex flex-col gap-2 @3xl:flex-row" role="group" aria-label="Practice offer">
+            <ModeButton pressed={unlimited} onClick={() => setMode("unlimited")}>
+              Unlimited Practice
+            </ModeButton>
+            <ModeButton pressed={!unlimited} onClick={() => setMode("pack")}>
+              10 Sessions
+            </ModeButton>
           </div>
 
-          <OfferToggle mode={mode} onChange={setMode} />
+          <p className="mt-4 text-sm font-semibold leading-snug text-ink/75">{note}</p>
 
           <div className="mt-6 flex flex-col gap-3 @3xl:flex-row">
             <BookLink className="w-full" offer={primaryOffer}>
