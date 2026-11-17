@@ -1,14 +1,11 @@
+import type { Locator } from "@playwright/test";
 import { expect, setDemoLayout, test } from "./fixtures";
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem("p2p_consent", JSON.stringify({ v: 1, analytics: false, marketing: false, ts: Date.now() })));
 });
 
-test("mobile membership shows the golf bento grid", async ({ page }) => {
-  await page.goto("./");
-  await setDemoLayout(page, "mobile");
-  const band = page.locator("#membership");
-  await band.scrollIntoViewIfNeeded();
+async function expectMembershipBento(band: Locator) {
   await expect(band.locator(".membership-bento__grid")).toBeVisible();
   await expect(band.getByRole("heading", { name: "Membership", exact: true })).toBeVisible();
   await expect(band.getByLabel("Club lineup")).toBeVisible();
@@ -21,7 +18,31 @@ test("mobile membership shows the golf bento grid", async ({ page }) => {
   await expect(band.getByText("275", { exact: true })).toBeVisible();
   await expect(band.getByText("Your bag", { exact: true })).toHaveCount(0);
   await expect(band.locator(".membership-bento__benefits")).toHaveCount(0);
+  const heights = await band.locator(".membership-bento__tile").evaluateAll((tiles) =>
+    tiles.map((tile) => Math.round(tile.getBoundingClientRect().height)),
+  );
+  expect(heights.length).toBe(4);
+  for (const height of heights.slice(1)) {
+    expect(Math.abs(height - heights[0]!)).toBeLessThanOrEqual(2);
+  }
+}
+
+test("mobile membership shows the golf bento grid", async ({ page }) => {
+  await page.goto("./");
+  await setDemoLayout(page, "mobile");
+  const band = page.locator("#membership");
+  await band.scrollIntoViewIfNeeded();
+  await expectMembershipBento(band);
   await expect(band.getByRole("button", { name: /^(Play|Pause) video$/ })).toHaveCount(0);
+});
+
+test("desktop membership shows the same equal bento grid", async ({ page }) => {
+  await page.goto("./");
+  await setDemoLayout(page, "web");
+  const band = page.locator("#membership");
+  await band.scrollIntoViewIfNeeded();
+  await expectMembershipBento(band);
+  await expect(band.getByRole("button", { name: /^(Play|Pause) video$/ })).toBeVisible();
 });
 
 test("membership montage pauses, resumes, and stays paused off screen", async ({ page }) => {
@@ -31,10 +52,10 @@ test("membership montage pauses, resumes, and stays paused off screen", async ({
   await band.scrollIntoViewIfNeeded();
   await expect.poll(() => video.evaluate((node: HTMLVideoElement) => node.paused)).toBe(false);
   await expect.poll(() => video.evaluate((node: HTMLVideoElement) => node.muted)).toBe(true);
-  // Sticky preview/header sit over the top of the film; hit the mid frame instead.
-  await band.getByRole("button", { name: "Pause video", exact: true }).click({ position: { x: 40, y: 280 } });
+  // Film sits under the bento; hit mid-frame of the strip.
+  await band.getByRole("button", { name: "Pause video", exact: true }).click({ position: { x: 40, y: 120 } });
   await expect.poll(() => video.evaluate((node: HTMLVideoElement) => node.paused)).toBe(true);
-  await band.getByRole("button", { name: "Play video", exact: true }).click({ position: { x: 40, y: 280 } });
+  await band.getByRole("button", { name: "Play video", exact: true }).click({ position: { x: 40, y: 120 } });
   await expect.poll(() => video.evaluate((node: HTMLVideoElement) => node.paused)).toBe(false);
   await page.locator("footer").last().scrollIntoViewIfNeeded();
   await expect.poll(() => band.evaluate((node) => node.getBoundingClientRect().bottom)).toBeLessThanOrEqual(0);
