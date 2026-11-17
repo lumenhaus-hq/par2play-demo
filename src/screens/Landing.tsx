@@ -8,6 +8,7 @@ import { MembershipBand } from "../components/MembershipBand";
 import { HeroVideo, type HeroIntroPhase } from "../components/Media";
 import { LayoutToggle } from "../components/LayoutToggle";
 import { MotionToggle } from "../components/MotionToggle";
+import { PageAtmosphere } from "../components/PageAtmosphere";
 import { ScrollReveal } from "../components/ScrollReveal";
 import { SoundToggle } from "../components/SoundToggle";
 import { TournamentForm } from "../components/TournamentForm";
@@ -106,9 +107,10 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
       data-smooth-root={mobile ? "" : undefined}
       className={`@container page-grid text-base text-ink ${scroll} ${chromeReady ? "" : "overflow-hidden"}`}
     >
+      <PageAtmosphere scrollRoot={mobile ? scrollRef : undefined} />
       <div
         data-smooth-content={mobile ? "" : undefined}
-        className={mobile ? "flex min-h-full flex-col" : undefined}
+        className={`relative z-10 ${mobile ? "flex min-h-full flex-col" : ""}`}
       >
       <JsonLd data={homeGraph()} />
       <JsonLd data={faqGraph()} />
