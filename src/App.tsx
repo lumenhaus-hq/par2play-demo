@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { currentRoute } from "./data/routes";
 import type { HeroTypeId } from "./data/heroType";
-import { heroTypeFromSearch } from "./data/heroType";
+import { DEFAULT_HERO_TYPE, heroTypeFromSearch } from "./data/heroType";
 import type { StyleId } from "./data/styles";
 import type { TakeId } from "./data/takes";
 import { CookieNotice } from "./components/CookieNotice";
@@ -95,7 +95,7 @@ function StepView({ take, heroType }: { take: TakeId; heroType: HeroTypeId }) {
 
 function syncHeroTypeParam(id: HeroTypeId) {
   const url = new URL(window.location.href);
-  if (id === "pulse") url.searchParams.delete("type");
+  if (id === DEFAULT_HERO_TYPE) url.searchParams.delete("type");
   else url.searchParams.set("type", id);
   window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
 }

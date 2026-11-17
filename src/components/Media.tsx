@@ -26,11 +26,11 @@ function introTiming(): IntroTiming {
     connection?.effectiveType === "slow-2g" ||
     connection?.effectiveType === "2g" ||
     connection?.effectiveType === "3g";
+  // Fast path to storefront: short loader, brief wipe, expand while film is live.
   if (mobile || slow) {
-    // Still shorter than desktop, but long enough to read the mark + %.
-    return { expandMs: 1100, zoomHoldMs: 320, wipeMs: 560, readyBufferS: 1.15, stallMs: 3200 };
+    return { expandMs: 480, zoomHoldMs: 40, wipeMs: 240, readyBufferS: 0.28, stallMs: 1100 };
   }
-  return { expandMs: 1400, zoomHoldMs: 420, wipeMs: 720, readyBufferS: 2.4, stallMs: 4500 };
+  return { expandMs: 620, zoomHoldMs: 60, wipeMs: 300, readyBufferS: 0.45, stallMs: 1600 };
 }
 
 function applyIntroMotionVars(timing: IntroTiming) {
@@ -269,11 +269,8 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
       setLoadProgress((current) => Math.max(current, next));
       const buffered =
         video.buffered.length > 0 && video.buffered.end(video.buffered.length - 1) >= timing.readyBufferS;
-      // Phones leave on first playable frame; desktop waits for a short future buffer.
-      const readyStateFloor = mobilePrimary
-        ? HTMLMediaElement.HAVE_CURRENT_DATA
-        : HTMLMediaElement.HAVE_FUTURE_DATA;
-      if (buffered || video.readyState >= readyStateFloor) leaveBoot();
+      // Leave as soon as a frame is paint-ready — offer chrome rides the expand.
+      if (buffered || video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) leaveBoot();
     };
 
     const idleSkip = () => {
@@ -361,20 +358,18 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
           style={
             fit
               ? {
-                  transform: `scale(${fit.scale})`,
+                  transform: `translateZ(0) scale(${fit.scale})`,
                   transformOrigin: "50% 48%",
                 }
               : undefined
           }
           loop
           playsInline
-          preload={phase === "arrived" ? "metadata" : "auto"}
+          preload="auto"
           muted
           aria-hidden="true"
         >
-          {/* Hi-DPI phones get the 1080p cut so the end card stays sharp. */}
-          <source src={HERO_MEDIA.mp4} type="video/mp4" media="(max-width: 767px) and (min-resolution: 2dppx)" />
-          <source src={HERO_MEDIA.mp4Mobile} type="video/mp4" media="(max-width: 767px)" />
+          {/* Always ship the 1080p cut — 540p mobile looked soft on phones. */}
           <source src={HERO_MEDIA.webm} type="video/webm" media="(min-width: 768px)" />
           <source src={HERO_MEDIA.mp4} type="video/mp4" />
         </video>

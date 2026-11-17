@@ -7,16 +7,19 @@ export type HeroTypeMeta = {
   blurb: string;
 };
 
+/** Shipped homepage lockup. */
+export const DEFAULT_HERO_TYPE: HeroTypeId = "plate";
+
 export const HERO_TYPES: readonly HeroTypeMeta[] = [
-  {
-    id: "pulse",
-    label: "Pulse",
-    blurb: "Two-line varsity + Yellowtail script mark",
-  },
   {
     id: "plate",
     label: "Plate",
     blurb: "Syne stack + Permanent Marker brush hit",
+  },
+  {
+    id: "pulse",
+    label: "Pulse",
+    blurb: "Two-line varsity + Yellowtail script mark",
   },
   {
     id: "drive",
@@ -33,9 +36,9 @@ export function isHeroTypeId(value: string | null | undefined): value is HeroTyp
 
 export function heroTypeFromSearch(search = window.location.search): HeroTypeId {
   const value = new URLSearchParams(search).get("type");
-  return isHeroTypeId(value) ? value : "pulse";
+  return isHeroTypeId(value) ? value : DEFAULT_HERO_TYPE;
 }
 
 export function heroTypeMeta(id: HeroTypeId): HeroTypeMeta {
-  return HERO_TYPES.find((item) => item.id === id) ?? HERO_TYPES[0];
+  return HERO_TYPES.find((item) => item.id === id) ?? HERO_TYPES.find((item) => item.id === DEFAULT_HERO_TYPE)!;
 }
