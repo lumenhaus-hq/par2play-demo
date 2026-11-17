@@ -42,7 +42,7 @@ test("reduced motion uses the membership poster without a video", async ({ page 
   await page.goto("./");
   const band = page.locator("#membership");
   await band.scrollIntoViewIfNeeded();
-  await expect(band.locator("img")).toBeVisible();
+  await expect(band.getByRole("img", { name: "Golfers on a simulator at Par2Play" })).toBeVisible();
   await expect(band.locator("video")).toHaveCount(0);
   await expect(band.getByRole("button", { name: /^(Play|Pause) video$/ })).toHaveCount(0);
 });
