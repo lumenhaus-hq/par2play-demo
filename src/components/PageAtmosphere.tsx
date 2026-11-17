@@ -8,8 +8,8 @@ export type AtmosphereIntensity = "base" | "strong" | "max";
 type FloaterDepth = "far" | "mid" | "near";
 
 /**
- * Sparse margin placements — stay out of the main reading column.
- * Depth drives scroll parallax: far barely moves, near drifts most.
+ * Viewport-fixed margin placements — a hovering field around the screen,
+ * not document-% pins that vanish on long pages.
  * taste-skill-ignore: owner asked for floating icons as a soft space layer.
  */
 const FLOATERS: readonly {
@@ -23,15 +23,15 @@ const FLOATERS: readonly {
   delay: string;
   rotate: string;
 }[] = [
-  { file: "bag.png", top: "10%", left: "2.5%", size: "3.4rem", depth: "far", drift: "26s", delay: "0s", rotate: "-8deg" },
-  { file: "club-strike.png", top: "16%", right: "9%", size: "2.8rem", depth: "far", drift: "28s", delay: "-12s", rotate: "-6deg" },
-  { file: "grass.png", top: "72%", right: "2%", size: "2.6rem", depth: "far", drift: "24s", delay: "-7s", rotate: "2deg" },
-  { file: "cart.png", top: "90%", left: "5%", size: "2.9rem", depth: "far", drift: "30s", delay: "-6s", rotate: "8deg" },
-  { file: "swing.png", top: "26%", right: "3.5%", size: "3.6rem", depth: "mid", drift: "20s", delay: "-4s", rotate: "6deg" },
-  { file: "flag.png", top: "58%", right: "5%", size: "3.2rem", depth: "mid", drift: "22s", delay: "-2s", rotate: "4deg" },
-  { file: "putter.png", top: "40%", left: "2%", size: "3rem", depth: "mid", drift: "21s", delay: "-14s", rotate: "-12deg" },
-  { file: "ball.png", top: "46%", left: "6%", size: "2.4rem", depth: "near", drift: "16s", delay: "-9s", rotate: "0deg" },
-  { file: "crossed-clubs.png", top: "78%", left: "3.5%", size: "3.8rem", depth: "near", drift: "18s", delay: "-11s", rotate: "-4deg" },
+  { file: "bag.png", top: "11%", left: "1.5%", size: "4.25rem", depth: "far", drift: "26s", delay: "0s", rotate: "-8deg" },
+  { file: "club-strike.png", top: "9%", right: "2%", size: "3.6rem", depth: "far", drift: "28s", delay: "-12s", rotate: "-6deg" },
+  { file: "grass.png", top: "78%", right: "1.5%", size: "3.4rem", depth: "far", drift: "24s", delay: "-7s", rotate: "2deg" },
+  { file: "cart.png", top: "86%", left: "2%", size: "3.8rem", depth: "far", drift: "30s", delay: "-6s", rotate: "8deg" },
+  { file: "swing.png", top: "28%", right: "1.25%", size: "4.5rem", depth: "mid", drift: "20s", delay: "-4s", rotate: "6deg" },
+  { file: "flag.png", top: "58%", right: "2.25%", size: "4rem", depth: "mid", drift: "22s", delay: "-2s", rotate: "4deg" },
+  { file: "putter.png", top: "44%", left: "1%", size: "3.8rem", depth: "mid", drift: "21s", delay: "-14s", rotate: "-12deg" },
+  { file: "ball.png", top: "36%", left: "3.5%", size: "3rem", depth: "near", drift: "16s", delay: "-9s", rotate: "0deg" },
+  { file: "crossed-clubs.png", top: "68%", left: "1.75%", size: "4.75rem", depth: "near", drift: "18s", delay: "-11s", rotate: "-4deg" },
 ];
 
 const DEPTH_PARALLAX: Record<FloaterDepth, number> = {
@@ -80,10 +80,13 @@ export function PageAtmosphere({
         host.style.setProperty("--scroll-x", `${(progress * 100).toFixed(2)}%`);
         host.style.setProperty("--scroll-y", `${(12 + progress * 70).toFixed(2)}%`);
       }
-      // Depth shift: near icons travel farther as you scroll (hovering field).
+      if (root) {
+        layer.style.setProperty("--frame-h", `${root.clientHeight}px`);
+      }
+      // Depth shift in the hovering field as you scroll.
       layer.style.setProperty(
         "--floater-shift",
-        reduce || progress === 0 ? "0rem" : `${(progress * -4.5).toFixed(3)}rem`,
+        reduce || progress === 0 ? "0rem" : `${(progress * -3.25).toFixed(3)}rem`,
       );
     };
 
@@ -93,7 +96,10 @@ export function PageAtmosphere({
     };
 
     paint();
-    if (reduce) return;
+    if (reduce) {
+      if (root) layer.style.setProperty("--frame-h", `${root.clientHeight}px`);
+      return;
+    }
     const target: HTMLElement | Window = root ?? window;
     target.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
@@ -107,7 +113,7 @@ export function PageAtmosphere({
   return (
     <div
       ref={layerRef}
-      className={`page-atmosphere page-atmosphere--${intensity}${reduce ? " page-atmosphere--still" : ""}`}
+      className={`page-atmosphere page-atmosphere--${intensity}${scrollRoot ? " page-atmosphere--framed" : ""}${reduce ? " page-atmosphere--still" : ""}`}
       aria-hidden="true"
       data-testid="page-atmosphere"
     >
@@ -131,7 +137,14 @@ export function PageAtmosphere({
               } as CSSProperties
             }
           >
-            <img src={`${iconBase}/${item.file}`} alt="" decoding="async" loading="lazy" width={72} height={56} />
+            <img
+              src={`${iconBase}/${item.file}`}
+              alt=""
+              decoding="async"
+              loading="eager"
+              width={72}
+              height={56}
+            />
           </li>
         ))}
       </ul>
