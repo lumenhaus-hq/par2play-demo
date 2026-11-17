@@ -41,25 +41,23 @@ test("mobile homepage membership uses the golf bento grid", async ({ page }) => 
   await band.locator(".membership-bento__grid").scrollIntoViewIfNeeded();
   const metrics = await band.evaluate((node) => {
     const grid = node.querySelector(".membership-bento__grid")!;
-    const progress = node.querySelector(".membership-bento__benefit-title")!;
+    const availability = node.querySelector('[aria-label="Preferred availability"]')!;
     const stage = node.querySelector(".membership-bento-stage") ?? node.firstElementChild!;
     return {
       gridTop: grid.getBoundingClientRect().top,
-      progressTop: progress.getBoundingClientRect().top,
+      availabilityTop: availability.getBoundingClientRect().top,
       background: getComputedStyle(stage).backgroundColor,
-      text: getComputedStyle(progress.nextElementSibling!).color,
-      fontSize: parseFloat(getComputedStyle(progress.nextElementSibling!).fontSize),
       filmCount: node.querySelectorAll("video").length,
     };
   });
-  expect(metrics.progressTop).toBeGreaterThan(metrics.gridTop);
+  expect(metrics.availabilityTop).toBeGreaterThanOrEqual(metrics.gridTop);
   expect(metrics.filmCount).toBe(1);
   // Light stage behind dark tiles (not the old full-bleed void film band).
   expect(metrics.background).not.toBe("rgb(2, 8, 6)");
-  expect(metrics.text).toMatch(/^rgba?\(/);
-  expect(metrics.fontSize).toBeGreaterThanOrEqual(12);
   await expect(band.getByLabel("Simulator stats")).toBeVisible();
-  await expect(band.locator(".membership-bento__benefit-title", { hasText: "Track your progress" })).toBeVisible();
+  await expect(band.getByLabel("Progress")).toBeVisible();
+  await expect(band.getByLabel("Preferred availability")).toBeVisible();
+  await expect(band.locator(".membership-bento__benefits")).toHaveCount(0);
   await expect(page.locator("#events img")).toHaveCount(0);
   await expect(band.getByRole("link", { name: "Try it out", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Around the club" })).toHaveCount(0);

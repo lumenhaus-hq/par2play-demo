@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
-import { MembershipLink, BookLink, buttonFocus } from "./Cta";
-import { GOOGLE_RATING, GOOGLE_REVIEW_COUNT, GOOGLE_REVIEWS_URL } from "../data/reviews";
+import { MembershipLink, BookLink } from "./Cta";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 
 const driveBars: readonly { day: string; value: number; highlight?: boolean; tip?: string }[] = [
@@ -10,6 +9,12 @@ const driveBars: readonly { day: string; value: number; highlight?: boolean; tip
   { day: "THU", value: 72 },
   { day: "FRI", value: 64 },
   { day: "TODAY", value: 88, highlight: true, tip: "275" },
+];
+
+const preferredSlots: readonly { when: string; note: string; hot?: boolean }[] = [
+  { when: "Tue 7pm", note: "After work" },
+  { when: "Sat 9am", note: "Your usual", hot: true },
+  { when: "Thu 6pm", note: "Open bay" },
 ];
 
 const golfIconBase = `${import.meta.env.BASE_URL}media/membership-icons`;
@@ -104,21 +109,6 @@ function ClubStack() {
   );
 }
 
-function Stars() {
-  return (
-    <span className="inline-flex gap-0.5 text-[#FBBC04]" aria-hidden="true">
-      {Array.from({ length: 5 }, (_, index) => (
-        <svg key={index} viewBox="0 0 20 20" className="size-3.5">
-          <path
-            fill="currentColor"
-            d="M10 1.6 12.4 7l5.9.5-4.5 3.8 1.4 5.7L10 14.2 4.8 17l1.4-5.7L1.7 7.5 7.6 7 10 1.6Z"
-          />
-        </svg>
-      ))}
-    </span>
-  );
-}
-
 export function MembershipBento() {
   const reduce = usePrefersReducedMotion();
 
@@ -144,20 +134,20 @@ export function MembershipBento() {
           <ClubStack />
         </Tile>
 
-        <Tile className="membership-bento__tile--rating" label="Google reviews">
-          <p className="membership-bento__eyebrow">Reviews</p>
-          <div className="membership-bento__rating">
-            <p className="membership-bento__rating-score">{GOOGLE_RATING.toFixed(1)}</p>
-            <Stars />
-          </div>
-          <a
-            className={`membership-bento__rating-note ${buttonFocus}`}
-            href={GOOGLE_REVIEWS_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {`${GOOGLE_REVIEW_COUNT} Google reviews`}
-          </a>
+        <Tile className="membership-bento__tile--availability" label="Preferred availability">
+          <p className="membership-bento__eyebrow">Preferred availability</p>
+          <h3 className="membership-bento__title">Your times, held</h3>
+          <p className="membership-bento__line membership-bento__line--on-dark">
+            Members lock the hours that fit — evenings after work, quiet Saturday mornings, no scramble.
+          </p>
+          <ul className="membership-bento__slots">
+            {preferredSlots.map((slot) => (
+              <li key={slot.when} className={slot.hot ? "is-hot" : undefined}>
+                <span className="membership-bento__slot-when">{slot.when}</span>
+                <span className="membership-bento__slot-note">{slot.note}</span>
+              </li>
+            ))}
+          </ul>
         </Tile>
 
         <Tile className="membership-bento__tile--stats" label="Simulator stats">
@@ -184,9 +174,9 @@ export function MembershipBento() {
           </ul>
         </Tile>
 
-        <Tile className="membership-bento__tile--chart" label="Driving distance">
+        <Tile className="membership-bento__tile--chart" label="Progress">
           <div className="membership-bento__chart-head">
-            <p className="membership-bento__eyebrow">This week</p>
+            <p className="membership-bento__eyebrow">Progress</p>
             <p className="membership-bento__chart-value">
               275 <span>YDS</span>
             </p>
@@ -203,24 +193,6 @@ export function MembershipBento() {
           </div>
         </Tile>
       </div>
-
-      <ul className="membership-bento__benefits">
-        <li>
-          <p className="membership-bento__eyebrow">01 · Availability</p>
-          <p className="membership-bento__benefit-title">Member benefits</p>
-          <p className="membership-bento__line">First in line for the times that suit you.</p>
-        </li>
-        <li>
-          <p className="membership-bento__eyebrow">02 · Progress</p>
-          <p className="membership-bento__benefit-title">Track your progress</p>
-          <p className="membership-bento__line">Carry, ball speed, and spin.</p>
-        </li>
-        <li>
-          <p className="membership-bento__eyebrow">03 · Your day</p>
-          <p className="membership-bento__benefit-title">Fit it around your day</p>
-          <p className="membership-bento__line">Dentist visits and school pickup.</p>
-        </li>
-      </ul>
     </div>
   );
 }
