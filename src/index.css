@@ -602,6 +602,68 @@ html.motion-paused .page-atmosphere__floater {
   z-index: 1;
 }
 
+/* One track, two options — not two separate pills. */
+.joint-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.2rem;
+  width: 100%;
+  padding: 0.25rem;
+  border-radius: 9999px;
+}
+
+.joint-toggle--dark {
+  background: rgb(255 255 255 / 0.12);
+}
+
+.joint-toggle--light {
+  background: #eef1ee;
+  border: 1px solid #e5e7eb;
+}
+
+.joint-toggle__option {
+  min-height: 2.75rem;
+  border: 0;
+  border-radius: 9999px;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.joint-toggle--dark .joint-toggle__option {
+  background: transparent;
+  color: #fff;
+}
+
+.joint-toggle--dark .joint-toggle__option.is-active {
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.18);
+}
+
+.joint-toggle--light .joint-toggle__option {
+  background: transparent;
+  color: var(--ink);
+}
+
+.joint-toggle--light .joint-toggle__option.is-active {
+  background: var(--ink);
+  color: #fff;
+  box-shadow: 0 6px 16px rgb(10 15 11 / 0.16);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .joint-toggle__option {
+    transition: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .membership-pricing__glyph {
     animation: none;

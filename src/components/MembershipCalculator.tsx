@@ -1,6 +1,7 @@
 import { useId, useState, type FormEvent, type ReactNode } from "react";
 import { trackAnchor } from "../analytics/track";
 import { BookLink, PhoneLink, buttonFocus } from "./Cta";
+import { JointToggle } from "./JointToggle";
 import { NAP, OCLOCK, PRICES } from "../data/business";
 import { money } from "../data/membershipEstimate";
 
@@ -18,20 +19,10 @@ type CheckoutFields = {
 
 const emptyCheckout: CheckoutFields = { name: "", email: "", phone: "" };
 
-function ModeButton({ pressed, onClick, children }: { pressed: boolean; onClick: () => void; children: string }) {
-  return (
-    <button
-      type="button"
-      className={`aa-focus min-h-11 flex-1 rounded-full border-2 px-3 text-base font-semibold transition-[border-color,background-color,color] ${
-        pressed ? "border-ink bg-ink text-white" : "border-[#D1D5DB] bg-white text-ink hover:border-ink"
-      }`}
-      aria-pressed={pressed}
-      onClick={onClick}
-    >
-      {children}
-    </button>
-  );
-}
+const PRACTICE_OPTIONS = [
+  { value: "unlimited", label: "Unlimited Practice" },
+  { value: "pack", label: "10 Sessions" },
+] as const;
 
 function checkoutHref(mode: PracticeMode, fields: CheckoutFields): string {
   const base = mode === "unlimited" ? OCLOCK.practiceUnlimited : OCLOCK.tenPracticePack;
@@ -171,13 +162,8 @@ export function MembershipCalculator() {
             </p>
           </div>
 
-          <div className="mt-6 flex flex-col gap-2 @3xl:flex-row" role="group" aria-label="Practice offer">
-            <ModeButton pressed={unlimited} onClick={() => setMode("unlimited")}>
-              Unlimited Practice
-            </ModeButton>
-            <ModeButton pressed={!unlimited} onClick={() => setMode("pack")}>
-              10 Sessions
-            </ModeButton>
+          <div className="mt-6">
+            <JointToggle value={mode} options={PRACTICE_OPTIONS} onChange={setMode} label="Practice offer" tone="light" />
           </div>
 
           <p className="mt-4 text-sm font-semibold leading-snug text-ink/75">{note}</p>
