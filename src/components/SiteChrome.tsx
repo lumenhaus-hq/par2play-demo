@@ -15,12 +15,11 @@ function atmosphereFor(route: SiteRoute): AtmosphereIntensity {
   switch (route) {
     case "membership":
     case "coaching":
-      return "max";
+      return "strong";
     case "juniors":
     case "events":
     case "tournament":
     case "privacy":
-      return "strong";
     case "home":
     case "notfound":
       return "base";

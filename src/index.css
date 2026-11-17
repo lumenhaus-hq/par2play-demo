@@ -429,19 +429,21 @@ body {
   pointer-events: none;
   contain: paint;
   --atmosphere-wash: 0.7;
-  --atmosphere-icon: 0.1;
+  /* Soft ink silhouettes on light paper — visible polish, still below content. */
+  --atmosphere-icon: 0.22;
   --atmosphere-icon-scale: 1;
+  --floater-shift: 0rem;
 }
 
 .page-atmosphere--strong {
   --atmosphere-wash: 0.85;
-  --atmosphere-icon: 0.14;
+  --atmosphere-icon: 0.28;
   --atmosphere-icon-scale: 1.08;
 }
 
 .page-atmosphere--max {
   --atmosphere-wash: 1;
-  --atmosphere-icon: 0.18;
+  --atmosphere-icon: 0.34;
   --atmosphere-icon-scale: 1.18;
 }
 
@@ -471,13 +473,28 @@ body {
 }
 
 .page-atmosphere__floater {
+  --parallax: 0.55;
   position: absolute;
   margin: 0;
   opacity: var(--atmosphere-icon);
-  transform: translate3d(0, 0, 0) scale(var(--atmosphere-icon-scale)) rotate(var(--tilt, 0deg));
-  animation: page-atmosphere-drift var(--drift, 20s) linear infinite;
-  animation-delay: var(--delay, 0s);
+  /* Scroll depth shift + idle bob (bob lives on the img so transforms compose cleanly). */
+  transform:
+    translate3d(0, calc(var(--floater-shift) * var(--parallax)), 0)
+    scale(var(--atmosphere-icon-scale))
+    rotate(var(--tilt, 0deg));
   will-change: transform;
+}
+
+.page-atmosphere__floater--far {
+  opacity: calc(var(--atmosphere-icon) * 0.78);
+}
+
+.page-atmosphere__floater--mid {
+  opacity: calc(var(--atmosphere-icon) * 0.95);
+}
+
+.page-atmosphere__floater--near {
+  opacity: var(--atmosphere-icon);
 }
 
 .page-atmosphere__floater img {
@@ -485,51 +502,70 @@ body {
   width: 100%;
   height: auto;
   user-select: none;
+  /* Source glyphs are light; ink-tint them for paper grounds. */
+  filter: brightness(0);
+  animation: page-atmosphere-drift var(--drift, 20s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
 }
 
-[data-style="nocturne"] .page-atmosphere__floater {
-  filter: brightness(1.35) contrast(0.92);
+[data-style="nocturne"] .page-atmosphere__floater--far {
+  filter: none;
+}
+
+[data-style="nocturne"] .page-atmosphere__floater img {
+  filter: brightness(1.25) contrast(0.92);
 }
 
 @keyframes page-atmosphere-drift {
   0%,
   100% {
-    transform: translate3d(0, 0, 0) scale(var(--atmosphere-icon-scale)) rotate(var(--tilt, 0deg));
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translate3d(0, -0.85rem, 0) scale(var(--atmosphere-icon-scale)) rotate(var(--tilt, 0deg));
+    transform: translate3d(0.15rem, -0.95rem, 0);
   }
 }
 
 .page-atmosphere--still .page-atmosphere__floater,
 html.motion-paused .page-atmosphere__floater {
+  --floater-shift: 0rem;
+}
+
+.page-atmosphere--still .page-atmosphere__floater img,
+html.motion-paused .page-atmosphere__floater img {
   animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .page-atmosphere__floater {
+  .page-atmosphere__floater img {
     animation: none;
+  }
+
+  .page-atmosphere {
+    --floater-shift: 0rem;
   }
 }
 
 @media (max-width: 639px) {
   .page-atmosphere--base .page-atmosphere__floater {
     opacity: 0.06;
-    width: 2.75rem !important;
+    width: 2.5rem !important;
   }
 
   .page-atmosphere--strong .page-atmosphere__floater,
   .page-atmosphere--max .page-atmosphere__floater {
-    opacity: calc(var(--atmosphere-icon) * 0.75);
-    width: 3.1rem !important;
+    opacity: calc(var(--atmosphere-icon) * 0.7);
+    width: 2.85rem !important;
   }
 
-  .page-atmosphere--base .page-atmosphere__floater:nth-child(n + 6) {
+  /* Keep the field sparse on phones — far layer only. */
+  .page-atmosphere--base .page-atmosphere__floater--mid,
+  .page-atmosphere--base .page-atmosphere__floater--near {
     display: none;
   }
 
-  .page-atmosphere--strong .page-atmosphere__floater:nth-child(n + 8),
-  .page-atmosphere--max .page-atmosphere__floater:nth-child(n + 9) {
+  .page-atmosphere--strong .page-atmosphere__floater--near,
+  .page-atmosphere--max .page-atmosphere__floater--near {
     display: none;
   }
 }
@@ -2039,69 +2075,106 @@ html.motion-paused .benefit-card--dim {
 
 .membership-bento__grid {
   display: grid;
-  grid-template-columns: 1.18fr 1fr;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(2, 10.25rem);
   grid-template-areas:
     "clubs availability"
     "stats chart";
-  gap: 0.75rem;
+  gap: 0.55rem;
   align-items: stretch;
+}
+
+/* Desktop / wide container: same equal 2×2 tiles beside the intro. */
+@container (min-width: 48rem) {
+  .membership-bento {
+    display: grid;
+    grid-template-columns: minmax(16rem, 22rem) minmax(0, 1fr);
+    align-items: center;
+    gap: 2rem 2.5rem;
+    padding: 3rem 3rem 3.25rem;
+    max-width: 72rem;
+    margin-inline: auto;
+  }
+
+  .membership-bento__intro {
+    margin-bottom: 0;
+  }
+
+  .membership-bento__intro .grid {
+    max-width: 18rem;
+  }
+
+  .membership-bento__grid {
+    grid-template-rows: repeat(2, 11.5rem);
+    gap: 0.75rem;
+  }
+
+  .membership-bento__tile {
+    border-radius: 1.5rem;
+    padding: 0.9rem 0.95rem 0.8rem;
+  }
+
+  .membership-bento__title {
+    font-size: 1.05rem;
+  }
+
+  .membership-bento__clubs {
+    min-height: 5.5rem;
+  }
+
+  .membership-bento__gauge {
+    width: 3.8rem;
+    height: 3.8rem;
+  }
+
+  .membership-bento__bars {
+    height: 3.25rem;
+  }
 }
 
 .membership-bento__tile {
   position: relative;
   overflow: hidden;
-  border-radius: 2rem;
+  border-radius: 1.35rem;
   background:
     linear-gradient(160deg, #1a1d1b 0%, #0b0f0c 55%, #060908 100%);
   color: #f4f6f5;
   box-shadow:
-    0 14px 28px rgb(10 15 11 / 0.18),
+    0 10px 20px rgb(10 15 11 / 0.16),
     inset 0 1px 0 rgb(255 255 255 / 0.06);
   min-width: 0;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.7rem 0.7rem 0.65rem;
 }
 
 .membership-bento__tile--stats {
   grid-area: stats;
-  display: flex;
-  flex-direction: column;
   justify-content: space-between;
-  gap: 0.55rem;
-  min-height: 10.5rem;
-  padding: 0.9rem 0.8rem;
 }
 
 .membership-bento__stats-top {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 0.4rem;
+  gap: 0.35rem;
 }
 
 .membership-bento__tile--clubs {
   grid-area: clubs;
-  display: flex;
-  flex-direction: column;
-  min-height: 12.5rem;
-  padding: 1rem 0.85rem 0.75rem;
 }
 
 .membership-bento__tile--availability {
   grid-area: availability;
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-  min-height: 12.5rem;
-  padding: 1rem 0.9rem 0.85rem;
-}
-
-.membership-bento__line--on-dark {
-  margin: 0;
-  color: rgb(244 246 245 / 0.72);
+  justify-content: space-between;
 }
 
 .membership-bento__slots {
   display: grid;
-  gap: 0.4rem;
+  gap: 0.28rem;
   margin: auto 0 0;
   padding: 0;
   list-style: none;
@@ -2111,9 +2184,9 @@ html.motion-paused .benefit-card--dim {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 0.5rem;
-  padding: 0.45rem 0.55rem;
-  border-radius: 0.85rem;
+  gap: 0.4rem;
+  padding: 0.32rem 0.45rem;
+  border-radius: 0.7rem;
   background: rgb(255 255 255 / 0.06);
   border: 1px solid rgb(255 255 255 / 0.08);
 }
@@ -2125,13 +2198,13 @@ html.motion-paused .benefit-card--dim {
 
 .membership-bento__slot-when {
   font-family: var(--font-display);
-  font-size: 0.92rem;
+  font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 
 .membership-bento__slot-note {
-  font-size: 0.68rem;
+  font-size: 0.58rem;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -2144,27 +2217,26 @@ html.motion-paused .benefit-card--dim {
 
 .membership-bento__tile--chart {
   grid-area: chart;
-  display: flex;
-  flex-direction: column;
   justify-content: space-between;
-  min-height: 9.75rem;
-  padding: 0.9rem 0.8rem 0.75rem;
 }
 
 .membership-bento__eyebrow {
   margin: 0;
   font-family: var(--font-sans);
-  font-size: 0.62rem;
+  font-size: 0.55rem;
   font-weight: 600;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: color-mix(in srgb, var(--mint) 88%, white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .membership-bento__title {
-  margin: 0.3rem 0 0;
+  margin: 0.15rem 0 0;
   font-family: var(--font-display);
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: -0.02em;
@@ -2236,28 +2308,28 @@ html.motion-paused .benefit-card--dim {
   align-items: baseline;
   justify-content: space-between;
   gap: 0.4rem;
-  font-size: 0.68rem;
+  font-size: 0.6rem;
   color: rgb(244 246 245 / 0.65);
 }
 
 .membership-bento__stat-list strong {
   font-family: var(--font-display);
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #fff;
   font-variant-numeric: tabular-nums;
 }
 
 .membership-bento__gauge {
-  width: 4.4rem;
-  height: 4.4rem;
+  width: 3.15rem;
+  height: 3.15rem;
   flex-shrink: 0;
 }
 
 .membership-bento__gauge-value {
   fill: #fff;
   font-family: var(--font-display);
-  font-size: 1.35rem;
+  font-size: 1.15rem;
   font-weight: 700;
 }
 
@@ -2290,52 +2362,52 @@ html.motion-paused .benefit-card--dim {
 .membership-bento__clubs {
   position: relative;
   flex: 1;
-  margin-top: 0.85rem;
-  min-height: 8rem;
+  margin-top: 0.35rem;
+  min-height: 4.75rem;
 }
 
 .membership-bento__club {
   position: absolute;
   left: 50%;
   width: 78%;
-  border-radius: 1.15rem;
+  border-radius: 0.95rem;
   border: 1px solid rgb(255 255 255 / 0.12);
   background:
     linear-gradient(145deg, #222826 0%, #101412 100%);
-  padding: 0.85rem 0.9rem;
-  box-shadow: 0 12px 24px rgb(0 0 0 / 0.35);
+  padding: 0.55rem 0.65rem;
+  box-shadow: 0 8px 16px rgb(0 0 0 / 0.3);
 }
 
 .membership-bento__club--back {
   top: 0;
-  transform: translateX(-62%) rotate(-11deg);
+  transform: translateX(-62%) rotate(-9deg);
   opacity: 0.88;
 }
 
 .membership-bento__club--front {
-  top: 2rem;
-  transform: translateX(-38%) rotate(8deg);
+  top: 1.15rem;
+  transform: translateX(-38%) rotate(7deg);
   z-index: 1;
 }
 
 .membership-bento__club-label {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 0.95rem;
+  font-size: 0.78rem;
   font-weight: 600;
 }
 
 .membership-bento__club-meta {
-  margin: 0.2rem 0 0;
-  font-size: 0.68rem;
+  margin: 0.1rem 0 0;
+  font-size: 0.58rem;
   color: rgb(244 246 245 / 0.6);
 }
 
 .membership-bento__club-icon {
   position: absolute;
-  right: 0.55rem;
-  bottom: 0.45rem;
-  width: 2.4rem;
+  right: 0.4rem;
+  bottom: 0.3rem;
+  width: 1.7rem;
   height: auto;
   opacity: 0.95;
   filter: drop-shadow(0 2px 6px rgb(0 0 0 / 0.35));
@@ -2359,22 +2431,22 @@ html.motion-paused .benefit-card--dim {
 .membership-bento__chart-value {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 1.45rem;
+  font-size: 1.15rem;
   font-weight: 700;
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 
 .membership-bento__chart-value span {
-  font-size: 0.7rem;
+  font-size: 0.58rem;
   font-weight: 600;
   letter-spacing: 0.08em;
   color: color-mix(in srgb, var(--mint) 85%, white);
 }
 
 .membership-bento__chart-label {
-  margin: 0.15rem 0 0.55rem;
-  font-size: 0.72rem;
+  margin: 0.05rem 0 0.3rem;
+  font-size: 0.62rem;
   color: rgb(244 246 245 / 0.62);
 }
 
@@ -2382,8 +2454,9 @@ html.motion-paused .benefit-card--dim {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   align-items: end;
-  gap: 0.28rem;
-  height: 3.6rem;
+  gap: 0.22rem;
+  height: 2.75rem;
+  margin-top: auto;
 }
 
 .membership-bento__bar-col {

@@ -12,9 +12,8 @@ const driveBars: readonly { day: string; value: number; highlight?: boolean; tip
 ];
 
 const preferredSlots: readonly { when: string; note: string; hot?: boolean }[] = [
-  { when: "Tue 7pm", note: "After work" },
   { when: "Sat 9am", note: "Your usual", hot: true },
-  { when: "Thu 6pm", note: "Open bay" },
+  { when: "Tue 7pm", note: "After work" },
 ];
 
 const golfIconBase = `${import.meta.env.BASE_URL}media/membership-icons`;
@@ -135,11 +134,8 @@ export function MembershipBento() {
         </Tile>
 
         <Tile className="membership-bento__tile--availability" label="Preferred availability">
-          <p className="membership-bento__eyebrow">Preferred availability</p>
+          <p className="membership-bento__eyebrow">Availability</p>
           <h3 className="membership-bento__title">Your times, held</h3>
-          <p className="membership-bento__line membership-bento__line--on-dark">
-            Members lock the hours that fit — evenings after work, quiet Saturday mornings, no scramble.
-          </p>
           <ul className="membership-bento__slots">
             {preferredSlots.map((slot) => (
               <li key={slot.when} className={slot.hot ? "is-hot" : undefined}>
