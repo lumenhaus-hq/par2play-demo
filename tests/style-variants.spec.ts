@@ -48,4 +48,9 @@ test("hero toolbar is black with an accent edge while on film", async ({ page })
   await expect
     .poll(async () => bar.evaluate((node) => getComputedStyle(node).borderBottomColor))
     .not.toBe("rgba(0, 0, 0, 0)");
+  // Match light header controls: icon-only sound + brand Book a Bay (not labeled/inverted).
+  await expect(bar.getByRole("button", { name: "Turn sound on" })).toBeVisible();
+  await expect(bar.getByText("Turn sound on", { exact: true })).toHaveCount(0);
+  const book = bar.getByRole("link", { name: "Book a Bay", exact: true });
+  await expect(book).toHaveClass(/cta-brand/);
 });
