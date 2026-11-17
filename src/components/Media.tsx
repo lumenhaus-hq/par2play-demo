@@ -26,11 +26,11 @@ function introTiming(): IntroTiming {
     connection?.effectiveType === "slow-2g" ||
     connection?.effectiveType === "2g" ||
     connection?.effectiveType === "3g";
+  // Fast path to storefront: short loader, brief wipe, expand while film is live.
   if (mobile || slow) {
-    // Still shorter than desktop, but long enough to read the mark + %.
-    return { expandMs: 1100, zoomHoldMs: 320, wipeMs: 560, readyBufferS: 1.15, stallMs: 3200 };
+    return { expandMs: 480, zoomHoldMs: 40, wipeMs: 240, readyBufferS: 0.28, stallMs: 1100 };
   }
-  return { expandMs: 1400, zoomHoldMs: 420, wipeMs: 720, readyBufferS: 2.4, stallMs: 4500 };
+  return { expandMs: 620, zoomHoldMs: 60, wipeMs: 300, readyBufferS: 0.45, stallMs: 1600 };
 }
 
 function applyIntroMotionVars(timing: IntroTiming) {
@@ -72,22 +72,25 @@ const FRAME_H = 1080;
 /** Green Par2Play wordmark is on screen from here until the film loops. */
 const END_CARD_AT = 26.45;
 /**
- * The wordmark spans about x 0.27–0.73 of the 16:9 frame. Padding that to
- * 0.52 of the frame, then sizing it to 92% of the hero width, keeps the
- * whole mark inside a portrait phone. When that scale is larger than
- * object-cover (desktop), cover already shows the mark and stays in use.
+ * End-card wordmark zoom. Prefer a light CSS scale on object-cover over
+ * object-fill resize — fill upscales soft 540p/1080p and reads muddy.
+ * Cap past-cover zoom so the closing frame stays sharp.
  */
 const WORDMARK_SPAN = 0.52;
-const WORDMARK_TARGET = 0.92;
+const WORDMARK_TARGET = 0.78;
+const END_CARD_MAX_ZOOM = 1.22;
+const END_CARD_MAX_ZOOM_MOBILE = 1.12;
 
-type EndCardFit = { width: number; height: number };
+type EndCardFit = { scale: number };
 
-function endCardFit(box: { width: number; height: number }): EndCardFit | null {
+function endCardFit(box: { width: number; height: number }, mobile: boolean): EndCardFit | null {
   if (box.width <= 0 || box.height <= 0) return null;
   const cover = Math.max(box.width / FRAME_W, box.height / FRAME_H);
   const fitted = (WORDMARK_TARGET * box.width) / (WORDMARK_SPAN * FRAME_W);
-  if (fitted >= cover - 0.001) return null;
-  return { width: Math.round(FRAME_W * fitted), height: Math.round(FRAME_H * fitted) };
+  const ratio = fitted / cover;
+  if (ratio <= 1.02) return null;
+  const cap = mobile ? END_CARD_MAX_ZOOM_MOBILE : END_CARD_MAX_ZOOM;
+  return { scale: Math.min(ratio, cap) };
 }
 
 function hideLcpPoster() {
@@ -207,10 +210,10 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
       if (!fitReady.current) return;
       const onCard = video.currentTime >= END_CARD_AT;
       const box = frame?.getBoundingClientRect();
-      const next = onCard && box ? endCardFit(box) : null;
+      const next = onCard && box ? endCardFit(box, mobilePrimary) : null;
       setFit((current) => {
         if (current === null && next === null) return current;
-        if (current && next && current.width === next.width && current.height === next.height) return current;
+        if (current && next && Math.abs(current.scale - next.scale) < 0.001) return current;
         return next;
       });
     };
@@ -266,11 +269,8 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
       setLoadProgress((current) => Math.max(current, next));
       const buffered =
         video.buffered.length > 0 && video.buffered.end(video.buffered.length - 1) >= timing.readyBufferS;
-      // Phones leave on first playable frame; desktop waits for a short future buffer.
-      const readyStateFloor = mobilePrimary
-        ? HTMLMediaElement.HAVE_CURRENT_DATA
-        : HTMLMediaElement.HAVE_FUTURE_DATA;
-      if (buffered || video.readyState >= readyStateFloor) leaveBoot();
+      // Leave as soon as a frame is paint-ready — offer chrome rides the expand.
+      if (buffered || video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) leaveBoot();
     };
 
     const idleSkip = () => {
@@ -340,48 +340,36 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
   return (
     <div ref={bayRef} className={`absolute inset-0 overflow-hidden ${phase === "arrived" ? "" : "bg-ink"}`}>
       <div className={frameClassFor(phase)}>
+        {/* Full 1920 poster — the tiny mobile poster looked muddy under load zoom. */}
         <picture className="absolute inset-0 block h-full w-full">
-          <source media="(max-width: 767px)" srcSet={HERO_MEDIA.posterMobileAvif} type="image/avif" />
-          <source media="(max-width: 767px)" srcSet={HERO_MEDIA.posterMobileWebp} type="image/webp" />
           <img
             src={HERO_MEDIA.poster}
             alt="Indoor golf at Par2Play in Somerset, NJ"
-            width={780}
-            height={439}
+            width={1920}
+            height={1080}
             fetchPriority="high"
             decoding="async"
             className="h-full w-full object-cover"
           />
         </picture>
-        <div
-          aria-hidden="true"
-          className={`pointer-events-none absolute inset-0 bg-black ${fit ? "opacity-100" : "opacity-0"}`}
-        />
         <video
           ref={ref}
-          className={
-            fit
-              ? "hero-video absolute max-w-none bg-black object-fill"
-              : "hero-video absolute inset-0 h-full w-full object-cover"
-          }
+          className="hero-video absolute inset-0 h-full w-full object-cover"
           style={
             fit
               ? {
-                  width: fit.width,
-                  height: fit.height,
-                  left: "50%",
-                  top: "50%",
-                  transform: "translate(-50%, -50%)",
+                  transform: `translateZ(0) scale(${fit.scale})`,
+                  transformOrigin: "50% 48%",
                 }
               : undefined
           }
           loop
           playsInline
-          preload={phase === "arrived" ? "none" : "auto"}
+          preload="auto"
           muted
           aria-hidden="true"
         >
-          <source src={HERO_MEDIA.mp4Mobile} type="video/mp4" media="(max-width: 767px)" />
+          {/* Always ship the 1080p cut — 540p mobile looked soft on phones. */}
           <source src={HERO_MEDIA.webm} type="video/webm" media="(min-width: 768px)" />
           <source src={HERO_MEDIA.mp4} type="video/mp4" />
         </video>

@@ -1,4 +1,4 @@
-import { TAKES, type TakeId } from "../data/takes";
+import { DEMO_TAKES, type TakeId } from "../data/takes";
 import { applyTake, storeTake, syncTakeParam } from "./applyTake";
 
 export function TakeSwitcher({
@@ -10,7 +10,7 @@ export function TakeSwitcher({
 }) {
   return (
     <div className="flex max-w-full flex-wrap items-center justify-center gap-2" role="group" aria-label="Homepage take">
-      {TAKES.map((take) => {
+      {DEMO_TAKES.map((take) => {
         const on = take.id === value;
         return (
           <button

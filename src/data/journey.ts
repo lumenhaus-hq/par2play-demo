@@ -250,7 +250,7 @@ export function screenLine(state: OfferState): string {
   const slot = slotById(state.slotId);
   switch (state.step) {
     case "landing":
-      return "Indoor golf at 695 Hamilton Street, Suite G, Somerset. Lessons with Nick and Sean, PGA professionals.";
+      return "Indoor golf at 695 Hamilton Street, Suite G, Somerset. Lessons with PGA professionals.";
     case "clubhouse":
       return "Every other Tuesday. One hole on the screen. Points when someone you bring comes back.";
     case "intent":

@@ -27,13 +27,11 @@ export const FAQS = [
   },
   {
     question: "Who teaches golf lessons at Par2Play?",
-    answer:
-      "Lessons are taught by PGA professionals Nick Schiavo, a PGA Professional since 2011 and former GOLFTEC Director of Instruction, and Nick Monticello, a PGA member since 2011 and former Lead Instructor at Basking Ridge Country Club.",
+    answer: "Lessons are taught by PGA professionals on Full Swing simulators with swing-evaluation cameras.",
   },
   {
     question: "How much is a golf lesson in Somerset at Par2Play?",
-    answer:
-      "A 30-minute private lesson is $100. Lesson packs are 5 for $400, 10 for $750, 20 for $1,400, 30 for $2,000 and 50 for $3,000. Packs never expire, have no blackout days, and credits can be combined for a longer session.",
+    answer: "A Swing Evaluation session is $100 for 50 to 60 minutes. Single lesson pricing is confirmed at booking.",
   },
   {
     question: "Are lessons good for beginners?",
@@ -182,25 +180,6 @@ export function coachingGraph() {
         about: { "@id": id("/#location") },
       },
       {
-        "@type": "Person",
-        "@id": id("/coaching/#nick-schiavo"),
-        name: "Nick Schiavo",
-        jobTitle: "Director of Instruction, PGA Professional",
-        worksFor: { "@id": id("/#location") },
-        alumniOf: "Penn State University Professional Golf Management program",
-        memberOf: { "@type": "Organization", name: "PGA of America" },
-        sameAs: ["https://www.pga.com/coach/NickSchiavo"],
-      },
-      {
-        "@type": "Person",
-        "@id": id("/coaching/#nick-monticello"),
-        name: "Nick Monticello",
-        jobTitle: "PGA Professional",
-        worksFor: { "@id": id("/#location") },
-        alumniOf: "Methodist University PGM program",
-        memberOf: { "@type": "Organization", name: "PGA of America" },
-      },
-      {
         "@type": "Service",
         "@id": id("/coaching/#lessons"),
         name: "Private golf lessons in Somerset, NJ",
@@ -208,15 +187,9 @@ export function coachingGraph() {
         provider: { "@id": id("/#location") },
         areaServed: "Somerset, NJ",
         description:
-          "Private and semi-private golf lessons with PGA professionals on Full Swing simulators with swing-evaluation cameras. 30-minute sessions.",
+          "Private golf lessons and swing evaluations with PGA professionals on Full Swing simulators with swing-evaluation cameras.",
         offers: [
           offer("Swing Evaluation Session (50–60 min)", PRICES.swingEvaluation, OCLOCK.lessons),
-          offer("Single 30-minute private lesson", PRICES.lessonSingle, OCLOCK.lessons),
-          offer("5-lesson pack (30 min each)", PRICES.lessonPack5, OCLOCK.lessonPacks),
-          offer("10-lesson pack (30 min each)", PRICES.lessonPack10, OCLOCK.lessonPacks),
-          offer("20-lesson pack (30 min each)", PRICES.lessonPack20, OCLOCK.lessonPacks),
-          offer("30-lesson pack (30 min each)", PRICES.lessonPack30, OCLOCK.lessonPacks),
-          offer("50-lesson pack (30 min each)", PRICES.lessonPack50, OCLOCK.lessonPacks),
           offer("Golf Improvement Bundle", PRICES.golfImprovementBundle, OCLOCK.golfImprovementBundle),
         ],
       },

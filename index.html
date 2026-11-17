@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="light" data-theme="light" data-style-preview="fairway">
+<html lang="en" class="light" data-theme="light" data-style-preview="signal">
   <head>
     <meta charset="UTF-8" />
     <script>
@@ -15,7 +15,7 @@
           var fromUrl = params.get("style");
           var allowed = { fairway: 1, signal: 1, nocturne: 1, mist: 1 };
           var id = allowed[fromUrl] ? fromUrl : localStorage.getItem("par2play-style");
-          if (!allowed[id]) id = "fairway";
+          if (!allowed[id]) id = "signal";
           document.documentElement.dataset.stylePreview = id;
           document.documentElement.style.colorScheme = id === "nocturne" ? "dark" : "light";
           window.__par2playStyle = id;
@@ -34,7 +34,7 @@
     <title>Indoor Golf in Somerset, NJ – Simulators & Lessons | Par2Play</title>
     <meta
       name="description"
-      content="Indoor golf in Somerset, NJ: four Full Swing simulator bays, PGA lessons with Nick Schiavo and Nick Monticello, memberships and events. 695 Hamilton St, Suite G. (732) 448-2769."
+      content="Indoor golf in Somerset, NJ: four Full Swing simulator bays, PGA lessons, memberships and events. 695 Hamilton St, Suite G. (732) 448-2769."
     />
     <link rel="canonical" href="https://par2play.com/" />
     <meta name="theme-color" content="#06210f" />
@@ -43,7 +43,7 @@
     <meta property="og:title" content="Indoor Golf in Somerset, NJ – Simulators & Lessons | Par2Play" />
     <meta
       property="og:description"
-      content="Indoor golf in Somerset, NJ: four Full Swing simulator bays, PGA lessons with Nick Schiavo and Nick Monticello, memberships and events. 695 Hamilton St, Suite G. (732) 448-2769."
+      content="Indoor golf in Somerset, NJ: four Full Swing simulator bays, PGA lessons, memberships and events. 695 Hamilton St, Suite G. (732) 448-2769."
     />
     <meta property="og:url" content="https://par2play.com/" />
     <meta property="og:image" content="https://par2play.com/media/hero-poster.jpg" />
@@ -52,7 +52,7 @@
     <meta name="twitter:title" content="Indoor Golf in Somerset, NJ – Simulators & Lessons | Par2Play" />
     <meta
       name="twitter:description"
-      content="Indoor golf in Somerset, NJ: four Full Swing simulator bays, PGA lessons with Nick Schiavo and Nick Monticello, memberships and events."
+      content="Indoor golf in Somerset, NJ: four Full Swing simulator bays, PGA lessons, memberships and events."
     />
     <meta name="twitter:url" content="https://par2play.com/" />
     <meta name="twitter:image" content="https://par2play.com/media/hero-poster.jpg" />

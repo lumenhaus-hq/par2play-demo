@@ -137,11 +137,35 @@
   src: url("../public/fonts/plus-jakarta-600.woff2") format("woff2");
 }
 
+@font-face {
+  font-family: "Permanent Marker";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../public/fonts/permanent-marker-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Yellowtail";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../public/fonts/yellowtail-400.woff2") format("woff2");
+}
+
 @theme {
   --font-sans: var(--font-body-stack);
   --font-display: var(--font-display-stack);
   --font-accent: var(--font-accent-stack);
   --font-caveat: "Caveat", var(--font-body-stack);
+  --font-syne: "Syne", ui-sans-serif, system-ui, sans-serif;
+  --font-space: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sora: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-manrope: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-outfit: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-marker: "Permanent Marker", "Caveat", cursive;
+  --font-yellowtail: "Yellowtail", "Kaushan Script", cursive;
+  --font-permanent-marker: var(--font-marker);
   --color-ink: var(--ink);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
@@ -177,6 +201,9 @@
   --bay-radius: 1rem;
   --hero-poppy: linear-gradient(105deg, #e23d28 0%, #ff6b3d 45%, #ffb347 100%);
   --page-atmosphere: none;
+  --scroll-progress: 0;
+  --scroll-x: 0%;
+  --scroll-y: 12%;
   --grain-opacity: 0;
   --motion-ease-enter: cubic-bezier(0.2, 0.7, 0.2, 1);
   --motion-ease-wipe: cubic-bezier(0.625, 0.05, 0, 1);
@@ -214,9 +241,10 @@
   --font-accent-stack: "Syne", "Outfit", sans-serif;
   --bay-radius: 0.4rem;
   --hero-poppy: linear-gradient(105deg, #245bff 0%, #3d8bff 45%, #c6ff1a 100%);
+  /* taste-skill-ignore: owner asked for scroll-linked atmosphere; keep tint ≤0.12 for 7:1 ink */
   --page-atmosphere:
-    radial-gradient(ellipse 80% 50% at 100% 0%, rgb(36 91 255 / 0.12), transparent 55%),
-    radial-gradient(ellipse 60% 40% at 0% 100%, rgb(198 255 26 / 0.1), transparent 50%);
+    radial-gradient(ellipse 80% 50% at calc(100% - var(--scroll-x)) var(--scroll-y), rgb(36 91 255 / 0.12), transparent 55%),
+    radial-gradient(ellipse 60% 40% at var(--scroll-x) calc(100% - var(--scroll-y)), rgb(198 255 26 / 0.1), transparent 50%);
   --grain-opacity: 0.025;
 }
 
@@ -241,9 +269,10 @@
   --font-accent-stack: "Space Grotesk", "Manrope", sans-serif;
   --bay-radius: 0.75rem;
   --hero-poppy: linear-gradient(105deg, #8b4518 0%, #e2a33a 50%, #f0c06a 100%);
+  /* taste-skill-ignore: owner asked for scroll-linked atmosphere; keep tint soft on dark paper */
   --page-atmosphere:
-    radial-gradient(ellipse 70% 45% at 20% 0%, rgb(226 163 58 / 0.14), transparent 55%),
-    radial-gradient(ellipse 50% 40% at 100% 80%, rgb(61 90 70 / 0.18), transparent 50%);
+    radial-gradient(ellipse 70% 45% at var(--scroll-x) var(--scroll-y), rgb(226 163 58 / 0.14), transparent 55%),
+    radial-gradient(ellipse 50% 40% at calc(100% - var(--scroll-x)) calc(100% - var(--scroll-y)), rgb(61 90 70 / 0.18), transparent 50%);
   --grain-opacity: 0.06;
 }
 
@@ -268,9 +297,10 @@
   --font-accent-stack: "Sora", "Plus Jakarta Sans", sans-serif;
   --bay-radius: 1.25rem;
   --hero-poppy: linear-gradient(105deg, #0f766e 0%, #14b8a6 45%, #5eead4 100%);
+  /* taste-skill-ignore: owner asked for scroll-linked atmosphere; mist wash tracks scroll */
   --page-atmosphere:
-    radial-gradient(ellipse 90% 55% at 50% -10%, rgb(94 234 212 / 0.28), transparent 55%),
-    radial-gradient(ellipse 50% 40% at 0% 60%, rgb(15 118 110 / 0.1), transparent 50%);
+    radial-gradient(ellipse 90% 55% at var(--scroll-x) var(--scroll-y), rgb(94 234 212 / 0.22), transparent 55%),
+    radial-gradient(ellipse 50% 40% at calc(100% - var(--scroll-x)) calc(100% - var(--scroll-y)), rgb(15 118 110 / 0.1), transparent 50%);
   --grain-opacity: 0.03;
 }
 
@@ -377,6 +407,238 @@ body {
   mix-blend-mode: overlay;
 }
 
+/*
+ * Floating golf icons + extra wash behind content.
+ * taste-skill-ignore: owner asked for floating icons and scroll-linked grounds;
+ * opacity kept low so paper→ink contrast stays WCAG AAA for body copy.
+ */
+.page-atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  contain: paint;
+  --atmosphere-wash: 0.7;
+  --atmosphere-icon: 0.1;
+  --atmosphere-icon-scale: 1;
+}
+
+.page-atmosphere--strong {
+  --atmosphere-wash: 0.85;
+  --atmosphere-icon: 0.14;
+  --atmosphere-icon-scale: 1.08;
+}
+
+.page-atmosphere--max {
+  --atmosphere-wash: 1;
+  --atmosphere-icon: 0.18;
+  --atmosphere-icon-scale: 1.18;
+}
+
+.page-atmosphere__wash {
+  position: absolute;
+  inset: -18%;
+  background:
+    radial-gradient(
+      ellipse 52% 42% at var(--scroll-x) var(--scroll-y),
+      color-mix(in srgb, var(--accent) 14%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      ellipse 46% 38% at calc(100% - var(--scroll-x)) calc(100% - var(--scroll-y)),
+      color-mix(in srgb, var(--mint) 12%, transparent),
+      transparent 58%
+    );
+  opacity: var(--atmosphere-wash);
+}
+
+.page-atmosphere__floaters {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.page-atmosphere__floater {
+  position: absolute;
+  margin: 0;
+  opacity: var(--atmosphere-icon);
+  transform: translate3d(0, 0, 0) scale(var(--atmosphere-icon-scale)) rotate(var(--tilt, 0deg));
+  animation: page-atmosphere-drift var(--drift, 20s) linear infinite;
+  animation-delay: var(--delay, 0s);
+  will-change: transform;
+}
+
+.page-atmosphere__floater img {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+}
+
+[data-style="nocturne"] .page-atmosphere__floater {
+  filter: brightness(1.35) contrast(0.92);
+}
+
+@keyframes page-atmosphere-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(var(--atmosphere-icon-scale)) rotate(var(--tilt, 0deg));
+  }
+  50% {
+    transform: translate3d(0, -0.85rem, 0) scale(var(--atmosphere-icon-scale)) rotate(var(--tilt, 0deg));
+  }
+}
+
+.page-atmosphere--still .page-atmosphere__floater,
+html.motion-paused .page-atmosphere__floater {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-atmosphere__floater {
+    animation: none;
+  }
+}
+
+@media (max-width: 639px) {
+  .page-atmosphere--base .page-atmosphere__floater {
+    opacity: 0.06;
+    width: 2.75rem !important;
+  }
+
+  .page-atmosphere--strong .page-atmosphere__floater,
+  .page-atmosphere--max .page-atmosphere__floater {
+    opacity: calc(var(--atmosphere-icon) * 0.75);
+    width: 3.1rem !important;
+  }
+
+  .page-atmosphere--base .page-atmosphere__floater:nth-child(n + 6) {
+    display: none;
+  }
+
+  .page-atmosphere--strong .page-atmosphere__floater:nth-child(n + 8),
+  .page-atmosphere--max .page-atmosphere__floater:nth-child(n + 9) {
+    display: none;
+  }
+}
+
+/* Membership pricing stage — pop without covering body ink. taste-skill-ignore */
+.membership-pricing {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  background:
+    radial-gradient(ellipse 70% 55% at 12% 0%, rgb(20 212 94 / 0.16), transparent 55%),
+    radial-gradient(ellipse 55% 45% at 100% 100%, rgb(125 255 176 / 0.12), transparent 50%),
+    #fff;
+  box-shadow:
+    0 18px 48px rgb(10 15 11 / 0.1),
+    0 0 0 1px rgb(20 212 94 / 0.12);
+}
+
+.membership-pricing__orb {
+  position: absolute;
+  border-radius: 9999px;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(2px);
+}
+
+.membership-pricing__orb--a {
+  width: 9rem;
+  height: 9rem;
+  top: -2.5rem;
+  right: -1.5rem;
+  background: rgb(20 212 94 / 0.22);
+}
+
+.membership-pricing__orb--b {
+  width: 7rem;
+  height: 7rem;
+  bottom: 18%;
+  left: -2rem;
+  background: rgb(125 255 176 / 0.18);
+}
+
+.membership-pricing__glyph {
+  position: absolute;
+  z-index: 0;
+  opacity: 0.14;
+  pointer-events: none;
+  width: 3.5rem;
+  animation: page-atmosphere-drift 16s linear infinite;
+}
+
+.membership-pricing__glyph--a {
+  top: 1.25rem;
+  right: 1.5rem;
+  width: 4rem;
+  animation-delay: -3s;
+  transform: rotate(8deg);
+}
+
+.membership-pricing__glyph--b {
+  bottom: 5.5rem;
+  left: 1rem;
+  width: 3.25rem;
+  animation-delay: -9s;
+  transform: rotate(-10deg);
+}
+
+.membership-pricing__glyph--c {
+  top: 42%;
+  right: 8%;
+  width: 2.75rem;
+  animation-delay: -6s;
+  opacity: 0.1;
+}
+
+.membership-pricing__body {
+  position: relative;
+  z-index: 1;
+}
+
+.membership-offer-card {
+  min-width: 0;
+  border-radius: 1rem;
+  border: 1px solid #e5e7eb;
+  background: #f8faf8;
+  padding: 0.85rem 1rem;
+  text-align: left;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.membership-offer-card.is-active {
+  border: 2px solid #14d45e;
+  background: #f0fdf4;
+  box-shadow:
+    0 10px 28px rgb(20 212 94 / 0.22),
+    0 0 0 4px rgb(20 212 94 / 0.08);
+}
+
+.membership-offer-card:not(.is-active):hover {
+  border-color: #14d45e;
+  background: #f5fcf7;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .membership-pricing__glyph {
+    animation: none;
+  }
+
+  .membership-offer-card {
+    transition: none;
+  }
+}
+
 /* taste-skill-ignore: a short top shade so white nav type stays AA on the film */
 .hero-top-shade {
   height: 9rem;
@@ -406,14 +668,58 @@ body {
   overflow: hidden;
 }
 
+/*
+ * Dock the offer in the bottom third of the hero shell so the film stays
+ * readable. Works for both the phone-frame preview and real narrow viewports.
+ */
+.hero-shell {
+  justify-content: flex-end;
+}
+
+.hero-offer-dock {
+  box-sizing: border-box;
+  width: 100%;
+  max-height: 46%;
+  margin-top: auto;
+}
+
+/*
+ * Phone-frame preview: match .phone-frame height so the offer can dock to the
+ * bottom third with a definite containing block (percentage max-height works).
+ */
+[data-layout="mobile"] .hero-shell {
+  height: min(844px, calc(100vh - 88px));
+  min-height: min(844px, calc(100vh - 88px));
+}
+
+@container (min-width: 48rem) {
+  .hero-offer-dock {
+    max-height: none;
+    flex: 1 1 auto;
+    align-items: flex-end;
+  }
+}
+
+/* Small corner glaze — keep the film readable behind the offer plate. */
 .hero-offer-sheen {
   pointer-events: none;
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  width: min(7.5rem, 42%);
+  height: min(4.25rem, 38%);
+  border-radius: 0 1.35rem 0 100%;
   background:
-    linear-gradient(135deg, rgb(255 255 255 / 0.1) 0%, transparent 42%),
-    linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--accent) 8%, transparent) 50%, transparent 100%);
-  opacity: 0.9;
+    linear-gradient(135deg, rgb(255 255 255 / 0.16) 0%, transparent 72%),
+    linear-gradient(200deg, color-mix(in srgb, var(--accent) 14%, transparent) 0%, transparent 70%);
+  opacity: 0.75;
+}
+
+@media (min-width: 768px) {
+  .hero-offer-sheen {
+    width: min(10rem, 46%);
+    height: min(5.5rem, 40%);
+  }
 }
 
 /* Wider viewports get the 3D lay-on; phones keep a stable touch surface. */
@@ -468,27 +774,157 @@ body {
   }
 }
 
-/* Brand accent phrase — green, not the old orange poppy clash. */
+/* Brand accent phrase — legacy utility kept for other surfaces. */
 .hero-accent {
   position: relative;
-  padding-bottom: 0.18em;
+  padding-bottom: 0.12em;
 }
 
 .hero-accent::after {
   content: "";
   position: absolute;
-  right: 0.04em;
-  bottom: 0.02em;
-  left: 0.02em;
-  height: 0.09em;
+  right: 0.06em;
+  bottom: 0.04em;
+  left: 0.04em;
+  height: 0.055em;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--accent), var(--mint));
+  background: color-mix(in srgb, var(--accent) 70%, white);
+  opacity: 0.85;
   pointer-events: none;
+}
+
+/* Hero type recipe faces — real 700 files, not fake-bold Chakra. */
+.hero-font-syne {
+  font-family: var(--font-syne);
+}
+
+.hero-font-space {
+  font-family: var(--font-space);
+}
+
+.hero-font-sora {
+  font-family: var(--font-sora);
+}
+
+.hero-font-manrope {
+  font-family: var(--font-manrope);
+}
+
+.hero-font-outfit {
+  font-family: var(--font-outfit);
+}
+
+.hero-font-yellowtail {
+  font-family: var(--font-yellowtail);
+}
+
+.hero-font-marker {
+  font-family: var(--font-marker);
+}
+
+/* Larger-than-life sticker lockups — thick white stroke reads on busy film. */
+.hero-lockup {
+  isolation: isolate;
+  width: 100%;
+}
+
+.hero-sticker {
+  paint-order: stroke fill;
+  text-wrap: balance;
+}
+
+/* Solid white fill + dark stroke — hollow outline vanished on the dark plate. */
+.hero-sticker--block {
+  color: #ffffff;
+  -webkit-text-stroke: 0.055em #06110b;
+  text-shadow:
+    0.08em 0.1em 0 rgb(0 0 0 / 0.55),
+    0 0 0.45em rgb(0 0 0 / 0.28);
+  word-spacing: 0.14em;
+}
+
+.hero-sticker--mega {
+  color: #ffffff;
+  -webkit-text-stroke: 0.045em #06110b;
+  text-shadow:
+    0.09em 0.11em 0 rgb(0 0 0 / 0.58),
+    0 0 0.5em rgb(0 0 0 / 0.3);
+  word-spacing: 0.16em;
+}
+
+.hero-sticker--connect {
+  color: #ffffff;
+  -webkit-text-stroke: 0.07em #06110b;
+  text-shadow: 0.05em 0.06em 0 rgb(0 0 0 / 0.45);
+}
+
+.hero-sticker--script {
+  color: var(--accent-hot);
+  -webkit-text-stroke: 0.04em #06110b;
+  text-shadow:
+    0.06em 0.08em 0 rgb(0 0 0 / 0.45),
+    0 0.02em 0.3em rgb(0 0 0 / 0.25);
+}
+
+.hero-sticker--brush {
+  color: var(--accent);
+  -webkit-text-stroke: 0.042em #06110b;
+  text-shadow:
+    0.06em 0.09em 0 rgb(0 0 0 / 0.48),
+    0 0.02em 0.32em rgb(0 0 0 / 0.28);
+}
+
+/* Hand-drawn accent marks under script (type moment). */
+.hero-mark {
+  display: block;
+  width: 92%;
+  max-width: 11rem;
+  height: auto;
+  margin-top: -0.12em;
+  margin-left: 0.15em;
+  color: color-mix(in srgb, var(--accent-hot) 88%, white);
+  overflow: visible;
+}
+
+.hero-mark--plate {
+  color: color-mix(in srgb, var(--accent) 90%, white);
+  max-width: 13rem;
+}
+
+.hero-mark--drive {
+  max-width: 10rem;
+}
+
+.hero-mark-stroke {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.motion-paused) .hero-chrome-in .hero-mark-stroke {
+    stroke-dashoffset: 1;
+    animation: hero-mark-draw 820ms var(--motion-ease-enter) 280ms forwards;
+  }
+}
+
+@keyframes hero-mark-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 .header-bar {
   background-color: var(--header-bar);
   backdrop-filter: blur(14px);
+}
+
+/* Hero sticky chrome — solid black plate with a thin accent edge glow. */
+.hero-toolbar {
+  background-color: #000;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--accent) 28%, transparent),
+    0 0 14px color-mix(in srgb, var(--accent) 22%, transparent);
 }
 
 .nav-link {
@@ -563,14 +999,14 @@ h3,
     animation-delay: 70ms;
   }
 
-  html:not(.motion-paused) .hero-chrome-in .hero-stage--cta {
-    animation: stage-pop 580ms var(--motion-ease-enter) both;
-    animation-delay: 130ms;
-  }
-
   html:not(.motion-paused) .hero-chrome-in .hero-stage--proof {
     animation: stage-rise 560ms var(--motion-ease-enter) both;
-    animation-delay: 190ms;
+    animation-delay: 90ms;
+  }
+
+  html:not(.motion-paused) .hero-chrome-in .hero-stage--cta {
+    animation: stage-pop 580ms var(--motion-ease-enter) both;
+    animation-delay: 150ms;
   }
 
   @media (min-width: 768px) {
@@ -591,14 +1027,14 @@ h3,
       animation-delay: 90ms;
     }
 
-    html:not(.motion-paused) .hero-chrome-in .hero-stage--cta {
-      animation-duration: 700ms;
-      animation-delay: 180ms;
-    }
-
     html:not(.motion-paused) .hero-chrome-in .hero-stage--proof {
       animation-duration: 700ms;
-      animation-delay: 260ms;
+      animation-delay: 140ms;
+    }
+
+    html:not(.motion-paused) .hero-chrome-in .hero-stage--cta {
+      animation-duration: 700ms;
+      animation-delay: 220ms;
     }
   }
 }
@@ -688,10 +1124,9 @@ html.lenis.lenis-smooth {
   will-change: transform;
 }
 
-/* Start tight on the opening Earth sphere, then ease out to full bleed. */
+/* Near-full open — heavy zoom made the aerial soft before expand. */
 .hero-bay-frame--zoom {
-  /* Portrait phones: less extreme scale so the bay stays readable mid-wipe. */
-  transform: perspective(900px) scale(1.85) rotateX(4deg);
+  transform: perspective(900px) scale(1.08) rotateX(0.5deg);
 }
 
 .hero-bay-frame--expand {
@@ -700,7 +1135,7 @@ html.lenis.lenis-smooth {
 
 @media (min-width: 768px) {
   .hero-bay-frame--zoom {
-    transform: perspective(1200px) scale(2.65) rotateX(7deg);
+    transform: perspective(1200px) scale(1.12) rotateX(1deg);
   }
 
   .hero-bay-frame--expand {
@@ -1085,6 +1520,13 @@ body:has(#lcp-poster) #hero {
 
 .hero-video {
   opacity: 0;
+  /* Keep the film on its own layer so scale/cover stays sharp. */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  transition:
+    opacity 280ms var(--motion-ease-enter),
+    transform 520ms var(--motion-ease-wipe);
+  will-change: opacity, transform;
 }
 
 html.media-on .hero-video {
@@ -1282,9 +1724,98 @@ html.motion-paused .benefit-track {
   animation: none;
 }
 
-/* Location is a tracked label, not a third script font. */
+/* Lockup titles — keep word gaps readable inside sticker strokes. */
+.hero-title {
+  word-spacing: 0.12em;
+}
+
+/* Location — sports caption type moment (tracked uppercase, not body copy). */
 .hero-location {
-  font-family: var(--font-sans);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35em 0.55em;
+  margin-top: 0.55rem;
+  max-width: 100%;
+  font-size: clamp(0.68rem, 2.4cqi, 0.88rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.hero-location__sep {
+  letter-spacing: 0;
+  opacity: 0.55;
+}
+
+.hero-location__place {
+  letter-spacing: 0.14em;
+}
+
+.hero-location--pulse {
+  font-family: var(--font-syne);
+  color: rgb(255 255 255 / 0.82);
+}
+
+.hero-location--plate {
+  font-family: var(--font-outfit);
+  letter-spacing: 0.18em;
+  color: rgb(255 255 255 / 0.8);
+}
+
+.hero-location--drive {
+  font-family: var(--font-sora);
+  letter-spacing: 0.2em;
+  color: rgb(255 255 255 / 0.84);
+}
+
+@container (min-width: 48rem) {
+  .hero-location {
+    margin-top: 1rem;
+    font-size: clamp(0.85rem, 1.8cqi, 1.05rem);
+    white-space: normal;
+  }
+}
+
+/* Keep offer plate + proof compact so the film stays readable above. */
+[data-hero-offer] .hero-offer-card {
+  padding-block: 0.65rem;
+  padding-inline: 0.85rem;
+}
+
+@container (min-width: 48rem) {
+  [data-hero-offer] .hero-offer-card {
+    padding-block: 1.25rem;
+    padding-inline: 1.5rem;
+  }
+}
+
+[data-hero-offer] .hero-proof {
+  margin-top: 0;
+  padding-top: 0.4rem;
+  gap: 0.2rem;
+}
+
+/* Phones: rating row only — quotes were clipping the stars out of the dock. */
+[data-hero-offer] .hero-proof__quote {
+  display: none;
+}
+
+@container (min-width: 48rem) {
+  [data-hero-offer] .hero-proof {
+    margin-top: 0;
+    padding-top: 0.75rem;
+    gap: 0.5rem;
+  }
+
+  [data-hero-offer] .hero-proof__quote {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+  }
 }
 
 /* Membership benefit plates — elevated surfaces with brand-edge sheen. */
@@ -1399,10 +1930,8 @@ html.motion-paused .benefit-card--dim {
   display: grid;
   grid-template-columns: 1.18fr 1fr;
   grid-template-areas:
-    "hero stats"
-    "hero brand"
-    "clubs chart"
-    "social dock";
+    "clubs availability"
+    "stats chart";
   gap: 0.75rem;
   align-items: stretch;
 }
@@ -1418,14 +1947,6 @@ html.motion-paused .benefit-card--dim {
     0 14px 28px rgb(10 15 11 / 0.18),
     inset 0 1px 0 rgb(255 255 255 / 0.06);
   min-width: 0;
-}
-
-.membership-bento__tile--hero {
-  grid-area: hero;
-  display: flex;
-  flex-direction: column;
-  min-height: 18.5rem;
-  padding: 1rem 0.9rem 0.75rem;
 }
 
 .membership-bento__tile--stats {
@@ -1445,27 +1966,69 @@ html.motion-paused .benefit-card--dim {
   gap: 0.4rem;
 }
 
-.membership-bento__tile--brand {
-  grid-area: brand;
-  display: grid;
-  place-content: center;
-  justify-items: center;
-  gap: 0.2rem;
-  min-height: 7.25rem;
-  padding: 0.85rem;
-  text-align: center;
-}
-
-.membership-bento__brand-ball {
-  margin-top: 0.35rem;
-}
-
 .membership-bento__tile--clubs {
   grid-area: clubs;
   display: flex;
   flex-direction: column;
-  min-height: 13.5rem;
+  min-height: 12.5rem;
   padding: 1rem 0.85rem 0.75rem;
+}
+
+.membership-bento__tile--availability {
+  grid-area: availability;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  min-height: 12.5rem;
+  padding: 1rem 0.9rem 0.85rem;
+}
+
+.membership-bento__line--on-dark {
+  margin: 0;
+  color: rgb(244 246 245 / 0.72);
+}
+
+.membership-bento__slots {
+  display: grid;
+  gap: 0.4rem;
+  margin: auto 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.membership-bento__slots li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 0.85rem;
+  background: rgb(255 255 255 / 0.06);
+  border: 1px solid rgb(255 255 255 / 0.08);
+}
+
+.membership-bento__slots li.is-hot {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.membership-bento__slot-when {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.membership-bento__slot-note {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgb(244 246 245 / 0.62);
+}
+
+.membership-bento__slots li.is-hot .membership-bento__slot-note {
+  color: color-mix(in srgb, var(--accent) 70%, white);
 }
 
 .membership-bento__tile--chart {
@@ -1475,24 +2038,6 @@ html.motion-paused .benefit-card--dim {
   justify-content: space-between;
   min-height: 9.75rem;
   padding: 0.9rem 0.8rem 0.75rem;
-}
-
-.membership-bento__tile--social {
-  grid-area: social;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 0.55rem;
-  min-height: 7.5rem;
-  padding: 0.9rem;
-}
-
-.membership-bento__tile--dock {
-  grid-area: dock;
-  display: flex;
-  align-items: center;
-  min-height: 7.5rem;
-  padding: 0.75rem;
 }
 
 .membership-bento__eyebrow {
@@ -1675,23 +2220,22 @@ html.motion-paused .benefit-card--dim {
   color: rgb(244 246 245 / 0.6);
 }
 
-.membership-bento__club-chip {
-  display: block;
-  width: 1.55rem;
-  height: 1.15rem;
-  margin-top: 0.7rem;
-  border-radius: 0.3rem;
-  background: linear-gradient(135deg, #d7dde3, #8b949e);
-}
-
 .membership-bento__club-icon {
   position: absolute;
-  right: 0.7rem;
-  bottom: 0.55rem;
-  width: 2.1rem;
-  height: 2.1rem;
-  color: #e8ecea;
-  opacity: 0.9;
+  right: 0.55rem;
+  bottom: 0.45rem;
+  width: 2.4rem;
+  height: auto;
+  opacity: 0.95;
+  filter: drop-shadow(0 2px 6px rgb(0 0 0 / 0.35));
+}
+
+.membership-bento__glyph {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
 }
 
 .membership-bento__chart-head {
@@ -1826,25 +2370,11 @@ html.motion-paused .benefit-card--dim {
   gap: 0.45rem;
 }
 
-.membership-bento__rating-score {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: 1.55rem;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.membership-bento__rating-note {
-  font-size: 0.68rem;
-  color: rgb(244 246 245 / 0.58);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
 
 .membership-bento__dock {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.28rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.3rem;
   width: 100%;
   margin: 0;
   padding: 0.4rem;
@@ -1857,20 +2387,35 @@ html.motion-paused .benefit-card--dim {
   display: grid;
   place-items: center;
   width: 100%;
-  aspect-ratio: 1;
-  border-radius: 1.05rem;
+  aspect-ratio: 1.15;
+  padding: 0.28rem;
+  border-radius: 0.95rem;
   background: rgb(255 255 255 / 0.08);
   color: #eef2f0;
 }
 
-.membership-bento__dock-icon--ball .membership-bento__spin svg {
-  width: 1.15rem;
-  height: 1.15rem;
+.membership-bento__dock-icon .membership-bento__glyph {
+  width: 78%;
+  max-height: 1.55rem;
+}
+
+.membership-bento__dock-icon--ball .membership-bento__spin-glyph {
+  width: 1.35rem;
+  height: auto;
 }
 
 .membership-bento__spin {
   display: inline-flex;
   line-height: 0;
+}
+
+.membership-bento__spin-glyph {
+  width: 1.75rem;
+  height: auto;
+}
+
+.membership-bento__brand-ball .membership-bento__spin-glyph {
+  width: 2rem;
 }
 
 @keyframes membership-bento-spin {
@@ -1900,10 +2445,6 @@ html.motion-paused .benefit-card--dim {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  html:not(.motion-paused) .membership-bento__spin--live {
-    animation: membership-bento-spin 2.8s linear infinite;
-  }
-
   html:not(.motion-paused) .membership-bento__gauge-arc {
     animation: membership-bento-gauge 1.1s var(--motion-ease-enter) both;
   }
@@ -1912,32 +2453,20 @@ html.motion-paused .benefit-card--dim {
     animation: membership-bento-rise 700ms var(--motion-ease-enter) both;
   }
 
-  html:not(.motion-paused) .membership-bento__tile--hero {
+  html:not(.motion-paused) .membership-bento__tile--clubs {
     animation-delay: 40ms;
   }
 
+  html:not(.motion-paused) .membership-bento__tile--availability {
+    animation-delay: 90ms;
+  }
+
   html:not(.motion-paused) .membership-bento__tile--stats {
-    animation-delay: 100ms;
-  }
-
-  html:not(.motion-paused) .membership-bento__tile--brand {
-    animation-delay: 150ms;
-  }
-
-  html:not(.motion-paused) .membership-bento__tile--clubs {
-    animation-delay: 190ms;
+    animation-delay: 140ms;
   }
 
   html:not(.motion-paused) .membership-bento__tile--chart {
-    animation-delay: 230ms;
-  }
-
-  html:not(.motion-paused) .membership-bento__tile--social {
-    animation-delay: 270ms;
-  }
-
-  html:not(.motion-paused) .membership-bento__tile--dock {
-    animation-delay: 310ms;
+    animation-delay: 190ms;
   }
 
   html:not(.motion-paused) .membership-bento__club--front {

@@ -8,6 +8,7 @@ import { MembershipBand } from "../components/MembershipBand";
 import { HeroVideo, type HeroIntroPhase } from "../components/Media";
 import { LayoutToggle } from "../components/LayoutToggle";
 import { MotionToggle } from "../components/MotionToggle";
+import { PageAtmosphere } from "../components/PageAtmosphere";
 import { ScrollReveal } from "../components/ScrollReveal";
 import { SoundToggle } from "../components/SoundToggle";
 import { TournamentForm } from "../components/TournamentForm";
@@ -17,7 +18,8 @@ import { VideoSlot } from "../components/VideoSlot";
 import { ValuePoint } from "../components/ValuePoint";
 import { NAP, OCLOCK, golfClockBookingReady } from "../data/business";
 import { HERO_TICKER } from "../data/heroTicker";
-import { HeroTitle, heroConcept } from "../components/HeroTitle";
+import { HeroLocation, HeroTitle } from "../components/HeroTitle";
+import type { HeroTypeId } from "../data/heroType";
 import { JsonLd } from "../components/JsonLd";
 import { FaqSection } from "../components/FaqSection";
 import { VisitLine } from "../components/VisitLine";
@@ -31,9 +33,8 @@ const sectionSpace = "scroll-mt-32 px-6 py-20 @3xl:px-12 @3xl:py-24";
 
 const navButton = `nav-link inline-flex min-h-11 items-center px-1 text-base font-semibold text-ink ${buttonFocus}`;
 
-export function Landing() {
+export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
   const flow = useFlow();
-  const concept = heroConcept();
   const [menu, setMenu] = useState(false);
   const [onFilm, setOnFilm] = useState(true);
   const [active, setActive] = useState<string | null>(null);
@@ -44,7 +45,8 @@ export function Landing() {
   const offerTiltRef = usePointerTilt<HTMLDivElement>(5);
   const mobile = flow.layout === "mobile";
   const scroll = mobile ? "h-full overflow-y-auto" : "";
-  const chromeReady = intro === "arrived";
+  // Offer + toolbar appear as the bay expands — don't wait for expand to finish.
+  const chromeReady = intro === "expand" || intro === "arrived";
 
   const onPhase = useCallback((phase: HeroIntroPhase) => {
     setIntro(phase);
@@ -105,11 +107,15 @@ export function Landing() {
       data-smooth-root={mobile ? "" : undefined}
       className={`@container page-grid text-base text-ink ${scroll} ${chromeReady ? "" : "overflow-hidden"}`}
     >
-      <div data-smooth-content={mobile ? "" : undefined}>
+      <PageAtmosphere scrollRoot={mobile ? scrollRef : undefined} intensity="strong" />
+      <div
+        data-smooth-content={mobile ? "" : undefined}
+        className={`relative z-10 ${mobile ? "flex min-h-full flex-col" : ""}`}
+      >
       <JsonLd data={homeGraph()} />
       <JsonLd data={faqGraph()} />
       <header
-        className={`sticky z-30 px-6 py-3 @5xl:px-12 ${mobile ? "top-0" : "top-[4.25rem]"} ${onFilm ? "" : "header-bar"} ${
+        className={`sticky z-30 shrink-0 px-6 py-3 @5xl:px-12 ${mobile ? "top-0" : "top-[4.25rem]"} ${onFilm ? "hero-toolbar" : "header-bar"} ${
           chromeReady ? "hero-chrome-in" : "pointer-events-none opacity-0"
         }`}
         aria-hidden={chromeReady ? undefined : true}
@@ -165,35 +171,35 @@ export function Landing() {
       </header>
       <section
         id="hero"
-        className={`relative -mt-[4.5rem] flex flex-col overflow-hidden bg-ink ${mobile ? "h-full" : "h-[calc(100svh-5rem)]"}`}
+        className={`hero-shell relative -mt-[4.5rem] flex flex-col overflow-hidden bg-ink ${
+          mobile ? "min-h-full shrink-0" : "h-[calc(100svh-5rem)]"
+        }`}
         aria-busy={chromeReady ? undefined : true}
       >
         <HeroVideo onPhase={onPhase} />
         <div className="hero-top-shade pointer-events-none absolute inset-x-0 top-0" aria-hidden="true" />
         <div
           data-hero-offer
-          className={`relative z-10 flex flex-1 items-end justify-end px-6 pb-4 pt-[4.5rem] @3xl:px-12 @3xl:pb-6 ${
+          className={`hero-offer-dock relative z-10 flex items-end justify-end px-6 pb-3 pt-2 @3xl:px-12 @3xl:pb-6 @3xl:pt-[4.5rem] ${
             chromeReady ? "hero-chrome-in" : "pointer-events-none opacity-0"
           }`}
           aria-hidden={chromeReady ? undefined : true}
         >
           <div
             ref={offerTiltRef}
-            className="hero-panel hero-panel-depth hero-panel-tilt hero-offer-card pointer-events-auto max-h-full w-full max-w-[32rem] overflow-y-auto rounded-[1.35rem] px-5 py-4 @3xl:px-6 @3xl:py-5"
+            className="hero-panel hero-panel-depth hero-panel-tilt hero-offer-card pointer-events-auto max-h-full w-full max-w-[36rem] overflow-hidden rounded-[1.35rem] px-4 py-3 @3xl:overflow-y-auto @3xl:px-7 @3xl:py-6"
           >
             <div className="hero-offer-sheen" aria-hidden="true" />
-            <div className="relative flex min-w-0 flex-col gap-4">
-              <div className="hero-stage hero-stage--copy min-w-0 max-w-full">
-                <HeroTitle concept={concept} />
-                <h1 className="hero-location hero-stage hero-stage--location mt-2 text-sm font-semibold uppercase tracking-[0.14em] text-mint/90 @3xl:text-base">
-                  Indoor golf in Somerset, NJ
-                </h1>
-              </div>
-              <div className="hero-stage hero-stage--cta">
-                <HeroMembershipAction className="cta-sheen w-full @3xl:w-auto" />
+            <div className="relative flex min-w-0 flex-col gap-2.5 @3xl:gap-5">
+              <div className="hero-stage hero-stage--copy min-w-0 max-w-full" data-hero-type={heroType}>
+                <HeroTitle concept={heroType} />
+                <HeroLocation concept={heroType} />
               </div>
               <div className="hero-stage hero-stage--proof">
                 <HeroProof />
+              </div>
+              <div className="hero-stage hero-stage--cta">
+                <HeroMembershipAction className="cta-sheen w-full @3xl:w-auto" />
               </div>
             </div>
           </div>
@@ -215,7 +221,7 @@ export function Landing() {
               src={COACHING_FILM.src}
               srcMobile={COACHING_FILM.srcMobile}
               poster={COACHING_FILM.poster}
-              posterAlt="A golfer hitting a shot in a Par2Play simulator bay"
+              posterAlt="An adult golfer reviewing shot data in a Par2Play simulator bay"
               className="aspect-video"
               pausable
             />
@@ -223,14 +229,7 @@ export function Landing() {
           <ScrollReveal tone="rise" delay={80}>
             <h2 className="font-display text-3xl font-semibold leading-none tracking-tight @5xl:text-5xl">Get fitted and swinging!</h2>
             <p className="mt-8 max-w-md font-display text-2xl font-semibold leading-tight tracking-tight">
-              {"Two PGA professional coaches, "}
-              <a className="underline decoration-2 underline-offset-4" href={`${pageHref("coaching")}#nick-schiavo`}>
-                Nick Schiavo
-              </a>
-              {" and "}
-              <a className="underline decoration-2 underline-offset-4" href={`${pageHref("coaching")}#nick-monticello`}>
-                Nick Monticello
-              </a>
+              PGA professional coaches for 1:1 lessons and swing evaluations.
             </p>
             <div className="mt-8 grid gap-5">
               <ValuePoint icon={Target} label="1:1 lessons" line="A plan you can track month to month." />
@@ -261,7 +260,7 @@ export function Landing() {
               <ValuePoint
                 icon={UserRound}
                 label="Future pros"
-                line="1:1 coaching with PGA pros Nick Schiavo and Nick Monticello, once or twice a week."
+                line="1:1 coaching with PGA professionals, once or twice a week."
               />
               <ValuePoint
                 icon={Shield}

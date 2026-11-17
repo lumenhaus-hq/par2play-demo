@@ -200,7 +200,7 @@ export function Clubhouse() {
             {[
               ["Weekday guest hour", "A quiet hour for someone you bring. Saturday stays full price."],
               ["A lesson", "A 50-minute swing evaluation is $100, tax included. A 30-minute lesson price is TBD. The night itself stays about the hole."],
-              ["A fitting", "Club fitting price: TBD."],
+              ["Bay time", "Use points toward another hour on the simulator when you want more reps."],
             ].map(([title, copy]) => (
               <div key={title} className="rounded-2xl border border-white/10 p-6">
                 <p className="text-lg font-semibold">{title}</p>

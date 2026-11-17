@@ -11,13 +11,14 @@ for (const width of [360, 1280]) {
     await page.goto("membership/");
     if (width === 1280) await setDemoLayout(page, "web");
     const panel = page.locator("#why-membership");
-    await expect(panel.getByRole("button", { name: "Unlimited Practice", exact: true })).toHaveAttribute("aria-pressed", "true");
+    await expect(panel.getByRole("button", { name: /Unlimited \/ mo/i })).toHaveAttribute("aria-pressed", "true");
     await expect(panel.locator('[aria-live="polite"] p').last()).toContainText("$200");
     await expect(panel.getByRole("slider")).toHaveCount(0);
     await expect(page.locator("[data-tier]")).toHaveCount(0);
     await expect(page.getByRole("heading", { name: "Compare price & hours" })).toHaveCount(0);
-    await panel.getByRole("button", { name: "10 Sessions", exact: true }).click();
-    await expect(panel.getByRole("button", { name: "10 Sessions", exact: true })).toHaveAttribute("aria-pressed", "true");
+    await expect(panel.getByText("Minutes / session")).toHaveCount(0);
+    await panel.getByRole("button", { name: /10 Sessions/i }).click();
+    await expect(panel.getByRole("button", { name: /10 Sessions/i })).toHaveAttribute("aria-pressed", "true");
     await expect(panel.locator('[aria-live="polite"] p').last()).toContainText("$400");
     await expect(page.getByRole("heading", { name: "Finalize your booking" })).toBeVisible();
     await expect(page.getByLabel("Name")).toBeVisible();
@@ -41,23 +42,23 @@ test("mobile homepage membership uses the golf bento grid", async ({ page }) => 
   await band.locator(".membership-bento__grid").scrollIntoViewIfNeeded();
   const metrics = await band.evaluate((node) => {
     const grid = node.querySelector(".membership-bento__grid")!;
+    const availability = node.querySelector('[aria-label="Preferred availability"]')!;
     const stage = node.querySelector(".membership-bento-stage") ?? node.firstElementChild!;
-    const title = node.querySelector(".membership-bento__title")!;
     return {
-      gridHeight: grid.getBoundingClientRect().height,
+      gridTop: grid.getBoundingClientRect().top,
+      availabilityTop: availability.getBoundingClientRect().top,
       background: getComputedStyle(stage).backgroundColor,
-      titleSize: parseFloat(getComputedStyle(title).fontSize),
       filmCount: node.querySelectorAll("video").length,
-      benefitTitles: node.querySelectorAll(".membership-bento__benefit-title").length,
     };
   });
-  expect(metrics.gridHeight).toBeGreaterThan(200);
+  expect(metrics.availabilityTop).toBeGreaterThanOrEqual(metrics.gridTop);
   expect(metrics.filmCount).toBe(1);
-  expect(metrics.benefitTitles).toBe(0);
   // Light stage behind dark tiles (not the old full-bleed void film band).
   expect(metrics.background).not.toBe("rgb(2, 8, 6)");
-  expect(metrics.titleSize).toBeGreaterThan(12);
   await expect(band.getByLabel("Simulator stats")).toBeVisible();
+  await expect(band.getByLabel("Progress")).toBeVisible();
+  await expect(band.getByLabel("Preferred availability")).toBeVisible();
+  await expect(band.locator(".membership-bento__benefits")).toHaveCount(0);
   await expect(page.locator("#events img")).toHaveCount(0);
   await expect(band.getByRole("link", { name: "Try it out", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Around the club" })).toHaveCount(0);
@@ -85,16 +86,19 @@ test("membership page no longer shows Silver Gold Platinum price cards", async (
   await expect(page.getByRole("heading", { name: "compare plans" })).toBeVisible();
 });
 
-test("coaching defaults to evaluation and has no pictures below pricing", async ({ page }) => {
+test("coaching is evaluation-only without lesson packs or fitting", async ({ page }) => {
   await page.goto("coaching/");
   const panel = page.locator("#coaching-offer");
-  await expect(panel.getByRole("button", { name: "Swing evaluation", exact: true })).toHaveAttribute("aria-pressed", "true");
-  await expect(panel.locator("dd")).toHaveText(["50–60", "1"]);
+  await expect(panel.getByText("Swing evaluation", { exact: true })).toBeVisible();
+  await expect(panel.getByText("$100")).toBeVisible();
+  await expect(panel.locator("dd")).toHaveCount(0);
   await expect(panel.getByRole("slider")).toHaveCount(0);
-  const imagesOutsidePanel = await page.locator("article img").evaluateAll((nodes) => nodes.filter((node) => !node.closest("#coaching-offer")).length);
+  await expect(page.getByRole("heading", { name: "Lesson packs" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Club fitting" })).toHaveCount(0);
+  await expect(page.getByText(/Nick Schiavo|Nick Monticello/)).toHaveCount(0);
+  const imagesOutsidePanel = await page.locator("article img").evaluateAll((nodes) =>
+    nodes.filter((node) => !node.closest("#coaching-offer") && !node.closest(".page-atmosphere")).length,
+  );
   expect(imagesOutsidePanel).toBe(0);
-  await panel.getByRole("button", { name: "Lessons", exact: true }).click();
-  await expect(panel.locator("dd")).toHaveText(["30", "5"]);
-  await expect(panel.getByRole("slider")).toBeVisible();
   await expect(page.getByText(/never expire|no blackout|plan for what to change/i)).toHaveCount(0);
 });

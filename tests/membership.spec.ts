@@ -11,12 +11,16 @@ test("mobile membership shows the golf bento grid", async ({ page }) => {
   await band.scrollIntoViewIfNeeded();
   await expect(band.locator(".membership-bento__grid")).toBeVisible();
   await expect(band.getByRole("heading", { name: "Membership", exact: true })).toBeVisible();
-  await expect(band.getByLabel("Member profile")).toBeVisible();
+  await expect(band.getByLabel("Club lineup")).toBeVisible();
+  await expect(band.getByLabel("Preferred availability")).toBeVisible();
   await expect(band.getByLabel("Simulator stats")).toBeVisible();
-  await expect(band.getByText("Meet the member kit", { exact: true })).toBeVisible();
+  await expect(band.getByLabel("Progress")).toBeVisible();
+  await expect(band.getByText("Clubs on standby", { exact: true })).toBeVisible();
+  await expect(band.getByText("Your times, held", { exact: true })).toBeVisible();
   await expect(band.getByText("Cool session stats", { exact: true })).toBeVisible();
   await expect(band.getByText("275", { exact: true })).toBeVisible();
-  await expect(band.getByLabel("Club lineup")).toBeVisible();
+  await expect(band.getByText("Your bag", { exact: true })).toHaveCount(0);
+  await expect(band.locator(".membership-bento__benefits")).toHaveCount(0);
   await expect(band.getByRole("button", { name: /^(Play|Pause) video$/ })).toHaveCount(0);
 });
 
@@ -42,7 +46,7 @@ test("reduced motion uses the membership poster without a video", async ({ page 
   await page.goto("./");
   const band = page.locator("#membership");
   await band.scrollIntoViewIfNeeded();
-  await expect(band.locator("img")).toBeVisible();
+  await expect(band.getByRole("img", { name: "Golfers on a simulator at Par2Play" })).toBeVisible();
   await expect(band.locator("video")).toHaveCount(0);
   await expect(band.getByRole("button", { name: /^(Play|Pause) video$/ })).toHaveCount(0);
 });
@@ -54,10 +58,10 @@ for (const width of [320, 360, 390, 430, 1280]) {
     await page.goto("membership/");
     const panel = page.locator("#why-membership");
     for (const [label, amount] of [
-      ["Unlimited Practice", "$200"],
-      ["10 Sessions", "$400"],
+      [/Unlimited \/ mo/i, "$200"],
+      [/10 Sessions/i, "$400"],
     ] as const) {
-      await panel.getByRole("button", { name: label, exact: true }).click();
+      await panel.getByRole("button", { name: label }).click();
       const fee = panel.locator('[aria-live="polite"] p').last();
       await expect(fee).toContainText(amount);
       const layout = await fee.evaluate((node) => {

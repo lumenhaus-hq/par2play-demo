@@ -1,13 +1,13 @@
 import { useId, useState, type FormEvent, type ReactNode } from "react";
+import { CalendarDays, Clock3 } from "lucide-react";
 import { trackAnchor } from "../analytics/track";
-import { PhoneLink, buttonFocus } from "./Cta";
-import { CompareBoxes, PricingHero } from "./PricingHero";
+import { BookLink, PhoneLink, buttonFocus } from "./Cta";
 import { NAP, OCLOCK, PRICES } from "../data/business";
-import { TESTIMONIAL_FILMS } from "../data/films";
 import { money } from "../data/membershipEstimate";
 
-const FILM = TESTIMONIAL_FILMS[0];
-const PAYG_TEN = PRICES.baySession * 10;
+const iconBase = `${import.meta.env.BASE_URL}media/membership-icons`;
+const checkoutCard =
+  "rounded-2xl border border-[#E5E7EB] bg-white px-5 py-5 shadow-[0_8px_30px_rgb(10_15_11/0.06)] @3xl:px-7 @3xl:py-6";
 
 type PracticeMode = "unlimited" | "pack";
 
@@ -18,21 +18,6 @@ type CheckoutFields = {
 };
 
 const emptyCheckout: CheckoutFields = { name: "", email: "", phone: "" };
-
-function ModeButton({ pressed, onClick, children }: { pressed: boolean; onClick: () => void; children: string }) {
-  return (
-    <button
-      type="button"
-      className={`aa-focus-ink min-h-11 rounded-full border-2 px-3 text-base font-semibold transition-[border-color,background-color,color] ${
-        pressed ? "border-mint bg-white text-ink" : "border-white/35 text-white"
-      }`}
-      aria-pressed={pressed}
-      onClick={onClick}
-    >
-      {children}
-    </button>
-  );
-}
 
 function checkoutHref(mode: PracticeMode, fields: CheckoutFields): string {
   const base = mode === "unlimited" ? OCLOCK.practiceUnlimited : OCLOCK.tenPracticePack;
@@ -54,6 +39,63 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
     <div className="flex items-baseline justify-between gap-4 py-2 text-base">
       <span className="text-[#4B5563]">{label}</span>
       <span className="font-semibold text-ink tabular-nums">{value}</span>
+    </div>
+  );
+}
+
+function FeatureFact({ label, value, icon }: { label: string; value: string; icon: "calendar" | "clock" }) {
+  const Icon = icon === "calendar" ? CalendarDays : Clock3;
+  return (
+    <div className="min-w-0 rounded-2xl border border-[#E5E7EB] bg-[#F3F4F6] p-3 @3xl:p-4">
+      <p className="flex items-center gap-2 text-xs font-semibold text-[#4B5563]">
+        <Icon aria-hidden="true" className="size-4 shrink-0 text-[#17743B]" strokeWidth={1.7} />
+        {label}
+      </p>
+      <p className="mt-3 font-display text-2xl font-semibold leading-tight tracking-tight text-ink @3xl:text-3xl">{value}</p>
+    </div>
+  );
+}
+
+function OfferToggle({
+  mode,
+  onChange,
+}: {
+  mode: PracticeMode;
+  onChange: (mode: PracticeMode) => void;
+}) {
+  return (
+    <div className="mt-5" role="group" aria-label="Practice offer">
+      <div className="grid grid-cols-2 gap-3">
+        <button
+          type="button"
+          className={`membership-offer-card aa-focus ${mode === "pack" ? "is-active" : ""}`}
+          aria-pressed={mode === "pack"}
+          onClick={() => onChange("pack")}
+        >
+          <p className={`text-xs font-semibold uppercase tracking-[0.04em] ${mode === "pack" ? "text-[#17743B]" : "text-[#6B7280]"}`}>
+            10 Sessions
+          </p>
+          <p className="mt-2 font-display text-2xl font-semibold tabular-nums text-ink @3xl:text-3xl">{money(PRICES.tenPack)}</p>
+        </button>
+        <button
+          type="button"
+          className={`membership-offer-card aa-focus ${mode === "unlimited" ? "is-active" : ""}`}
+          aria-pressed={mode === "unlimited"}
+          onClick={() => onChange("unlimited")}
+        >
+          <p className={`text-xs font-semibold uppercase tracking-[0.04em] ${mode === "unlimited" ? "text-[#17743B]" : "text-[#6B7280]"}`}>
+            Unlimited / mo
+          </p>
+          <p className="mt-2 font-display text-2xl font-semibold tabular-nums text-ink @3xl:text-3xl">
+            {money(PRICES.unlimitedMonthly)}
+          </p>
+        </button>
+      </div>
+      <p className="mt-3 text-sm font-semibold leading-snug text-ink/75">
+        {mode === "unlimited"
+          ? "Members keep a bay hour every day for less than a few 10-packs."
+          : `${money(PRICES.tenPack / 10)} a session in the pack.`}
+      </p>
     </div>
   );
 }
@@ -109,15 +151,21 @@ function PaymentsAccepted() {
   );
 }
 
-function MembershipCheckout({ mode }: { mode: PracticeMode }) {
+export function MembershipCalculator() {
   const formId = useId();
+  const [mode, setMode] = useState<PracticeMode>("unlimited");
   const [fields, setFields] = useState<CheckoutFields>(emptyCheckout);
   const [errors, setErrors] = useState<Partial<CheckoutFields>>({});
   const unlimited = mode === "unlimited";
-  const title = unlimited ? "Unlimited Practice" : "10 Sessions";
+  const figure = unlimited ? `${money(PRICES.unlimitedMonthly)}/mo` : money(PRICES.tenPack);
+  const heading = unlimited ? "Unlimited Practice" : "10 Sessions";
+  const live = unlimited
+    ? `Unlimited Practice ${money(PRICES.unlimitedMonthly)} a month. Up to 1 hour a day.`
+    : `10 Sessions ${money(PRICES.tenPack)}. Ten 60-minute bay sessions.`;
   const line = unlimited ? "Practice Unlimited (monthly)" : "10 × 60-minute bay sessions";
-  const total = unlimited ? money(PRICES.unlimitedMonthly) : money(PRICES.tenPack);
-  const totalLabel = unlimited ? `${total}/mo` : total;
+  const totalLabel = unlimited ? `${money(PRICES.unlimitedMonthly)}/mo` : money(PRICES.tenPack);
+  const primaryOffer = unlimited ? ("practice-unlimited" as const) : ("ten-pack" as const);
+  const primaryLabel = unlimited ? "Become a Member" : "Buy 10 Sessions";
 
   const set = (key: keyof CheckoutFields, value: string) => {
     setFields((current) => ({ ...current, [key]: value }));
@@ -143,14 +191,51 @@ function MembershipCheckout({ mode }: { mode: PracticeMode }) {
     "aa-focus mt-2 w-full rounded-xl border border-[#D1D5DB] bg-white px-3 py-3 text-base text-ink outline-none placeholder:text-[#9CA3AF] focus-visible:border-ink";
 
   return (
-    <section className="mx-auto w-full max-w-3xl" aria-labelledby={`${formId}-heading`}>
-      <h2 id={`${formId}-heading`} className="font-display text-2xl font-bold uppercase tracking-[0.04em] text-ink @3xl:text-3xl">
-        Finalize your booking
-      </h2>
+    <div className="mx-auto grid w-full max-w-3xl gap-6 @3xl:gap-8">
+      <section id="why-membership" aria-labelledby="why-membership-heading" className="membership-pricing px-5 py-5 @3xl:px-7 @3xl:py-6">
+        <span className="membership-pricing__orb membership-pricing__orb--a" aria-hidden="true" />
+        <span className="membership-pricing__orb membership-pricing__orb--b" aria-hidden="true" />
+        <img className="membership-pricing__glyph membership-pricing__glyph--a" src={`${iconBase}/flag.png`} alt="" aria-hidden="true" />
+        <img className="membership-pricing__glyph membership-pricing__glyph--b" src={`${iconBase}/ball.png`} alt="" aria-hidden="true" />
+        <img className="membership-pricing__glyph membership-pricing__glyph--c" src={`${iconBase}/crossed-clubs.png`} alt="" aria-hidden="true" />
 
-      <form className="mt-6 grid gap-4" onSubmit={onSubmit} noValidate>
-        <div className="rounded-2xl border border-[#E5E7EB] bg-white px-5 py-5 shadow-[0_8px_30px_rgb(10_15_11/0.06)] @3xl:px-7 @3xl:py-6">
-          <p className="text-lg font-bold text-ink">{title}</p>
+        <div className="membership-pricing__body">
+          <h1 id="why-membership-heading" className="font-display text-2xl font-semibold tracking-tight text-ink @3xl:text-3xl">
+            Indoor golf membership in Somerset, NJ
+          </h1>
+          <p className="mt-2 font-display text-lg font-semibold tracking-tight text-[#17743B]">{heading}</p>
+          <div aria-live="polite" aria-atomic="true" className="mt-2">
+            <p className="sr-only">{live}</p>
+            <p className="font-display text-[clamp(2.25rem,10cqi,3.75rem)] font-semibold leading-none tracking-tight text-ink">
+              {figure}
+            </p>
+          </div>
+
+          <div className="mt-6 grid grid-cols-2 gap-3">
+            <FeatureFact label="Bay access" value="Daily" icon="calendar" />
+            <FeatureFact label="Session length" value="Up to 1 hr" icon="clock" />
+          </div>
+
+          <OfferToggle mode={mode} onChange={setMode} />
+
+          <div className="mt-6 flex flex-col gap-3 @3xl:flex-row">
+            <BookLink className="w-full" offer={primaryOffer}>
+              {primaryLabel}
+            </BookLink>
+            <BookLink className="w-full" offer="bay" tone="line">
+              Try it out
+            </BookLink>
+          </div>
+        </div>
+      </section>
+
+      <form className="grid gap-4" onSubmit={onSubmit} noValidate aria-labelledby={`${formId}-heading`}>
+        <h2 id={`${formId}-heading`} className="font-display text-2xl font-bold uppercase tracking-[0.04em] text-ink @3xl:text-3xl">
+          Finalize your booking
+        </h2>
+
+        <div className={checkoutCard}>
+          <p className="text-lg font-bold text-ink">{heading}</p>
           <div className="mt-3 divide-y divide-[#E5E7EB]">
             <SummaryRow label="Offer" value={line} />
             <SummaryRow label="Access" value={unlimited ? "Up to 1 hour a day" : "10 sessions"} />
@@ -164,7 +249,7 @@ function MembershipCheckout({ mode }: { mode: PracticeMode }) {
           <p className="mt-4 text-right font-mono text-xs text-[#9CA3AF]">{orderRef(mode)}</p>
         </div>
 
-        <div className="rounded-2xl border border-[#E5E7EB] bg-white px-5 py-5 shadow-[0_8px_30px_rgb(10_15_11/0.06)] @3xl:px-7 @3xl:py-6">
+        <div className={checkoutCard}>
           <p className="text-base font-semibold text-ink">Your details</p>
           <p className="mt-1 text-sm text-[#6B7280]">Carried into GolfClock when you confirm. Nothing is charged here.</p>
           <div className="mt-4 grid gap-4 @3xl:grid-cols-3">
@@ -209,7 +294,7 @@ function MembershipCheckout({ mode }: { mode: PracticeMode }) {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-[#E5E7EB] bg-white px-5 py-5 shadow-[0_8px_30px_rgb(10_15_11/0.06)] @3xl:px-7 @3xl:py-6">
+        <div className={checkoutCard}>
           <PaymentsAccepted />
         </div>
 
@@ -222,81 +307,12 @@ function MembershipCheckout({ mode }: { mode: PracticeMode }) {
           </button>
         </div>
       </form>
-    </section>
-  );
-}
 
-export function MembershipCalculator() {
-  const [mode, setMode] = useState<PracticeMode>("unlimited");
-  const unlimited = mode === "unlimited";
-  const figure = unlimited ? `${money(PRICES.unlimitedMonthly)}/mo` : money(PRICES.tenPack);
-  const heading = unlimited ? "Unlimited Practice" : "10 Sessions";
-  const live = unlimited
-    ? `Unlimited Practice ${money(PRICES.unlimitedMonthly)} a month. Up to 1 hour a day.`
-    : `10 Sessions ${money(PRICES.tenPack)}. Ten 60-minute bay sessions.`;
-  const primaryOffer = unlimited ? ("practice-unlimited" as const) : ("ten-pack" as const);
-  const primaryLabel = unlimited ? "Become a Member" : "Buy 10 Sessions";
-
-  return (
-    <div className="grid gap-16 @3xl:gap-24">
-      <PricingHero
-        id="why-membership"
-        pageTitle="Indoor golf membership in Somerset, NJ"
-        heading={heading}
-        figure={figure}
-        live={live}
-        film={FILM}
-        facts={
-          unlimited
-            ? [
-                { label: "Bay access", value: "Daily", icon: "calendar" },
-                { label: "Session length", value: "Up to 1 hr", icon: "clock" },
-              ]
-            : [
-                { label: "Sessions", value: "10", icon: "sessions" },
-                { label: "Minutes / session", value: "60", icon: "clock" },
-              ]
-        }
-        primary={{ offer: primaryOffer, label: primaryLabel }}
-        secondary={{ offer: "bay", label: "Try it out" }}
-        selector={
-          <div className="grid grid-cols-1 gap-1 rounded-3xl bg-white/10 p-1 @3xl:grid-cols-2 @3xl:rounded-full" role="group" aria-label="Practice offer">
-            <ModeButton pressed={unlimited} onClick={() => setMode("unlimited")}>
-              Unlimited Practice
-            </ModeButton>
-            <ModeButton pressed={!unlimited} onClick={() => setMode("pack")}>
-              10 Sessions
-            </ModeButton>
-          </div>
-        }
-        comparison={
-          unlimited ? (
-            <CompareBoxes
-              mutedLabel="10 Sessions"
-              muted={money(PRICES.tenPack)}
-              highlightLabel="Unlimited / mo"
-              highlight={money(PRICES.unlimitedMonthly)}
-              note="Members keep a bay hour every day for less than a few 10-packs."
-            />
-          ) : (
-            <CompareBoxes
-              mutedLabel="Pay as you go"
-              muted={money(PAYG_TEN)}
-              highlightLabel="10 Sessions"
-              highlight={money(PRICES.tenPack)}
-              note={`${money(PRICES.tenPack / 10)} a session in the pack.`}
-            />
-          )
-        }
-      />
-
-      <MembershipCheckout mode={mode} />
-
-      <section className="rounded-3xl bg-void px-6 py-12 text-center text-white @3xl:px-12" aria-labelledby="join-heading">
-        <h2 id="join-heading" className="font-display text-4xl font-semibold tracking-tight">
+      <section className={`${checkoutCard} text-center`} aria-labelledby="join-heading">
+        <h2 id="join-heading" className="font-display text-3xl font-semibold tracking-tight text-ink">
           compare plans
         </h2>
-        <p className="mx-auto mt-3 max-w-lg text-base text-white/75">
+        <p className="mx-auto mt-3 max-w-lg text-base text-ink/70">
           Silver, Gold, and Platinum live on GolfClock. Pick the bay hours that fit your week.
         </p>
         <div className="mt-6 flex justify-center">
@@ -314,12 +330,12 @@ export function MembershipCalculator() {
             </span>
           </a>
         </div>
-        <p className="mt-6 text-base leading-snug">
+        <p className="mt-6 text-base leading-snug text-ink/80">
           {NAP.street}
           <br />
           {NAP.city}, {NAP.region} {NAP.postalCode}
           <br />
-          <PhoneLink className="aa-focus-ink underline decoration-2 underline-offset-4">{NAP.phoneDisplay}</PhoneLink>
+          <PhoneLink className="aa-focus underline decoration-2 underline-offset-4">{NAP.phoneDisplay}</PhoneLink>
         </p>
       </section>
     </div>

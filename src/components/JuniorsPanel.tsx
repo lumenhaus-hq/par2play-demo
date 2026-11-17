@@ -25,10 +25,6 @@ export function JuniorsPanel() {
       figure={figure}
       live={live}
       film={JUNIORS_FILM}
-      facts={[
-        { label: "Sessions / week", value: planId === "once" ? "1" : "2", icon: "calendar" },
-        { label: "Monthly price", value: money(plan.price), icon: "price" },
-      ]}
       primary={{ offer: "junior", label: "Schedule junior coaching" }}
       secondary={{ offer: "bay", label: "Try it out" }}
       selector={
