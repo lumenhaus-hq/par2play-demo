@@ -429,8 +429,8 @@ body {
   pointer-events: none;
   /* No contain:paint — that traps position:fixed floaters to the page box. */
   --atmosphere-wash: 0.7;
-  /* Soft ink silhouettes on light paper — readable as ambient polish. */
-  --atmosphere-icon: 0.3;
+  /* Soft field across the whole viewport — multiply keeps copy readable. */
+  --atmosphere-icon: 0.26;
   --atmosphere-icon-scale: 1;
   --floater-shift: 0rem;
   --frame-h: 100vh;
@@ -438,14 +438,14 @@ body {
 
 .page-atmosphere--strong {
   --atmosphere-wash: 0.85;
-  --atmosphere-icon: 0.38;
-  --atmosphere-icon-scale: 1.06;
+  --atmosphere-icon: 0.32;
+  --atmosphere-icon-scale: 1.04;
 }
 
 .page-atmosphere--max {
   --atmosphere-wash: 1;
-  --atmosphere-icon: 0.44;
-  --atmosphere-icon-scale: 1.12;
+  --atmosphere-icon: 0.38;
+  --atmosphere-icon-scale: 1.08;
 }
 
 .page-atmosphere__wash {
@@ -498,14 +498,15 @@ body {
     scale(var(--atmosphere-icon-scale))
     rotate(var(--tilt, 0deg));
   will-change: transform;
+  mix-blend-mode: multiply;
 }
 
 .page-atmosphere__floater--far {
-  opacity: calc(var(--atmosphere-icon) * 0.72);
+  opacity: calc(var(--atmosphere-icon) * 0.7);
 }
 
 .page-atmosphere__floater--mid {
-  opacity: calc(var(--atmosphere-icon) * 0.9);
+  opacity: calc(var(--atmosphere-icon) * 0.88);
 }
 
 .page-atmosphere__floater--near {
@@ -523,6 +524,10 @@ body {
   animation-delay: var(--delay, 0s);
 }
 
+[data-style="nocturne"] .page-atmosphere__floater {
+  mix-blend-mode: screen;
+}
+
 [data-style="nocturne"] .page-atmosphere__floater--far {
   filter: none;
 }
@@ -530,7 +535,7 @@ body {
 [data-style="nocturne"] .page-atmosphere__floater img {
   /* Keep light glyphs on dark paper. */
   filter: none;
-  opacity: 0.9;
+  opacity: 0.85;
 }
 
 @keyframes page-atmosphere-drift {
@@ -565,21 +570,21 @@ html.motion-paused .page-atmosphere__floater img {
 
 @media (max-width: 639px) {
   .page-atmosphere {
-    --atmosphere-icon: 0.22;
+    --atmosphere-icon: 0.24;
   }
 
   .page-atmosphere--strong,
   .page-atmosphere--max {
-    --atmosphere-icon: 0.28;
+    --atmosphere-icon: 0.3;
   }
 
   .page-atmosphere__floater {
-    width: 2.75rem !important;
+    width: 2.85rem !important;
   }
 
-  /* Sparse phone field — keep far + mid, drop near. */
+  /* Keep the full 9-glyph field on phones — just smaller. */
   .page-atmosphere__floater--near {
-    display: none;
+    display: list-item;
   }
 }
 

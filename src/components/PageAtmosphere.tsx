@@ -8,30 +8,28 @@ export type AtmosphereIntensity = "base" | "strong" | "max";
 type FloaterDepth = "far" | "mid" | "near";
 
 /**
- * Viewport-fixed margin placements — a hovering field around the screen,
- * not document-% pins that vanish on long pages.
- * taste-skill-ignore: owner asked for floating icons as a soft space layer.
+ * Viewport-scattered field — glyphs across width + height (not edge gutters only).
+ * taste-skill-ignore: owner asked for a hovering space layer over the whole page.
  */
 const FLOATERS: readonly {
   file: string;
   top: string;
-  left?: string;
-  right?: string;
+  left: string;
   size: string;
   depth: FloaterDepth;
   drift: string;
   delay: string;
   rotate: string;
 }[] = [
-  { file: "bag.png", top: "11%", left: "1.5%", size: "4.25rem", depth: "far", drift: "26s", delay: "0s", rotate: "-8deg" },
-  { file: "club-strike.png", top: "9%", right: "2%", size: "3.6rem", depth: "far", drift: "28s", delay: "-12s", rotate: "-6deg" },
-  { file: "grass.png", top: "78%", right: "1.5%", size: "3.4rem", depth: "far", drift: "24s", delay: "-7s", rotate: "2deg" },
-  { file: "cart.png", top: "86%", left: "2%", size: "3.8rem", depth: "far", drift: "30s", delay: "-6s", rotate: "8deg" },
-  { file: "swing.png", top: "28%", right: "1.25%", size: "4.5rem", depth: "mid", drift: "20s", delay: "-4s", rotate: "6deg" },
-  { file: "flag.png", top: "58%", right: "2.25%", size: "4rem", depth: "mid", drift: "22s", delay: "-2s", rotate: "4deg" },
-  { file: "putter.png", top: "44%", left: "1%", size: "3.8rem", depth: "mid", drift: "21s", delay: "-14s", rotate: "-12deg" },
-  { file: "ball.png", top: "36%", left: "3.5%", size: "3rem", depth: "near", drift: "16s", delay: "-9s", rotate: "0deg" },
-  { file: "crossed-clubs.png", top: "68%", left: "1.75%", size: "4.75rem", depth: "near", drift: "18s", delay: "-11s", rotate: "-4deg" },
+  { file: "bag.png", top: "7%", left: "6%", size: "4.1rem", depth: "far", drift: "26s", delay: "0s", rotate: "-8deg" },
+  { file: "club-strike.png", top: "10%", left: "78%", size: "3.5rem", depth: "far", drift: "28s", delay: "-12s", rotate: "-6deg" },
+  { file: "swing.png", top: "24%", left: "46%", size: "4.4rem", depth: "mid", drift: "20s", delay: "-4s", rotate: "6deg" },
+  { file: "ball.png", top: "34%", left: "22%", size: "2.9rem", depth: "near", drift: "16s", delay: "-9s", rotate: "0deg" },
+  { file: "putter.png", top: "48%", left: "68%", size: "3.7rem", depth: "mid", drift: "21s", delay: "-14s", rotate: "-12deg" },
+  { file: "flag.png", top: "52%", left: "8%", size: "3.9rem", depth: "mid", drift: "22s", delay: "-2s", rotate: "4deg" },
+  { file: "crossed-clubs.png", top: "64%", left: "38%", size: "4.6rem", depth: "near", drift: "18s", delay: "-11s", rotate: "-4deg" },
+  { file: "grass.png", top: "76%", left: "84%", size: "3.3rem", depth: "far", drift: "24s", delay: "-7s", rotate: "2deg" },
+  { file: "cart.png", top: "84%", left: "18%", size: "3.8rem", depth: "far", drift: "30s", delay: "-6s", rotate: "8deg" },
 ];
 
 const DEPTH_PARALLAX: Record<FloaterDepth, number> = {
@@ -128,7 +126,6 @@ export function PageAtmosphere({
               {
                 top: item.top,
                 left: item.left,
-                right: item.right,
                 width: item.size,
                 "--drift": item.drift,
                 "--delay": item.delay,
