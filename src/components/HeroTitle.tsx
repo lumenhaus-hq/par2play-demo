@@ -23,12 +23,12 @@ function MaskLine({ children, delay = 0, className = "" }: { children: string; d
   );
 }
 
-/** Hand-drawn oval — one accent mark, not a filled script word. */
+/** Hand-drawn oval — one accent mark. */
 function AccentRing() {
   return (
     <svg
       viewBox="0 0 120 48"
-      className="pointer-events-none absolute -inset-x-[0.2em] -inset-y-[0.14em] h-[1.4em] w-[118%]"
+      className="pointer-events-none absolute -inset-x-[0.18em] -inset-y-[0.12em] h-[1.35em] w-[116%]"
       aria-hidden="true"
     >
       <ellipse
@@ -39,7 +39,7 @@ function AccentRing() {
         ry="18"
         fill="none"
         stroke="var(--accent)"
-        strokeWidth="3.2"
+        strokeWidth="3"
         strokeLinecap="round"
         pathLength="1"
       />
@@ -52,7 +52,7 @@ function AccentStroke() {
   return (
     <svg
       viewBox="0 0 140 18"
-      className="pointer-events-none absolute -bottom-[0.06em] left-0 h-[0.3em] w-full"
+      className="pointer-events-none absolute -bottom-[0.05em] left-0 h-[0.28em] w-full"
       aria-hidden="true"
     >
       <path
@@ -60,7 +60,7 @@ function AccentStroke() {
         d="M3 12 C 32 5, 78 16, 137 7"
         fill="none"
         stroke="var(--accent)"
-        strokeWidth="3.5"
+        strokeWidth="3.2"
         strokeLinecap="round"
         pathLength="1"
       />
@@ -69,10 +69,12 @@ function AccentStroke() {
 }
 
 /**
- * Distinct font pairings (real 700 files — no fake-bold Chakra):
- * Pulse — Syne 700 + Manrope caption (geometric editorial)
- * Plate — Outfit lead + Space Grotesk + Yellowtail key word
- * Drive — Barlow eyebrow + Sora 700 mega line
+ * Spaces live INSIDE each MaskLine string — splitting “for”|“all” across
+ * inline-blocks was collapsing into “forall”.
+ *
+ * Pulse — Syne phrase + ring on golfers + Manrope location
+ * Plate — Outfit lead + Space “all” + Yellowtail golfers
+ * Drive — Sora “A home for all” / “golfers.”
  */
 export function HeroTitle({ concept }: { concept: HeroConcept }) {
   switch (concept) {
@@ -90,25 +92,14 @@ export function HeroTitle({ concept }: { concept: HeroConcept }) {
 }
 
 export function HeroLocation({ concept }: { concept: HeroConcept }) {
+  const label = "Indoor golf in Somerset, NJ";
   switch (concept) {
     case "pulse":
-      return (
-        <h1 className="hero-location hero-location--pulse hero-stage hero-stage--location mt-2 @3xl:mt-2.5">
-          Indoor golf in Somerset, NJ
-        </h1>
-      );
+      return <h1 className="hero-location hero-location--pulse hero-stage hero-stage--location">{label}</h1>;
     case "plate":
-      return (
-        <h1 className="hero-location hero-location--plate hero-stage hero-stage--location mt-2 @3xl:mt-2.5">
-          Indoor golf in Somerset, NJ
-        </h1>
-      );
+      return <h1 className="hero-location hero-location--plate hero-stage hero-stage--location">{label}</h1>;
     case "drive":
-      return (
-        <h1 className="hero-location hero-location--drive hero-stage hero-stage--location mt-2 @3xl:mt-2.5">
-          Indoor golf in Somerset, NJ
-        </h1>
-      );
+      return <h1 className="hero-location hero-location--drive hero-stage hero-stage--location">{label}</h1>;
     default: {
       const exhaustive: never = concept;
       return exhaustive;
@@ -116,29 +107,28 @@ export function HeroLocation({ concept }: { concept: HeroConcept }) {
   }
 }
 
-/** Syne black stack + Manrope caption. Accent = drawn ring only. */
 function PulseTitle() {
   return (
-    <p className="hero-title hero-title--pulse hero-font-syne min-w-0 max-w-full text-[clamp(1.6rem,6.4cqi,2.4rem)] font-bold leading-[0.92] tracking-[-0.04em] text-white">
-      <MaskLine>A home for </MaskLine>
+    <p className="hero-title hero-title--pulse hero-font-syne min-w-0 max-w-full text-[clamp(1.5rem,6cqi,2.2rem)] font-bold leading-[1.1] text-white">
+      {/* nbsp joins — normal trailing spaces collapse between inline-blocks */}
+      <MaskLine>{"A home for all\u00A0\u00A0"}</MaskLine>
       <span className="relative inline-block whitespace-nowrap">
-        <MaskLine delay={120}>all golfers.</MaskLine>
+        <MaskLine delay={120}>{"golfers."}</MaskLine>
         <AccentRing />
       </span>
     </p>
   );
 }
 
-/** Outfit lead + Space Grotesk hit + Yellowtail accent word. */
 function PlateTitle() {
   return (
-    <p className="hero-title hero-title--plate min-w-0 max-w-full text-[clamp(1.45rem,5.8cqi,2.15rem)] leading-[1.02] tracking-[-0.02em]">
-      <MaskLine className="hero-font-outfit font-semibold text-white/65">A home for </MaskLine>
+    <p className="hero-title hero-title--plate min-w-0 max-w-full text-[clamp(1.35rem,5.4cqi,1.95rem)] leading-[1.15]">
+      <MaskLine className="hero-font-outfit font-semibold text-white/72">{"A home for\u00A0\u00A0"}</MaskLine>
+      <MaskLine delay={90} className="hero-font-space font-bold text-white">
+        {"all\u00A0\u00A0"}
+      </MaskLine>
       <span className="relative inline-block whitespace-nowrap">
-        <MaskLine delay={90} className="hero-font-space font-bold text-white">
-          {"all "}
-        </MaskLine>
-        <MaskLine delay={160} className="hero-font-yellowtail text-[1.35em] font-normal leading-none text-accent">
+        <MaskLine delay={150} className="hero-font-yellowtail text-[1.2em] font-normal leading-none text-accent">
           {"golfers."}
         </MaskLine>
         <AccentStroke />
@@ -147,15 +137,14 @@ function PlateTitle() {
   );
 }
 
-/** Barlow micro eyebrow + Sora oversized line. */
 function DriveTitle() {
   return (
     <div className="hero-title hero-title--drive min-w-0 max-w-full">
-      <p className="font-sans text-[0.62rem] font-medium uppercase tracking-[0.3em] text-white/48 @3xl:text-[0.68rem]">
-        <MaskLine>A home for</MaskLine>
+      <p className="hero-font-sora text-[clamp(1.3rem,5.2cqi,1.75rem)] font-bold leading-[1.12] text-white">
+        <MaskLine>{"A home for all"}</MaskLine>
       </p>
-      <p className="hero-font-sora mt-1 max-w-full text-[clamp(1.9rem,9cqi,3rem)] font-bold leading-[0.86] tracking-[-0.05em] text-white">
-        <MaskLine delay={80}>all golfers.</MaskLine>
+      <p className="hero-font-sora mt-1 text-[clamp(1.75rem,8cqi,2.55rem)] font-bold leading-[0.92] text-white">
+        <MaskLine delay={120}>{"golfers."}</MaskLine>
       </p>
     </div>
   );

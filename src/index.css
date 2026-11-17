@@ -1394,49 +1394,56 @@ html.motion-paused .benefit-track {
   animation: none;
 }
 
-/* Location label — beat HeroUI h1 { font-size: 2rem }; stay quieter than the mark. */
-.hero-location {
-  font-family: var(--font-sans);
-  font-size: 0.68rem;
-  font-weight: 500;
-  line-height: 1.35;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  max-width: 100%;
-  text-wrap: balance;
+/* Keep bold display faces from visually gluing “for all”. */
+.hero-title {
+  word-spacing: 0.14em;
 }
 
-/* Pulse: Manrope quiet caption under Syne. */
+.hero-title--pulse,
+.hero-title--drive {
+  letter-spacing: 0.01em;
+}
+
+.hero-title--plate {
+  letter-spacing: 0.015em;
+}
+
+/* Location — sentence case, same-family quiet caption, one-line fit on phones. */
+.hero-location {
+  margin-top: 0.6rem;
+  max-width: 100%;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.005em;
+  text-transform: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .hero-location--pulse {
   font-family: var(--font-manrope);
-  color: rgb(255 255 255 / 0.52);
-  font-weight: 500;
+  color: rgb(255 255 255 / 0.68);
 }
 
-/* Plate: Outfit caption under the mixed stack. */
 .hero-location--plate {
   font-family: var(--font-outfit);
-  color: rgb(255 255 255 / 0.55);
-  font-weight: 500;
-  letter-spacing: 0.18em;
+  color: rgb(255 255 255 / 0.66);
 }
 
-/* Drive: tiny brand chip under the Sora line. */
 .hero-location--drive {
   font-family: var(--font-sans);
-  color: color-mix(in srgb, var(--accent) 75%, white);
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  font-size: 0.64rem;
+  color: rgb(255 255 255 / 0.64);
 }
 
 @container (min-width: 48rem) {
   .hero-location {
-    font-size: 0.8rem;
-  }
-
-  .hero-location--drive {
-    font-size: 0.75rem;
+    margin-top: 0.75rem;
+    font-size: 1rem;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
   }
 }
 
