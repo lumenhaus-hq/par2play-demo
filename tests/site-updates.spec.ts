@@ -41,25 +41,23 @@ test("mobile homepage membership uses the golf bento grid", async ({ page }) => 
   await band.locator(".membership-bento__grid").scrollIntoViewIfNeeded();
   const metrics = await band.evaluate((node) => {
     const grid = node.querySelector(".membership-bento__grid")!;
-    const progress = node.querySelector(".membership-bento__benefit-title")!;
     const stage = node.querySelector(".membership-bento-stage") ?? node.firstElementChild!;
+    const title = node.querySelector(".membership-bento__title")!;
     return {
-      gridTop: grid.getBoundingClientRect().top,
-      progressTop: progress.getBoundingClientRect().top,
+      gridHeight: grid.getBoundingClientRect().height,
       background: getComputedStyle(stage).backgroundColor,
-      text: getComputedStyle(progress.nextElementSibling!).color,
-      fontSize: parseFloat(getComputedStyle(progress.nextElementSibling!).fontSize),
+      titleSize: parseFloat(getComputedStyle(title).fontSize),
       filmCount: node.querySelectorAll("video").length,
+      benefitTitles: node.querySelectorAll(".membership-bento__benefit-title").length,
     };
   });
-  expect(metrics.progressTop).toBeGreaterThan(metrics.gridTop);
+  expect(metrics.gridHeight).toBeGreaterThan(200);
   expect(metrics.filmCount).toBe(1);
+  expect(metrics.benefitTitles).toBe(0);
   // Light stage behind dark tiles (not the old full-bleed void film band).
   expect(metrics.background).not.toBe("rgb(2, 8, 6)");
-  expect(metrics.text).toMatch(/^rgba?\(/);
-  expect(metrics.fontSize).toBeGreaterThanOrEqual(12);
+  expect(metrics.titleSize).toBeGreaterThan(12);
   await expect(band.getByLabel("Simulator stats")).toBeVisible();
-  await expect(band.locator(".membership-bento__benefit-title", { hasText: "Track your progress" })).toBeVisible();
   await expect(page.locator("#events img")).toHaveCount(0);
   await expect(band.getByRole("link", { name: "Try it out", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Around the club" })).toHaveCount(0);

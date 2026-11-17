@@ -16,7 +16,7 @@ test("mobile membership shows the golf bento grid", async ({ page }) => {
   await expect(band.getByText("Meet the member kit", { exact: true })).toBeVisible();
   await expect(band.getByText("Cool session stats", { exact: true })).toBeVisible();
   await expect(band.getByText("275", { exact: true })).toBeVisible();
-  await expect(band.locator(".membership-bento__benefit-title", { hasText: "Member benefits" })).toBeVisible();
+  await expect(band.getByLabel("Club lineup")).toBeVisible();
   await expect(band.getByRole("button", { name: /^(Play|Pause) video$/ })).toHaveCount(0);
 });
 

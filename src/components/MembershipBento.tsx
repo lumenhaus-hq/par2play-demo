@@ -339,24 +339,6 @@ export function MembershipBento() {
           </ul>
         </Tile>
       </div>
-
-      <ul className="membership-bento__benefits">
-        <li>
-          <p className="membership-bento__eyebrow">01 · Availability</p>
-          <p className="membership-bento__benefit-title">Member benefits</p>
-          <p className="membership-bento__line">First in line for the times that suit you.</p>
-        </li>
-        <li>
-          <p className="membership-bento__eyebrow">02 · Progress</p>
-          <p className="membership-bento__benefit-title">Track your progress</p>
-          <p className="membership-bento__line">Carry, ball speed, and spin.</p>
-        </li>
-        <li>
-          <p className="membership-bento__eyebrow">03 · Your day</p>
-          <p className="membership-bento__benefit-title">Fit it around your day</p>
-          <p className="membership-bento__line">Dentist visits and school pickup.</p>
-        </li>
-      </ul>
     </div>
   );
 }

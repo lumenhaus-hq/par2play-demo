@@ -1873,38 +1873,6 @@ html.motion-paused .benefit-card--dim {
   line-height: 0;
 }
 
-.membership-bento__benefits {
-  display: grid;
-  gap: 0.75rem;
-  margin: 1.25rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.membership-bento__benefits li {
-  border-radius: 1.35rem;
-  background: rgb(255 255 255 / 0.72);
-  padding: 0.95rem 1rem;
-  box-shadow: 0 8px 18px rgb(10 15 11 / 0.06);
-}
-
-.membership-bento__benefits .membership-bento__eyebrow {
-  color: color-mix(in srgb, var(--bay) 70%, var(--accent));
-}
-
-.membership-bento__benefit-title {
-  margin: 0.25rem 0 0;
-  font-family: var(--font-display);
-  font-size: 1.15rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  color: var(--ink);
-}
-
-.membership-bento__benefits .membership-bento__line {
-  color: rgb(10 15 11 / 0.68);
-}
-
 @keyframes membership-bento-spin {
   to {
     transform: rotate(360deg);
