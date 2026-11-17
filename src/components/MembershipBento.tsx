@@ -228,7 +228,7 @@ export function MembershipBento() {
             <GolfBagScene />
             <div className="membership-bento__hero-chips">
               <span>Open till 10pm</span>
-              <span>{SIMULATOR_COURSE_COUNT}+ courses</span>
+              <span>{`${SIMULATOR_COURSE_COUNT}+ courses`}</span>
             </div>
           </div>
         </Tile>
@@ -322,7 +322,7 @@ export function MembershipBento() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Based on {GOOGLE_REVIEW_COUNT} Google reviews
+            {`Based on ${GOOGLE_REVIEW_COUNT} Google reviews`}
           </a>
         </Tile>
 
