@@ -23,10 +23,56 @@ function MaskLine({ children, delay = 0, className = "" }: { children: string; d
   );
 }
 
+/** Hand-drawn oval — benchmark “research” mark, one accent only. */
+function AccentRing() {
+  return (
+    <svg
+      viewBox="0 0 120 48"
+      className="pointer-events-none absolute -inset-x-[0.18em] -inset-y-[0.12em] h-[1.35em] w-[115%]"
+      aria-hidden="true"
+    >
+      <ellipse
+        className="hero-mark-stroke"
+        cx="60"
+        cy="24"
+        rx="54"
+        ry="18"
+        fill="none"
+        stroke="var(--accent)"
+        strokeWidth="3.2"
+        strokeLinecap="round"
+        pathLength="1"
+      />
+    </svg>
+  );
+}
+
+/** Hand-drawn underline — benchmark “purpose” mark. */
+function AccentStroke() {
+  return (
+    <svg
+      viewBox="0 0 140 18"
+      className="pointer-events-none absolute -bottom-[0.08em] left-0 h-[0.28em] w-full"
+      aria-hidden="true"
+    >
+      <path
+        className="hero-mark-stroke"
+        d="M4 11 C 28 6, 72 15, 136 8"
+        fill="none"
+        stroke="var(--accent)"
+        strokeWidth="3.4"
+        strokeLinecap="round"
+        pathLength="1"
+      />
+    </svg>
+  );
+}
+
 /**
- * Pulse — one accent only: white display lead + restrained script.
- * Plate — editorial monochrome: weight does the hierarchy, no script green.
- * Drive — sport stack: quiet eyebrow, bold white line, green reserved for location.
+ * Benchmark-led recipes (8/10 targets):
+ * Pulse — tight black stack + one drawn accent mark (research/purpose pattern)
+ * Plate — same-family weight hierarchy, no script, quiet location
+ * Drive — micro eyebrow + oversized bold line (Sweet Tape scale)
  */
 export function HeroTitle({ concept }: { concept: HeroConcept }) {
   switch (concept) {
@@ -47,19 +93,19 @@ export function HeroLocation({ concept }: { concept: HeroConcept }) {
   switch (concept) {
     case "pulse":
       return (
-        <h1 className="hero-location hero-location--pulse hero-stage hero-stage--location mt-1.5 @3xl:mt-2">
+        <h1 className="hero-location hero-location--pulse hero-stage hero-stage--location mt-2 @3xl:mt-2.5">
           Indoor golf in Somerset, NJ
         </h1>
       );
     case "plate":
       return (
-        <h1 className="hero-location hero-location--plate hero-stage hero-stage--location mt-1.5 @3xl:mt-2">
+        <h1 className="hero-location hero-location--plate hero-stage hero-stage--location mt-2 @3xl:mt-2.5">
           Indoor golf in Somerset, NJ
         </h1>
       );
     case "drive":
       return (
-        <h1 className="hero-location hero-location--drive hero-stage hero-stage--location mt-1.5 @3xl:mt-2">
+        <h1 className="hero-location hero-location--drive hero-stage hero-stage--location mt-2 @3xl:mt-2.5">
           Indoor golf in Somerset, NJ
         </h1>
       );
@@ -70,39 +116,41 @@ export function HeroLocation({ concept }: { concept: HeroConcept }) {
   }
 }
 
-/** White display + single green script accent; location stays muted. */
+/** Tight bold stack + one accent ring on the key word. */
 function PulseTitle() {
   return (
-    <p className="hero-title hero-title--pulse min-w-0 max-w-full font-display text-[1.35rem] font-semibold leading-[1.15] tracking-tight text-white @3xl:text-[1.85rem]">
+    <p className="hero-title hero-title--pulse min-w-0 max-w-full font-display text-[clamp(1.55rem,6.2cqi,2.35rem)] font-bold leading-[0.95] tracking-[-0.035em] text-white">
       <MaskLine>A home for </MaskLine>
-      <MaskLine delay={140} className="hero-accent hero-accent--pulse font-accent text-[1.18em] font-normal leading-none text-accent">
-        all golfers.
-      </MaskLine>
+      <span className="relative inline-block whitespace-nowrap">
+        <MaskLine delay={120}>all golfers.</MaskLine>
+        <AccentRing />
+      </span>
     </p>
   );
 }
 
-/** Two-weight white stack — hierarchy from weight, not hue. */
+/** Same-family weight climb — medium lead, black finish, drawn underline. */
 function PlateTitle() {
   return (
-    <p className="hero-title hero-title--plate min-w-0 max-w-full text-[1.4rem] leading-[1.18] tracking-tight @3xl:text-[1.9rem]">
-      <MaskLine className="font-sans font-medium text-white/70">A home for </MaskLine>
-      <MaskLine delay={120} className="font-display font-bold text-white">
-        all golfers.
-      </MaskLine>
+    <p className="hero-title hero-title--plate min-w-0 max-w-full font-display text-[clamp(1.5rem,6cqi,2.25rem)] leading-[0.96] tracking-[-0.03em]">
+      <MaskLine className="font-semibold text-white/72">A home for </MaskLine>
+      <span className="relative inline-block whitespace-nowrap font-bold text-white">
+        <MaskLine delay={100}>all golfers.</MaskLine>
+        <AccentStroke />
+      </span>
     </p>
   );
 }
 
-/** Sport eyebrow + bold white line; green lives on the location only. */
+/** Micro eyebrow + oversized impact line — Sweet Tape scale contrast. */
 function DriveTitle() {
   return (
     <div className="hero-title hero-title--drive min-w-0 max-w-full">
-      <p className="font-sans text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/55 @3xl:text-xs">
+      <p className="font-sans text-[0.62rem] font-medium uppercase tracking-[0.28em] text-white/50 @3xl:text-[0.7rem]">
         <MaskLine>A home for</MaskLine>
       </p>
-      <p className="mt-1 font-display text-[1.55rem] font-bold leading-none tracking-tight text-white @3xl:text-[2.1rem]">
-        <MaskLine delay={100}>all golfers.</MaskLine>
+      <p className="mt-1.5 max-w-full font-display text-[clamp(1.85rem,8.5cqi,2.85rem)] font-bold leading-[0.88] tracking-[-0.045em] text-white">
+        <MaskLine delay={80}>all golfers.</MaskLine>
       </p>
     </div>
   );

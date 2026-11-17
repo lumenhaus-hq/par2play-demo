@@ -512,7 +512,7 @@ body {
   }
 }
 
-/* Brand accent phrase — one restrained underline, not a neon bar. */
+/* Brand accent phrase — legacy utility kept for other surfaces. */
 .hero-accent {
   position: relative;
   padding-bottom: 0.12em;
@@ -531,10 +531,23 @@ body {
   pointer-events: none;
 }
 
-.hero-accent--pulse::after {
-  height: 0.045em;
-  opacity: 0.7;
-  background: var(--mint);
+/* Hand-drawn accent marks (benchmark ring / underline). */
+.hero-mark-stroke {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.motion-paused) .hero-chrome-in .hero-mark-stroke {
+    stroke-dashoffset: 1;
+    animation: hero-mark-draw 720ms var(--motion-ease-enter) 180ms forwards;
+  }
+}
+
+@keyframes hero-mark-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 .header-bar {
@@ -1333,41 +1346,40 @@ html.motion-paused .benefit-track {
   animation: none;
 }
 
-/* Location label — beat HeroUI h1 { font-size: 2rem } so it stays a caption. */
+/* Location label — beat HeroUI h1 { font-size: 2rem }; stay quieter than the mark. */
 .hero-location {
   font-family: var(--font-sans);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 500;
   line-height: 1.35;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   max-width: 100%;
   text-wrap: balance;
 }
 
-/* Pulse: muted silver — green is reserved for the script accent above. */
-.hero-location--pulse {
-  color: rgb(255 255 255 / 0.55);
-  font-weight: 500;
-}
-
-/* Plate: soft editorial caption under the white weight stack. */
+/* Pulse / Plate: quiet caption — accent lives in the drawn mark, not here. */
+.hero-location--pulse,
 .hero-location--plate {
-  color: rgb(255 255 255 / 0.62);
+  color: rgb(255 255 255 / 0.5);
   font-weight: 500;
-  letter-spacing: 0.16em;
 }
 
-/* Drive: sole green signal — title stays white. */
+/* Drive: tiny brand chip under the oversized line. */
 .hero-location--drive {
-  color: color-mix(in srgb, var(--accent) 82%, white);
+  color: color-mix(in srgb, var(--accent) 75%, white);
   font-weight: 600;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.18em;
+  font-size: 0.64rem;
 }
 
 @container (min-width: 48rem) {
   .hero-location {
-    font-size: 0.95rem;
+    font-size: 0.8rem;
+  }
+
+  .hero-location--drive {
+    font-size: 0.75rem;
   }
 }
 

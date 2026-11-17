@@ -11,17 +11,17 @@ export const HERO_TYPES: readonly HeroTypeMeta[] = [
   {
     id: "pulse",
     label: "Pulse",
-    blurb: "White display + one script accent; muted location",
+    blurb: "Tight bold stack + one drawn accent ring",
   },
   {
     id: "plate",
     label: "Plate",
-    blurb: "Editorial two-weight white stack; soft location",
+    blurb: "Same-family weight climb + drawn underline",
   },
   {
     id: "drive",
     label: "Drive",
-    blurb: "Sport eyebrow + bold line; green only on location",
+    blurb: "Micro eyebrow + oversized impact line",
   },
 ] as const;
 
