@@ -6,6 +6,7 @@ import { BookLink, CtaAnchor, CtaPair, HeroMembershipAction, MembershipLink, but
 import { HeroProof } from "../components/HeroProof";
 import { MembershipBand } from "../components/MembershipBand";
 import { HeroVideo, type HeroIntroPhase } from "../components/Media";
+import { LayoutToggle } from "../components/LayoutToggle";
 import { MotionToggle } from "../components/MotionToggle";
 import { ScrollReveal } from "../components/ScrollReveal";
 import { SoundToggle } from "../components/SoundToggle";
@@ -128,6 +129,7 @@ export function Landing() {
             ))}
           </nav>
           <div className="flex items-center gap-2">
+            <LayoutToggle className={onFilm ? "text-white" : "text-ink"} />
             <SoundToggle labeled={onFilm} className={onFilm ? "text-white" : "text-ink"} />
             <span className="hidden @3xl:contents">
               <MembershipLink className="shrink-0">Become a Member</MembershipLink>

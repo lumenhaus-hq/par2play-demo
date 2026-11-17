@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { useState } from "react";
 import { Mark } from "./Chrome";
 import { MembershipLink, buttonFocus } from "./Cta";
+import { LayoutToggle } from "./LayoutToggle";
 import { MotionToggle } from "./MotionToggle";
 import { SoundToggle } from "./SoundToggle";
 import { membershipCheckoutHref, golfClockBookingReady, NAP } from "../data/business";
@@ -14,10 +15,9 @@ const navClass = `nav-link inline-flex min-h-11 items-center px-1 text-base font
 export function SiteHeader() {
   const [menu, setMenu] = useState(false);
   const route = currentRoute();
-  const mobile = useFlow().layout === "mobile";
 
   return (
-    <header className={`header-bar sticky z-30 px-6 py-3 @5xl:px-12 ${mobile ? "top-0" : "top-[4.25rem]"}`}>
+    <header className="header-bar sticky top-0 z-30 px-6 py-3 @5xl:px-12">
       <div className="flex items-center justify-between gap-4">
         <a href={pageHref("")} className={`inline-flex min-h-11 items-center ${buttonFocus}`}>
           <Mark />
@@ -35,6 +35,7 @@ export function SiteHeader() {
           ))}
         </nav>
         <div className="flex items-center gap-2">
+          <LayoutToggle className="text-ink" />
           <SoundToggle className="text-ink" />
           <span className="hidden @3xl:contents">
             <MembershipLink href={route === "membership" ? membershipCheckoutHref() : undefined} className="shrink-0">

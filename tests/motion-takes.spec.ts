@@ -1,4 +1,4 @@
-import { expect, test } from "./fixtures";
+import { expect, setDemoLayout, test } from "./fixtures";
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
@@ -12,7 +12,7 @@ test.beforeEach(async ({ page }) => {
 
 test("pause motion persists and stops the hero film", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "Desktop", exact: true }).click();
+  await setDemoLayout(page, "web");
   const pause = page.getByRole("button", { name: "Pause motion", exact: true });
   await pause.scrollIntoViewIfNeeded();
   await expect(pause).toBeVisible();
@@ -28,7 +28,7 @@ test("pause motion persists and stops the hero film", async ({ page }) => {
 
 test("closing frame and numbered membership chapters are on the homepage", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "Desktop", exact: true }).click();
+  await setDemoLayout(page, "web");
   await expect(page.getByRole("heading", { name: "Your bay is waiting." })).toBeVisible();
   await expect(page.getByRole("link", { name: "Book a bay", exact: true })).toBeVisible();
   const band = page.locator("#membership");
@@ -47,7 +47,7 @@ test("sound control names the action on the hero", async ({ page }) => {
 
 test("Lenis smooth scroll is live, and Pause motion turns it off", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "Desktop", exact: true }).click();
+  await setDemoLayout(page, "web");
   await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains("lenis"))).toBe(true);
   const pause = page.getByRole("button", { name: "Pause motion", exact: true });
   await pause.scrollIntoViewIfNeeded();

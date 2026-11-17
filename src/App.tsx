@@ -1,4 +1,3 @@
-import { Button } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { currentRoute } from "./data/routes";
 import type { StyleId } from "./data/styles";
@@ -110,15 +109,8 @@ function Shell() {
 
   return (
     <div className="min-h-screen bg-slate-100">
-      <div className="sticky top-0 z-40 flex flex-col items-center gap-3 bg-white px-4 py-3">
-        <div className="flex items-center justify-center gap-2">
-          <Button className="min-h-11 px-5 text-base font-semibold" variant={flow.layout === "mobile" ? "primary" : "outline"} onPress={() => flow.setLayout("mobile")}>
-            Mobile
-          </Button>
-          <Button className="min-h-11 px-5 text-base font-semibold" variant={flow.layout === "web" ? "primary" : "outline"} onPress={() => flow.setLayout("web")}>
-            Desktop
-          </Button>
-        </div>
+      {/* Demo chrome: style variants. Layout (mobile/desktop) lives in the site toolbar. */}
+      <div className="sticky top-0 z-40 flex items-center justify-center bg-white px-4 py-3">
         <StyleSwitcher value={style} onChange={setStyle} />
       </div>
       {flow.layout === "mobile" ? (
