@@ -137,11 +137,34 @@
   src: url("../public/fonts/plus-jakarta-600.woff2") format("woff2");
 }
 
+@font-face {
+  font-family: "Permanent Marker";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../public/fonts/permanent-marker-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Yellowtail";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../public/fonts/yellowtail-400.woff2") format("woff2");
+}
+
 @theme {
   --font-sans: var(--font-body-stack);
   --font-display: var(--font-display-stack);
   --font-accent: var(--font-accent-stack);
   --font-caveat: "Caveat", var(--font-body-stack);
+  --font-syne: "Syne", ui-sans-serif, system-ui, sans-serif;
+  --font-space: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sora: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-manrope: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-outfit: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-marker: "Permanent Marker", "Caveat", cursive;
+  --font-yellowtail: "Yellowtail", "Kaushan Script", cursive;
   --color-ink: var(--ink);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
@@ -529,6 +552,31 @@ body {
   background: color-mix(in srgb, var(--accent) 70%, white);
   opacity: 0.85;
   pointer-events: none;
+}
+
+/* Hero type recipe faces — real 700 files, not fake-bold Chakra. */
+.hero-font-syne {
+  font-family: var(--font-syne);
+}
+
+.hero-font-space {
+  font-family: var(--font-space);
+}
+
+.hero-font-sora {
+  font-family: var(--font-sora);
+}
+
+.hero-font-manrope {
+  font-family: var(--font-manrope);
+}
+
+.hero-font-outfit {
+  font-family: var(--font-outfit);
+}
+
+.hero-font-yellowtail {
+  font-family: var(--font-yellowtail);
 }
 
 /* Hand-drawn accent marks (benchmark ring / underline). */
@@ -1358,15 +1406,24 @@ html.motion-paused .benefit-track {
   text-wrap: balance;
 }
 
-/* Pulse / Plate: quiet caption — accent lives in the drawn mark, not here. */
-.hero-location--pulse,
-.hero-location--plate {
-  color: rgb(255 255 255 / 0.5);
+/* Pulse: Manrope quiet caption under Syne. */
+.hero-location--pulse {
+  font-family: var(--font-manrope);
+  color: rgb(255 255 255 / 0.52);
   font-weight: 500;
 }
 
-/* Drive: tiny brand chip under the oversized line. */
+/* Plate: Outfit caption under the mixed stack. */
+.hero-location--plate {
+  font-family: var(--font-outfit);
+  color: rgb(255 255 255 / 0.55);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+}
+
+/* Drive: tiny brand chip under the Sora line. */
 .hero-location--drive {
+  font-family: var(--font-sans);
   color: color-mix(in srgb, var(--accent) 75%, white);
   font-weight: 600;
   letter-spacing: 0.18em;
