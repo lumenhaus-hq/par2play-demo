@@ -114,14 +114,14 @@ export function MembershipBento() {
   return (
     <div className="membership-bento">
       <header className="membership-bento__intro">
-        <h2 className="font-display text-4xl font-semibold leading-none tracking-tight">Membership</h2>
+        <h2 className="section-title text-4xl">Membership</h2>
         <p className="mt-3 max-w-sm text-base leading-relaxed text-ink/70">
           Bay priority, shot data, and hours that bend around your day — all in one stack.
         </p>
         <div className="mt-5 grid grid-cols-1 gap-3">
           <MembershipLink className="cta-sheen w-full">Become a Member</MembershipLink>
           <BookLink className="w-full" offer="bay" tone="dark">
-            Try it out
+            Book a Bay
           </BookLink>
         </div>
       </header>

@@ -1,46 +1,44 @@
 import { useState } from "react";
 import { CompareBoxes, PricingHero } from "./PricingHero";
+import { JointToggle } from "./JointToggle";
 import { PRICES } from "../data/business";
 import { JUNIORS_FILM } from "../data/films";
 import { money } from "../data/membershipEstimate";
 
 const PLANS = [
-  { id: "once", name: "Once a week", price: PRICES.juniorOneLessonWeekly },
-  { id: "twice", name: "Twice a week", price: PRICES.juniorTwoLessonsWeekly },
+  { value: "once", label: "Once a week", price: PRICES.juniorOneLessonWeekly },
+  { value: "twice", label: "Twice a week", price: PRICES.juniorTwoLessonsWeekly },
 ] as const;
 
-type PlanId = (typeof PLANS)[number]["id"];
+type PlanId = (typeof PLANS)[number]["value"];
 
 export function JuniorsPanel() {
   const [planId, setPlanId] = useState<PlanId>("twice");
-  const plan = PLANS.find((item) => item.id === planId) ?? PLANS[1];
+  const plan = PLANS.find((item) => item.value === planId) ?? PLANS[1];
   const figure = `${money(plan.price)}/mo`;
-  const live = `${plan.name} ${figure}. Once a week ${money(PRICES.juniorOneLessonWeekly)} a month. Twice a week ${money(PRICES.juniorTwoLessonsWeekly)} a month.`;
+  const live = `${plan.label} ${figure}. Once a week ${money(PRICES.juniorOneLessonWeekly)} a month. Twice a week ${money(PRICES.juniorTwoLessonsWeekly)} a month.`;
 
   return (
     <PricingHero
       id="juniors-offer"
       pageTitle="Junior golf in Somerset, NJ"
-      heading={plan.name}
+      heading={plan.label}
       figure={figure}
       live={live}
       film={JUNIORS_FILM}
       primary={{ offer: "junior", label: "Schedule junior coaching" }}
-      secondary={{ offer: "bay", label: "Try it out" }}
+      secondary={{ offer: "bay", label: "Book a Bay" }}
       selector={
-        <div className="grid grid-cols-1 gap-1 rounded-3xl bg-white/10 p-1 @3xl:grid-cols-2 @3xl:rounded-full" role="group" aria-label="Junior plan">
-          {PLANS.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className={`aa-focus-ink min-h-11 rounded-full px-3 text-base font-semibold ${item.id === planId ? "bg-accent text-ink" : "text-white"}`}
-              aria-pressed={item.id === planId}
-              onClick={() => setPlanId(item.id)}
-            >
-              {item.name}
-            </button>
-          ))}
-        </div>
+        <JointToggle
+          value={planId}
+          options={[
+            { value: "once", label: "Once a week" },
+            { value: "twice", label: "Twice a week" },
+          ]}
+          onChange={setPlanId}
+          label="Junior plan"
+          tone="dark"
+        />
       }
       comparison={
         <CompareBoxes

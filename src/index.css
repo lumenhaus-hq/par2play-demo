@@ -602,6 +602,68 @@ html.motion-paused .page-atmosphere__floater {
   z-index: 1;
 }
 
+/* One track, two options — not two separate pills. */
+.joint-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.2rem;
+  width: 100%;
+  padding: 0.25rem;
+  border-radius: 9999px;
+}
+
+.joint-toggle--dark {
+  background: rgb(255 255 255 / 0.12);
+}
+
+.joint-toggle--light {
+  background: #eef1ee;
+  border: 1px solid #e5e7eb;
+}
+
+.joint-toggle__option {
+  min-height: 2.75rem;
+  border: 0;
+  border-radius: 9999px;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.joint-toggle--dark .joint-toggle__option {
+  background: transparent;
+  color: #fff;
+}
+
+.joint-toggle--dark .joint-toggle__option.is-active {
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.18);
+}
+
+.joint-toggle--light .joint-toggle__option {
+  background: transparent;
+  color: var(--ink);
+}
+
+.joint-toggle--light .joint-toggle__option.is-active {
+  background: var(--ink);
+  color: #fff;
+  box-shadow: 0 6px 16px rgb(10 15 11 / 0.16);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .joint-toggle__option {
+    transition: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .membership-pricing__glyph {
     animation: none;
@@ -1130,6 +1192,48 @@ html.lenis.lenis-smooth {
   }
 }
 
+/*
+ * Section titles: stronger display type + soft brand halo.
+ * taste-skill-ignore: owner asked for glow/outline on index titles;
+ * ink stays dark / white so body contrast remains ≥7:1.
+ */
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  text-wrap: balance;
+  text-shadow:
+    0 1px 0 rgb(255 255 255 / 0.55),
+    0 0 1.25rem color-mix(in srgb, var(--accent) 32%, transparent),
+    0 0 2.75rem color-mix(in srgb, var(--mint) 18%, transparent);
+}
+
+.section-title--on-dark {
+  color: #fff;
+  text-shadow:
+    0 1px 0 rgb(0 0 0 / 0.45),
+    0 0 1.5rem color-mix(in srgb, var(--accent) 45%, transparent),
+    0 0 3rem color-mix(in srgb, var(--mint) 28%, transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.motion-paused) .section-title {
+    animation: section-title-glow 4.8s ease-in-out infinite;
+  }
+}
+
+@keyframes section-title-glow {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.04);
+  }
+}
+
 .reveal-block {
   --reveal-delay: 0ms;
 }
@@ -1301,16 +1405,26 @@ html.lenis.lenis-smooth {
   }
 }
 
-/* CTA wipe / label slide — fine pointer only; reduced / paused = color swap. */
+/*
+ * CTA wipe / label slide — fine pointer only; reduced / paused = color swap.
+ * Hard offset stamp shadow (compare-plans look) distinguishes CTAs from joint toggles.
+ * taste-skill-ignore: owner asked for solid block shadow on CTAs; 0-blur drop-shadow
+ * keeps overflow:hidden for the wipe without clipping the stamp.
+ */
 .cta-shell {
+  --cta-stamp: var(--ink);
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  transition: transform var(--motion-fast) var(--motion-ease-press);
+  filter: drop-shadow(-4px 4px 0 var(--cta-stamp));
+  transition:
+    transform var(--motion-fast) var(--motion-ease-press),
+    filter var(--motion-fast) var(--motion-ease-press);
 }
 
 .cta-shell:active {
-  transform: scale(0.965);
+  filter: drop-shadow(-1px 2px 0 var(--cta-stamp));
+  transform: translate(1px, 2px) scale(0.985);
 }
 
 .cta-fill {
@@ -1335,13 +1449,13 @@ html.lenis.lenis-smooth {
   transition: transform var(--motion-base) var(--motion-ease-wipe);
 }
 
-/* Soft black crescent under the left edge — matches the lift CTA spec. */
+/* Alias kept for markup that still names the stamp lift. */
 .cta-lift {
-  box-shadow: -3px 5px 0 0 var(--ink);
+  filter: drop-shadow(-4px 4px 0 var(--cta-stamp, var(--ink)));
 }
 
 .cta-lift:active {
-  box-shadow: -1px 2px 0 0 var(--ink);
+  filter: drop-shadow(-1px 2px 0 var(--cta-stamp, var(--ink)));
   transform: translate(1px, 2px) scale(0.985);
 }
 
@@ -1360,6 +1474,7 @@ html.lenis.lenis-smooth {
 }
 
 .cta-inverted {
+  border: 2px solid var(--ink);
   background: var(--surface);
   color: var(--ink);
 }
@@ -1645,6 +1760,7 @@ html.motion-paused .draw-stroke {
   animation: none;
 }
 
+html.motion-paused .section-title,
 html.motion-paused .reveal-block,
 html.motion-paused .hero-film-loader,
 html.motion-paused .hero-bay-frame--breathe {
@@ -1657,6 +1773,11 @@ html.motion-paused .reveal-block {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .section-title {
+    animation: none !important;
+    filter: none;
+  }
+
   .reveal-block {
     opacity: 1;
     transform: none;

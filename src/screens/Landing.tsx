@@ -138,7 +138,9 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
             <LayoutToggle className={onFilm ? "text-white" : "text-ink"} />
             <SoundToggle labeled={onFilm} className={onFilm ? "text-white" : "text-ink"} />
             <span className="hidden @3xl:contents">
-              <MembershipLink className="shrink-0">Become a Member</MembershipLink>
+              <BookLink offer="bay" tone={onFilm ? "inverted" : "brand"} className="shrink-0">
+                Book a Bay
+              </BookLink>
             </span>
             <button
               type="button"
@@ -165,7 +167,9 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
                 {item.label}
               </a>
             ))}
-            <MembershipLink className="mt-2 w-fit">Become a Member</MembershipLink>
+            <BookLink offer="bay" tone={onFilm ? "inverted" : "brand"} className="mt-2 w-fit">
+              Book a Bay
+            </BookLink>
           </nav>
         )}
       </header>
@@ -227,7 +231,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
             />
           </ScrollReveal>
           <ScrollReveal tone="rise" delay={80}>
-            <h2 className="font-display text-3xl font-semibold leading-none tracking-tight @5xl:text-5xl">Get fitted and swinging!</h2>
+            <h2 className="section-title text-3xl @5xl:text-5xl">Get fitted and swinging!</h2>
             <p className="mt-8 max-w-md font-display text-2xl font-semibold leading-tight tracking-tight">
               PGA professional coaches for 1:1 lessons and swing evaluations.
             </p>
@@ -241,10 +245,10 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
             </div>
             <CtaPair className="mt-8">
               <BookLink className="w-full" offer="swing-evaluation">
-                Evaluate my swing
+                Evaluate my Swing
               </BookLink>
               <BookLink className="w-full" offer="bay" tone="line">
-                Try it out
+                Book a Bay
               </BookLink>
             </CtaPair>
           </ScrollReveal>
@@ -252,11 +256,21 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
       </section>
 
       <section id="juniors" className={sectionSpace}>
-        <div className="grid items-center gap-10 @3xl:grid-cols-2 @3xl:gap-16">
-          <ScrollReveal className="@3xl:order-2" tone="rise" delay={80}>
-            <h2 className="font-display text-4xl font-semibold leading-none tracking-tight @5xl:text-6xl">Golf for kids</h2>
+        <div className="grid items-start gap-10 @3xl:grid-cols-2 @3xl:gap-16">
+          <ScrollReveal tone="rise">
+            <h2 className="section-title text-4xl @5xl:text-6xl">Golf for kids</h2>
             <p className="mt-6 max-w-md text-base leading-relaxed">Building the golfers of tomorrow.</p>
-            <div className="mt-8 grid gap-5">
+            <VideoSlot
+              src={JUNIORS_FILM.src}
+              srcMobile={JUNIORS_FILM.srcMobile}
+              poster={JUNIORS_FILM.poster}
+              posterAlt="A junior golfer swinging in a Par2Play simulator bay"
+              className="mt-8 aspect-video"
+              pausable
+            />
+          </ScrollReveal>
+          <ScrollReveal tone="tilt" delay={80}>
+            <div className="grid gap-5">
               <ValuePoint
                 icon={UserRound}
                 label="Future pros"
@@ -273,26 +287,21 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
                 line="Shot data on every swing shows progress week to week."
               />
             </div>
-            <div className="mt-8">
-              <BookLink offer="junior">Schedule kids golf</BookLink>
-            </div>
-          </ScrollReveal>
-          <ScrollReveal className="@3xl:order-1" tone="tilt">
-            <VideoSlot
-              src={JUNIORS_FILM.src}
-              srcMobile={JUNIORS_FILM.srcMobile}
-              poster={JUNIORS_FILM.poster}
-              posterAlt="A junior golfer swinging in a Par2Play simulator bay"
-              className="aspect-video"
-              pausable
-            />
+            <CtaPair className="mt-8">
+              <BookLink className="w-full" offer="junior">
+                Schedule a Lesson
+              </BookLink>
+              <CtaAnchor href={pageHref("juniors")} tone="line" className="w-full">
+                Learn More
+              </CtaAnchor>
+            </CtaPair>
           </ScrollReveal>
         </div>
       </section>
 
       <section id="events" className={sectionSpace}>
         <ScrollReveal tone="sheen">
-          <h2 className="font-display text-4xl font-semibold leading-none tracking-tight @5xl:text-6xl">Events</h2>
+          <h2 className="section-title text-4xl @5xl:text-6xl">Events</h2>
           <p className="mt-6 max-w-xl text-base leading-relaxed">
             Four enclosed bays, with a golf pro for mini-lessons and casual games.
           </p>
@@ -312,7 +321,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
 
       <section id="tournament" className={`${sectionSpace} text-center`}>
         <ScrollReveal tone="rise">
-          <h2 className="mx-auto max-w-xl font-display text-4xl font-semibold leading-tight tracking-tight @5xl:text-5xl">
+          <h2 className="section-title mx-auto max-w-xl text-4xl leading-tight @5xl:text-5xl">
             Par2Play Fall League Coming Soon!
           </h2>
           <div className="mt-10">
@@ -323,14 +332,14 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
 
       <section className="bg-void px-6 py-24 text-white @3xl:px-12 @3xl:py-28">
         <ScrollReveal className="mx-auto max-w-3xl text-center" tone="tilt">
-          <h2 className="font-display text-4xl font-semibold leading-none tracking-tight @5xl:text-6xl">Your bay is waiting.</h2>
+          <h2 className="section-title section-title--on-dark text-4xl @5xl:text-6xl">Your bay is waiting.</h2>
           <p className="mx-auto mt-6 max-w-md text-base leading-relaxed text-white/80">
             Book a simulator bay or become a member — Somerset’s indoor golf clubhouse is ready when you are.
           </p>
           <CtaPair className="mx-auto mt-10 justify-center">
             <MembershipLink className="cta-sheen w-full">Become a Member</MembershipLink>
             <BookLink className="w-full" offer="bay" tone="inverted">
-              Book a bay
+              Book a Bay
             </BookLink>
           </CtaPair>
         </ScrollReveal>
