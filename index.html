@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="light" data-theme="light" data-style-preview="fairway">
+<html lang="en" class="light" data-theme="light" data-style-preview="signal">
   <head>
     <meta charset="UTF-8" />
     <script>
@@ -15,7 +15,7 @@
           var fromUrl = params.get("style");
           var allowed = { fairway: 1, signal: 1, nocturne: 1, mist: 1 };
           var id = allowed[fromUrl] ? fromUrl : localStorage.getItem("par2play-style");
-          if (!allowed[id]) id = "fairway";
+          if (!allowed[id]) id = "signal";
           document.documentElement.dataset.stylePreview = id;
           document.documentElement.style.colorScheme = id === "nocturne" ? "dark" : "light";
           window.__par2playStyle = id;

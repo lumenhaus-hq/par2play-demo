@@ -1,4 +1,4 @@
-/** Visual brand variants for side-by-side review. Default stays the live Fairway look. */
+/** Visual brand variants for side-by-side review. Demo chrome ships Signal. */
 export type StyleId = "fairway" | "signal" | "nocturne" | "mist";
 
 export type StyleMeta = {
@@ -7,6 +7,9 @@ export type StyleMeta = {
   blurb: string;
 };
 
+export const DEFAULT_STYLE: StyleId = "signal";
+
+/** Full token set — URL deep-links still resolve. */
 export const STYLES: readonly StyleMeta[] = [
   {
     id: "fairway",
@@ -30,16 +33,19 @@ export const STYLES: readonly StyleMeta[] = [
   },
 ] as const;
 
+/** Review chrome — Classic homepage pairs with Signal. */
+export const DEMO_STYLES: readonly StyleMeta[] = STYLES.filter((style) => style.id === "signal");
+
 const STYLE_IDS = new Set<string>(STYLES.map((style) => style.id));
 
 export function isStyleId(value: string | null | undefined): value is StyleId {
   return Boolean(value && STYLE_IDS.has(value));
 }
 
-/** Read ?style= from the URL. Missing or unknown → fairway. */
+/** Read ?style= from the URL. Missing or unknown → signal. */
 export function styleFromSearch(search = window.location.search): StyleId {
   const value = new URLSearchParams(search).get("style");
-  return isStyleId(value) ? value : "fairway";
+  return isStyleId(value) ? value : DEFAULT_STYLE;
 }
 
 export function styleMeta(id: StyleId): StyleMeta {
