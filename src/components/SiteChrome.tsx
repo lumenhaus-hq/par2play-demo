@@ -1,14 +1,35 @@
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Mark } from "./Chrome";
 import { MembershipLink, buttonFocus } from "./Cta";
 import { LayoutToggle } from "./LayoutToggle";
 import { MotionToggle } from "./MotionToggle";
+import { PageAtmosphere, type AtmosphereIntensity } from "./PageAtmosphere";
 import { SoundToggle } from "./SoundToggle";
 import { membershipCheckoutHref, golfClockBookingReady, NAP } from "../data/business";
 import { VisitLine } from "./VisitLine";
-import { SITE_NAV, currentRoute, pageHref } from "../data/routes";
+import { SITE_NAV, currentRoute, pageHref, type SiteRoute } from "../data/routes";
 import { useFlow } from "../state/flow";
+
+function atmosphereFor(route: SiteRoute): AtmosphereIntensity {
+  switch (route) {
+    case "membership":
+    case "coaching":
+      return "max";
+    case "juniors":
+    case "events":
+    case "tournament":
+    case "privacy":
+      return "strong";
+    case "home":
+    case "notfound":
+      return "base";
+    default: {
+      const exhaustive: never = route;
+      return exhaustive;
+    }
+  }
+}
 
 const navClass = `nav-link inline-flex min-h-11 items-center px-1 text-base font-semibold text-ink ${buttonFocus}`;
 
@@ -104,12 +125,16 @@ export function SiteFooter() {
 
 export function PageFrame({ children }: { children: ReactNode }) {
   const mobile = useFlow().layout === "mobile";
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const intensity = atmosphereFor(currentRoute());
   return (
     <div
+      ref={scrollRef}
       data-smooth-root={mobile ? "" : undefined}
       className={`@container page-grid text-base text-ink ${mobile ? "h-full overflow-y-auto" : "min-h-screen"}`}
     >
-      <div data-smooth-content={mobile ? "" : undefined}>
+      <PageAtmosphere scrollRoot={mobile ? scrollRef : undefined} intensity={intensity} />
+      <div data-smooth-content={mobile ? "" : undefined} className="relative z-10">
         <SiteHeader />
         <main>{children}</main>
         <SiteFooter />

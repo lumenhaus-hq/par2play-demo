@@ -1,11 +1,11 @@
 import { useId, useState, type FormEvent, type ReactNode } from "react";
+import { CalendarDays, Clock3 } from "lucide-react";
 import { trackAnchor } from "../analytics/track";
 import { BookLink, PhoneLink, buttonFocus } from "./Cta";
-import { PriceFacts } from "./PriceFacts";
 import { NAP, OCLOCK, PRICES } from "../data/business";
 import { money } from "../data/membershipEstimate";
 
-const PAYG_TEN = PRICES.baySession * 10;
+const iconBase = `${import.meta.env.BASE_URL}media/membership-icons`;
 const checkoutCard =
   "rounded-2xl border border-[#E5E7EB] bg-white px-5 py-5 shadow-[0_8px_30px_rgb(10_15_11/0.06)] @3xl:px-7 @3xl:py-6";
 
@@ -18,21 +18,6 @@ type CheckoutFields = {
 };
 
 const emptyCheckout: CheckoutFields = { name: "", email: "", phone: "" };
-
-function ModeButton({ pressed, onClick, children }: { pressed: boolean; onClick: () => void; children: string }) {
-  return (
-    <button
-      type="button"
-      className={`aa-focus min-h-11 flex-1 rounded-full border-2 px-3 text-base font-semibold transition-[border-color,background-color,color] ${
-        pressed ? "border-ink bg-ink text-white" : "border-[#D1D5DB] bg-white text-ink hover:border-ink"
-      }`}
-      aria-pressed={pressed}
-      onClick={onClick}
-    >
-      {children}
-    </button>
-  );
-}
 
 function checkoutHref(mode: PracticeMode, fields: CheckoutFields): string {
   const base = mode === "unlimited" ? OCLOCK.practiceUnlimited : OCLOCK.tenPracticePack;
@@ -58,32 +43,59 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-function CompareRow({
-  mutedLabel,
-  muted,
-  highlightLabel,
-  highlight,
-  note,
+function FeatureFact({ label, value, icon }: { label: string; value: string; icon: "calendar" | "clock" }) {
+  const Icon = icon === "calendar" ? CalendarDays : Clock3;
+  return (
+    <div className="min-w-0 rounded-2xl border border-[#E5E7EB] bg-[#F3F4F6] p-3 @3xl:p-4">
+      <p className="flex items-center gap-2 text-xs font-semibold text-[#4B5563]">
+        <Icon aria-hidden="true" className="size-4 shrink-0 text-[#17743B]" strokeWidth={1.7} />
+        {label}
+      </p>
+      <p className="mt-3 font-display text-2xl font-semibold leading-tight tracking-tight text-ink @3xl:text-3xl">{value}</p>
+    </div>
+  );
+}
+
+function OfferToggle({
+  mode,
+  onChange,
 }: {
-  mutedLabel: string;
-  muted: string;
-  highlightLabel: string;
-  highlight: string;
-  note: string;
+  mode: PracticeMode;
+  onChange: (mode: PracticeMode) => void;
 }) {
   return (
-    <div className="mt-5">
+    <div className="mt-5" role="group" aria-label="Practice offer">
       <div className="grid grid-cols-2 gap-3">
-        <div className="min-w-0 rounded-2xl border border-[#E5E7EB] bg-[#F8FAF8] p-3 @3xl:p-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.04em] text-[#6B7280]">{mutedLabel}</p>
-          <p className="mt-2 font-display text-2xl font-semibold tabular-nums text-ink @3xl:text-3xl">{muted}</p>
-        </div>
-        <div className="membership-checkout__pick min-w-0 rounded-2xl border-2 border-[#14d45e] bg-[#F0FDF4] p-3 @3xl:p-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.04em] text-[#17743B]">{highlightLabel}</p>
-          <p className="mt-2 font-display text-2xl font-semibold tabular-nums text-ink @3xl:text-3xl">{highlight}</p>
-        </div>
+        <button
+          type="button"
+          className={`membership-offer-card aa-focus ${mode === "pack" ? "is-active" : ""}`}
+          aria-pressed={mode === "pack"}
+          onClick={() => onChange("pack")}
+        >
+          <p className={`text-xs font-semibold uppercase tracking-[0.04em] ${mode === "pack" ? "text-[#17743B]" : "text-[#6B7280]"}`}>
+            10 Sessions
+          </p>
+          <p className="mt-2 font-display text-2xl font-semibold tabular-nums text-ink @3xl:text-3xl">{money(PRICES.tenPack)}</p>
+        </button>
+        <button
+          type="button"
+          className={`membership-offer-card aa-focus ${mode === "unlimited" ? "is-active" : ""}`}
+          aria-pressed={mode === "unlimited"}
+          onClick={() => onChange("unlimited")}
+        >
+          <p className={`text-xs font-semibold uppercase tracking-[0.04em] ${mode === "unlimited" ? "text-[#17743B]" : "text-[#6B7280]"}`}>
+            Unlimited / mo
+          </p>
+          <p className="mt-2 font-display text-2xl font-semibold tabular-nums text-ink @3xl:text-3xl">
+            {money(PRICES.unlimitedMonthly)}
+          </p>
+        </button>
       </div>
-      <p className="mt-3 text-sm font-semibold leading-snug text-ink/75">{note}</p>
+      <p className="mt-3 text-sm font-semibold leading-snug text-ink/75">
+        {mode === "unlimited"
+          ? "Members keep a bay hour every day for less than a few 10-packs."
+          : `${money(PRICES.tenPack / 10)} a session in the pack.`}
+      </p>
     </div>
   );
 }
@@ -180,67 +192,40 @@ export function MembershipCalculator() {
 
   return (
     <div className="mx-auto grid w-full max-w-3xl gap-6 @3xl:gap-8">
-      <section id="why-membership" aria-labelledby="why-membership-heading" className={checkoutCard}>
-        <h1 id="why-membership-heading" className="font-display text-2xl font-semibold tracking-tight text-ink @3xl:text-3xl">
-          Indoor golf membership in Somerset, NJ
-        </h1>
-        <p className="mt-2 font-display text-lg font-semibold tracking-tight text-[#17743B]">{heading}</p>
-        <div aria-live="polite" aria-atomic="true" className="mt-2">
-          <p className="sr-only">{live}</p>
-          <p className="font-display text-[clamp(2.25rem,10cqi,3.75rem)] font-semibold leading-none tracking-tight text-ink">
-            {figure}
-          </p>
-        </div>
+      <section id="why-membership" aria-labelledby="why-membership-heading" className="membership-pricing px-5 py-5 @3xl:px-7 @3xl:py-6">
+        <span className="membership-pricing__orb membership-pricing__orb--a" aria-hidden="true" />
+        <span className="membership-pricing__orb membership-pricing__orb--b" aria-hidden="true" />
+        <img className="membership-pricing__glyph membership-pricing__glyph--a" src={`${iconBase}/flag.png`} alt="" aria-hidden="true" />
+        <img className="membership-pricing__glyph membership-pricing__glyph--b" src={`${iconBase}/ball.png`} alt="" aria-hidden="true" />
+        <img className="membership-pricing__glyph membership-pricing__glyph--c" src={`${iconBase}/crossed-clubs.png`} alt="" aria-hidden="true" />
 
-        <div className="mt-6 flex flex-col gap-2 @3xl:flex-row" role="group" aria-label="Practice offer">
-          <ModeButton pressed={unlimited} onClick={() => setMode("unlimited")}>
-            Unlimited Practice
-          </ModeButton>
-          <ModeButton pressed={!unlimited} onClick={() => setMode("pack")}>
-            10 Sessions
-          </ModeButton>
-        </div>
+        <div className="membership-pricing__body">
+          <h1 id="why-membership-heading" className="font-display text-2xl font-semibold tracking-tight text-ink @3xl:text-3xl">
+            Indoor golf membership in Somerset, NJ
+          </h1>
+          <p className="mt-2 font-display text-lg font-semibold tracking-tight text-[#17743B]">{heading}</p>
+          <div aria-live="polite" aria-atomic="true" className="mt-2">
+            <p className="sr-only">{live}</p>
+            <p className="font-display text-[clamp(2.25rem,10cqi,3.75rem)] font-semibold leading-none tracking-tight text-ink">
+              {figure}
+            </p>
+          </div>
 
-        <PriceFacts
-          className="mt-6"
-          items={
-            unlimited
-              ? [
-                  { label: "Bay access", value: "Daily", icon: "calendar" },
-                  { label: "Session length", value: "Up to 1 hr", icon: "clock" },
-                ]
-              : [
-                  { label: "Sessions", value: "10", icon: "sessions" },
-                  { label: "Minutes / session", value: "60", icon: "clock" },
-                ]
-          }
-        />
+          <div className="mt-6 grid grid-cols-2 gap-3">
+            <FeatureFact label="Bay access" value="Daily" icon="calendar" />
+            <FeatureFact label="Session length" value="Up to 1 hr" icon="clock" />
+          </div>
 
-        {unlimited ? (
-          <CompareRow
-            mutedLabel="10 Sessions"
-            muted={money(PRICES.tenPack)}
-            highlightLabel="Unlimited / mo"
-            highlight={money(PRICES.unlimitedMonthly)}
-            note="Members keep a bay hour every day for less than a few 10-packs."
-          />
-        ) : (
-          <CompareRow
-            mutedLabel="Pay as you go"
-            muted={money(PAYG_TEN)}
-            highlightLabel="10 Sessions"
-            highlight={money(PRICES.tenPack)}
-            note={`${money(PRICES.tenPack / 10)} a session in the pack.`}
-          />
-        )}
+          <OfferToggle mode={mode} onChange={setMode} />
 
-        <div className="mt-6 flex flex-col gap-3 @3xl:flex-row">
-          <BookLink className="w-full" offer={primaryOffer}>
-            {primaryLabel}
-          </BookLink>
-          <BookLink className="w-full" offer="bay" tone="line">
-            Try it out
-          </BookLink>
+          <div className="mt-6 flex flex-col gap-3 @3xl:flex-row">
+            <BookLink className="w-full" offer={primaryOffer}>
+              {primaryLabel}
+            </BookLink>
+            <BookLink className="w-full" offer="bay" tone="line">
+              Try it out
+            </BookLink>
+          </div>
         </div>
       </section>
 

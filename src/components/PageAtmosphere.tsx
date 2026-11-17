@@ -3,6 +3,8 @@ import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 
 const iconBase = `${import.meta.env.BASE_URL}media/membership-icons`;
 
+export type AtmosphereIntensity = "base" | "strong" | "max";
+
 /** Sparse margin placements — stay out of the main reading column. */
 const FLOATERS: readonly {
   file: string;
@@ -22,18 +24,21 @@ const FLOATERS: readonly {
   { file: "cart.png", top: "88%", right: "7%", size: "3.6rem", drift: "19s", delay: "-6s", rotate: "8deg" },
   { file: "putter.png", top: "38%", left: "2%", size: "3rem", drift: "21s", delay: "-14s", rotate: "-12deg" },
   { file: "grass.png", top: "70%", right: "2%", size: "3.2rem", drift: "17s", delay: "-7s", rotate: "2deg" },
+  { file: "club-strike.png", top: "18%", right: "8%", size: "3.2rem", drift: "23s", delay: "-12s", rotate: "-6deg" },
 ];
 
 /**
- * Decorative index atmosphere: floating golf glyphs + scroll-linked washes.
+ * Decorative page atmosphere: floating golf glyphs + scroll-linked washes.
  * taste-skill-ignore: owner asked for floating icons and scroll-linked grounds;
- * kept behind content, non-interactive, low opacity so body ink stays ≥7:1.
+ * kept behind content, non-interactive, opacity scaled by intensity so body ink stays ≥7:1.
  */
 export function PageAtmosphere({
   scrollRoot,
+  intensity = "base",
 }: {
   /** Mobile phone-frame scroller; omit on desktop so window scroll drives progress. */
   scrollRoot?: RefObject<HTMLElement | null>;
+  intensity?: AtmosphereIntensity;
 }) {
   const reduce = usePrefersReducedMotion();
   const layerRef = useRef<HTMLDivElement>(null);
@@ -83,7 +88,7 @@ export function PageAtmosphere({
   return (
     <div
       ref={layerRef}
-      className={`page-atmosphere${reduce ? " page-atmosphere--still" : ""}`}
+      className={`page-atmosphere page-atmosphere--${intensity}${reduce ? " page-atmosphere--still" : ""}`}
       aria-hidden="true"
     >
       <div className="page-atmosphere__wash" />

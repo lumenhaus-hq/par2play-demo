@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { BookLink, CtaPair } from "./Cta";
 import { Banknote } from "lucide-react";
-import { PriceFacts, type PriceFact } from "./PriceFacts";
 import { VideoSlot } from "./VideoSlot";
 import type { BookingOffer } from "../data/business";
 
@@ -19,7 +18,6 @@ export function PricingHero({
   primary,
   secondary,
   film,
-  facts,
 }: {
   id: string;
   heading: string;
@@ -31,7 +29,6 @@ export function PricingHero({
   primary: { offer: BookingOffer; label: string };
   secondary?: { offer: BookingOffer; label: string };
   film: { src: string; srcMobile?: string; poster: string };
-  facts: readonly PriceFact[];
 }) {
   return (
     <section id={id} aria-labelledby={`${id}-heading`} className="@container min-w-0 overflow-hidden rounded-3xl bg-void @3xl:grid @3xl:grid-cols-2">
@@ -47,7 +44,6 @@ export function PricingHero({
           <p className={figure.startsWith("$") ? figureClass : "mt-3 max-w-full font-display text-3xl font-semibold leading-tight tracking-tight text-white @3xl:text-5xl"}>{figure}</p>
         </div>
         {selector ? <div className="mt-6 min-w-0">{selector}</div> : null}
-        <PriceFacts items={facts} dark className="mt-6" />
         {comparison ? <div className="mt-6 min-w-0">{comparison}</div> : null}
         <CtaPair className="mt-6">
           <BookLink className="w-full" offer={primary.offer}>

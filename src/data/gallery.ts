@@ -47,15 +47,9 @@ export const TICKER_CHIPS: readonly TickerChip[] = [
   },
   {
     id: "coaches",
-    label: "Two PGA professional coaches",
+    label: "PGA professional coaching",
     webp: file("ticker/coaching.webp"),
     jpg: file("ticker/coaching.jpg"),
-  },
-  {
-    id: "fitting",
-    label: "Club fitting",
-    webp: file("ticker/club-fitting.webp"),
-    jpg: file("ticker/club-fitting.jpg"),
   },
   {
     id: "juniors",

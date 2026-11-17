@@ -9,7 +9,6 @@ export const HERO_TICKER = [
   { id: "indoor", label: "Year-round indoor golf", icon: "calendar" },
   { id: "community", label: "Community", icon: "people" },
   { id: "clubhouse", label: "The clubhouse", icon: "ball" },
-  { id: "fitting", label: "Club fitting", icon: "tag" },
   { id: "juniors", label: "Junior coaching", icon: "people" },
   { id: "leagues", label: "Leagues and events", icon: "trophy" },
 ] as const;
