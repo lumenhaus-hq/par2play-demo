@@ -18,6 +18,7 @@ export function PricingHero({
   primary,
   secondary,
   film,
+  checkout,
 }: {
   id: string;
   heading: string;
@@ -29,36 +30,46 @@ export function PricingHero({
   primary: { offer: BookingOffer; label: string };
   secondary?: { offer: BookingOffer; label: string };
   film: { src: string; srcMobile?: string; poster: string };
+  checkout?: ReactNode;
 }) {
   return (
-    <section id={id} aria-labelledby={`${id}-heading`} className="@container min-w-0 overflow-hidden rounded-3xl bg-void @3xl:grid @3xl:grid-cols-2">
-      <div className="flex min-w-0 flex-col justify-center bg-[radial-gradient(120%_80%_at_0%_0%,rgb(20_212_94/0.16),transparent_52%)] px-5 pt-8 pb-8 @3xl:px-12 @3xl:py-14">
-        <h1 id={`${id}-heading`} className="font-display text-2xl font-semibold tracking-tight text-white @3xl:text-3xl">
-          {pageTitle}
-        </h1>
-        <p className="mt-2 font-display text-lg font-semibold tracking-tight text-mint">
-          {heading}
-        </p>
-        <div aria-live="polite" aria-atomic="true" className="mt-2">
-          <p className="sr-only">{live}</p>
-          <p className={figure.startsWith("$") ? figureClass : "mt-3 max-w-full font-display text-3xl font-semibold leading-tight tracking-tight text-white @3xl:text-5xl"}>{figure}</p>
-        </div>
-        {selector ? <div className="mt-6 min-w-0">{selector}</div> : null}
-        {comparison ? <div className="mt-6 min-w-0">{comparison}</div> : null}
-        <CtaPair className="mt-6">
-          <BookLink className="w-full" offer={primary.offer}>
-            {primary.label}
-          </BookLink>
-          {secondary ? (
-            <BookLink className="w-full" offer={secondary.offer} tone="inverted">
-              {secondary.label}
+    <section id={id} aria-labelledby={`${id}-heading`} className="@container min-w-0 overflow-hidden rounded-3xl bg-void">
+      <div className="@3xl:grid @3xl:grid-cols-2">
+        <div className="flex min-w-0 flex-col justify-center bg-[radial-gradient(120%_80%_at_0%_0%,rgb(20_212_94/0.16),transparent_52%)] px-5 pt-8 pb-8 @3xl:px-12 @3xl:py-14">
+          <h1 id={`${id}-heading`} className="offer-title text-2xl tracking-tight text-white @3xl:text-3xl">
+            {pageTitle}
+          </h1>
+          <p className="mt-2 font-display text-lg font-semibold tracking-tight text-mint">{heading}</p>
+          <div aria-live="polite" aria-atomic="true" className="mt-2">
+            <p className="sr-only">{live}</p>
+            <p
+              className={
+                figure.startsWith("$")
+                  ? figureClass
+                  : "mt-3 max-w-full font-display text-3xl font-semibold leading-tight tracking-tight text-white @3xl:text-5xl"
+              }
+            >
+              {figure}
+            </p>
+          </div>
+          {selector ? <div className="mt-6 min-w-0">{selector}</div> : null}
+          {comparison ? <div className="mt-6 min-w-0">{comparison}</div> : null}
+          <CtaPair className="mt-6">
+            <BookLink className="w-full" offer={primary.offer}>
+              {primary.label}
             </BookLink>
-          ) : null}
-        </CtaPair>
+            {secondary ? (
+              <BookLink className="w-full" offer={secondary.offer} tone="inverted">
+                {secondary.label}
+              </BookLink>
+            ) : null}
+          </CtaPair>
+        </div>
+        <div className="relative flex min-h-72 w-full min-w-0 flex-col justify-end overflow-hidden @3xl:min-h-full">
+          <VideoSlot src={film.src} srcMobile={film.srcMobile} poster={film.poster} className="absolute inset-0 h-full w-full" pausable />
+        </div>
       </div>
-      <div className="relative flex min-h-72 w-full min-w-0 flex-col justify-end overflow-hidden @3xl:min-h-full">
-        <VideoSlot src={film.src} srcMobile={film.srcMobile} poster={film.poster} className="absolute inset-0 h-full w-full" pausable />
-      </div>
+      {checkout ? <div className="border-t border-white/15 px-5 py-8 @3xl:px-12 @3xl:py-10">{checkout}</div> : null}
     </section>
   );
 }
@@ -72,8 +83,15 @@ function PriceCell({ label, value, hot }: { label: string; value: string; hot: b
           : "min-w-0 rounded-2xl border-2 border-white/25 bg-white/5 p-3 @3xl:p-4"
       }
     >
-      <p className={`flex min-h-8 items-center gap-2 text-xs font-semibold uppercase leading-tight tracking-[0.04em] @3xl:text-sm ${hot ? "text-mint" : "text-[#E5E7EB]"}`}><Banknote aria-hidden="true" className="size-4 shrink-0" />{label}</p>
-      <p className={`mt-3 font-display text-2xl font-semibold leading-none tabular-nums @3xl:text-4xl ${hot ? "text-mint" : "text-[#E5E7EB]"}`}>{value}</p>
+      <p
+        className={`flex min-h-8 items-center gap-2 text-xs font-semibold uppercase leading-tight tracking-[0.04em] @3xl:text-sm ${hot ? "text-mint" : "text-[#E5E7EB]"}`}
+      >
+        <Banknote aria-hidden="true" className="size-4 shrink-0" />
+        {label}
+      </p>
+      <p className={`mt-3 font-display text-2xl font-semibold leading-none tabular-nums @3xl:text-4xl ${hot ? "text-mint" : "text-[#E5E7EB]"}`}>
+        {value}
+      </p>
     </div>
   );
 }

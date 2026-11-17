@@ -11,7 +11,7 @@ export type SiteRoute =
 export const SITE_NAV = [
   { slug: "membership", label: "Membership" },
   { slug: "coaching", label: "Coaching" },
-  { slug: "juniors", label: "Juniors" },
+  { slug: "juniors", label: "Golf for Kids" },
   { slug: "events", label: "Events" },
   { slug: "tournament", label: "Tournament" },
 ] as const;

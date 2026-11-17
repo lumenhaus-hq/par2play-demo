@@ -7,12 +7,12 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test("demo chrome ships Classic only, with Signal styles", async ({ page }) => {
+test("demo chrome ships Classic only, with Signal styles and no take togglebar", async ({ page }) => {
   await page.goto("./");
   const layout = page.getByTestId("layout");
   await expect(layout).toHaveAttribute("data-take", "classic");
   await expect(layout).toHaveAttribute("data-style", "signal");
-  await expect(page.getByRole("button", { name: "Classic", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: "Classic", exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Orbit", exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Ledger", exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Strike", exact: true })).toHaveCount(0);

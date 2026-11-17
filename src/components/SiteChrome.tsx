@@ -57,11 +57,9 @@ export function SiteHeader() {
         <div className="flex items-center gap-2">
           <LayoutToggle className="text-ink" />
           <SoundToggle className="text-ink" />
-          <span className="hidden @3xl:contents">
-            <BookLink offer="bay" className="shrink-0">
-              Book a Bay
-            </BookLink>
-          </span>
+          <BookLink offer="bay" className="shrink-0">
+            Book a Bay
+          </BookLink>
           <button
             type="button"
             className={`${navClass} @3xl:hidden`}
@@ -84,9 +82,6 @@ export function SiteHeader() {
               {item.label}
             </a>
           ))}
-          <BookLink offer="bay" className="mt-2 w-fit">
-            Book a Bay
-          </BookLink>
         </nav>
       )}
     </header>

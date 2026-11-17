@@ -5,7 +5,7 @@ type Option<T extends string> = {
 
 /**
  * Single segmented control: one track, two options, one active pill.
- * Use on dark pricing heroes (`tone="dark"`) or light membership checkout (`tone="light"`).
+ * Use on dark pricing heroes (`tone="dark"`). Light tone kept for rare light grounds.
  */
 export function JointToggle<T extends string>({
   value,

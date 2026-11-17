@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { BookingCheckout, appendCheckoutParams } from "./BookingCheckout";
 import { CompareBoxes, PricingHero } from "./PricingHero";
 import { JointToggle } from "./JointToggle";
-import { PRICES } from "../data/business";
+import { OCLOCK, PRICES } from "../data/business";
 import { JUNIORS_FILM } from "../data/films";
 import { money } from "../data/membershipEstimate";
 
@@ -17,11 +18,13 @@ export function JuniorsPanel() {
   const plan = PLANS.find((item) => item.value === planId) ?? PLANS[1];
   const figure = `${money(plan.price)}/mo`;
   const live = `${plan.label} ${figure}. Once a week ${money(PRICES.juniorOneLessonWeekly)} a month. Twice a week ${money(PRICES.juniorTwoLessonsWeekly)} a month.`;
+  const offerParam = planId === "once" ? "junior_once_weekly" : "junior_twice_weekly";
+  const orderRef = planId === "once" ? "ord_p2p_junior_once" : "ord_p2p_junior_twice";
 
   return (
     <PricingHero
       id="juniors-offer"
-      pageTitle="Junior golf in Somerset, NJ"
+      pageTitle="Golf for Kids"
       heading={plan.label}
       figure={figure}
       live={live}
@@ -47,6 +50,20 @@ export function JuniorsPanel() {
           highlightLabel="Twice a week"
           highlight={`${money(PRICES.juniorTwoLessonsWeekly)}/mo`}
           emphasized={planId === "once" ? "left" : "right"}
+        />
+      }
+      checkout={
+        <BookingCheckout
+          summaryTitle={plan.label}
+          rows={[
+            { label: "Offer", value: "Golf for Kids" },
+            { label: "Cadence", value: plan.label },
+            { label: "Billing", value: "Monthly" },
+            { label: "Membership", value: figure },
+          ]}
+          totalLabel={figure}
+          orderRef={orderRef}
+          checkoutHref={(fields) => appendCheckoutParams(OCLOCK.lessons, fields, offerParam)}
         />
       }
     />

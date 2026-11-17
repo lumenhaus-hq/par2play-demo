@@ -54,7 +54,7 @@ export function JuniorsPage() {
     <PageFrame>
       <article className={pageSpace}>
         <JsonLd data={juniorsGraph()} />
-        <Breadcrumbs current="Junior golf" />
+        <Breadcrumbs current="Golf for Kids" />
         <JuniorsPanel />
         <StillGrid photos={JUNIORS_GALLERY} />
       </article>
