@@ -119,7 +119,7 @@ function Routed({ take }: { take: TakeId }) {
 function Shell() {
   const flow = useFlow();
   const [take, setTake] = useState<TakeId>("classic");
-  const [style, setStyle] = useState<StyleId>("fairway");
+  const [style, setStyle] = useState<StyleId>("signal");
 
   useEffect(() => {
     const initialTake = resolveInitialTake();

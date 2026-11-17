@@ -6,42 +6,29 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test("style switcher applies distinct tokens on the layout", async ({ page }) => {
+test("demo chrome locks Classic homepage to Signal tokens", async ({ page }) => {
   await page.goto("./");
-  // Default flow layout is already desktop web.
   const layout = page.getByTestId("layout");
   await expect(layout).toHaveAttribute("data-layout", "web");
-  await expect(layout).toHaveAttribute("data-style", "fairway");
-
-  await page.getByRole("button", { name: "Signal", exact: true }).click({ force: true });
   await expect(layout).toHaveAttribute("data-style", "signal");
+  await expect(layout).toHaveAttribute("data-take", "classic");
+
+  await expect(page.getByRole("button", { name: "Classic", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: "Signal", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: "Orbit", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Fairway", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Nocturne", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Mist", exact: true })).toHaveCount(0);
+
   await expect
     .poll(async () => layout.evaluate((node) => getComputedStyle(node).getPropertyValue("--accent").trim()))
     .toBe("#c6ff1a");
   await expect
     .poll(async () => layout.evaluate((node) => getComputedStyle(node).getPropertyValue("--font-display-stack")))
     .toContain("Syne");
-
-  await page.getByRole("button", { name: "Nocturne", exact: true }).click({ force: true });
-  await expect(layout).toHaveAttribute("data-style", "nocturne");
-  await expect
-    .poll(async () => layout.evaluate((node) => getComputedStyle(node).getPropertyValue("--accent").trim()))
-    .toBe("#e2a33a");
-  await expect
-    .poll(async () => layout.evaluate((node) => getComputedStyle(node).getPropertyValue("--paper").trim()))
-    .toBe("#1c1916");
-
-  await page.getByRole("button", { name: "Mist", exact: true }).click({ force: true });
-  await expect(layout).toHaveAttribute("data-style", "mist");
-  await expect
-    .poll(async () => layout.evaluate((node) => getComputedStyle(node).getPropertyValue("--accent").trim()))
-    .toBe("#0f766e");
-  await expect
-    .poll(async () => layout.evaluate((node) => getComputedStyle(node).getPropertyValue("--font-display-stack")))
-    .toContain("Sora");
 });
 
-test("?style= query selects a variant on load", async ({ page }) => {
+test("?style= query still selects a variant on load", async ({ page }) => {
   await page.goto("./?style=signal");
   await expect(page.getByTestId("layout")).toHaveAttribute("data-style", "signal");
   await expect
@@ -52,4 +39,14 @@ test("?style= query selects a variant on load", async ({ page }) => {
       page.getByTestId("layout").evaluate((node) => getComputedStyle(node).getPropertyValue("--accent").trim()),
     )
     .toBe("#c6ff1a");
+});
+
+test("hero toolbar is black with an accent edge while on film", async ({ page }) => {
+  await page.goto("./");
+  const bar = page.locator("header.hero-toolbar").first();
+  await expect(bar).toBeVisible();
+  await expect.poll(async () => bar.evaluate((node) => getComputedStyle(node).backgroundColor)).toBe("rgb(0, 0, 0)");
+  await expect
+    .poll(async () => bar.evaluate((node) => getComputedStyle(node).borderBottomColor))
+    .not.toBe("rgba(0, 0, 0, 0)");
 });

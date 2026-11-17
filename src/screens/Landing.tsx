@@ -109,7 +109,7 @@ export function Landing() {
       <JsonLd data={homeGraph()} />
       <JsonLd data={faqGraph()} />
       <header
-        className={`sticky z-30 px-6 py-3 @5xl:px-12 ${mobile ? "top-0" : "top-[4.25rem]"} ${onFilm ? "" : "header-bar"} ${
+        className={`sticky z-30 px-6 py-3 @5xl:px-12 ${mobile ? "top-0" : "top-[4.25rem]"} ${onFilm ? "hero-toolbar" : "header-bar"} ${
           chromeReady ? "hero-chrome-in" : "pointer-events-none opacity-0"
         }`}
         aria-hidden={chromeReady ? undefined : true}

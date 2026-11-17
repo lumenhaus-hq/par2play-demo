@@ -7,6 +7,9 @@ export type TakeMeta = {
   blurb: string;
 };
 
+export const DEFAULT_TAKE: TakeId = "classic";
+
+/** Full take set — URL deep-links still resolve. */
 export const TAKES: readonly TakeMeta[] = [
   {
     id: "classic",
@@ -30,6 +33,9 @@ export const TAKES: readonly TakeMeta[] = [
   },
 ] as const;
 
+/** Review chrome — Classic + Signal is the shipped pair. */
+export const DEMO_TAKES: readonly TakeMeta[] = TAKES.filter((take) => take.id === "classic");
+
 const TAKE_IDS = new Set<string>(TAKES.map((take) => take.id));
 
 export function isTakeId(value: string | null | undefined): value is TakeId {
@@ -38,7 +44,7 @@ export function isTakeId(value: string | null | undefined): value is TakeId {
 
 export function takeFromSearch(search = window.location.search): TakeId {
   const value = new URLSearchParams(search).get("take");
-  return isTakeId(value) ? value : "classic";
+  return isTakeId(value) ? value : DEFAULT_TAKE;
 }
 
 export function takeMeta(id: TakeId): TakeMeta {

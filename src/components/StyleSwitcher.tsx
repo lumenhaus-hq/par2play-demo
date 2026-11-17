@@ -1,4 +1,4 @@
-import { STYLES, type StyleId } from "../data/styles";
+import { DEMO_STYLES, type StyleId } from "../data/styles";
 import { applyStyle, storeStyle, syncStyleParam } from "../style/applyStyle";
 
 export function StyleSwitcher({
@@ -14,7 +14,7 @@ export function StyleSwitcher({
       role="group"
       aria-label="Style variant"
     >
-      {STYLES.map((style) => {
+      {DEMO_STYLES.map((style) => {
         const on = style.id === value;
         return (
           <button
