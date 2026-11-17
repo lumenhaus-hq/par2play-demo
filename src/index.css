@@ -420,19 +420,21 @@ body {
   pointer-events: none;
   contain: paint;
   --atmosphere-wash: 0.7;
-  --atmosphere-icon: 0.1;
+  /* Soft ink silhouettes on light paper — visible polish, still below content. */
+  --atmosphere-icon: 0.22;
   --atmosphere-icon-scale: 1;
+  --floater-shift: 0rem;
 }
 
 .page-atmosphere--strong {
   --atmosphere-wash: 0.85;
-  --atmosphere-icon: 0.14;
+  --atmosphere-icon: 0.28;
   --atmosphere-icon-scale: 1.08;
 }
 
 .page-atmosphere--max {
   --atmosphere-wash: 1;
-  --atmosphere-icon: 0.18;
+  --atmosphere-icon: 0.34;
   --atmosphere-icon-scale: 1.18;
 }
 
@@ -462,13 +464,28 @@ body {
 }
 
 .page-atmosphere__floater {
+  --parallax: 0.55;
   position: absolute;
   margin: 0;
   opacity: var(--atmosphere-icon);
-  transform: translate3d(0, 0, 0) scale(var(--atmosphere-icon-scale)) rotate(var(--tilt, 0deg));
-  animation: page-atmosphere-drift var(--drift, 20s) linear infinite;
-  animation-delay: var(--delay, 0s);
+  /* Scroll depth shift + idle bob (bob lives on the img so transforms compose cleanly). */
+  transform:
+    translate3d(0, calc(var(--floater-shift) * var(--parallax)), 0)
+    scale(var(--atmosphere-icon-scale))
+    rotate(var(--tilt, 0deg));
   will-change: transform;
+}
+
+.page-atmosphere__floater--far {
+  opacity: calc(var(--atmosphere-icon) * 0.78);
+}
+
+.page-atmosphere__floater--mid {
+  opacity: calc(var(--atmosphere-icon) * 0.95);
+}
+
+.page-atmosphere__floater--near {
+  opacity: var(--atmosphere-icon);
 }
 
 .page-atmosphere__floater img {
@@ -476,51 +493,70 @@ body {
   width: 100%;
   height: auto;
   user-select: none;
+  /* Source glyphs are light; ink-tint them for paper grounds. */
+  filter: brightness(0);
+  animation: page-atmosphere-drift var(--drift, 20s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
 }
 
-[data-style="nocturne"] .page-atmosphere__floater {
-  filter: brightness(1.35) contrast(0.92);
+[data-style="nocturne"] .page-atmosphere__floater--far {
+  filter: none;
+}
+
+[data-style="nocturne"] .page-atmosphere__floater img {
+  filter: brightness(1.25) contrast(0.92);
 }
 
 @keyframes page-atmosphere-drift {
   0%,
   100% {
-    transform: translate3d(0, 0, 0) scale(var(--atmosphere-icon-scale)) rotate(var(--tilt, 0deg));
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translate3d(0, -0.85rem, 0) scale(var(--atmosphere-icon-scale)) rotate(var(--tilt, 0deg));
+    transform: translate3d(0.15rem, -0.95rem, 0);
   }
 }
 
 .page-atmosphere--still .page-atmosphere__floater,
 html.motion-paused .page-atmosphere__floater {
+  --floater-shift: 0rem;
+}
+
+.page-atmosphere--still .page-atmosphere__floater img,
+html.motion-paused .page-atmosphere__floater img {
   animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .page-atmosphere__floater {
+  .page-atmosphere__floater img {
     animation: none;
+  }
+
+  .page-atmosphere {
+    --floater-shift: 0rem;
   }
 }
 
 @media (max-width: 639px) {
   .page-atmosphere--base .page-atmosphere__floater {
     opacity: 0.06;
-    width: 2.75rem !important;
+    width: 2.5rem !important;
   }
 
   .page-atmosphere--strong .page-atmosphere__floater,
   .page-atmosphere--max .page-atmosphere__floater {
-    opacity: calc(var(--atmosphere-icon) * 0.75);
-    width: 3.1rem !important;
+    opacity: calc(var(--atmosphere-icon) * 0.7);
+    width: 2.85rem !important;
   }
 
-  .page-atmosphere--base .page-atmosphere__floater:nth-child(n + 6) {
+  /* Keep the field sparse on phones — far layer only. */
+  .page-atmosphere--base .page-atmosphere__floater--mid,
+  .page-atmosphere--base .page-atmosphere__floater--near {
     display: none;
   }
 
-  .page-atmosphere--strong .page-atmosphere__floater:nth-child(n + 8),
-  .page-atmosphere--max .page-atmosphere__floater:nth-child(n + 9) {
+  .page-atmosphere--strong .page-atmosphere__floater--near,
+  .page-atmosphere--max .page-atmosphere__floater--near {
     display: none;
   }
 }
