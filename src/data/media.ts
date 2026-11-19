@@ -7,9 +7,11 @@
  *   public/media/hero.webm
  *   public/media/hero-poster.jpg
  *
- * Short LP5-style storefront zoom intro (≤2.8s, same 1920×1080 / 30fps HD
- * pipeline) is specified in heroIntroZoom.ts — not shipped until the cut
- * passes that acceptance list.
+ * Short LP5-style storefront zoom intro (2.4s, same 1920×1080 / 30fps HD
+ * pipeline) — see heroIntroZoom.ts. Silent; reduced-motion uses its poster.
+ *   public/media/hero-intro-zoom.mp4
+ *   public/media/hero-intro-zoom.webm
+ *   public/media/hero-intro-zoom-poster.jpg
  */
 const media = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 
@@ -20,6 +22,18 @@ export const HERO_MEDIA = {
   poster: media("media/hero-poster.jpg"),
   posterMobileAvif: media("media/hero-poster-mobile.avif"),
   posterMobileWebp: media("media/hero-poster-mobile.webp"),
+} as const;
+
+/** Map→storefront zoom that plays once before the looping hero film. */
+export const HERO_INTRO_MEDIA = {
+  mp4: media("media/hero-intro-zoom.mp4"),
+  webm: media("media/hero-intro-zoom.webm"),
+  poster: media("media/hero-intro-zoom-poster.jpg"),
+  /** Seconds — must stay ≤ HERO_INTRO_ZOOM.timing.maxSeconds. */
+  durationS: 2.4,
+  /** Seek the looping hero here so the handoff stays on the dusk storefront. */
+  loopHandoffS: 6.2,
+  alt: "Animated map zooming into the Par2Play storefront at 695 Hamilton Street, Somerset, NJ",
 } as const;
 
 /**
