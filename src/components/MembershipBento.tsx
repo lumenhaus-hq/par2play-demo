@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { MembershipLink, BookLink } from "./Cta";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 
 const driveBars: readonly { day: string; value: number; highlight?: boolean; tip?: string }[] = [
@@ -112,83 +111,68 @@ export function MembershipBento() {
   const reduce = usePrefersReducedMotion();
 
   return (
-    <div className="membership-bento">
-      <header className="membership-bento__intro">
-        <h2 className="section-title offer-title text-4xl">Membership</h2>
-        <p className="mt-3 max-w-sm text-base leading-relaxed text-ink/70">
-          Bay priority, shot data, and hours that bend around your day — all in one stack.
-        </p>
-        <div className="mt-5 grid grid-cols-1 gap-3">
-          <MembershipLink className="cta-sheen w-full">Become a Member</MembershipLink>
-          <BookLink className="w-full" offer="bay" tone="dark">
-            Experience a free Member Day
-          </BookLink>
+    <div className="membership-bento__grid" role="list">
+      <Tile className="membership-bento__tile--clubs" label="Club lineup">
+        <p className="membership-bento__eyebrow">Equipment</p>
+        <h3 className="membership-bento__title">Clubs on standby</h3>
+        <ClubStack />
+      </Tile>
+
+      <Tile className="membership-bento__tile--availability" label="Preferred availability">
+        <p className="membership-bento__eyebrow">Availability</p>
+        <h3 className="membership-bento__title">Your times, held</h3>
+        <ul className="membership-bento__slots">
+          {preferredSlots.map((slot) => (
+            <li key={slot.when} className={slot.hot ? "is-hot" : undefined}>
+              <span className="membership-bento__slot-when">{slot.when}</span>
+              <span className="membership-bento__slot-note">{slot.note}</span>
+            </li>
+          ))}
+        </ul>
+      </Tile>
+
+      <Tile className="membership-bento__tile--stats" label="Simulator stats">
+        <div className="membership-bento__stats-top">
+          <div className="membership-bento__stats-copy">
+            <p className="membership-bento__eyebrow">Simulator</p>
+            <h3 className="membership-bento__title">Cool session stats</h3>
+          </div>
+          <SimulatorGauge reduce={reduce} />
         </div>
-      </header>
+        <ul className="membership-bento__stat-list">
+          <li>
+            <span>FIR</span>
+            <strong>68%</strong>
+          </li>
+          <li>
+            <span>Birdie rate</span>
+            <strong>22%</strong>
+          </li>
+          <li>
+            <span>Handicap</span>
+            <strong>8.4</strong>
+          </li>
+        </ul>
+      </Tile>
 
-      <div className="membership-bento__grid" role="list">
-        <Tile className="membership-bento__tile--clubs" label="Club lineup">
-          <p className="membership-bento__eyebrow">Equipment</p>
-          <h3 className="membership-bento__title">Clubs on standby</h3>
-          <ClubStack />
-        </Tile>
-
-        <Tile className="membership-bento__tile--availability" label="Preferred availability">
-          <p className="membership-bento__eyebrow">Availability</p>
-          <h3 className="membership-bento__title">Your times, held</h3>
-          <ul className="membership-bento__slots">
-            {preferredSlots.map((slot) => (
-              <li key={slot.when} className={slot.hot ? "is-hot" : undefined}>
-                <span className="membership-bento__slot-when">{slot.when}</span>
-                <span className="membership-bento__slot-note">{slot.note}</span>
-              </li>
-            ))}
-          </ul>
-        </Tile>
-
-        <Tile className="membership-bento__tile--stats" label="Simulator stats">
-          <div className="membership-bento__stats-top">
-            <div className="membership-bento__stats-copy">
-              <p className="membership-bento__eyebrow">Simulator</p>
-              <h3 className="membership-bento__title">Cool session stats</h3>
+      <Tile className="membership-bento__tile--chart" label="Progress">
+        <div className="membership-bento__chart-head">
+          <p className="membership-bento__eyebrow">Progress</p>
+          <p className="membership-bento__chart-value">
+            275 <span>YDS</span>
+          </p>
+        </div>
+        <p className="membership-bento__chart-label">Avg drive</p>
+        <div className="membership-bento__bars" aria-hidden="true">
+          {driveBars.map((bar) => (
+            <div key={bar.day} className={`membership-bento__bar-col${bar.highlight ? " is-hot" : ""}`}>
+              {bar.tip ? <span className="membership-bento__bar-tip">{bar.tip}</span> : null}
+              <span className="membership-bento__bar" style={{ height: `${bar.value}%` }} />
+              <span className="membership-bento__bar-day">{bar.day}</span>
             </div>
-            <SimulatorGauge reduce={reduce} />
-          </div>
-          <ul className="membership-bento__stat-list">
-            <li>
-              <span>FIR</span>
-              <strong>68%</strong>
-            </li>
-            <li>
-              <span>Birdie rate</span>
-              <strong>22%</strong>
-            </li>
-            <li>
-              <span>Handicap</span>
-              <strong>8.4</strong>
-            </li>
-          </ul>
-        </Tile>
-
-        <Tile className="membership-bento__tile--chart" label="Progress">
-          <div className="membership-bento__chart-head">
-            <p className="membership-bento__eyebrow">Progress</p>
-            <p className="membership-bento__chart-value">
-              275 <span>YDS</span>
-            </p>
-          </div>
-          <p className="membership-bento__chart-label">Avg drive</p>
-          <div className="membership-bento__bars" aria-hidden="true">
-            {driveBars.map((bar) => (
-              <div key={bar.day} className={`membership-bento__bar-col${bar.highlight ? " is-hot" : ""}`}>
-                {bar.tip ? <span className="membership-bento__bar-tip">{bar.tip}</span> : null}
-                <span className="membership-bento__bar" style={{ height: `${bar.value}%` }} />
-                <span className="membership-bento__bar-day">{bar.day}</span>
-              </div>
-            ))}
-          </div>
-        </Tile>
-      </div>
+          ))}
+        </div>
+      </Tile>
     </div>
   );
 }

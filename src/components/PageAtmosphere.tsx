@@ -7,10 +7,7 @@ export type AtmosphereIntensity = "base" | "strong" | "max";
 
 type FloaterDepth = "far" | "mid" | "near";
 
-/**
- * Viewport-scattered field — glyphs across width + height (not edge gutters only).
- * taste-skill-ignore: owner asked for a hovering space layer over the whole page.
- */
+/** Viewport-scattered field (~25% denser than the original 9). taste-skill-ignore */
 const FLOATERS: readonly {
   file: string;
   top: string;
@@ -20,16 +17,20 @@ const FLOATERS: readonly {
   drift: string;
   delay: string;
   rotate: string;
+  spin: string;
 }[] = [
-  { file: "bag.png", top: "7%", left: "6%", size: "4.1rem", depth: "far", drift: "26s", delay: "0s", rotate: "-8deg" },
-  { file: "club-strike.png", top: "10%", left: "78%", size: "3.5rem", depth: "far", drift: "28s", delay: "-12s", rotate: "-6deg" },
-  { file: "swing.png", top: "24%", left: "46%", size: "4.4rem", depth: "mid", drift: "20s", delay: "-4s", rotate: "6deg" },
-  { file: "ball.png", top: "34%", left: "22%", size: "2.9rem", depth: "near", drift: "16s", delay: "-9s", rotate: "0deg" },
-  { file: "putter.png", top: "48%", left: "68%", size: "3.7rem", depth: "mid", drift: "21s", delay: "-14s", rotate: "-12deg" },
-  { file: "flag.png", top: "52%", left: "8%", size: "3.9rem", depth: "mid", drift: "22s", delay: "-2s", rotate: "4deg" },
-  { file: "crossed-clubs.png", top: "64%", left: "38%", size: "4.6rem", depth: "near", drift: "18s", delay: "-11s", rotate: "-4deg" },
-  { file: "grass.png", top: "76%", left: "84%", size: "3.3rem", depth: "far", drift: "24s", delay: "-7s", rotate: "2deg" },
-  { file: "cart.png", top: "84%", left: "18%", size: "3.8rem", depth: "far", drift: "30s", delay: "-6s", rotate: "8deg" },
+  { file: "bag.png", top: "7%", left: "6%", size: "4.1rem", depth: "far", drift: "26s", delay: "0s", rotate: "-8deg", spin: "1" },
+  { file: "club-strike.png", top: "10%", left: "78%", size: "3.5rem", depth: "far", drift: "28s", delay: "-12s", rotate: "-6deg", spin: "-0.8" },
+  { file: "swing.png", top: "24%", left: "46%", size: "4.4rem", depth: "mid", drift: "20s", delay: "-4s", rotate: "6deg", spin: "1.2" },
+  { file: "ball.png", top: "34%", left: "22%", size: "2.9rem", depth: "near", drift: "16s", delay: "-9s", rotate: "0deg", spin: "1.6" },
+  { file: "putter.png", top: "48%", left: "68%", size: "3.7rem", depth: "mid", drift: "21s", delay: "-14s", rotate: "-12deg", spin: "-1.1" },
+  { file: "flag.png", top: "52%", left: "8%", size: "3.9rem", depth: "mid", drift: "22s", delay: "-2s", rotate: "4deg", spin: "0.9" },
+  { file: "crossed-clubs.png", top: "64%", left: "38%", size: "4.6rem", depth: "near", drift: "18s", delay: "-11s", rotate: "-4deg", spin: "-1.4" },
+  { file: "grass.png", top: "76%", left: "84%", size: "3.3rem", depth: "far", drift: "24s", delay: "-7s", rotate: "2deg", spin: "0.7" },
+  { file: "cart.png", top: "84%", left: "18%", size: "3.8rem", depth: "far", drift: "30s", delay: "-6s", rotate: "8deg", spin: "-0.6" },
+  { file: "ball.png", top: "18%", left: "62%", size: "2.6rem", depth: "mid", drift: "19s", delay: "-15s", rotate: "10deg", spin: "1.3" },
+  { file: "flag.png", top: "40%", left: "90%", size: "3.2rem", depth: "far", drift: "25s", delay: "-3s", rotate: "-10deg", spin: "-0.9" },
+  { file: "club-strike.png", top: "70%", left: "52%", size: "3.4rem", depth: "near", drift: "17s", delay: "-8s", rotate: "14deg", spin: "1.5" },
 ];
 
 const DEPTH_PARALLAX: Record<FloaterDepth, number> = {
@@ -38,16 +39,11 @@ const DEPTH_PARALLAX: Record<FloaterDepth, number> = {
   near: 1,
 };
 
-/**
- * Decorative page atmosphere: floating golf glyphs + scroll-linked washes.
- * taste-skill-ignore: owner asked for floating icons and scroll-linked grounds;
- * kept behind content, non-interactive, opacity scaled by intensity so body ink stays ≥7:1.
- */
+/** Floating golf glyphs + scroll-linked washes. taste-skill-ignore */
 export function PageAtmosphere({
   scrollRoot,
   intensity = "base",
 }: {
-  /** Mobile phone-frame scroller; omit on desktop so window scroll drives progress. */
   scrollRoot?: RefObject<HTMLElement | null>;
   intensity?: AtmosphereIntensity;
 }) {
@@ -81,10 +77,13 @@ export function PageAtmosphere({
       if (root) {
         layer.style.setProperty("--frame-h", `${root.clientHeight}px`);
       }
-      // Depth shift in the hovering field as you scroll.
       layer.style.setProperty(
         "--floater-shift",
         reduce || progress === 0 ? "0rem" : `${(progress * -3.25).toFixed(3)}rem`,
+      );
+      layer.style.setProperty(
+        "--floater-spin",
+        reduce || progress === 0 ? "0deg" : `${(progress * 48).toFixed(2)}deg`,
       );
     };
 
@@ -117,9 +116,9 @@ export function PageAtmosphere({
     >
       <div className="page-atmosphere__wash" />
       <ul className="page-atmosphere__floaters">
-        {FLOATERS.map((item) => (
+        {FLOATERS.map((item, index) => (
           <li
-            key={item.file}
+            key={`${item.file}-${item.top}-${item.left}-${index}`}
             className={`page-atmosphere__floater page-atmosphere__floater--${item.depth}`}
             data-depth={item.depth}
             style={
@@ -130,6 +129,7 @@ export function PageAtmosphere({
                 "--drift": item.drift,
                 "--delay": item.delay,
                 "--tilt": item.rotate,
+                "--spin": item.spin,
                 "--parallax": String(DEPTH_PARALLAX[item.depth]),
               } as CSSProperties
             }

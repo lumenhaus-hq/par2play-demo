@@ -38,14 +38,11 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
   const [menu, setMenu] = useState(false);
   const [onFilm, setOnFilm] = useState(true);
   const [active, setActive] = useState<string | null>(null);
-  // Match prerendered HTML (webdriver captures arrived); HeroVideo drives later phases.
   const [intro, setIntro] = useState<HeroIntroPhase>("arrived");
   const scrollRef = useRef<HTMLDivElement>(null);
-  // Desktop-only enrichment; touch devices skip tilt in the hook.
   const offerTiltRef = usePointerTilt<HTMLDivElement>(5);
   const mobile = flow.layout === "mobile";
   const scroll = mobile ? "h-full overflow-y-auto" : "";
-  // Offer + toolbar appear as the bay expands — don't wait for expand to finish.
   const chromeReady = intro === "expand" || intro === "arrived";
 
   const onPhase = useCallback((phase: HeroIntroPhase) => {
@@ -253,19 +250,21 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
       <section id="juniors" className={sectionSpace}>
         <div className="grid items-start gap-10 @3xl:grid-cols-2 @3xl:gap-16">
           <ScrollReveal tone="rise">
-            <h2 className="section-title offer-title text-4xl @5xl:text-6xl">Golf for kids</h2>
-            <p className="mt-6 max-w-md text-base leading-relaxed">Building the golfers of tomorrow.</p>
             <VideoSlot
               src={JUNIORS_FILM.src}
               srcMobile={JUNIORS_FILM.srcMobile}
               poster={JUNIORS_FILM.poster}
               posterAlt="A junior golfer swinging in a Par2Play simulator bay"
-              className="mt-8 aspect-video"
+              className="aspect-video"
               pausable
             />
           </ScrollReveal>
           <ScrollReveal tone="tilt" delay={80}>
-            <div className="grid gap-5">
+            <h2 className="section-title offer-title text-3xl @5xl:text-5xl">Golf for kids</h2>
+            <p className="mt-8 max-w-md font-display text-2xl font-semibold leading-tight tracking-tight">
+              Building the golfers of tomorrow.
+            </p>
+            <div className="mt-8 grid gap-5">
               <ValuePoint
                 icon={UserRound}
                 label="Future pros"
