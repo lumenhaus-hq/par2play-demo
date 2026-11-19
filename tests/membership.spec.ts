@@ -40,6 +40,33 @@ test("mobile membership shows CTAs and bento over the film", async ({ page }) =>
   await expect(band.getByRole("button", { name: /^(Play|Pause) video$/ })).toBeVisible();
 });
 
+test("mobile membership Member Day CTA stays a single readable line", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("./");
+  await setDemoLayout(page, "mobile");
+  const band = page.locator("#membership");
+  await band.scrollIntoViewIfNeeded();
+  const cta = band.getByRole("link", { name: "Experience a free Member Day", exact: true });
+  await expect(cta).toBeVisible();
+  const metrics = await cta.evaluate((node) => {
+    const label = node.querySelector(".cta-label-text") as HTMLElement;
+    const styles = getComputedStyle(label);
+    const rects = [...label.getClientRects()];
+    return {
+      whiteSpace: styles.whiteSpace,
+      textShadow: styles.textShadow,
+      lineCount: rects.length,
+      height: label.getBoundingClientRect().height,
+      fontSize: parseFloat(styles.fontSize),
+    };
+  });
+  expect(metrics.whiteSpace).toBe("nowrap");
+  // No ghost-line wipe shadow (was `0 1.1em currentColor` and stacked over wraps).
+  expect(metrics.textShadow.includes("1.1em")).toBe(false);
+  expect(metrics.lineCount).toBe(1);
+  expect(metrics.height).toBeLessThan(metrics.fontSize * 1.6);
+});
+
 test("desktop membership shows CTAs and bento over the film", async ({ page }) => {
   await page.goto("./");
   await setDemoLayout(page, "web");

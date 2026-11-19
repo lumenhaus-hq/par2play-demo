@@ -1825,7 +1825,8 @@ html.lenis.lenis-smooth {
 
 .cta-label-text {
   display: block;
-  transition: transform var(--motion-base) var(--motion-ease-wipe);
+  /* Keep one line — the old 1.1em text-shadow wipe stacked a ghost copy over wrapped labels. */
+  white-space: nowrap;
   text-shadow:
     0 0 0.55em color-mix(in srgb, currentColor 35%, transparent),
     0 0 1.1em color-mix(in srgb, var(--accent) 28%, transparent);
@@ -1904,15 +1905,14 @@ html.lenis.lenis-smooth {
     html:not(.motion-paused) .cta-shell:focus-visible .cta-fill {
       transform: none;
     }
+  }
+}
 
-    html:not(.motion-paused) .cta-shell:hover .cta-label-text,
-    html:not(.motion-paused) .cta-shell:focus-visible .cta-label-text {
-      transform: translateY(-1.1em);
-    }
-
-    html:not(.motion-paused) .cta-label-text {
-      text-shadow: 0 1.1em currentColor;
-    }
+/* Narrow membership / stacked CTAs — keep the long Member Day label readable. */
+@container (max-width: 28rem) {
+  .cta-shell {
+    padding-inline: 1rem;
+    font-size: 1rem;
   }
 }
 
