@@ -1,4 +1,6 @@
-/** Squiggly cue pointing at the header Book a Bay CTA. Decorative only. */
+/**
+ * Larger-than-life cue over the storefront centre — dotted looped arrow toward Book a Bay.
+ */
 export function HeroTryNow({ visible }: { visible: boolean }) {
   return (
     <div
@@ -9,24 +11,30 @@ export function HeroTryNow({ visible }: { visible: boolean }) {
       <span className="hero-try-now__label">Try now</span>
       <svg
         className="hero-try-now__arrow"
-        viewBox="0 0 88 72"
+        viewBox="0 0 160 150"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
+        {/* Start low-left → loop → climb up-right toward Book a Bay */}
         <path
           className="hero-try-now__stroke"
-          d="M10 58 C 18 42, 28 22, 42 18 C 54 14, 62 28, 70 20 C 74 16, 76 10, 78 6"
+          d="M 28 128
+             C 18 108, 22 88, 42 78
+             C 62 68, 78 92, 72 108
+             C 66 124, 42 118, 48 96
+             C 56 68, 78 48, 108 36
+             C 126 28, 138 18, 148 8"
           stroke="currentColor"
-          strokeWidth="3.2"
+          strokeWidth="4.2"
           strokeLinecap="round"
           strokeLinejoin="round"
           pathLength="1"
         />
         <path
           className="hero-try-now__head"
-          d="M68 4 L80 4 L76 16"
+          d="M 136 4 L 152 4 L 146 20"
           stroke="currentColor"
-          strokeWidth="3.2"
+          strokeWidth="4.2"
           strokeLinecap="round"
           strokeLinejoin="round"
           fill="none"
