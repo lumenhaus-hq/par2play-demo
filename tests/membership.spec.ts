@@ -6,7 +6,9 @@ test.beforeEach(async ({ page }) => {
 });
 
 async function expectMembershipBento(band: Locator) {
-  await expect(band.locator(".membership-bento__grid")).toBeVisible();
+  const grid = band.locator(".membership-bento__grid");
+  await expect(grid).toHaveCount(1);
+  await expect(grid).toBeVisible();
   await expect(band.getByRole("heading", { name: "Membership", exact: true })).toBeVisible();
   await expect(band.getByLabel("Club lineup")).toBeVisible();
   await expect(band.getByLabel("Preferred availability")).toBeVisible();
@@ -18,7 +20,7 @@ async function expectMembershipBento(band: Locator) {
   await expect(band.getByText("275", { exact: true })).toBeVisible();
   await expect(band.getByText("Your bag", { exact: true })).toHaveCount(0);
   await expect(band.locator(".membership-bento__benefits")).toHaveCount(0);
-  const heights = await band.locator(".membership-bento__tile").evaluateAll((tiles) =>
+  const heights = await grid.locator(".membership-bento__tile").evaluateAll((tiles) =>
     tiles.map((tile) => Math.round(tile.getBoundingClientRect().height)),
   );
   expect(heights.length).toBe(4);
@@ -52,10 +54,10 @@ test("membership montage pauses, resumes, and stays paused off screen", async ({
   await band.scrollIntoViewIfNeeded();
   await expect.poll(() => video.evaluate((node: HTMLVideoElement) => node.paused)).toBe(false);
   await expect.poll(() => video.evaluate((node: HTMLVideoElement) => node.muted)).toBe(true);
-  // Film sits under the bento; hit mid-frame of the strip.
-  await band.getByRole("button", { name: "Pause video", exact: true }).click({ position: { x: 40, y: 120 } });
+  // Film overlay card is centered — click a corner so the pause toggle receives the hit.
+  await band.getByRole("button", { name: "Pause video", exact: true }).click({ position: { x: 24, y: 24 } });
   await expect.poll(() => video.evaluate((node: HTMLVideoElement) => node.paused)).toBe(true);
-  await band.getByRole("button", { name: "Play video", exact: true }).click({ position: { x: 40, y: 120 } });
+  await band.getByRole("button", { name: "Play video", exact: true }).click({ position: { x: 24, y: 24 } });
   await expect.poll(() => video.evaluate((node: HTMLVideoElement) => node.paused)).toBe(false);
   await page.locator("footer").last().scrollIntoViewIfNeeded();
   await expect.poll(() => band.evaluate((node) => node.getBoundingClientRect().bottom)).toBeLessThanOrEqual(0);

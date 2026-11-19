@@ -433,6 +433,7 @@ body {
   --atmosphere-icon: 0.26;
   --atmosphere-icon-scale: 1;
   --floater-shift: 0rem;
+  --floater-spin: 0deg;
   --frame-h: 100vh;
 }
 
@@ -489,14 +490,15 @@ body {
 
 .page-atmosphere__floater {
   --parallax: 0.55;
+  --spin: 1;
   position: absolute;
   margin: 0;
   opacity: var(--atmosphere-icon);
-  /* Scroll depth shift + idle bob (bob lives on the img so transforms compose cleanly). */
+  /* Scroll depth + per-glyph spin; idle bob lives on the img. */
   transform:
     translate3d(0, calc(var(--floater-shift) * var(--parallax)), 0)
     scale(var(--atmosphere-icon-scale))
-    rotate(var(--tilt, 0deg));
+    rotate(calc(var(--tilt, 0deg) + (var(--floater-spin) * var(--spin))));
   will-change: transform;
   mix-blend-mode: multiply;
 }
@@ -518,8 +520,12 @@ body {
   width: 100%;
   height: auto;
   user-select: none;
-  /* Source glyphs are light; ink-tint them for paper grounds. */
-  filter: brightness(0);
+  /* Ink glyph + neon halo (mint/accent) — soft enough for WCAG body contrast. */
+  filter:
+    brightness(0)
+    drop-shadow(0 0 0.35rem color-mix(in srgb, var(--accent) 70%, transparent))
+    drop-shadow(0 0 0.85rem color-mix(in srgb, var(--mint) 55%, transparent))
+    drop-shadow(0 0 1.4rem color-mix(in srgb, var(--accent) 35%, transparent));
   animation: page-atmosphere-drift var(--drift, 20s) ease-in-out infinite;
   animation-delay: var(--delay, 0s);
 }
@@ -533,24 +539,27 @@ body {
 }
 
 [data-style="nocturne"] .page-atmosphere__floater img {
-  /* Keep light glyphs on dark paper. */
-  filter: none;
-  opacity: 0.85;
+  filter:
+    drop-shadow(0 0 0.4rem color-mix(in srgb, var(--accent) 80%, transparent))
+    drop-shadow(0 0 1rem color-mix(in srgb, var(--mint) 60%, transparent))
+    drop-shadow(0 0 1.6rem rgb(20 212 94 / 0.45));
+  opacity: 0.9;
 }
 
 @keyframes page-atmosphere-drift {
   0%,
   100% {
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0) rotate(0deg);
   }
   50% {
-    transform: translate3d(0.2rem, -1.1rem, 0);
+    transform: translate3d(0.2rem, -1.1rem, 0) rotate(6deg);
   }
 }
 
 .page-atmosphere--still .page-atmosphere__floater,
 html.motion-paused .page-atmosphere__floater {
   --floater-shift: 0rem;
+  --floater-spin: 0deg;
 }
 
 .page-atmosphere--still .page-atmosphere__floater img,
@@ -565,6 +574,7 @@ html.motion-paused .page-atmosphere__floater img {
 
   .page-atmosphere {
     --floater-shift: 0rem;
+    --floater-spin: 0deg;
   }
 }
 
@@ -1594,12 +1604,19 @@ html.lenis.lenis-smooth {
   z-index: 1;
   display: block;
   overflow: hidden;
-  line-height: 1.25;
+  line-height: 1.2;
+  font-family: var(--font-offer);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-transform: none;
 }
 
 .cta-label-text {
   display: block;
   transition: transform var(--motion-base) var(--motion-ease-wipe);
+  text-shadow:
+    0 0 0.55em color-mix(in srgb, currentColor 35%, transparent),
+    0 0 1.1em color-mix(in srgb, var(--accent) 28%, transparent);
 }
 
 /* Alias kept for markup that still names the stamp lift. */
@@ -2153,6 +2170,31 @@ html.motion-paused .benefit-card--dim {
   transform: none;
 }
 
+/* Membership film — title + CTAs centered over the montage. */
+.membership-film__shade {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background:
+    radial-gradient(ellipse 55% 60% at 50% 50%, rgb(5 12 8 / 0.55), rgb(5 12 8 / 0.28) 55%, rgb(5 12 8 / 0.45)),
+    linear-gradient(180deg, rgb(5 12 8 / 0.35), transparent 35%, transparent 65%, rgb(5 12 8 / 0.4));
+  pointer-events: none;
+}
+
+.membership-film__card {
+  padding: 1.25rem 1.5rem 1.5rem;
+  border-radius: 1.5rem;
+  background: rgb(5 12 8 / 0.42);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 12px 40px rgb(0 0 0 / 0.35);
+}
+
+.membership-film__card .section-title {
+  color: #fff;
+  text-shadow: 0 0 1.2em rgb(20 212 94 / 0.35);
+}
+
 /* Membership mobile bento — stacked squircle grid with golf media. */
 .membership-bento-stage {
   background:
@@ -2180,24 +2222,14 @@ html.motion-paused .benefit-card--dim {
   align-items: stretch;
 }
 
-/* Desktop / wide container: same equal 2×2 tiles beside the intro. */
+/* Desktop: full-width equal 2×2 under the film overlay. */
 @container (min-width: 48rem) {
-  .membership-bento {
-    display: grid;
-    grid-template-columns: minmax(16rem, 22rem) minmax(0, 1fr);
-    align-items: center;
-    gap: 2rem 2.5rem;
-    padding: 3rem 3rem 3.25rem;
+  .membership-bento,
+  .membership-bento--grid-only {
+    display: block;
+    padding: 2.5rem 3rem 3.25rem;
     max-width: 72rem;
     margin-inline: auto;
-  }
-
-  .membership-bento__intro {
-    margin-bottom: 0;
-  }
-
-  .membership-bento__intro .grid {
-    max-width: 18rem;
   }
 
   .membership-bento__grid {

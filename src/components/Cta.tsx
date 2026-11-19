@@ -8,7 +8,7 @@ export const buttonFocus = "aa-focus";
 /** White inner ring for a near-black fill sitting on a light page. */
 export const buttonFocusOnInk = "aa-focus-ink";
 
-const shell = `cta-shell inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-5 text-center text-base font-semibold`;
+const shell = `cta-shell inline-flex min-h-12 min-w-12 items-center justify-center rounded-full px-6 text-center text-lg font-extrabold tracking-tight`;
 
 const tones = {
   brand: `${shell} cta-brand ${buttonFocus}`,
