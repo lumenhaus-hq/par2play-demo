@@ -99,22 +99,34 @@ export function MembershipLink({
   );
 }
 
-export function PhoneLink({ className, children }: { className: string; children: ReactNode }) {
+export function PhoneLink({
+  className,
+  children,
+  offer,
+}: {
+  className: string;
+  children: ReactNode;
+  offer?: BookingOffer;
+}) {
   return (
-    <a className={className} href={NAP.phoneTel} onClick={(event) => trackAnchor(event.currentTarget)}>
+    <a
+      className={className}
+      href={NAP.phoneTel}
+      data-offer={offer}
+      onClick={(event) => trackAnchor(event.currentTarget)}
+    >
       {children}
     </a>
   );
 }
 
-/**
- * Home hero. Opens the on-site membership page so the visit sells Silver, Gold, and Platinum.
- */
+/** Home hero — call the studio to rent a bay. */
 export function HeroMembershipAction({ className = "" }: { className?: string }) {
   return (
-    <MembershipLink tone="inverted" className={className}>
-      Become a Member
-    </MembershipLink>
+    <PhoneLink className={`${tones.inverted} ${className}`} offer="bay">
+      <span className="cta-fill" aria-hidden="true" />
+      <CtaLabel>Bay Rental Call Us</CtaLabel>
+    </PhoneLink>
   );
 }
 

@@ -240,11 +240,11 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
             </div>
             <CtaPair className="mt-8">
               <BookLink className="w-full" offer="swing-evaluation">
-                Evaluate my Swing
+                Swing eval
               </BookLink>
-              <BookLink className="w-full" offer="bay" tone="line">
-                Book a Bay
-              </BookLink>
+              <CtaAnchor href={pageHref("coaching")} tone="line" className="w-full">
+                Book a single lesson
+              </CtaAnchor>
             </CtaPair>
           </ScrollReveal>
         </div>
@@ -284,11 +284,11 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
             </div>
             <CtaPair className="mt-8">
               <BookLink className="w-full" offer="junior">
-                Schedule a Lesson
+                Become a Junior Member
               </BookLink>
-              <CtaAnchor href={pageHref("juniors")} tone="line" className="w-full">
-                Learn More
-              </CtaAnchor>
+              <BookLink className="w-full" offer="junior-plus" tone="line">
+                Experience a Junior Class
+              </BookLink>
             </CtaPair>
           </ScrollReveal>
         </div>

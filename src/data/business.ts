@@ -117,6 +117,7 @@ export type BookingOffer =
   | "group"
   | "junior"
   | "junior-plus"
+  | "lesson-pack"
   | "tournament";
 
 /** Live GolfClock / oclock destinations. These replace the old phone fallback. */
@@ -182,6 +183,8 @@ export function bookingHref(offer: BookingOffer): string {
     case "junior":
     case "junior-plus":
       return OCLOCK.lessons;
+    case "lesson-pack":
+      return OCLOCK.lessonPacks;
     case "fitting":
       return OCLOCK.fitting;
     case "group":

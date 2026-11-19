@@ -6,24 +6,26 @@ import { OCLOCK, PRICES } from "../data/business";
 import { COACHING_FILM } from "../data/films";
 import { money } from "../data/membershipEstimate";
 
-type Mode = "evaluation" | "lessons";
+type Mode = "single" | "pack";
 
 const OPTIONS = [
-  { value: "evaluation", label: "Swing evaluation" },
-  { value: "lessons", label: "Lessons" },
+  { value: "single", label: "1 Lesson" },
+  { value: "pack", label: "10 Pack" },
 ] as const;
 
 export function CoachingPanel() {
-  const [mode, setMode] = useState<Mode>("evaluation");
-  const evaluation = mode === "evaluation";
-  const figure = evaluation ? money(PRICES.swingEvaluation) : money(PRICES.lessonSingle);
-  const heading = evaluation ? "Swing evaluation" : "Private lesson";
-  const live = evaluation
-    ? `Swing evaluation ${figure}. 50 to 60 minutes with a PGA professional.`
-    : `Private lesson ${figure}. ${PRICES.lessonMinutes} minutes with a PGA professional.`;
-  const access = evaluation ? "50–60 minutes" : `${PRICES.lessonMinutes} minutes`;
-  const offerParam = evaluation ? "swing_evaluation" : "private_lesson";
-  const orderRef = evaluation ? "ord_p2p_swing_evaluation" : "ord_p2p_private_lesson";
+  const [mode, setMode] = useState<Mode>("pack");
+  const pack = mode === "pack";
+  const figure = pack ? money(PRICES.lessonPack10) : money(PRICES.lessonSingle);
+  const heading = pack ? "10 Pack" : "Single lesson";
+  const live = pack
+    ? `10 Pack ${figure}. Ten private lessons. Save more by buying a 10 pack.`
+    : `Single lesson ${figure}. ${PRICES.lessonMinutes} minutes with a PGA professional.`;
+  const access = pack ? "10 private lessons" : `${PRICES.lessonMinutes} minutes`;
+  const offerParam = pack ? "lesson_pack_10" : "private_lesson";
+  const orderRef = pack ? "ord_p2p_lesson_pack_10" : "ord_p2p_private_lesson";
+  const checkoutBase = pack ? OCLOCK.lessonPacks : OCLOCK.lessons;
+  const note = pack ? "Save more by buying a 10 pack." : `${PRICES.lessonMinutes}-minute private lesson.`;
 
   return (
     <PricingHero
@@ -33,25 +35,22 @@ export function CoachingPanel() {
       figure={figure}
       live={live}
       film={COACHING_FILM}
-      primary={
-        evaluation
-          ? { offer: "swing-evaluation", label: "Evaluate my Swing" }
-          : { offer: "lesson", label: "Schedule a Lesson" }
-      }
-      secondary={{ offer: "bay", label: "Book a Bay" }}
-      selector={<JointToggle value={mode} options={OPTIONS} onChange={setMode} label="Coaching offer" tone="dark" />}
+      primary={{ offer: "swing-evaluation", label: "Swing eval" }}
+      secondary={{ offer: pack ? "lesson-pack" : "lesson", label: pack ? "Buy 10 Pack" : "Book a single lesson" }}
+      selector={<JointToggle value={mode} options={OPTIONS} onChange={setMode} label="Lesson offer" tone="dark" />}
+      comparison={<p className="text-base font-semibold text-white/80">{note}</p>}
       checkout={
         <BookingCheckout
           summaryTitle={heading}
           rows={[
             { label: "Offer", value: heading },
             { label: "Session", value: access },
-            { label: "Billing", value: "One-time" },
+            { label: "Billing", value: pack ? "One-time pack" : "One-time" },
             { label: "Price", value: figure },
           ]}
           totalLabel={figure}
           orderRef={orderRef}
-          checkoutHref={(fields) => appendCheckoutParams(OCLOCK.lessons, fields, offerParam)}
+          checkoutHref={(fields) => appendCheckoutParams(checkoutBase, fields, offerParam)}
         />
       }
     />

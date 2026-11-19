@@ -121,7 +121,7 @@ export function MembershipBento() {
         <div className="mt-5 grid grid-cols-1 gap-3">
           <MembershipLink className="cta-sheen w-full">Become a Member</MembershipLink>
           <BookLink className="w-full" offer="bay" tone="dark">
-            Book a Bay
+            Experience a free Member Day
           </BookLink>
         </div>
       </header>

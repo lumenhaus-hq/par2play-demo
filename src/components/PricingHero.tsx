@@ -1,11 +1,35 @@
 import type { ReactNode } from "react";
-import { BookLink, CtaPair } from "./Cta";
+import { BookLink, CtaAnchor, CtaPair } from "./Cta";
 import { Banknote } from "lucide-react";
 import { VideoSlot } from "./VideoSlot";
 import type { BookingOffer } from "../data/business";
 
+type PricingCta = {
+  label: string;
+  offer?: BookingOffer;
+  href?: string;
+};
+
 const figureClass =
   "mt-3 max-w-full font-display text-[clamp(2.25rem,14cqi,6rem)] font-semibold leading-none tracking-tight text-white @3xl:text-8xl";
+
+function PricingCtaLink({ action, tone }: { action: PricingCta; tone: "brand" | "inverted" }) {
+  if (action.href) {
+    return (
+      <CtaAnchor className="w-full" href={action.href} tone={tone} offer={action.offer}>
+        {action.label}
+      </CtaAnchor>
+    );
+  }
+  if (!action.offer) {
+    throw new Error("Pricing CTA needs an offer or href.");
+  }
+  return (
+    <BookLink className="w-full" offer={action.offer} tone={tone}>
+      {action.label}
+    </BookLink>
+  );
+}
 
 export function PricingHero({
   id,
@@ -27,8 +51,8 @@ export function PricingHero({
   live: string;
   selector?: ReactNode;
   comparison?: ReactNode;
-  primary: { offer: BookingOffer; label: string };
-  secondary?: { offer: BookingOffer; label: string };
+  primary: PricingCta;
+  secondary?: PricingCta;
   film: { src: string; srcMobile?: string; poster: string };
   checkout?: ReactNode;
 }) {
@@ -55,14 +79,8 @@ export function PricingHero({
           {selector ? <div className="mt-6 min-w-0">{selector}</div> : null}
           {comparison ? <div className="mt-6 min-w-0">{comparison}</div> : null}
           <CtaPair className="mt-6">
-            <BookLink className="w-full" offer={primary.offer}>
-              {primary.label}
-            </BookLink>
-            {secondary ? (
-              <BookLink className="w-full" offer={secondary.offer} tone="inverted">
-                {secondary.label}
-              </BookLink>
-            ) : null}
+            <PricingCtaLink action={primary} tone="brand" />
+            {secondary ? <PricingCtaLink action={secondary} tone="inverted" /> : null}
           </CtaPair>
         </div>
         <div className="relative flex min-h-72 w-full min-w-0 flex-col justify-end overflow-hidden @3xl:min-h-full">
