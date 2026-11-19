@@ -897,8 +897,11 @@ html.motion-paused .page-atmosphere__floater img {
 .hero-offer-dock {
   box-sizing: border-box;
   width: 100%;
-  /* Keep the storefront signage + doors readable above the offer plate. */
-  max-height: 36%;
+  /*
+   * Leave the upper film for PAR 2 PLAY signage, but tall enough that the
+   * pinned Bay Rental CTA never clips under overflow.
+   */
+  max-height: 42%;
   margin-top: auto;
 }
 
@@ -2205,18 +2208,44 @@ html.motion-paused .benefit-track {
 
 /* Keep offer plate + proof compact so the film stays readable above. */
 [data-hero-offer] .hero-offer-card {
-  padding-block: 0.5rem;
+  padding-block: 0.45rem;
   padding-inline: 0.75rem;
 }
 
-[data-hero-offer] .hero-offer-card .relative {
-  gap: 0.55rem;
+[data-hero-offer] .hero-offer-body {
+  gap: 0.45rem;
+}
+
+/* Phones: shrink the lockup so copy + CTA fit without eating the storefront. */
+@media (max-width: 767px) {
+  [data-hero-offer] .hero-sticker--block {
+    font-size: clamp(1.45rem, 7.2vw, 1.95rem);
+    line-height: 0.9;
+  }
+
+  [data-hero-offer] .hero-sticker--brush,
+  [data-hero-offer] .hero-sticker--script {
+    font-size: clamp(1.35rem, 6.8vw, 1.85rem);
+  }
+
+  [data-hero-offer] .hero-location {
+    margin-top: 0.35rem;
+    font-size: 0.78rem;
+  }
+
+  [data-hero-offer] .hero-stage--cta .cta-shell {
+    min-height: 2.75rem;
+  }
 }
 
 @container (min-width: 48rem) {
   [data-hero-offer] .hero-offer-card {
     padding-block: 1.25rem;
     padding-inline: 1.5rem;
+  }
+
+  [data-hero-offer] .hero-offer-body {
+    gap: 1.25rem;
   }
 }
 
