@@ -105,7 +105,7 @@ export function HeroLocation({ concept }: { concept: HeroConcept }) {
   }
 }
 
-/** Varsity stack: two outlined lines + slanted script overlap. */
+/** Varsity stack: two outlined lines + slanted script (no overlap on phones). */
 function PulseTitle() {
   return (
     <div className="hero-title hero-title--pulse hero-lockup min-w-0 max-w-full">
@@ -114,7 +114,7 @@ function PulseTitle() {
         <br />
         <MaskLine delay={70}>{"FOR\u00A0ALL"}</MaskLine>
       </p>
-      <p className="hero-sticker hero-sticker--script hero-font-yellowtail relative z-10 -mt-3 ml-2 w-fit rotate-[-5deg] text-[clamp(2.15rem,11cqi,3.75rem)] leading-none">
+      <p className="hero-sticker hero-sticker--script hero-font-yellowtail hero-sticker--ride relative z-10 ml-2 w-fit text-[clamp(2.15rem,11cqi,3.75rem)] leading-none">
         <MaskLine delay={150}>{"golfers."}</MaskLine>
         <ScriptMark className="hero-mark--pulse" />
       </p>
@@ -122,7 +122,7 @@ function PulseTitle() {
   );
 }
 
-/** Brush stamp energy — Marker script rides over a condensed block. */
+/** Brush stamp energy — Marker script under condensed block (stacked on phones). */
 function PlateTitle() {
   return (
     <div className="hero-title hero-title--plate hero-lockup min-w-0 max-w-full">
@@ -131,7 +131,7 @@ function PlateTitle() {
         <br />
         <MaskLine delay={70}>{"FOR"}</MaskLine>
       </p>
-      <p className="hero-sticker hero-sticker--brush hero-font-marker relative z-10 -mt-4 ml-1 w-fit rotate-[-4deg] text-[clamp(2rem,10cqi,3.45rem)] leading-none">
+      <p className="hero-sticker hero-sticker--brush hero-font-marker hero-sticker--ride relative z-10 ml-1 w-fit text-[clamp(2rem,10cqi,3.45rem)] leading-none">
         <MaskLine delay={140}>{"all golfers."}</MaskLine>
         <ScriptMark className="hero-mark--plate" />
       </p>
@@ -149,7 +149,7 @@ function DriveTitle() {
       <p className="hero-sticker hero-sticker--mega hero-font-space text-[clamp(2.55rem,13.5cqi,4.35rem)] font-bold uppercase leading-[0.8] tracking-[-0.045em]">
         <MaskLine delay={80}>{"ALL"}</MaskLine>
       </p>
-      <p className="hero-sticker hero-sticker--script hero-font-yellowtail relative z-10 -mt-3 ml-4 w-fit rotate-[-4deg] text-[clamp(1.95rem,9.5cqi,3.2rem)] leading-none">
+      <p className="hero-sticker hero-sticker--script hero-font-yellowtail hero-sticker--ride relative z-10 ml-4 w-fit text-[clamp(1.95rem,9.5cqi,3.2rem)] leading-none">
         <MaskLine delay={160}>{"golfers."}</MaskLine>
         <ScriptMark className="hero-mark--drive" />
       </p>

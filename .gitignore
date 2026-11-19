@@ -30,3 +30,5 @@ playwright-report/
 # Local agent skill kits (reinstall via npx skills add)
 .agents/
 .taste-skill/
+
+shots/

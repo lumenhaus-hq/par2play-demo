@@ -27,7 +27,6 @@ import { VisitLine } from "../components/VisitLine";
 import { faqGraph, homeGraph } from "../data/schema";
 import { COACHING_FILM, JUNIORS_FILM } from "../data/films";
 import { SITE_NAV, pageHref } from "../data/routes";
-import { usePointerTilt } from "../hooks/usePointerTilt";
 import { useFlow } from "../state/flow";
 
 const sectionSpace = "scroll-mt-32 px-6 py-20 @3xl:px-12 @3xl:py-24";
@@ -41,7 +40,6 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
   const [active, setActive] = useState<string | null>(null);
   const [intro, setIntro] = useState<HeroIntroPhase>("arrived");
   const scrollRef = useRef<HTMLDivElement>(null);
-  const offerTiltRef = usePointerTilt<HTMLDivElement>(5);
   const mobile = flow.layout === "mobile";
   const scroll = mobile ? "h-full overflow-y-auto" : "";
   const chromeReady = intro === "expand" || intro === "arrived";
@@ -183,10 +181,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
           }`}
           aria-hidden={chromeReady ? undefined : true}
         >
-          <div
-            ref={offerTiltRef}
-            className="hero-panel hero-panel-depth hero-panel-tilt hero-offer-card pointer-events-auto max-h-full w-full max-w-[36rem] overflow-hidden rounded-[1.35rem] px-4 py-3 @3xl:overflow-y-auto @3xl:px-7 @3xl:py-6"
-          >
+          <div className="hero-panel hero-panel-depth hero-offer-card pointer-events-auto max-h-full w-full max-w-[36rem] overflow-hidden rounded-[1.35rem] px-4 py-3 @3xl:overflow-y-auto @3xl:px-7 @3xl:py-6">
             <div className="hero-offer-sheen" aria-hidden="true" />
             <div className="relative flex min-w-0 flex-col gap-2.5 @3xl:gap-5">
               <div className="hero-stage hero-stage--copy min-w-0 max-w-full" data-hero-type={heroType}>

@@ -20,5 +20,5 @@ test("cinematic intro serves the HD zoom cut then the looping hero", async ({ pa
   await page.goto("./?intro=play");
   await expect.poll(() => hits.some((url) => /hero-intro-zoom\.(mp4|webm)/.test(url)), { timeout: 15_000 }).toBe(true);
   await expect.poll(() => hits.some((url) => /\/media\/hero\.(mp4|webm)/.test(url)), { timeout: 15_000 }).toBe(true);
-  await expect(page.getByText(/Animated map zooming into the Par2Play storefront/i)).toBeAttached();
+  await expect(page.getByText(/Animated HD map of New York zooming into New Jersey/i)).toBeAttached();
 });
