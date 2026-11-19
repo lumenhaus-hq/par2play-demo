@@ -26,14 +26,15 @@ export const HERO_MEDIA = {
 
 /** Map→storefront zoom that plays once before the looping hero film. */
 export const HERO_INTRO_MEDIA = {
-  mp4: media("media/hero-intro-zoom.mp4"),
-  webm: media("media/hero-intro-zoom.webm"),
-  poster: media("media/hero-intro-zoom-poster.jpg"),
+  // Cache-bust when the cut changes (Pages CDN can keep stale hero-intro-zoom.*).
+  mp4: media("media/hero-intro-zoom.mp4?v=world3"),
+  webm: media("media/hero-intro-zoom.webm?v=world3"),
+  poster: media("media/hero-intro-zoom-poster.jpg?v=world3"),
   /** Seconds — must stay ≤ HERO_INTRO_ZOOM.timing.maxSeconds. */
   durationS: 2.4,
   /** Seek the looping hero here so the handoff stays on the dusk storefront. */
   loopHandoffS: 6.2,
-  alt: "Animated HD map of New York zooming into New Jersey with oversized golf icons, ending on the Par2Play storefront in Somerset",
+  alt: "Animated HD map of New York zooming into New Jersey with golf icons, ending on the Par2Play storefront in Somerset",
 } as const;
 
 /**
