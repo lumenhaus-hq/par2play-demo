@@ -53,11 +53,46 @@ test("mobile preview keeps the scattered glyph field inside the phone frame", as
   const atmosphere = page.getByTestId("page-atmosphere");
   await expect(atmosphere).toHaveClass(/page-atmosphere--framed/);
   await expect(atmosphere.locator(".page-atmosphere__floater")).toHaveCount(12);
+  await expect(atmosphere.locator(".page-atmosphere__glyph")).toHaveCount(12);
   await expect(atmosphere.locator(".page-atmosphere__floater--near")).toHaveCount(3);
   const visibleNear = await atmosphere.locator(".page-atmosphere__floater--near").evaluateAll((nodes) =>
     nodes.filter((node) => getComputedStyle(node).display !== "none").length,
   );
   expect(visibleNear).toBe(3);
+  const paint = await atmosphere.evaluate((root) => {
+    const layer = getComputedStyle(root);
+    const near = root.querySelector<HTMLElement>(".page-atmosphere__floater--near")!;
+    const glyph = near.querySelector<HTMLElement>(".page-atmosphere__glyph")!;
+    const styles = getComputedStyle(glyph);
+    return {
+      iconToken: Number(layer.getPropertyValue("--atmosphere-icon")),
+      nearOpacity: Number(getComputedStyle(near).opacity),
+      fill: styles.backgroundColor,
+      mask: styles.maskImage || (styles as CSSStyleDeclaration & { webkitMaskImage?: string }).webkitMaskImage || "",
+    };
+  });
+  // Brand silhouette fill must stay opaque enough to read on phones (was ~0.24 black).
+  expect(paint.iconToken).toBeGreaterThanOrEqual(0.7);
+  expect(paint.nearOpacity).toBeGreaterThanOrEqual(0.7);
+  // Classic #14532d, signal #0a1f3d, or mist #0f2924 — all ≥7:1 on their papers.
+  expect(paint.fill).toMatch(/rgb\(\s*(20,\s*83,\s*45|10,\s*31,\s*61|15,\s*41,\s*36)\s*\)/);
+  expect(paint.mask).toMatch(/url\(/);
+});
+
+test("section titles carry a frosted blur plate", async ({ page }) => {
+  await page.goto("./");
+  await setDemoLayout(page, "web");
+  const plate = await page.locator(".section-title").first().evaluate((node) => {
+    const before = getComputedStyle(node, "::before");
+    return {
+      content: before.content,
+      filter: before.backdropFilter || (before as CSSStyleDeclaration & { webkitBackdropFilter?: string }).webkitBackdropFilter || "",
+      z: before.zIndex,
+    };
+  });
+  expect(plate.content).not.toBe("none");
+  expect(plate.filter).toMatch(/blur\(/);
+  expect(Number(plate.z)).toBeLessThan(0);
 });
 
 test("scroll shifts near floaters more than far ones", async ({ page }) => {
@@ -105,8 +140,8 @@ test("reduced motion freezes atmosphere floaters", async ({ page }) => {
   await expect
     .poll(() => atmosphere.evaluate((node) => getComputedStyle(node).getPropertyValue("--floater-shift").trim()))
     .toBe("0rem");
-  const animating = await atmosphere.locator(".page-atmosphere__floater img").evaluateAll((imgs) =>
-    imgs.some((img) => getComputedStyle(img).animationName !== "none" && getComputedStyle(img).animationName !== ""),
+  const animating = await atmosphere.locator(".page-atmosphere__glyph").evaluateAll((glyphs) =>
+    glyphs.some((glyph) => getComputedStyle(glyph).animationName !== "none" && getComputedStyle(glyph).animationName !== ""),
   );
   expect(animating).toBe(false);
 });

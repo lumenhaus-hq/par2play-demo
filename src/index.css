@@ -419,7 +419,7 @@ body {
 /*
  * Floating golf icons + extra wash behind content.
  * taste-skill-ignore: owner asked for floating icons and scroll-linked grounds;
- * opacity kept low so paper→ink contrast stays WCAG AAA for body copy.
+ * glyph fill stays ≥7:1 on paper; body ink contrast is unchanged (glyphs are aria-hidden).
  */
 .page-atmosphere {
   position: absolute;
@@ -429,8 +429,9 @@ body {
   pointer-events: none;
   /* No contain:paint — that traps position:fixed floaters to the page box. */
   --atmosphere-wash: 0.7;
-  /* Soft field across the whole viewport — multiply keeps copy readable. */
-  --atmosphere-icon: 0.26;
+  /* Forest green silhouette — ~8.4:1 on paper, neon halo reads over dark bands. */
+  --atmosphere-glyph-fill: #14532d;
+  --atmosphere-icon: 0.62;
   --atmosphere-icon-scale: 1;
   --floater-shift: 0rem;
   --floater-spin: 0deg;
@@ -439,14 +440,39 @@ body {
 
 .page-atmosphere--strong {
   --atmosphere-wash: 0.85;
-  --atmosphere-icon: 0.32;
+  --atmosphere-icon: 0.72;
   --atmosphere-icon-scale: 1.04;
 }
 
 .page-atmosphere--max {
   --atmosphere-wash: 1;
-  --atmosphere-icon: 0.38;
+  --atmosphere-icon: 0.8;
   --atmosphere-icon-scale: 1.08;
+}
+
+/* Phone-frame demo runs inside a desktop viewport — media queries won't fire. */
+.page-atmosphere--framed {
+  --atmosphere-icon: 0.74;
+}
+
+.page-atmosphere--framed.page-atmosphere--strong,
+.page-atmosphere--framed.page-atmosphere--max {
+  --atmosphere-icon: 0.82;
+}
+
+[data-style="signal"] .page-atmosphere {
+  /* Navy bay ink on cool paper — ≥10:1. */
+  --atmosphere-glyph-fill: #0a1f3d;
+}
+
+[data-style="mist"] .page-atmosphere {
+  /* Deep teal on mist paper — ≥7:1. */
+  --atmosphere-glyph-fill: #0f2924;
+}
+
+[data-style="nocturne"] .page-atmosphere {
+  /* Warm highlight on dark paper — ≥7:1. */
+  --atmosphere-glyph-fill: #e8d4b0;
 }
 
 .page-atmosphere__wash {
@@ -494,17 +520,16 @@ body {
   position: absolute;
   margin: 0;
   opacity: var(--atmosphere-icon);
-  /* Scroll depth + per-glyph spin; idle bob lives on the img. */
+  /* Scroll depth + per-glyph spin; idle bob lives on the glyph. */
   transform:
     translate3d(0, calc(var(--floater-shift) * var(--parallax)), 0)
     scale(var(--atmosphere-icon-scale))
     rotate(calc(var(--tilt, 0deg) + (var(--floater-spin) * var(--spin))));
   will-change: transform;
-  mix-blend-mode: multiply;
 }
 
 .page-atmosphere__floater--far {
-  opacity: calc(var(--atmosphere-icon) * 0.7);
+  opacity: calc(var(--atmosphere-icon) * 0.72);
 }
 
 .page-atmosphere__floater--mid {
@@ -515,35 +540,49 @@ body {
   opacity: var(--atmosphere-icon);
 }
 
-.page-atmosphere__floater img {
+/* Masked silhouette — brand fill stays WCAG-readable; neon halo for dark bands.
+   Source icons are thin line-art (~3% opaque), so hard shadows fatten the stroke. */
+.page-atmosphere__glyph {
   display: block;
   width: 100%;
-  height: auto;
+  aspect-ratio: 188 / 148;
+  background-color: var(--atmosphere-glyph-fill);
+  -webkit-mask-image: var(--glyph-url);
+  mask-image: var(--glyph-url);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
   user-select: none;
-  /* Ink glyph + neon halo (mint/accent) — soft enough for WCAG body contrast. */
   filter:
-    brightness(0)
-    drop-shadow(0 0 0.35rem color-mix(in srgb, var(--accent) 70%, transparent))
-    drop-shadow(0 0 0.85rem color-mix(in srgb, var(--mint) 55%, transparent))
-    drop-shadow(0 0 1.4rem color-mix(in srgb, var(--accent) 35%, transparent));
+    drop-shadow(0.7px 0 0 var(--atmosphere-glyph-fill))
+    drop-shadow(-0.7px 0 0 var(--atmosphere-glyph-fill))
+    drop-shadow(0 0.7px 0 var(--atmosphere-glyph-fill))
+    drop-shadow(0 -0.7px 0 var(--atmosphere-glyph-fill))
+    drop-shadow(0.55px 0.55px 0 var(--atmosphere-glyph-fill))
+    drop-shadow(-0.55px -0.55px 0 var(--atmosphere-glyph-fill))
+    drop-shadow(0.55px -0.55px 0 var(--atmosphere-glyph-fill))
+    drop-shadow(-0.55px 0.55px 0 var(--atmosphere-glyph-fill))
+    drop-shadow(0 0 0.45rem color-mix(in srgb, var(--accent) 78%, transparent))
+    drop-shadow(0 0 1.05rem color-mix(in srgb, var(--mint) 58%, transparent))
+    drop-shadow(0 0 1.7rem color-mix(in srgb, var(--accent) 38%, transparent));
   animation: page-atmosphere-drift var(--drift, 20s) ease-in-out infinite;
   animation-delay: var(--delay, 0s);
 }
 
-[data-style="nocturne"] .page-atmosphere__floater {
-  mix-blend-mode: screen;
-}
-
-[data-style="nocturne"] .page-atmosphere__floater--far {
-  filter: none;
-}
-
-[data-style="nocturne"] .page-atmosphere__floater img {
+[data-style="nocturne"] .page-atmosphere__glyph {
   filter:
-    drop-shadow(0 0 0.4rem color-mix(in srgb, var(--accent) 80%, transparent))
-    drop-shadow(0 0 1rem color-mix(in srgb, var(--mint) 60%, transparent))
-    drop-shadow(0 0 1.6rem rgb(20 212 94 / 0.45));
-  opacity: 0.9;
+    drop-shadow(0.7px 0 0 var(--atmosphere-glyph-fill))
+    drop-shadow(-0.7px 0 0 var(--atmosphere-glyph-fill))
+    drop-shadow(0 0.7px 0 var(--atmosphere-glyph-fill))
+    drop-shadow(0 -0.7px 0 var(--atmosphere-glyph-fill))
+    drop-shadow(0.55px 0.55px 0 var(--atmosphere-glyph-fill))
+    drop-shadow(-0.55px -0.55px 0 var(--atmosphere-glyph-fill))
+    drop-shadow(0 0 0.5rem color-mix(in srgb, var(--accent) 85%, transparent))
+    drop-shadow(0 0 1.15rem color-mix(in srgb, var(--mint) 65%, transparent))
+    drop-shadow(0 0 1.8rem rgb(226 163 58 / 0.5));
 }
 
 @keyframes page-atmosphere-drift {
@@ -562,13 +601,13 @@ html.motion-paused .page-atmosphere__floater {
   --floater-spin: 0deg;
 }
 
-.page-atmosphere--still .page-atmosphere__floater img,
-html.motion-paused .page-atmosphere__floater img {
+.page-atmosphere--still .page-atmosphere__glyph,
+html.motion-paused .page-atmosphere__glyph {
   animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .page-atmosphere__floater img {
+  .page-atmosphere__glyph {
     animation: none;
   }
 
@@ -579,20 +618,21 @@ html.motion-paused .page-atmosphere__floater img {
 }
 
 @media (max-width: 639px) {
+  /* Phones previously used ~0.24 black multiply — effectively invisible. */
   .page-atmosphere {
-    --atmosphere-icon: 0.24;
+    --atmosphere-icon: 0.78;
   }
 
   .page-atmosphere--strong,
   .page-atmosphere--max {
-    --atmosphere-icon: 0.3;
+    --atmosphere-icon: 0.86;
   }
 
   .page-atmosphere__floater {
-    width: 2.85rem !important;
+    width: 3.9rem !important;
   }
 
-  /* Keep the full 9-glyph field on phones — just smaller. */
+  /* Keep the full glyph field on phones — just smaller. */
   .page-atmosphere__floater--near {
     display: list-item;
   }
@@ -1493,11 +1533,16 @@ html.lenis.lenis-smooth {
 }
 
 /*
- * Section titles: stronger display type + soft brand halo.
- * taste-skill-ignore: owner asked for glow/outline on index titles;
- * ink stays dark / white so body contrast remains ≥7:1.
+ * Section titles: stronger display type + frosted plate + soft brand halo.
+ * taste-skill-ignore: owner asked for glow/outline + blur behind titles;
+ * ink stays dark / white so body contrast remains ≥7:1. No filter on the
+ * title itself — that would break backdrop-filter on the plate.
  */
 .section-title {
+  position: relative;
+  isolation: isolate;
+  display: inline-block;
+  max-width: 100%;
   font-family: var(--font-display);
   font-weight: 700;
   line-height: 0.95;
@@ -1510,12 +1555,41 @@ html.lenis.lenis-smooth {
     0 0 2.75rem color-mix(in srgb, var(--mint) 18%, transparent);
 }
 
+.section-title::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -0.32em -0.55em;
+  border-radius: 0.65em;
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  backdrop-filter: blur(16px) saturate(1.2);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--ink) 6%, transparent),
+    0 10px 28px color-mix(in srgb, var(--ink) 8%, transparent);
+  pointer-events: none;
+}
+
 .section-title--on-dark {
   color: #fff;
   text-shadow:
     0 1px 0 rgb(0 0 0 / 0.45),
     0 0 1.5rem color-mix(in srgb, var(--accent) 45%, transparent),
     0 0 3rem color-mix(in srgb, var(--mint) 28%, transparent);
+}
+
+.section-title--on-dark::before {
+  background: color-mix(in srgb, var(--void) 78%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, #fff 10%, transparent),
+    0 12px 32px rgb(0 0 0 / 0.35);
+}
+
+/* Full-width centered titles still get a plate that hugs the type. */
+.section-title.mx-auto {
+  display: block;
+  width: fit-content;
+  margin-inline: auto;
 }
 
 /* Archivo heavy for membership / coaching / juniors titles — beats .section-title display stack. */
@@ -1526,18 +1600,18 @@ html.lenis.lenis-smooth {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  html:not(.motion-paused) .section-title {
-    animation: section-title-glow 4.8s ease-in-out infinite;
+  html:not(.motion-paused) .section-title::before {
+    animation: section-title-plate 4.8s ease-in-out infinite;
   }
 }
 
-@keyframes section-title-glow {
+@keyframes section-title-plate {
   0%,
   100% {
-    filter: brightness(1);
+    opacity: 0.88;
   }
   50% {
-    filter: brightness(1.04);
+    opacity: 1;
   }
 }
 
@@ -2095,6 +2169,7 @@ html.motion-paused .draw-stroke {
 }
 
 html.motion-paused .section-title,
+html.motion-paused .section-title::before,
 html.motion-paused .reveal-block,
 html.motion-paused .hero-film-loader,
 html.motion-paused .hero-bay-frame--breathe {
@@ -2107,9 +2182,9 @@ html.motion-paused .reveal-block {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .section-title {
+  .section-title,
+  .section-title::before {
     animation: none !important;
-    filter: none;
   }
 
   .reveal-block {
