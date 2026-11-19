@@ -6,6 +6,10 @@
  *   public/media/hero.mp4
  *   public/media/hero.webm
  *   public/media/hero-poster.jpg
+ *
+ * Short LP5-style storefront zoom intro (≤2.8s, same 1920×1080 / 30fps HD
+ * pipeline) is specified in heroIntroZoom.ts — not shipped until the cut
+ * passes that acceptance list.
  */
 const media = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 
