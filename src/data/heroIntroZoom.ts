@@ -25,17 +25,18 @@ export const HERO_INTRO_ZOOM = {
   /** Creative brief — one continuous push, no hard cuts. */
   shot: {
     style:
-      "LP5 Marseille zoom: dark ground plane, extruded low-poly buildings, white location pin, then resolve into the real storefront photograph.",
+      "HD stylized map of New York diving west into New Jersey, with larger-than-life cartoon golf UI icons, then resolve into the real storefront photograph.",
     start:
-      "Elevated isometric / birds-eye of the Somerset block around Hamilton Street. Dark navy–bay ground, soft street grid, peach or mint extruded buildings, one white pin on Par2Play.",
+      "Wide HD aerial of the NY metro (Manhattan + Hudson + NJ). Dark navy water, peach extruded NYC blocks, mint NJ suburbs. Oversized cartoon icons: golf ball, flag, crossed clubs, map pin.",
     middle:
-      "Continuous camera dive into the pin. Ease-in-out curve (LP5 energy). Buildings grow detail; no UI chrome, no scale bar, no LP5 logo.",
+      "Continuous ease-in-out dive from NYC toward New Jersey / Somerset. Icons stay large and crisp in HD; no LP5 peach-only abstract field without NY geography.",
     end:
       "Photoreal Par2Play storefront at dusk matching storefront.jpg: brick facade, lit PAR 2 PLAY channel letters (green 2), INDOOR GOLF on the transom, glass doors centered. Hold the last beat so the bay can expand.",
     forbidden: [
       "Satellite / Google Earth watermark or credit",
-      "Cuts, whip pans, or cross-dissolves mid-zoom",
-      "Floating badges, stickers, or text overlays on the hero",
+      "Cuts, whip pans, or mid-zoom strobing",
+      "Soft upscaled tiny icons — icons must be HD-native and larger than life",
+      "Abstract building field with no recognizable NY→NJ geography",
       "Purple neon / glow-slop grading",
       "Ending on an interior bay before the storefront is readable",
     ],
@@ -137,7 +138,8 @@ export const HERO_INTRO_ZOOM = {
     silent: true,
     reducedMotionPoster: "public/media/hero-intro-zoom-poster.jpg",
     flashSafe: true,
-    textAlternative: "Animated map zooming into the Par2Play storefront in Somerset, NJ",
+    textAlternative:
+      "Animated HD map of New York zooming into New Jersey with oversized golf icons, ending on the Par2Play storefront in Somerset",
   },
 
   shipped: true,

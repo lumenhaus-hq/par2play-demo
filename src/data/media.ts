@@ -33,7 +33,7 @@ export const HERO_INTRO_MEDIA = {
   durationS: 2.4,
   /** Seek the looping hero here so the handoff stays on the dusk storefront. */
   loopHandoffS: 6.2,
-  alt: "Animated map zooming into the Par2Play storefront at 695 Hamilton Street, Somerset, NJ",
+  alt: "Animated HD map of New York zooming into New Jersey with oversized golf icons, ending on the Par2Play storefront in Somerset",
 } as const;
 
 /**
