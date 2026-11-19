@@ -55,6 +55,27 @@ test("hero shows a Try now cue aimed at Book a Bay", async ({ page }) => {
   await expect(cue).toContainText("Try now");
   await expect(cue).toHaveAttribute("aria-hidden", "true");
   await expect(page.locator("header").getByRole("link", { name: "Book a Bay", exact: true })).toBeVisible();
+  const place = await cue.evaluate((node) => {
+    const rect = node.getBoundingClientRect();
+    const hero = document.getElementById("hero")!.getBoundingClientRect();
+    return {
+      midX: (rect.left + rect.right) / 2,
+      midY: (rect.top + rect.bottom) / 2,
+      heroLeft: hero.left,
+      heroWidth: hero.width,
+      heroTop: hero.top,
+      heroHeight: hero.height,
+      fontSize: parseFloat(getComputedStyle(node.querySelector(".hero-try-now__label")!).fontSize),
+      dotted: getComputedStyle(node.querySelector(".hero-try-now__stroke")!).strokeDasharray,
+    };
+  });
+  // Storefront centre — not pinned to the far-right header corner.
+  expect(place.midX).toBeGreaterThan(place.heroLeft + place.heroWidth * 0.28);
+  expect(place.midX).toBeLessThan(place.heroLeft + place.heroWidth * 0.72);
+  expect(place.midY).toBeGreaterThan(place.heroTop + place.heroHeight * 0.18);
+  expect(place.fontSize).toBeGreaterThanOrEqual(28);
+  expect(place.dotted).not.toBe("none");
+  expect(place.dotted).not.toBe("");
 });
 
 test("member benefits tiles use readable large type", async ({ page }) => {
