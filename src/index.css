@@ -1021,6 +1021,132 @@ html.motion-paused .page-atmosphere__floater img {
     0 0 14px color-mix(in srgb, var(--accent) 22%, transparent);
 }
 
+/*
+ * Neon “Try now” + squiggly arrow — sits on the film below the sticky
+ * toolbar and aims up-right at Book a Bay. Kept fully inside the hero
+ * (overflow:hidden) so the tip approaches the toolbar edge.
+ */
+.hero-try-now {
+  --try-now-neon: #e8ff1a;
+  position: absolute;
+  top: 4.65rem;
+  right: clamp(0.5rem, 4vw, 3.5rem);
+  z-index: 20;
+  width: min(11.5rem, 56vw);
+  height: 7.25rem;
+  transform: rotate(-3deg);
+  filter: drop-shadow(0 0.14rem 0.18rem rgb(0 0 0 / 0.6)) drop-shadow(0 0 0.7rem rgb(232 255 26 / 0.4));
+}
+
+.hero-try-now__label {
+  position: absolute;
+  left: 0;
+  bottom: 0.15rem;
+  z-index: 2;
+  margin: 0;
+  font-family: var(--font-marker);
+  font-size: clamp(1.85rem, 6.2vw, 2.45rem);
+  line-height: 0.88;
+  letter-spacing: 0.01em;
+  color: var(--try-now-neon);
+  -webkit-text-stroke: 0.055em #041008;
+  paint-order: stroke fill;
+  text-shadow:
+    0.07em 0.09em 0 rgb(0 0 0 / 0.78),
+    0 0 0.4em rgb(0 0 0 / 0.5),
+    0 0 0.75em rgb(232 255 26 / 0.55);
+  transform: rotate(-12deg);
+  white-space: nowrap;
+}
+
+.hero-try-now__arrow {
+  position: absolute;
+  right: -0.35rem;
+  top: -0.15rem;
+  z-index: 1;
+  display: block;
+  width: min(9.75rem, 48vw);
+  height: auto;
+  transform: rotate(-42deg);
+  transform-origin: 20% 90%;
+  user-select: none;
+}
+
+@media (min-width: 768px) {
+  .hero-try-now {
+    top: 4.9rem;
+    right: clamp(1.5rem, 7vw, 5.25rem);
+    width: 13.75rem;
+    height: 8.25rem;
+  }
+
+  .hero-try-now__label {
+    font-size: clamp(2.15rem, 2.5vw, 2.75rem);
+    bottom: 0.35rem;
+  }
+
+  .hero-try-now__arrow {
+    width: 11.5rem;
+    right: -0.15rem;
+    top: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.motion-paused) .hero-chrome-in--try {
+    animation-delay: 220ms;
+  }
+
+  html:not(.motion-paused) .hero-chrome-in .hero-try-now__label {
+    animation: try-now-pop 720ms var(--motion-ease-enter) both;
+    animation-delay: 280ms;
+  }
+
+  html:not(.motion-paused) .hero-chrome-in .hero-try-now__arrow {
+    animation: try-now-draw 900ms var(--motion-ease-enter) both;
+    animation-delay: 420ms;
+  }
+
+  html:not(.motion-paused) .hero-chrome-in .hero-try-now {
+    animation: try-now-bob 2.6s ease-in-out 1.2s infinite;
+  }
+}
+
+@keyframes try-now-pop {
+  from {
+    opacity: 0;
+    transform: rotate(-12deg) translateY(0.7rem) scale(0.72);
+  }
+
+  to {
+    opacity: 1;
+    transform: rotate(-12deg) translateY(0) scale(1);
+  }
+}
+
+@keyframes try-now-draw {
+  from {
+    opacity: 0;
+    transform: rotate(-42deg) translate(-0.45rem, 0.85rem) scale(0.88);
+  }
+
+  to {
+    opacity: 1;
+    transform: rotate(-42deg) translate(0, 0) scale(1);
+  }
+}
+
+@keyframes try-now-bob {
+  0%,
+  100% {
+    transform: rotate(-3deg) translateY(0);
+  }
+
+  50% {
+    transform: rotate(-3deg) translateY(-0.28rem);
+  }
+}
+
 .nav-link {
   position: relative;
   border: 0;

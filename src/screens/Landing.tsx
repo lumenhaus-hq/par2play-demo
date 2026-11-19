@@ -19,6 +19,7 @@ import { ValuePoint } from "../components/ValuePoint";
 import { NAP, OCLOCK, golfClockBookingReady } from "../data/business";
 import { HERO_TICKER } from "../data/heroTicker";
 import { HeroLocation, HeroTitle } from "../components/HeroTitle";
+import { HeroTryNow } from "../components/HeroTryNow";
 import type { HeroTypeId } from "../data/heroType";
 import { JsonLd } from "../components/JsonLd";
 import { FaqSection } from "../components/FaqSection";
@@ -177,6 +178,14 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
       >
         <HeroVideo onPhase={onPhase} />
         <div className="hero-top-shade pointer-events-none absolute inset-x-0 top-0" aria-hidden="true" />
+        <div
+          className={`pointer-events-none absolute inset-x-0 top-0 z-20 ${
+            chromeReady ? "hero-chrome-in hero-chrome-in--try" : "opacity-0"
+          }`}
+          aria-hidden={chromeReady ? undefined : true}
+        >
+          <HeroTryNow />
+        </div>
         <div
           data-hero-offer
           className={`hero-offer-dock relative z-10 flex items-end justify-end px-6 pb-3 pt-2 @3xl:px-12 @3xl:pb-6 @3xl:pt-[4.5rem] ${
