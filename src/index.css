@@ -922,10 +922,10 @@ html.motion-paused .page-atmosphere__floater img {
   pointer-events: none;
   position: absolute;
   top: 0;
-  right: 0;
+  left: 0;
   width: min(7.5rem, 42%);
   height: min(4.25rem, 38%);
-  border-radius: 0 1.35rem 0 100%;
+  border-radius: 1.35rem 0 100% 0;
   background:
     linear-gradient(135deg, rgb(255 255 255 / 0.16) 0%, transparent 72%),
     linear-gradient(200deg, color-mix(in srgb, var(--accent) 14%, transparent) 0%, transparent 70%);
@@ -1091,21 +1091,23 @@ html.motion-paused .page-atmosphere__floater img {
     0 0.02em 0.32em rgb(0 0 0 / 0.28);
 }
 
-/* Storefront-centre “Try now” — large glow pulse + dotted loop toward Book a Bay. */
+/* Top-right “Try now” — glow pulse + dotted loop climbing into Book a Bay. */
 .hero-try-now {
   position: absolute;
-  top: 28%;
-  left: 46%;
+  top: 5.1rem;
+  right: 1.25rem;
+  left: auto;
   z-index: 25;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.2rem;
-  width: min(14rem, 42vw);
+  align-items: flex-end;
+  gap: 0;
+  width: min(13.5rem, 38vw);
   color: var(--accent);
   opacity: 0;
-  transform: translate3d(-40%, 0.8rem, 0) rotate(-4deg);
+  transform: translate3d(0.35rem, 0.55rem, 0) rotate(3deg);
   pointer-events: none;
+  overflow: visible;
   filter:
     drop-shadow(0 0 0.45rem rgb(198 255 26 / 0.55))
     drop-shadow(0 0 1.2rem rgb(20 212 94 / 0.45));
@@ -1113,15 +1115,19 @@ html.motion-paused .page-atmosphere__floater img {
 
 .hero-try-now--in {
   opacity: 1;
-  transform: translate3d(-40%, 0, 0) rotate(-2deg);
+  transform: translate3d(0, 0, 0) rotate(2deg);
   transition:
     opacity 560ms var(--motion-ease-enter) 160ms,
     transform 560ms var(--motion-ease-enter) 160ms;
 }
 
 .hero-try-now__label {
+  position: relative;
+  z-index: 1;
+  margin-right: 4.75rem;
+  margin-top: 4.5rem;
   font-family: var(--font-marker);
-  font-size: clamp(2.35rem, 5.2vw, 3.65rem);
+  font-size: clamp(2.2rem, 4.6vw, 3.35rem);
   line-height: 0.92;
   letter-spacing: 0.02em;
   color: #fff;
@@ -1134,10 +1140,11 @@ html.motion-paused .page-atmosphere__floater img {
 }
 
 .hero-try-now__arrow {
-  width: min(11rem, 34vw);
+  position: absolute;
+  top: -0.35rem;
+  right: 0.15rem;
+  width: min(11.5rem, 32vw);
   height: auto;
-  margin-top: -0.35rem;
-  margin-left: 1.5rem;
   color: color-mix(in srgb, var(--accent) 92%, white);
   filter:
     drop-shadow(0 0 0.35rem rgb(198 255 26 / 0.7))
@@ -1226,18 +1233,19 @@ html.motion-paused .page-atmosphere__floater img {
 
 @media (max-width: 639px) {
   .hero-try-now {
-    top: 24%;
-    left: 42%;
-    width: min(11rem, 58vw);
+    top: 4.6rem;
+    right: 0.55rem;
+    width: min(11rem, 62vw);
   }
 
   .hero-try-now__label {
-    font-size: clamp(1.85rem, 9vw, 2.45rem);
+    margin-right: 3.4rem;
+    margin-top: 3.6rem;
+    font-size: clamp(1.75rem, 8.5vw, 2.35rem);
   }
 
   .hero-try-now__arrow {
-    width: min(8.5rem, 48vw);
-    margin-left: 0.85rem;
+    width: min(9rem, 52vw);
   }
 }
 

@@ -178,7 +178,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
         <HeroTryNow visible={chromeReady} />
         <div
           data-hero-offer
-          className={`hero-offer-dock relative z-10 flex items-end justify-end px-6 pb-3 pt-2 @3xl:px-12 @3xl:pb-6 @3xl:pt-[4.5rem] ${
+          className={`hero-offer-dock relative z-10 flex items-end justify-start px-6 pb-3 pt-2 @3xl:px-12 @3xl:pb-6 @3xl:pt-[4.5rem] ${
             chromeReady ? "hero-chrome-in" : "pointer-events-none opacity-0"
           }`}
           aria-hidden={chromeReady ? undefined : true}
