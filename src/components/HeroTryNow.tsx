@@ -1,5 +1,5 @@
 /**
- * Larger-than-life cue over the storefront centre — dotted looped arrow toward Book a Bay.
+ * Compact cue tucked under the header Book a Bay control — short static arrow.
  */
 export function HeroTryNow({ visible }: { visible: boolean }) {
   return (
@@ -8,39 +8,33 @@ export function HeroTryNow({ visible }: { visible: boolean }) {
       aria-hidden="true"
       data-testid="hero-try-now"
     >
-      <span className="hero-try-now__label">Try now</span>
       <svg
         className="hero-try-now__arrow"
-        viewBox="0 0 160 150"
+        viewBox="0 0 72 64"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        {/* Start low-left → loop → climb up-right toward Book a Bay */}
+        {/* Short climb up-right toward Book a Bay */}
         <path
           className="hero-try-now__stroke"
-          d="M 28 128
-             C 18 108, 22 88, 42 78
-             C 62 68, 78 92, 72 108
-             C 66 124, 42 118, 48 96
-             C 56 68, 78 48, 108 36
-             C 126 28, 138 18, 148 8"
+          d="M 10 54 C 18 40, 28 22, 52 10"
           stroke="currentColor"
-          strokeWidth="4.2"
+          strokeWidth="3.6"
           strokeLinecap="round"
           strokeLinejoin="round"
           pathLength="1"
         />
         <path
           className="hero-try-now__head"
-          d="M 136 4 L 152 4 L 146 20"
+          d="M 42 6 L 56 6 L 52 18"
           stroke="currentColor"
-          strokeWidth="4.2"
+          strokeWidth="3.6"
           strokeLinecap="round"
           strokeLinejoin="round"
           fill="none"
-          pathLength="1"
         />
       </svg>
+      <span className="hero-try-now__label">Try now</span>
     </div>
   );
 }

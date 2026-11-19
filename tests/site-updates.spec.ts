@@ -51,31 +51,44 @@ test("hero shows a Try now cue aimed at Book a Bay", async ({ page }) => {
   await page.goto("./");
   await setDemoLayout(page, "web");
   const cue = page.getByTestId("hero-try-now");
+  const book = page.locator("header").getByRole("link", { name: "Book a Bay", exact: true });
   await expect(cue).toBeVisible();
   await expect(cue).toContainText("Try now");
   await expect(cue).toHaveAttribute("aria-hidden", "true");
-  await expect(page.locator("header").getByRole("link", { name: "Book a Bay", exact: true })).toBeVisible();
-  const place = await cue.evaluate((node) => {
-    const rect = node.getBoundingClientRect();
-    const hero = document.getElementById("hero")!.getBoundingClientRect();
+  await expect(book).toBeVisible();
+  const place = await Promise.all([
+    cue.boundingBox(),
+    book.boundingBox(),
+    cue.evaluate((node) => {
+      const stroke = node.querySelector(".hero-try-now__stroke") as SVGElement;
+      return {
+        fontSize: parseFloat(getComputedStyle(node.querySelector(".hero-try-now__label")!).fontSize),
+        dotted: getComputedStyle(stroke).strokeDasharray,
+        anim: getComputedStyle(stroke).animationName,
+      };
+    }),
+  ]).then(([cueBox, bookBox, style]) => {
+    expect(cueBox).toBeTruthy();
+    expect(bookBox).toBeTruthy();
     return {
-      midX: (rect.left + rect.right) / 2,
-      midY: (rect.top + rect.bottom) / 2,
-      heroLeft: hero.left,
-      heroWidth: hero.width,
-      heroTop: hero.top,
-      heroHeight: hero.height,
-      fontSize: parseFloat(getComputedStyle(node.querySelector(".hero-try-now__label")!).fontSize),
-      dotted: getComputedStyle(node.querySelector(".hero-try-now__stroke")!).strokeDasharray,
+      midX: cueBox!.x + cueBox!.width / 2,
+      midY: cueBox!.y + cueBox!.height / 2,
+      bookLeft: bookBox!.x,
+      bookRight: bookBox!.x + bookBox!.width,
+      bookBottom: bookBox!.y + bookBox!.height,
+      ...style,
     };
   });
-  // Storefront centre — not pinned to the far-right header corner.
-  expect(place.midX).toBeGreaterThan(place.heroLeft + place.heroWidth * 0.28);
-  expect(place.midX).toBeLessThan(place.heroLeft + place.heroWidth * 0.72);
-  expect(place.midY).toBeGreaterThan(place.heroTop + place.heroHeight * 0.18);
-  expect(place.fontSize).toBeGreaterThanOrEqual(28);
+  // Tucked under Book a Bay — close on X, just below the button.
+  expect(place.midX).toBeGreaterThan(place.bookLeft - 48);
+  expect(place.midX).toBeLessThan(place.bookRight + 24);
+  expect(place.midY).toBeGreaterThan(place.bookBottom - 8);
+  expect(place.midY).toBeLessThan(place.bookBottom + 140);
+  expect(place.fontSize).toBeGreaterThanOrEqual(18);
   expect(place.dotted).not.toBe("none");
   expect(place.dotted).not.toBe("");
+  // Arrow stays static (no dash/draw loop).
+  expect(place.anim === "none" || place.anim === "").toBe(true);
 });
 
 test("member benefits tiles use readable large type", async ({ page }) => {
