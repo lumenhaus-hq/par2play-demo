@@ -27,9 +27,9 @@ export const HERO_MEDIA = {
 /** Map→storefront zoom that plays once before the looping hero film. */
 export const HERO_INTRO_MEDIA = {
   // Cache-bust when the cut changes (Pages CDN can keep stale hero-intro-zoom.*).
-  mp4: media("media/hero-intro-zoom.mp4?v=world3"),
-  webm: media("media/hero-intro-zoom.webm?v=world3"),
-  poster: media("media/hero-intro-zoom-poster.jpg?v=world3"),
+  mp4: media("media/hero-intro-zoom.mp4?v=hd5"),
+  webm: media("media/hero-intro-zoom.webm?v=hd5"),
+  poster: media("media/hero-intro-zoom-poster.jpg?v=hd5"),
   /** Seconds — must stay ≤ HERO_INTRO_ZOOM.timing.maxSeconds. */
   durationS: 2.4,
   /** Seek the looping hero here so the handoff stays on the dusk storefront. */
