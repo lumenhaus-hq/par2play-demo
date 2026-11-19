@@ -21,7 +21,7 @@ export function MembershipPage() {
         <JsonLd data={membershipGraph()} />
         <Breadcrumbs current="Membership" />
         <MembershipCalculator />
-        <p className="mt-8 text-base">
+        <p className="mt-8 text-lg">
           <a className={`underline decoration-2 underline-offset-4 ${buttonFocus}`} href={pageHref("coaching")}>
             Golf lessons in Somerset
           </a>
@@ -38,7 +38,7 @@ export function CoachingPage() {
         <JsonLd data={coachingGraph()} />
         <Breadcrumbs current="Golf lessons" />
         <CoachingPanel />
-        <p className="mt-10 max-w-2xl text-base leading-relaxed">
+        <p className="mt-10 max-w-2xl text-lg leading-relaxed">
           Lessons and swing evaluations with PGA professionals.{" "}
           <a className={`underline decoration-2 underline-offset-4 ${buttonFocus}`} href={pageHref("membership")}>
             Indoor golf membership
@@ -75,9 +75,9 @@ export function EventsPage() {
         <div className="mt-8">
           <EventGallery />
         </div>
-        <p className="mt-8 text-base text-[#4B5563]">2-hour or 3-hour bookings. Package price on request.</p>
+        <p className="mt-8 text-lg text-[#4B5563]">2-hour or 3-hour bookings. Package price on request.</p>
         <p className="mt-8">
-          <a href={pageHref("")} className={`inline-flex min-h-11 items-center text-base font-semibold underline decoration-2 underline-offset-4 ${buttonFocus}`}>
+          <a href={pageHref("")} className={`inline-flex min-h-11 items-center text-lg font-semibold underline decoration-2 underline-offset-4 ${buttonFocus}`}>
             Back to the landing page
           </a>
         </p>
@@ -93,7 +93,7 @@ export function TournamentPage() {
         <JsonLd data={tournamentGraph()} />
         <Breadcrumbs current="Fall League" />
         <TournamentPanel />
-        <p className="mx-auto mt-10 max-w-xl text-center text-base text-[#4B5563]">18 holes per round. Entry price on request.</p>
+        <p className="mx-auto mt-10 max-w-xl text-center text-lg text-[#4B5563]">18 holes per round. Entry price on request.</p>
         <div className="mt-10">
           <TournamentForm />
         </div>
@@ -107,7 +107,7 @@ export function NotFoundPage() {
     <PageFrame>
       <article className={pageSpace}>
         <h1 className="font-display text-4xl font-semibold tracking-tight">That page is not here.</h1>
-        <p className="mt-4 max-w-xl text-base leading-relaxed">Try the membership page, or go back to the start.</p>
+        <p className="mt-4 max-w-xl text-lg leading-relaxed">Try the membership page, or go back to the start.</p>
         <CtaPair className="mt-8">
           <a
             href={pageHref("membership")}

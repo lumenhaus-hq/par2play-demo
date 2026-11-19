@@ -33,7 +33,7 @@ export function EventsPanel() {
       secondary={{ offer: "bay", label: "Try it out" }}
       selector={
         <div>
-          <label htmlFor={sliderId} className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-base font-semibold text-white">
+          <label htmlFor={sliderId} className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-lg font-semibold text-white">
             <output htmlFor={sliderId} className="font-display text-5xl font-semibold leading-none text-mint tabular-nums">
               {guests}
             </output>
@@ -64,7 +64,7 @@ export function EventsPanel() {
               <button
                 key={choice}
                 type="button"
-                className={`aa-focus-ink min-h-11 rounded-full px-3 text-sm font-semibold whitespace-nowrap @3xl:text-base ${hours === choice ? "bg-white text-ink" : "text-white"}`}
+                className={`aa-focus-ink min-h-11 rounded-full px-3 text-base font-semibold whitespace-nowrap @3xl:text-lg ${hours === choice ? "bg-white text-ink" : "text-white"}`}
                 aria-pressed={hours === choice}
                 onClick={() => setHours(choice)}
               >
@@ -72,7 +72,7 @@ export function EventsPanel() {
               </button>
             ))}
           </div>
-          <p className="mt-4 text-base font-semibold text-white">
+          <p className="mt-4 text-lg font-semibold text-white">
             {bays} {bayWord} · {hours} {hourWord}
           </p>
         </div>

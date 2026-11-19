@@ -47,6 +47,34 @@ test("navbar shows Golf for Kids and Book a Bay on mobile widths", async ({ page
   await expect(page.getByRole("navigation", { name: "Page" }).getByRole("link", { name: "Golf for Kids", exact: true })).toBeVisible();
 });
 
+test("hero shows a Try now cue aimed at Book a Bay", async ({ page }) => {
+  await page.goto("./");
+  await setDemoLayout(page, "web");
+  const cue = page.getByTestId("hero-try-now");
+  await expect(cue).toBeVisible();
+  await expect(cue).toContainText("Try now");
+  await expect(cue).toHaveAttribute("aria-hidden", "true");
+  await expect(page.locator("header").getByRole("link", { name: "Book a Bay", exact: true })).toBeVisible();
+});
+
+test("member benefits tiles use readable large type", async ({ page }) => {
+  await page.goto("membership/");
+  const benefits = page.getByLabel("Member benefits");
+  await expect(benefits).toBeVisible();
+  const metrics = await benefits.locator(".member-benefits__title").first().evaluate((node) => {
+    const styles = getComputedStyle(node);
+    const line = node.parentElement?.querySelector(".member-benefits__line");
+    const lineColor = line ? getComputedStyle(line).color : "";
+    return {
+      titleSize: parseFloat(styles.fontSize),
+      lineSize: line ? parseFloat(getComputedStyle(line).fontSize) : 0,
+      lineColor,
+    };
+  });
+  expect(metrics.titleSize).toBeGreaterThanOrEqual(17);
+  expect(metrics.lineSize).toBeGreaterThanOrEqual(15);
+});
+
 test("coaching and juniors checkout forms live inside the pricing panel", async ({ page }) => {
   await page.goto("coaching/");
   const coaching = page.locator("#coaching-offer");
@@ -68,31 +96,33 @@ test("mobile homepage membership uses the golf bento grid", async ({ page }) => 
   const metrics = await band.evaluate((node) => {
     const grid = node.querySelector(".membership-bento__grid")!;
     const availability = node.querySelector('[aria-label="Preferred availability"]')!;
-    const stage = node.querySelector(".membership-bento-stage") ?? node.firstElementChild!;
+    const film = node.querySelector(".membership-film")!;
     const tiles = [...grid.querySelectorAll(".membership-bento__tile")].map((tile) =>
       Math.round(tile.getBoundingClientRect().height),
     );
     const gridRect = grid.getBoundingClientRect();
+    const filmRect = film.getBoundingClientRect();
     return {
       gridTop: gridRect.top,
       gridBottom: gridRect.bottom,
       availabilityTop: availability.getBoundingClientRect().top,
-      background: getComputedStyle(stage).backgroundColor,
       filmCount: node.querySelectorAll("video").length,
       tileHeights: tiles,
       viewportHeight: window.innerHeight,
+      gridInsideFilm:
+        gridRect.top >= filmRect.top - 1 &&
+        gridRect.bottom <= filmRect.bottom + 1,
     };
   });
   expect(metrics.availabilityTop).toBeGreaterThanOrEqual(metrics.gridTop);
   expect(metrics.filmCount).toBe(1);
+  expect(metrics.gridInsideFilm).toBe(true);
   const [firstHeight, ...restHeights] = metrics.tileHeights;
   expect(firstHeight).toBeGreaterThan(0);
   for (const height of restHeights) {
     expect(Math.abs(height - firstHeight)).toBeLessThanOrEqual(2);
   }
   expect(metrics.gridBottom - metrics.gridTop).toBeLessThanOrEqual(metrics.viewportHeight * 0.72);
-  // Light stage behind dark tiles (not the old full-bleed void film band).
-  expect(metrics.background).not.toBe("rgb(2, 8, 6)");
   await expect(band.getByLabel("Simulator stats")).toBeVisible();
   await expect(band.getByLabel("Progress")).toBeVisible();
   await expect(band.getByLabel("Preferred availability")).toBeVisible();

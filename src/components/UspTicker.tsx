@@ -7,7 +7,7 @@ function Chip({ label, webp, jpg }: { label: string; webp: string; jpg: string }
         <source srcSet={webp} type="image/webp" />
         <img src={jpg} alt="" width={44} height={44} className="size-11 rounded-xl object-cover" />
       </picture>
-      <span className="text-base font-semibold text-ink">{label}</span>
+      <span className="text-lg font-semibold text-ink">{label}</span>
     </li>
   );
 }

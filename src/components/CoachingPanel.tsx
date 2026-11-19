@@ -38,7 +38,7 @@ export function CoachingPanel() {
       primary={{ offer: "swing-evaluation", label: "Swing eval" }}
       secondary={{ offer: pack ? "lesson-pack" : "lesson", label: pack ? "Buy 10 Pack" : "Book a single lesson" }}
       selector={<JointToggle value={mode} options={OPTIONS} onChange={setMode} label="Lesson offer" tone="dark" />}
-      comparison={<p className="text-base font-semibold text-white/80">{note}</p>}
+      comparison={<p className="text-lg font-semibold text-white/85">{note}</p>}
       checkout={
         <BookingCheckout
           summaryTitle={heading}

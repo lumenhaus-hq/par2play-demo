@@ -10,7 +10,7 @@ const link = `underline decoration-2 underline-offset-4 ${buttonFocus}`;
 export function VisitLine() {
   return (
     <div>
-      <p className="text-base leading-relaxed">
+      <p className="text-lg leading-relaxed">
         {`${NAP.name} · ${NAP.street}, ${NAP.city}, ${NAP.region} ${NAP.postalCode} · `}
         <PhoneLink className={link}>{NAP.phoneDisplay}</PhoneLink>
         {` · `}
@@ -18,13 +18,13 @@ export function VisitLine() {
           {NAP.email}
         </a>
       </p>
-      <p className="mt-2 text-base">
+      <p className="mt-2 text-lg">
         {`Open ${HOURS_LABEL}. `}
         <a className={link} href={MAPS_URL}>
           Directions
         </a>
       </p>
-      <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-base">
+      <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-lg">
         <a className={link} href={INSTAGRAM_URL}>
           Instagram
         </a>
