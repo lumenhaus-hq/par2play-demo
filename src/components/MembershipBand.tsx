@@ -81,17 +81,13 @@ function FilmToggle({ paused, onToggle }: { paused: boolean; onToggle: () => voi
   );
 }
 
-function MembershipIntro({ className = "", onDark = false }: { className?: string; onDark?: boolean }) {
+function MembershipIntro() {
   return (
-    <header className={className}>
-      <h2
-        className={`section-title offer-title text-4xl @5xl:text-6xl${onDark ? " section-title--on-dark" : ""}`}
-      >
-        Membership
-      </h2>
-      <div className="mt-5 grid grid-cols-1 gap-3">
+    <header className="membership-film__intro">
+      <h2 className="section-title section-title--on-dark offer-title text-4xl @5xl:text-6xl">Membership</h2>
+      <div className="mt-5 grid w-full max-w-md grid-cols-1 gap-3">
         <MembershipLink className="cta-sheen w-full">Become a Member</MembershipLink>
-        <BookLink className="w-full" offer="bay" tone={onDark ? "inverted" : "dark"}>
+        <BookLink className="w-full" offer="bay" tone="inverted">
           Experience a free Member Day
         </BookLink>
       </div>
@@ -99,21 +95,24 @@ function MembershipIntro({ className = "", onDark = false }: { className?: strin
   );
 }
 
-function MembershipFilm() {
+/** Title, CTAs, and bento grid stacked over the membership montage. */
+function MembershipStage() {
   const reduce = usePrefersReducedMotion();
   const [paused, setPaused] = useState(false);
   const toggle = () => setPaused((value) => !value);
 
   return (
-    <div className="membership-film relative aspect-video w-full overflow-hidden @3xl:aspect-[21/9] @3xl:max-h-[32rem]">
+    <div className="membership-film relative overflow-hidden bg-void text-white">
       <MontageFilm paused={paused} reduce={reduce} />
       <div className="membership-film__shade" aria-hidden="true" />
       {reduce ? null : <FilmToggle paused={paused} onToggle={toggle} />}
-      <div className="membership-film__overlay pointer-events-none absolute inset-0 z-20 flex items-center justify-center px-8 py-10">
-        <MembershipIntro
-          onDark
-          className="pointer-events-auto membership-film__card mx-auto w-full max-w-md text-center"
-        />
+      <div className="membership-film__overlay pointer-events-none relative z-20 mx-auto flex w-full max-w-6xl flex-col items-center gap-6 px-4 py-10 @3xl:gap-8 @3xl:px-10 @3xl:py-14">
+        <div className="pointer-events-auto w-full max-w-md">
+          <MembershipIntro />
+        </div>
+        <div className="pointer-events-auto membership-film__grid w-full">
+          <MembershipBento />
+        </div>
       </div>
     </div>
   );
@@ -122,19 +121,7 @@ function MembershipFilm() {
 export function MembershipBand() {
   return (
     <section id="membership" className="scroll-mt-32">
-      <div className="membership-bento-stage @3xl:hidden">
-        <div className="membership-bento pb-0">
-          <MembershipIntro className="membership-bento__intro" />
-        </div>
-      </div>
-      <div className="hidden bg-void text-white @3xl:block">
-        <MembershipFilm />
-      </div>
-      <div className="membership-bento-stage">
-        <div className="membership-bento membership-bento--grid-only">
-          <MembershipBento />
-        </div>
-      </div>
+      <MembershipStage />
     </section>
   );
 }

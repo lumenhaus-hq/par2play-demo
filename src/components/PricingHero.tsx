@@ -102,7 +102,7 @@ function PriceCell({ label, value, hot }: { label: string; value: string; hot: b
       }
     >
       <p
-        className={`flex min-h-8 items-center gap-2 text-xs font-semibold uppercase leading-tight tracking-[0.04em] @3xl:text-sm ${hot ? "text-mint" : "text-[#E5E7EB]"}`}
+        className={`flex min-h-8 items-center gap-2 text-sm font-semibold uppercase leading-tight tracking-[0.04em] @3xl:text-base ${hot ? "text-mint" : "text-[#E5E7EB]"}`}
       >
         <Banknote aria-hidden="true" className="size-4 shrink-0" />
         {label}

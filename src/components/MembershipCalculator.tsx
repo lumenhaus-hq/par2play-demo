@@ -41,12 +41,12 @@ export function MembershipCalculator() {
               {figure}
             </p>
           </div>
-          <p className="mt-4 text-sm font-semibold leading-snug text-white/75">{note}</p>
+          <p className="mt-4 text-base font-semibold leading-snug text-white/90">{note}</p>
 
           <ul className="member-benefits" aria-label="Member benefits">
             {BENEFITS.map((benefit) => (
               <li key={benefit.title} className="member-benefits__tile">
-                <img src={`${iconBase}/${benefit.file}`} alt="" aria-hidden="true" />
+                <img src={`${iconBase}/${benefit.file}`} alt="" aria-hidden="true" width={64} height={50} />
                 <p className="member-benefits__title">{benefit.title}</p>
                 <p className="member-benefits__line">{benefit.line}</p>
               </li>
@@ -87,7 +87,7 @@ export function MembershipCalculator() {
         <h2 id="join-heading" className="offer-title text-3xl tracking-tight text-ink">
           compare plans
         </h2>
-        <p className="mx-auto mt-3 max-w-lg text-base text-ink/70">
+        <p className="mx-auto mt-3 max-w-lg text-lg text-ink/80">
           Silver, Gold, and Platinum live on GolfClock. Pick the bay hours that fit your week.
         </p>
         <div className="mt-6 flex justify-center">
@@ -97,7 +97,7 @@ export function MembershipCalculator() {
             rel="noopener noreferrer"
             data-membership="true"
             onClick={(event) => trackAnchor(event.currentTarget)}
-            className={`cta-shell cta-line cta-lift inline-flex min-h-12 items-center justify-center rounded-full px-8 text-base font-semibold ${buttonFocus}`}
+            className={`cta-shell cta-line cta-lift inline-flex min-h-12 items-center justify-center rounded-full px-8 text-lg font-semibold ${buttonFocus}`}
           >
             <span className="cta-fill" aria-hidden="true" />
             <span className="cta-label">
@@ -105,7 +105,7 @@ export function MembershipCalculator() {
             </span>
           </a>
         </div>
-        <p className="mt-6 text-base leading-snug text-ink/80">
+        <p className="mt-6 text-lg leading-snug text-ink/85">
           {NAP.street}
           <br />
           {NAP.city}, {NAP.region} {NAP.postalCode}

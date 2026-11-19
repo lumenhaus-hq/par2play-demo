@@ -3,11 +3,11 @@ import type { EventTypeId } from "../data/events";
 
 /** Same badge and greens as the membership step icons. */
 const badge =
-  "inline-flex size-9 shrink-0 items-center justify-center rounded-xl bg-bay text-accent";
+  "inline-flex size-11 shrink-0 items-center justify-center rounded-xl bg-bay text-accent";
 
 function Mark({ children }: { children: ReactNode }) {
   return (
-    <svg viewBox="0 0 32 32" className="size-6" aria-hidden="true">
+    <svg viewBox="0 0 32 32" className="size-7" aria-hidden="true">
       {children}
     </svg>
   );

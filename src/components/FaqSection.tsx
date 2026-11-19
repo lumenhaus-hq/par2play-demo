@@ -17,7 +17,7 @@ export function FaqSection() {
               <h3>
                 <button
                   type="button"
-                  className={`flex min-h-11 w-full items-center justify-between gap-4 py-3 text-left text-base font-semibold ${buttonFocus}`}
+                  className={`flex min-h-11 w-full items-center justify-between gap-4 py-3 text-left text-lg font-semibold ${buttonFocus}`}
                   aria-expanded={shown}
                   onClick={() => setOpen(shown ? -1 : index)}
                 >
@@ -25,7 +25,7 @@ export function FaqSection() {
                   <span aria-hidden="true">{shown ? "–" : "+"}</span>
                 </button>
               </h3>
-              <p className={`pb-4 text-base leading-relaxed${shown ? "" : " sr-only"}`} suppressHydrationWarning>
+              <p className={`pb-4 text-lg leading-relaxed${shown ? "" : " sr-only"}`} suppressHydrationWarning>
                 {item.answer}
               </p>
             </div>

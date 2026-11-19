@@ -101,7 +101,7 @@ export function SiteFooter() {
           ))}
         </nav>
       </div>
-      <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 text-base">
+      <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 text-lg">
         <p>© 2026 Par2Play</p>
         <MotionToggle className="text-ink" />
         <a href={pageHref("privacy-policy")} className={navClass}>
@@ -109,7 +109,7 @@ export function SiteFooter() {
         </a>
       </div>
       {!golfClockBookingReady() && (
-        <p className="mt-2 max-w-xl text-base text-slate-700">
+        <p className="mt-2 max-w-xl text-lg text-slate-700">
           GolfClock booking link: TODO. Book calls {NAP.phoneDisplay}.
         </p>
       )}

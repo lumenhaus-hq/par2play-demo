@@ -4,6 +4,7 @@ import { bindHeroWatch } from "../audio/soundtrack";
 import { Mark } from "../components/Chrome";
 import { BookLink, CtaAnchor, CtaPair, HeroMembershipAction, MembershipLink, buttonFocus } from "../components/Cta";
 import { HeroProof } from "../components/HeroProof";
+import { HeroTryNow } from "../components/HeroTryNow";
 import { MembershipBand } from "../components/MembershipBand";
 import { HeroVideo, type HeroIntroPhase } from "../components/Media";
 import { LayoutToggle } from "../components/LayoutToggle";
@@ -174,6 +175,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
       >
         <HeroVideo onPhase={onPhase} />
         <div className="hero-top-shade pointer-events-none absolute inset-x-0 top-0" aria-hidden="true" />
+        <HeroTryNow visible={chromeReady} />
         <div
           data-hero-offer
           className={`hero-offer-dock relative z-10 flex items-end justify-end px-6 pb-3 pt-2 @3xl:px-12 @3xl:pb-6 @3xl:pt-[4.5rem] ${
@@ -296,7 +298,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
       <section id="events" className={sectionSpace}>
         <ScrollReveal tone="sheen">
           <h2 className="section-title text-4xl @5xl:text-6xl">Events</h2>
-          <p className="mt-6 max-w-xl text-base leading-relaxed">
+          <p className="mt-6 max-w-xl text-lg leading-relaxed">
             Four enclosed bays, with a golf pro for mini-lessons and casual games.
           </p>
           <div className="mt-6">
@@ -327,7 +329,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
       <section className="bg-void px-6 py-24 text-white @3xl:px-12 @3xl:py-28">
         <ScrollReveal className="mx-auto max-w-3xl text-center" tone="tilt">
           <h2 className="section-title section-title--on-dark text-4xl @5xl:text-6xl">Your bay is waiting.</h2>
-          <p className="mx-auto mt-6 max-w-md text-base leading-relaxed text-white/80">
+          <p className="mx-auto mt-6 max-w-md text-lg leading-relaxed text-white/85">
             Book a simulator bay or become a member — Somerset’s indoor golf clubhouse is ready when you are.
           </p>
           <CtaPair className="mx-auto mt-10 justify-center">
@@ -352,7 +354,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
             ))}
           </nav>
         </div>
-        <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 text-base">
+        <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 text-lg">
           <p>© 2026 Par2Play</p>
           <MotionToggle className="text-ink" />
           <a href={pageHref("privacy-policy")} className={navButton}>
@@ -360,7 +362,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
           </a>
         </div>
         {!golfClockBookingReady() && (
-          <p className="mt-2 max-w-xl text-base text-slate-700">
+          <p className="mt-2 max-w-xl text-lg text-slate-700">
             GolfClock booking link: TODO. Book calls {NAP.phoneDisplay}.
           </p>
         )}

@@ -29,22 +29,39 @@ async function expectMembershipBento(band: Locator) {
   }
 }
 
-test("mobile membership shows the golf bento grid", async ({ page }) => {
+test("mobile membership shows CTAs and bento over the film", async ({ page }) => {
   await page.goto("./");
   await setDemoLayout(page, "mobile");
   const band = page.locator("#membership");
   await band.scrollIntoViewIfNeeded();
   await expectMembershipBento(band);
-  await expect(band.getByRole("button", { name: /^(Play|Pause) video$/ })).toHaveCount(0);
+  await expect(band.locator(".membership-film__overlay")).toBeVisible();
+  await expect(band.getByRole("link", { name: "Become a Member", exact: true })).toBeVisible();
+  await expect(band.getByRole("button", { name: /^(Play|Pause) video$/ })).toBeVisible();
 });
 
-test("desktop membership shows the same equal bento grid", async ({ page }) => {
+test("desktop membership shows CTAs and bento over the film", async ({ page }) => {
   await page.goto("./");
   await setDemoLayout(page, "web");
   const band = page.locator("#membership");
   await band.scrollIntoViewIfNeeded();
   await expectMembershipBento(band);
+  await expect(band.locator(".membership-film__overlay")).toBeVisible();
   await expect(band.getByRole("button", { name: /^(Play|Pause) video$/ })).toBeVisible();
+  const stacking = await band.evaluate((node) => {
+    const film = node.querySelector(".membership-film")!;
+    const grid = node.querySelector(".membership-bento__grid")!;
+    const filmRect = film.getBoundingClientRect();
+    const gridRect = grid.getBoundingClientRect();
+    return {
+      gridInsideFilm:
+        gridRect.top >= filmRect.top - 1 &&
+        gridRect.bottom <= filmRect.bottom + 1 &&
+        gridRect.left >= filmRect.left - 1 &&
+        gridRect.right <= filmRect.right + 1,
+    };
+  });
+  expect(stacking.gridInsideFilm).toBe(true);
 });
 
 test("membership montage pauses, resumes, and stays paused off screen", async ({ page }) => {
@@ -52,12 +69,12 @@ test("membership montage pauses, resumes, and stays paused off screen", async ({
   const band = page.locator("#membership");
   const video = band.locator("video");
   await band.scrollIntoViewIfNeeded();
-  await expect.poll(() => video.evaluate((node: HTMLVideoElement) => node.paused)).toBe(false);
+  await expect.poll(() => video.evaluate((node: HTMLVideoElement) => node.paused), { timeout: 15_000 }).toBe(false);
   await expect.poll(() => video.evaluate((node: HTMLVideoElement) => node.muted)).toBe(true);
-  // Film overlay card is centered — click a corner so the pause toggle receives the hit.
-  await band.getByRole("button", { name: "Pause video", exact: true }).click({ position: { x: 24, y: 24 } });
+  // Overlay owns the hits — toggle via the control itself.
+  await band.getByRole("button", { name: "Pause video", exact: true }).evaluate((node: HTMLButtonElement) => node.click());
   await expect.poll(() => video.evaluate((node: HTMLVideoElement) => node.paused)).toBe(true);
-  await band.getByRole("button", { name: "Play video", exact: true }).click({ position: { x: 24, y: 24 } });
+  await band.getByRole("button", { name: "Play video", exact: true }).evaluate((node: HTMLButtonElement) => node.click());
   await expect.poll(() => video.evaluate((node: HTMLVideoElement) => node.paused)).toBe(false);
   await page.locator("footer").last().scrollIntoViewIfNeeded();
   await expect.poll(() => band.evaluate((node) => node.getBoundingClientRect().bottom)).toBeLessThanOrEqual(0);

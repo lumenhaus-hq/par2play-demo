@@ -88,7 +88,7 @@ function Item({ id, label }: { id: BenefitId; label: string }) {
       <span className={badge}>
         <Glyph id={id} />
       </span>
-      <span className="text-base font-semibold text-white">{label}</span>
+      <span className="text-lg font-semibold text-white">{label}</span>
     </li>
   );
 }
