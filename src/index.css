@@ -1103,155 +1103,87 @@ html.motion-paused .page-atmosphere__floater img {
   overflow: hidden;
 }
 
-/* Storefront-centre “Try now” — compact cue (kept inside bay; no shade spill). */
+/* Tucked under header Book a Bay — short static dotted arrow (no loop/pulse). */
 .hero-try-now {
   position: absolute;
-  top: 26%;
-  left: 50%;
+  top: 4.65rem;
+  right: 1.1rem;
   z-index: 25;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.1rem;
-  width: min(9rem, 26vw);
-  max-height: 28%;
+  align-items: flex-end;
+  gap: 0.05rem;
+  width: min(7.5rem, 18vw);
   color: var(--accent);
   opacity: 0;
-  transform: translate3d(-42%, 0.45rem, 0) rotate(-3deg);
+  transform: translate3d(0, 0.35rem, 0) rotate(6deg);
   pointer-events: none;
   filter:
-    drop-shadow(0 0 0.35rem rgb(198 255 26 / 0.45))
-    drop-shadow(0 0 0.85rem rgb(20 212 94 / 0.35));
+    drop-shadow(0 0 0.3rem rgb(198 255 26 / 0.4))
+    drop-shadow(0 0 0.7rem rgb(20 212 94 / 0.3));
 }
 
 .hero-try-now--in {
   opacity: 1;
-  transform: translate3d(-42%, 0, 0) rotate(-2deg);
-  transition:
-    opacity 560ms var(--motion-ease-enter) 160ms,
-    transform 560ms var(--motion-ease-enter) 160ms;
+  transform: translate3d(0, 0, 0) rotate(4deg);
+  transition: opacity 420ms var(--motion-ease-enter) 120ms;
 }
 
 .hero-try-now__label {
+  order: 2;
   font-family: var(--font-marker);
-  font-size: clamp(1.75rem, 3.4vw, 2.35rem);
+  font-size: clamp(1.35rem, 2.2vw, 1.85rem);
   line-height: 0.92;
   letter-spacing: 0.02em;
   color: #fff;
   -webkit-text-stroke: 0.028em #06110b;
   text-shadow:
     0.04em 0.05em 0 rgb(0 0 0 / 0.5),
-    0 0 0.35em rgb(198 255 26 / 0.85),
-    0 0 0.85em rgb(20 212 94 / 0.7),
-    0 0 1.6em rgb(20 212 94 / 0.45);
+    0 0 0.3em rgb(198 255 26 / 0.8),
+    0 0 0.7em rgb(20 212 94 / 0.55);
 }
 
 .hero-try-now__arrow {
-  width: min(6.75rem, 20vw);
+  order: 1;
+  width: min(4.25rem, 12vw);
   height: auto;
-  margin-top: -0.2rem;
-  margin-left: 0.85rem;
+  margin-right: 0.35rem;
+  margin-bottom: -0.15rem;
   color: color-mix(in srgb, var(--accent) 92%, white);
   filter:
-    drop-shadow(0 0 0.3rem rgb(198 255 26 / 0.65))
-    drop-shadow(0 0 0.7rem rgb(20 212 94 / 0.45));
+    drop-shadow(0 0 0.25rem rgb(198 255 26 / 0.55))
+    drop-shadow(0 0 0.55rem rgb(20 212 94 / 0.4));
 }
 
 .hero-try-now__stroke {
-  /* Dotted trail (pathLength=1 units). */
-  stroke-dasharray: 0.028 0.07;
+  /* Static dotted trail — no dash animation. */
+  stroke-dasharray: 0.06 0.1;
   stroke-dashoffset: 0;
 }
 
 .hero-try-now__head {
-  stroke-dasharray: 1;
+  stroke-dasharray: none;
   stroke-dashoffset: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  html:not(.motion-paused) .hero-try-now--in .hero-try-now__label {
-    animation: hero-try-now-pulse 2.4s ease-in-out 700ms infinite;
-  }
-
-  html:not(.motion-paused) .hero-try-now--in .hero-try-now__stroke {
-    stroke-dasharray: 0.02 0.055;
-    stroke-dashoffset: 1;
-    animation:
-      hero-try-now-draw 900ms var(--motion-ease-enter) 280ms forwards,
-      hero-try-now-dash 2.8s linear 1.2s infinite;
-  }
-
-  html:not(.motion-paused) .hero-try-now--in .hero-try-now__head {
-    stroke-dashoffset: 1;
-    animation: hero-try-now-draw 500ms var(--motion-ease-enter) 900ms forwards;
-  }
-
-  html:not(.motion-paused) .hero-try-now--in .hero-try-now__arrow {
-    animation: hero-try-now-arrow-glow 2.4s ease-in-out 700ms infinite;
-  }
-}
-
-@keyframes hero-try-now-draw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes hero-try-now-dash {
-  to {
-    stroke-dashoffset: -1;
-  }
-}
-
-@keyframes hero-try-now-pulse {
-  0%,
-  100% {
-    text-shadow:
-      0.04em 0.05em 0 rgb(0 0 0 / 0.5),
-      0 0 0.3em rgb(198 255 26 / 0.7),
-      0 0 0.7em rgb(20 212 94 / 0.55),
-      0 0 1.3em rgb(20 212 94 / 0.35);
-    transform: scale(1);
-  }
-  50% {
-    text-shadow:
-      0.04em 0.05em 0 rgb(0 0 0 / 0.5),
-      0 0 0.5em rgb(198 255 26 / 1),
-      0 0 1.1em rgb(20 212 94 / 0.85),
-      0 0 2em rgb(20 212 94 / 0.55);
-    transform: scale(1.03);
-  }
-}
-
-@keyframes hero-try-now-arrow-glow {
-  0%,
-  100% {
-    filter:
-      drop-shadow(0 0 0.3rem rgb(198 255 26 / 0.55))
-      drop-shadow(0 0 0.75rem rgb(20 212 94 / 0.4));
-  }
-  50% {
-    filter:
-      drop-shadow(0 0 0.55rem rgb(198 255 26 / 0.95))
-      drop-shadow(0 0 1.25rem rgb(20 212 94 / 0.7));
-  }
-}
-
-@media (max-width: 639px) {
+@media (max-width: 767px) {
   .hero-try-now {
-    top: 24%;
-    left: 48%;
-    width: min(7.5rem, 42vw);
-    max-height: 24%;
+    top: 4.35rem;
+    right: 0.65rem;
+    width: min(6.5rem, 42vw);
+    transform: translate3d(0, 0.25rem, 0) rotate(5deg);
+  }
+
+  .hero-try-now--in {
+    transform: translate3d(0, 0, 0) rotate(3deg);
   }
 
   .hero-try-now__label {
-    font-size: clamp(1.75rem, 7.5vw, 2rem);
+    font-size: clamp(1.2rem, 5.2vw, 1.45rem);
   }
 
   .hero-try-now__arrow {
-    width: min(5.5rem, 34vw);
-    margin-left: 0.55rem;
+    width: min(3.5rem, 26vw);
   }
 }
 
@@ -1259,20 +1191,6 @@ html.motion-paused .page-atmosphere__floater img {
   .hero-try-now--in {
     transition: none;
   }
-
-  .hero-try-now__label,
-  .hero-try-now__arrow,
-  .hero-try-now__stroke,
-  .hero-try-now__head {
-    animation: none !important;
-  }
-}
-
-html.motion-paused .hero-try-now__label,
-html.motion-paused .hero-try-now__arrow,
-html.motion-paused .hero-try-now__stroke,
-html.motion-paused .hero-try-now__head {
-  animation: none !important;
 }
 
 /* Hand-drawn accent marks under script (type moment). */
