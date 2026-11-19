@@ -29,8 +29,8 @@ export function JuniorsPanel() {
       figure={figure}
       live={live}
       film={JUNIORS_FILM}
-      primary={{ offer: "junior", label: "Schedule junior coaching" }}
-      secondary={{ offer: "bay", label: "Book a Bay" }}
+      primary={{ offer: "junior", label: "Become a Junior Member" }}
+      secondary={{ offer: "junior-plus", label: "Experience a Junior Class" }}
       selector={
         <JointToggle
           value={planId}

@@ -32,7 +32,11 @@ for (const width of [390, 1280]) {
       await expect(cta).toHaveAttribute("href", "/par2play-demo/membership/");
       await expect(cta).not.toHaveAttribute("target", "_blank");
     }
-    await page.locator("#hero").getByRole("link", { name: "Become a Member", exact: true }).click();
+    await expect(page.locator("#hero").getByRole("link", { name: "Bay Rental Call Us", exact: true })).toHaveAttribute(
+      "href",
+      "tel:+17324482769",
+    );
+    await page.locator("#membership").getByRole("link", { name: "Become a Member", exact: true }).click();
     await expect(page).toHaveURL(/\/par2play-demo\/membership\/$/);
     await expect(page.locator("#why-membership")).toBeVisible();
   });
@@ -78,7 +82,7 @@ test("membership CTA opens the subpage from the mobile preview", async ({ page }
   await page.goto("./");
   await page.getByRole("button", { name: "Reject non-essential", exact: true }).click();
   await setDemoLayout(page, "mobile");
-  await page.locator("#hero").getByRole("link", { name: "Become a Member", exact: true }).click();
+  await page.locator("#membership").getByRole("link", { name: "Become a Member", exact: true }).click();
   await expect(page).toHaveURL(/\/par2play-demo\/membership\/$/);
   await expect(page.locator("#why-membership")).toBeVisible();
 });

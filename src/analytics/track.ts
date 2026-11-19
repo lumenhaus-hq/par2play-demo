@@ -62,6 +62,7 @@ export function track(event: string, params: TrackParams) {
 
 const LESSON_TYPES: Record<string, string> = {
   lesson: "lesson",
+  "lesson-pack": "lesson_pack",
   "swing-evaluation": "swing_evaluation",
   "swing-lab": "swing_evaluation",
   junior: "junior",

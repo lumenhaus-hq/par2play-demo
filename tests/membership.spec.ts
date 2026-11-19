@@ -78,11 +78,8 @@ for (const width of [320, 360, 390, 430, 1280]) {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("membership/");
     const panel = page.locator("#why-membership");
-    for (const [label, amount] of [
-      ["Unlimited Practice", "$200"],
-      ["10 Sessions", "$400"],
-    ] as const) {
-      await panel.getByRole("button", { name: label, exact: true }).click();
+    for (const [label, amount] of [["Unlimited Practice", "$200"]] as const) {
+      await expect(panel.getByText(label, { exact: true }).first()).toBeVisible();
       const fee = panel.locator('[aria-live="polite"] p').last();
       await expect(fee).toContainText(amount);
       const layout = await fee.evaluate((node) => {

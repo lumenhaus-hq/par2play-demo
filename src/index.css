@@ -665,6 +665,84 @@ html.motion-paused .page-atmosphere__floater img {
   z-index: 1;
 }
 
+/* Dark membership panel — glowing benefit tiles between title and CTAs. */
+.member-benefits {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.member-benefits__tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.15rem;
+  padding: 0.9rem 0.85rem 1rem;
+  background:
+    radial-gradient(120% 90% at 12% 0%, rgb(20 212 94 / 0.28), transparent 58%),
+    rgb(255 255 255 / 0.06);
+  box-shadow:
+    0 0 0 1px rgb(198 255 26 / 0.22),
+    0 0 1.4rem rgb(20 212 94 / 0.22);
+}
+
+.member-benefits__tile img {
+  width: 2.35rem;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 0 0.7rem rgb(198 255 26 / 0.55));
+}
+
+.member-benefits__title {
+  margin: 0.55rem 0 0;
+  font-family: var(--font-offer);
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.member-benefits__line {
+  margin: 0.2rem 0 0;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: rgb(255 255 255 / 0.72);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.motion-paused) .member-benefits__tile {
+    animation: member-benefits-glow 4.8s ease-in-out infinite;
+  }
+
+  html:not(.motion-paused) .member-benefits__tile:nth-child(2) {
+    animation-delay: -1.2s;
+  }
+
+  html:not(.motion-paused) .member-benefits__tile:nth-child(3) {
+    animation-delay: -2.4s;
+  }
+
+  html:not(.motion-paused) .member-benefits__tile:nth-child(4) {
+    animation-delay: -3.6s;
+  }
+}
+
+@keyframes member-benefits-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px rgb(198 255 26 / 0.18),
+      0 0 1.1rem rgb(20 212 94 / 0.16);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgb(198 255 26 / 0.4),
+      0 0 1.85rem rgb(20 212 94 / 0.32);
+  }
+}
+
 /* One track, two options — not two separate pills. */
 .joint-toggle {
   display: grid;

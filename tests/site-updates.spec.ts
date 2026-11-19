@@ -5,13 +5,14 @@ test.beforeEach(async ({ page }) => {
 });
 
 for (const width of [360, 1280]) {
-  test(`membership practice toggle and checkout fields work at ${width}px`, async ({ page }) => {
+  test(`membership practice checkout fields work at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("membership/");
     if (width === 1280) await setDemoLayout(page, "web");
     const panel = page.locator("#why-membership");
-    await expect(panel.getByRole("button", { name: "Unlimited Practice", exact: true })).toHaveAttribute("aria-pressed", "true");
+    await expect(panel.getByRole("heading", { name: "Become a Member" })).toBeVisible();
+    await expect(panel.getByText("Unlimited Practice", { exact: true }).first()).toBeVisible();
     await expect(panel.locator('[aria-live="polite"] p').last()).toContainText("$200");
     await expect(panel.getByRole("slider")).toHaveCount(0);
     await expect(page.locator("[data-tier]")).toHaveCount(0);
@@ -20,10 +21,10 @@ for (const width of [360, 1280]) {
     await expect(panel.getByText("Session length")).toHaveCount(0);
     await expect(panel.getByText("Minutes / session")).toHaveCount(0);
     await expect(panel.getByText("Unlimited / mo")).toHaveCount(0);
-    await panel.getByRole("button", { name: "10 Sessions", exact: true }).click();
-    await expect(panel.getByRole("button", { name: "10 Sessions", exact: true })).toHaveAttribute("aria-pressed", "true");
-    await expect(panel.locator('[aria-live="polite"] p').last()).toContainText("$400");
-    await expect(panel.getByRole("heading", { name: "Become a Member" })).toBeVisible();
+    await expect(panel.getByRole("button", { name: "10 Sessions", exact: true })).toHaveCount(0);
+    await expect(panel.getByLabel("Member benefits")).toBeVisible();
+    await expect(panel.getByRole("link", { name: "Become a Member", exact: true })).toBeVisible();
+    await expect(panel.getByRole("link", { name: "Experience a free Member Day", exact: true })).toBeVisible();
     await expect(panel.getByRole("heading", { name: "Finalize your booking" })).toBeVisible();
     await expect(panel.getByLabel("Name")).toBeVisible();
     await expect(panel.getByLabel("Email")).toBeVisible();
@@ -97,14 +98,15 @@ test("mobile homepage membership uses the golf bento grid", async ({ page }) => 
   await expect(band.getByLabel("Preferred availability")).toBeVisible();
   await expect(band.locator(".membership-bento__benefits")).toHaveCount(0);
   await expect(page.locator("#events img")).toHaveCount(0);
-  await expect(band.getByRole("link", { name: "Book a Bay", exact: true })).toBeVisible();
+  await expect(band.getByRole("link", { name: "Experience a free Member Day", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Around the club" })).toHaveCount(0);
   await expect(page.locator("#coaching").getByRole("heading", { name: "Get fitted and swinging!" })).toBeVisible();
   await expect(page.locator("#juniors").getByRole("heading", { name: "Golf for kids" })).toBeVisible();
-  await expect(page.locator("#coaching").getByRole("link", { name: "Evaluate my Swing" })).toHaveAttribute("data-offer", "swing-evaluation");
-  await expect(page.locator("#coaching").getByRole("link", { name: "Book a Bay" })).toHaveAttribute("data-offer", "bay");
-  await expect(page.locator("#juniors").getByRole("link", { name: "Schedule a Lesson" })).toHaveAttribute("data-offer", "junior");
-  await expect(page.locator("#juniors").getByRole("link", { name: "Learn More" })).toBeVisible();
+  await expect(page.locator("#hero").getByRole("link", { name: "Bay Rental Call Us", exact: true })).toHaveAttribute("href", "tel:+17324482769");
+  await expect(page.locator("#coaching").getByRole("link", { name: "Swing eval" })).toHaveAttribute("data-offer", "swing-evaluation");
+  await expect(page.locator("#coaching").getByRole("link", { name: "Book a single lesson" })).toHaveAttribute("href", /\/coaching\/$/);
+  await expect(page.locator("#juniors").getByRole("link", { name: "Become a Junior Member" })).toHaveAttribute("data-offer", "junior");
+  await expect(page.locator("#juniors").getByRole("link", { name: "Experience a Junior Class" })).toHaveAttribute("data-offer", "junior-plus");
 });
 
 test("removed sections and junior paragraph stay absent on their pages", async ({ page }) => {
@@ -114,8 +116,8 @@ test("removed sections and junior paragraph stay absent on their pages", async (
     await expect(page.getByText(/Junior golf in Somerset is age-group coaching/)).toHaveCount(0);
   }
   await page.goto("coaching/");
-  await expect(page.locator("#coaching-offer").getByRole("link", { name: "Evaluate my Swing" })).toHaveAttribute("data-offer", "swing-evaluation");
-  await expect(page.locator("#coaching-offer").getByRole("link", { name: "Book a Bay" })).toHaveAttribute("data-offer", "bay");
+  await expect(page.locator("#coaching-offer").getByRole("link", { name: "Swing eval" })).toHaveAttribute("data-offer", "swing-evaluation");
+  await expect(page.locator("#coaching-offer").getByRole("link", { name: "Buy 10 Pack" })).toHaveAttribute("data-offer", "lesson-pack");
 });
 
 test("membership page no longer shows Silver Gold Platinum price cards", async ({ page }) => {
@@ -125,16 +127,18 @@ test("membership page no longer shows Silver Gold Platinum price cards", async (
   await expect(page.getByRole("heading", { name: "compare plans" })).toBeVisible();
 });
 
-test("coaching is evaluation-only without lesson packs or fitting", async ({ page }) => {
+test("coaching toggles a 10 pack and a single lesson without fitting copy", async ({ page }) => {
   await page.goto("coaching/");
   const panel = page.locator("#coaching-offer");
-  await expect(panel.getByRole("button", { name: "Swing evaluation", exact: true })).toHaveAttribute("aria-pressed", "true");
-  await expect(panel.locator('[aria-live="polite"] p').last()).toHaveText("$100");
+  await expect(panel.getByRole("button", { name: "10 Pack", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await expect(panel.locator('[aria-live="polite"] p').last()).toHaveText("$750");
+  await expect(panel.getByText("Save more by buying a 10 pack.", { exact: true })).toBeVisible();
   await expect(panel.locator("dd")).toHaveCount(0);
   await expect(panel.getByRole("slider")).toHaveCount(0);
-  await panel.getByRole("button", { name: "Lessons", exact: true }).click();
-  await expect(panel.getByRole("button", { name: "Lessons", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await panel.getByRole("button", { name: "1 Lesson", exact: true }).click();
+  await expect(panel.getByRole("button", { name: "1 Lesson", exact: true })).toHaveAttribute("aria-pressed", "true");
   await expect(panel.locator('[aria-live="polite"] p').last()).toHaveText("$100");
+  await expect(panel.getByRole("link", { name: "Book a single lesson" })).toHaveAttribute("data-offer", "lesson");
   await expect(page.getByRole("heading", { name: "Lesson packs" })).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "Club fitting" })).toHaveCount(0);
   await expect(page.getByText(/Nick Schiavo|Nick Monticello/)).toHaveCount(0);
