@@ -47,6 +47,38 @@ test("navbar shows Golf for Kids and Book a Bay on mobile widths", async ({ page
   await expect(page.getByRole("navigation", { name: "Page" }).getByRole("link", { name: "Golf for Kids", exact: true })).toBeVisible();
 });
 
+test("mobile hero keeps Bay Rental CTA visible above the ticker", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("./");
+  await setDemoLayout(page, "mobile");
+  const cta = page.locator("#hero").getByRole("link", { name: "Bay Rental Call Us", exact: true });
+  await expect(cta).toBeVisible();
+  const metrics = await cta.evaluate((node) => {
+    const rect = node.getBoundingClientRect();
+    const hero = document.getElementById("hero")!.getBoundingClientRect();
+    const dock = document.querySelector("[data-hero-offer]")!.getBoundingClientRect();
+    const styles = getComputedStyle(document.querySelector(".hero-offer-dock")!);
+    return {
+      ctaTop: rect.top,
+      ctaBottom: rect.bottom,
+      ctaHeight: rect.height,
+      heroTop: hero.top,
+      heroHeight: hero.height,
+      dockTop: dock.top,
+      dockHeight: dock.height,
+      dockMax: styles.maxHeight,
+    };
+  });
+  // Fully on screen — not a clipped sliver under overflow.
+  expect(metrics.ctaHeight).toBeGreaterThanOrEqual(40);
+  expect(metrics.ctaTop).toBeGreaterThan(metrics.heroTop + metrics.heroHeight * 0.35);
+  expect(metrics.ctaBottom).toBeLessThan(metrics.heroTop + metrics.heroHeight - 8);
+  // Upper film band stays open for the storefront (dock ≤ ~half the bay).
+  expect(metrics.dockTop).toBeGreaterThan(metrics.heroTop + metrics.heroHeight * 0.45);
+  expect(metrics.dockHeight).toBeLessThanOrEqual(metrics.heroHeight * 0.5);
+});
+
 test("hero shows a Try now cue aimed at Book a Bay", async ({ page }) => {
   await page.goto("./");
   await setDemoLayout(page, "web");
