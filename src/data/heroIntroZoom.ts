@@ -27,9 +27,9 @@ export const HERO_INTRO_ZOOM = {
     style:
       "HD stylized map of New York diving west into New Jersey, with larger-than-life cartoon golf UI icons, then resolve into the real storefront photograph.",
     start:
-      "Wide HD aerial of the NY metro (Manhattan + Hudson + NJ). Dark navy water, peach extruded NYC blocks, mint NJ suburbs. Cartoon icons (golf ball, flag, crossed clubs, map pin) at ~40–45% of the prior oversized size so the map stays readable.",
+      "Wide HD aerial of the NY metro (Manhattan + Hudson + NJ). Cartoon golf icons are stamped in world space on the map plate (small, corner/NJ-anchored) so camera zoom shrinks them instead of leaving huge screen-fixed stickers.",
     middle:
-      "Continuous ease-in-out dive from NYC toward New Jersey / Somerset. Icons stay crisp in HD but edge-anchored — no LP5 peach-only abstract field without NY geography.",
+      "Continuous ease-in-out dive from NYC toward New Jersey / Somerset. Icons shrink and exit frame with the dive; NJ plate has no baked pin that can blow up under zoom.",
     end:
       "Photoreal Par2Play storefront at dusk matching storefront.jpg: brick facade, lit PAR 2 PLAY channel letters (green 2), INDOOR GOLF on the transom, glass doors centered. Hold the last beat so the bay can expand.",
     forbidden: [
