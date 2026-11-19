@@ -125,6 +125,22 @@ export const HERO_INTRO_ZOOM = {
     "No satellite imagery credit required (fully generated or owned plates)",
     "mp4 + webm + poster paths above present",
   ],
+
+  /**
+   * WCAG notes for the shipped cut (silent decorative motion):
+   * - 1.2.1 / 1.1.1: reduced-motion and Pause motion show the storefront poster + alt
+   * - 1.4.2: intro is silent; soundtrack only arms on the looping hero
+   * - 2.2.2: Pause motion / prefers-reduced-motion stop the film
+   * - 2.3.1: single ease zoom + 0.35s fade — no flashes ≥3/sec
+   */
+  wcag: {
+    silent: true,
+    reducedMotionPoster: "public/media/hero-intro-zoom-poster.jpg",
+    flashSafe: true,
+    textAlternative: "Animated map zooming into the Par2Play storefront in Somerset, NJ",
+  },
+
+  shipped: true,
 } as const;
 
 export type HeroIntroZoomSpec = typeof HERO_INTRO_ZOOM;

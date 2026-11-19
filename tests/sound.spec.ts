@@ -61,7 +61,7 @@ test("rejected autoplay stays muted until one gesture, then the icon matches", a
   await page.goto("/");
 
   const sound = page.getByRole("button", { name: /sound/i });
-  const video = page.locator("#hero video");
+  const video = page.locator("#hero video").first();
 
   await expect(sound).toBeVisible({ timeout: 15_000 });
   await expect.poll(async () => (await probe(page)).armed).toBe(true);
@@ -159,14 +159,15 @@ test("Sound starts with the soundtrack and the loop takes over past the hero", a
   const media: string[] = [];
   page.on("response", (response) => {
     const url = response.url();
-    if (/hero\.(webm|mp4)|bg_loop_A\.(m4a|mp3)/.test(url)) {
+    if (/hero(?:-intro-zoom)?\.(webm|mp4)|bg_loop_A\.(m4a|mp3)/.test(url)) {
       media.push(`${response.status()} ${url}`);
     }
   });
 
   await page.goto("/");
   const sound = page.getByRole("button", { name: /sound/i });
-  const video = page.locator("#hero video");
+  // Looping hero is first in the bay; the silent intro sits on top until handoff.
+  const video = page.locator("#hero video").first();
 
   await expect(sound).toBeVisible({ timeout: 15_000 });
   await expect.poll(async () => (await probe(page)).armed || (await probe(page)).live).toBe(true);
