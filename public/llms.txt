@@ -17,7 +17,7 @@
 - Single bay rental: shown at checkout
 - Private lesson, 30 min: $100
 - Lesson 10-pack: $750
-- Swing evaluation, 30 min: $100
+- Swing evaluation, 50 min: $100
 - Junior coaching, once a week: $249/month
 - Junior coaching, twice a week: $399/month
 - Event packages and the league fee: price on request
@@ -26,7 +26,9 @@
 - [Home](https://par2play.com/): indoor golf in Somerset, NJ
 - [Membership](https://par2play.com/membership/): Unlimited Practice, $200 a month
 - [Golf lessons](https://par2play.com/coaching/): 30-minute lessons and the 10-pack
-- [Swing evaluation](https://par2play.com/swing-evaluation/): 30 minutes, $100
+- [Swing evaluation](https://par2play.com/swing-evaluation/): 50 minutes, $100
 - [Junior golf](https://par2play.com/juniors/): junior coaching once or twice a week
 - [Events](https://par2play.com/events/): holiday parties, company events, birthdays. Price on request
 - [Fall League](https://par2play.com/tournament/): indoor golf league. Price on request
+- [Free members day](https://par2play.com/members-day/): one visit on a Full Swing simulator, premium clubs on hand
+- [Junior golf experience](https://par2play.com/junior-golf-experience/): a free junior visit on a Full Swing simulator

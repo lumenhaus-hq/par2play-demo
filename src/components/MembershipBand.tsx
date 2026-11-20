@@ -1,5 +1,6 @@
 import { AskUsLink } from "./AskUsLink";
-import { MembershipLink } from "./Cta";
+import { CtaAnchor, MembershipLink } from "./Cta";
+import { pageHref } from "../data/routes";
 import { DisplayTitle } from "./DisplayTitle";
 import { MembershipBento } from "./MembershipBento";
 import { MEMBERSHIP_POSTER } from "../data/films";
@@ -40,9 +41,9 @@ function MembershipStage() {
         <div className="pointer-events-auto membership-film__intro w-full max-w-md">
           <div className="grid w-full grid-cols-1 gap-3">
             <MembershipLink className="cta-sheen w-full">Become a Member</MembershipLink>
-            <MembershipLink className="w-full" tone="inverted">
-              Experience a free Member Day
-            </MembershipLink>
+            <CtaAnchor href={pageHref("members-day")} tone="inverted" className="w-full">
+              Try a free members day
+            </CtaAnchor>
           </div>
         </div>
         <AskUsLink className="pointer-events-auto" />

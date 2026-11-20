@@ -36,7 +36,7 @@ for (const viewport of viewports) {
     await page.goto("./");
     const intro = await scrollPastHeader(page, "#membership .membership-film__intro");
     const member = intro.getByRole("link", { name: "Become a Member", exact: true });
-    const day = intro.getByRole("link", { name: "Experience a free Member Day", exact: true });
+    const day = intro.getByRole("link", { name: "Try a free members day", exact: true });
     await expect(member).toBeVisible();
     await expect(day).toBeVisible();
 

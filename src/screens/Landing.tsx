@@ -207,7 +207,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
               <ValuePoint
                 icon={Activity}
                 label="Swing evaluation"
-                line="Swing your way to your first hole in one with drill down analysis and personalised 1:1 coaching."
+                line="50 minutes on the Full Swing cameras for $100. You leave with the shot data."
               />
             </div>
             <CtaPair className="mt-8">
@@ -262,8 +262,8 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
               <CtaAnchor href={pageHref("juniors")} className="w-full">
                 Become a Junior Member
               </CtaAnchor>
-              <CtaAnchor href={pageHref("juniors")} tone="line" className="w-full">
-                Experience a Junior Class
+              <CtaAnchor href={pageHref("junior-golf-experience")} tone="line" className="w-full">
+                Experience golf for juniors
               </CtaAnchor>
             </CtaPair>
           </ScrollReveal>

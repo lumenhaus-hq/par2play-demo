@@ -32,12 +32,12 @@ export const FAQS = [
   {
     question: "How much is a golf lesson in Somerset at Par2Play?",
     answer:
-      "A swing evaluation is $100 for 30 minutes. A single lesson is $100 for 30 minutes. A 10-pack of lessons is $750.",
+      "A swing evaluation is $100 for 50 minutes. A single lesson is $100 for 30 minutes. A 10-pack of lessons is $750.",
   },
   {
     question: "Are lessons good for beginners?",
     answer:
-      "Yes. Par2Play offers private and semi-private lessons for beginner and advanced players. A swing evaluation ($100, 30 minutes) is the place to start.",
+      "Yes. Par2Play offers private and semi-private lessons for beginner and advanced players. A swing evaluation ($100, 50 minutes) is the place to start.",
   },
   {
     question: "Does Par2Play offer junior golf?",
@@ -236,8 +236,8 @@ export function swingEvaluationGraph() {
         provider: { "@id": id("/#location") },
         areaServed: "Somerset, NJ",
         description:
-          "A 30-minute swing evaluation on Full Swing simulators with swing-evaluation cameras. $100.",
-        offers: [offer("Swing evaluation (30 min)", PRICES.swingEvaluation, OCLOCK.lessons)],
+          "A 50-minute swing evaluation on Full Swing simulators with swing-evaluation cameras. $100.",
+        offers: [offer("Swing evaluation (50 min)", PRICES.swingEvaluation, OCLOCK.lessons)],
       },
       breadcrumb("Swing evaluation", "swing-evaluation/"),
     ],
@@ -302,6 +302,47 @@ export function eventsGraph() {
         url: OCLOCK.events,
       },
       breadcrumb("Events", "events/"),
+    ],
+  };
+}
+
+export function juniorExperienceGraph() {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        url: absoluteUrl("junior-golf-experience/"),
+        name: "Experience golf for juniors",
+        description:
+          "A free junior visit at Par2Play in Somerset, NJ, on a Full Swing simulator with premium clubs on hand.",
+        about: { "@id": id("/#location") },
+      },
+      {
+        "@type": "Offer",
+        name: "Junior golf experience",
+        price: "0",
+        priceCurrency: "USD",
+        url: OCLOCK.lessons,
+      },
+      breadcrumb("Junior experience", "junior-golf-experience/"),
+    ],
+  };
+}
+
+export function membersDayGraph() {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        url: absoluteUrl("members-day/"),
+        name: "Try a free members day",
+        description:
+          "A free members day at Par2Play in Somerset, NJ: a Full Swing simulator, 100+ courses, premium clubs, and shot data.",
+        about: { "@id": id("/#location") },
+      },
+      breadcrumb("Free members day", "members-day/"),
     ],
   };
 }

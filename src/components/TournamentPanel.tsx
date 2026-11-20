@@ -13,7 +13,7 @@ export function TournamentPanel() {
       figure={formatPrice(PRICES.leagueEntry)}
       live={`${formatPrice(PRICES.leagueEntry)}. League booking is 18 holes. A League Player tag is required.`}
       film={EVENTS_HERO_FILM}
-      primary={{ offer: "tournament", label: "Join the league" }}
+      primary={{ offer: "tournament", label: "Reserve time & day", reserve: true }}
       secondary={{ offer: "bay", label: "Try it out" }}
     />
   );

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { AskUsLink } from "./AskUsLink";
-import { BookLink } from "./Cta";
 import { JointToggle } from "./JointToggle";
+import { ReserveTime } from "./ReserveTime";
 import type { BookingOffer } from "../data/business";
 
 const icon = (file: string) => `${import.meta.env.BASE_URL}media/membership-icons/${file}`;
@@ -11,6 +11,7 @@ type Choice<T extends string> = {
   label: string;
   price?: string;
   note?: string;
+  noteIcon?: "spark" | "gift";
 };
 
 export function OfferSheet<T extends string>({
@@ -21,6 +22,7 @@ export function OfferSheet<T extends string>({
   onChange,
   invoice,
   offer,
+  secondary,
 }: {
   id: string;
   toggleLabel: string;
@@ -29,6 +31,7 @@ export function OfferSheet<T extends string>({
   onChange: (value: T) => void;
   invoice: ReactNode;
   offer: BookingOffer;
+  secondary?: ReactNode;
 }) {
   return (
     <section id={id} className="play-sheet" aria-label={toggleLabel}>
@@ -40,6 +43,7 @@ export function OfferSheet<T extends string>({
         width={64}
         height={50}
         decoding="async"
+        fetchPriority="low"
       />
       <img
         className="play-sheet__glyph play-sheet__glyph--b"
@@ -49,13 +53,12 @@ export function OfferSheet<T extends string>({
         width={64}
         height={50}
         decoding="async"
+        fetchPriority="low"
       />
       <div className="play-sheet__body">
         <JointToggle value={value} options={options} onChange={onChange} label={toggleLabel} tone="dark" />
         {invoice}
-        <BookLink className="w-full" offer={offer}>
-          Complete booking
-        </BookLink>
+        <ReserveTime offer={offer} beside={secondary} />
         <AskUsLink />
       </div>
     </section>

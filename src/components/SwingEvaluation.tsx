@@ -1,31 +1,38 @@
-import { AskUsLink } from "./AskUsLink";
-import { BookLink } from "./Cta";
+import { useState } from "react";
+import { OfferSheet } from "./OfferSheet";
+import { PriceInvoice } from "./PriceInvoice";
 import { PRICES } from "../data/business";
 import { money } from "../data/membershipEstimate";
 
+type Mode = "session";
+
+/** $100 for 50 minutes. The invoice matches the membership and coaching scorecard. */
 export function SwingEvaluation() {
+  const [mode, setMode] = useState<Mode>("session");
   const price = money(PRICES.swingEvaluation);
+  const minutes = `${PRICES.swingEvaluationMinutes} minutes`;
+  const live = `Swing evaluation. ${minutes} on the Full Swing cameras. You pay ${price}.`;
+
   return (
-    <header className="swing-hero">
-      <img
-        className="play-sheet__glyph play-sheet__glyph--a"
-        src={`${import.meta.env.BASE_URL}media/membership-icons/swing.png`}
-        alt=""
-        aria-hidden="true"
-        width={64}
-        height={50}
-        decoding="async"
-      />
-      <p className="swing-hero__price" data-swing-price={price}>
-        {price}
-      </p>
-      <p className="swing-hero__length">{`${PRICES.swingEvaluationMinutes} minutes`}</p>
-      <div className="swing-hero__cta">
-        <BookLink className="w-full" offer="swing-evaluation">
-          Book swing evaluation
-        </BookLink>
-        <AskUsLink />
-      </div>
-    </header>
+    <OfferSheet
+      id="swing-offer"
+      toggleLabel="Swing evaluation"
+      value={mode}
+      onChange={setMode}
+      offer="swing-evaluation"
+      options={[{ value: "session", label: minutes, price }]}
+      invoice={
+        <PriceInvoice
+          title="Swing evaluation"
+          rows={[
+            { label: "Offer", value: "Swing evaluation" },
+            { label: "Time", value: minutes },
+            { label: "Cameras", value: "Full Swing" },
+          ]}
+          totalLabel={price}
+          live={live}
+        />
+      }
+    />
   );
 }

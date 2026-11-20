@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { CtaAnchor } from "./Cta";
 import { OfferSheet } from "./OfferSheet";
+import { pageHref } from "../data/routes";
 import { PriceInvoice } from "./PriceInvoice";
 import { PRICES, type BookingOffer } from "../data/business";
 import { money } from "../data/membershipEstimate";
@@ -25,6 +27,11 @@ export function JuniorsPanel() {
       onChange={setPlanId}
       offer={offer}
       options={PLANS}
+      secondary={
+        <CtaAnchor href={pageHref("junior-golf-experience")} tone="line" className="w-full">
+          Experience golf for juniors
+        </CtaAnchor>
+      }
       invoice={
         <PriceInvoice
           title={plan.label}

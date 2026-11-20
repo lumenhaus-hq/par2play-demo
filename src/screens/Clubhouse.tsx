@@ -199,7 +199,7 @@ export function Clubhouse() {
           <div className={`mt-10 grid gap-4 ${flow.layout === "web" ? "grid-cols-3" : ""}`}>
             {[
               ["Weekday guest hour", "A quiet hour for someone you bring. Saturday stays full price."],
-              ["A lesson", "A 30-minute swing evaluation is $100, tax included. A 30-minute lesson is $100. The night itself stays about the hole."],
+              ["A lesson", "A 50-minute swing evaluation is $100, tax included. A 30-minute lesson is $100. The night itself stays about the hole."],
               ["Bay time", "Use points toward another hour on the simulator when you want more reps."],
             ].map(([title, copy]) => (
               <div key={title} className="rounded-2xl border border-white/10 p-6">
