@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Mark } from "./Chrome";
 import { BookLink, PhoneLink, buttonFocus } from "./Cta";
 import { LayoutToggle } from "./LayoutToggle";
@@ -67,12 +67,36 @@ export function SiteHeader() {
 }
 
 export function SiteFooter({ className = "" }: { className?: string }) {
+  const [moreOpen, setMoreOpen] = useState(false);
   return (
     <footer className={`site-footer ${className}`.trim()}>
       <div className="site-footer__main">
         <a href={pageHref("")} className="site-footer__logo">
           <Mark light />
         </a>
+        <address className="site-footer__nap">
+          {`${NAP.name} · ${NAP.street}, ${NAP.city}, ${NAP.region} ${NAP.postalCode} · `}
+          <PhoneLink className="site-footer__link">{NAP.phoneDisplay}</PhoneLink>
+          {` · Open ${HOURS_LABEL}.`}
+        </address>
+        <nav className="site-footer__quick" aria-label="Footer">
+          <a className="site-footer__link" href={MAPS_URL}>
+            Directions
+          </a>
+          <a className="site-footer__link" href={INSTAGRAM_URL}>
+            Instagram
+          </a>
+        </nav>
+        <button
+          type="button"
+          className="site-footer__toggle"
+          aria-expanded={moreOpen}
+          aria-controls="site-footer-more"
+          onClick={() => setMoreOpen((open) => !open)}
+        >
+          {moreOpen ? "Hide links" : "More links"}
+        </button>
+        <div id="site-footer-more" className={`site-footer__extra${moreOpen ? " is-open" : ""}`}>
         <div className="site-footer__grid">
           <div>
             <h2 className="site-footer__label">Visit</h2>
@@ -111,9 +135,19 @@ export function SiteFooter({ className = "" }: { className?: string }) {
           <div>
             <h2 className="site-footer__label">Follow</h2>
             <a className="site-footer__link" href={INSTAGRAM_URL}>
-              Instagram
-            </a>
+            Instagram
+          </a>
           </div>
+        </div>
+        <div className="site-footer__mobile-actions">
+          <a className="site-footer__link" href={pageHref("privacy-policy")}>
+            Privacy policy
+          </a>
+          <button type="button" className="site-footer__link" onClick={openCookieSettings}>
+            Cookie settings
+          </button>
+          <MotionToggle className="site-footer__link" />
+        </div>
         </div>
       </div>
       <div className="site-footer__bar">

@@ -1864,6 +1864,11 @@ html.lenis.lenis-smooth {
   letter-spacing: -0.03em;
   color: var(--ink);
   text-wrap: balance;
+}
+
+/* Same green glow on home section titles and subpage titles. No blur filter, no loop. */
+.section-title,
+.play-title {
   text-shadow:
     0 1px 0 rgb(255 255 255 / 0.55),
     0 0 1.25rem color-mix(in srgb, var(--accent) 32%, transparent),
@@ -1889,7 +1894,8 @@ html.lenis.lenis-smooth {
   pointer-events: none;
 }
 
-.section-title--on-dark {
+.section-title--on-dark,
+.display-title--panel {
   color: #fff;
   text-shadow:
     0 1px 0 rgb(0 0 0 / 0.45),
@@ -3731,8 +3737,8 @@ body {
 
 .site-footer__main {
   display: grid;
-  gap: 1.75rem;
-  padding: 2.25rem 1.25rem 1.25rem;
+  gap: 0.2rem;
+  padding: 0.85rem 1.25rem 0.35rem;
 }
 
 .site-footer__logo {
@@ -3745,6 +3751,56 @@ body {
 .site-footer__logo:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 4px;
+}
+
+.site-footer__nap {
+  margin: 0;
+  font-style: normal;
+  color: #f4f7f2;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+
+.site-footer__quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.75rem;
+}
+
+.site-footer__toggle {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.site-footer__toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.site-footer__extra {
+  display: none;
+}
+
+.site-footer__extra.is-open {
+  display: block;
+  padding-top: 0.35rem;
+}
+
+.site-footer__mobile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.75rem;
 }
 
 .site-footer__grid {
@@ -3816,26 +3872,49 @@ body {
 
 .site-footer__bar {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.15rem;
-  padding: 0.75rem 1.25rem 1.5rem;
-  border-top: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 1rem;
+  padding: 0.15rem 1.25rem 0.85rem;
+  border-top: 0;
+}
+
+.site-footer__bar .site-footer__link {
+  display: none;
 }
 
 .site-footer__copy {
   display: flex;
   align-items: center;
-  min-height: 2.75rem;
+  min-height: 1.5rem;
+  font-size: 0.875rem;
 }
 
 .site-footer__note {
   padding: 0 1.25rem 1.25rem;
 }
 
-@container footer (min-width: 40rem) {
+@container footer (min-width: 48rem) {
+  .site-footer__nap,
+  .site-footer__quick,
+  .site-footer__toggle {
+    display: none;
+  }
+
+  .site-footer__extra,
+  .site-footer__extra.is-open {
+    display: block;
+    padding-top: 0;
+  }
+
+  .site-footer__mobile-actions {
+    display: none;
+  }
+
   .site-footer__main {
-    padding-inline: 2rem;
+    gap: 1.75rem;
+    padding: 2.25rem 2rem 1.25rem;
   }
 
   .site-footer__grid {
@@ -3843,11 +3922,18 @@ body {
   }
 
   .site-footer__bar {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
     gap: 0.25rem 1.5rem;
-    padding-inline: 2rem;
+    padding: 0.75rem 2rem 1.5rem;
+    border-top: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+
+  .site-footer__bar .site-footer__link {
+    display: inline-flex;
+  }
+
+  .site-footer__copy {
+    min-height: 2.75rem;
+    font-size: 1rem;
   }
 
   .site-footer__note {
