@@ -36,9 +36,8 @@ export function MembershipCalculator() {
           totalLabel={figure}
           totalCaption="Members price"
           membersPrice={amount}
-          orderRef="ord_p2p_practice_unlimited"
           live={live}
-          note={yearly ? `Twelve months at ${monthly}.` : "One plan. A bay hour, every day."}
+          note={yearly ? `Twelve months at ${monthly}.` : undefined}
         />
       }
     />

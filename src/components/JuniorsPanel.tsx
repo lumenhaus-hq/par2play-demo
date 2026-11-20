@@ -15,7 +15,6 @@ export function JuniorsPanel() {
   const [planId, setPlanId] = useState<PlanId>("twice");
   const plan = PLANS.find((item) => item.value === planId) ?? PLANS[1];
   const offer: BookingOffer = planId === "once" ? "junior" : "junior-plus";
-  const orderRef = planId === "once" ? "ord_p2p_junior_once" : "ord_p2p_junior_twice";
   const live = `${plan.label} ${plan.price}. Once a week ${money(PRICES.juniorOneLessonWeekly)} a month. Twice a week ${money(PRICES.juniorTwoLessonsWeekly)} a month.`;
 
   return (
@@ -35,9 +34,7 @@ export function JuniorsPanel() {
             { label: "Billing", value: "Monthly" },
           ]}
           totalLabel={plan.price}
-          orderRef={orderRef}
           live={live}
-          note="One hour each. Your week, your call."
         />
       }
     />

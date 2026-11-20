@@ -13,8 +13,6 @@ export function CoachingPanel() {
   const heading = pack ? "10 Pack" : "Single lesson";
   const access = pack ? "10 private lessons" : `${PRICES.lessonMinutes} minutes`;
   const offer: BookingOffer = pack ? "lesson-pack" : "lesson";
-  const orderRef = pack ? "ord_p2p_lesson_pack_10" : "ord_p2p_private_lesson";
-  const note = pack ? "Ten private lessons." : `${PRICES.lessonMinutes}-minute private lesson.`;
   const live = pack
     ? `10 Pack ${figure}. Ten private lessons.`
     : `Single lesson ${figure}. ${PRICES.lessonMinutes} minutes with a PGA professional.`;
@@ -39,9 +37,7 @@ export function CoachingPanel() {
             { label: "Billing", value: pack ? "One-time pack" : "One-time" },
           ]}
           totalLabel={figure}
-          orderRef={orderRef}
           live={live}
-          note={note}
         />
       }
     />

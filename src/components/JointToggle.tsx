@@ -6,10 +6,6 @@ type Option<T extends string> = {
   price?: string;
 };
 
-/**
- * One track, two options. Arrow keys move the selection.
- * Dark tone sits on the scorecard sheet.
- */
 export function JointToggle<T extends string>({
   value,
   options,

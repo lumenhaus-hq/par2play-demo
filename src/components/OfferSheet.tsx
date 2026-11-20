@@ -11,10 +11,6 @@ type Choice<T extends string> = {
   price?: string;
 };
 
-/**
- * Pricing moment on a subpage: equal-width toggles, the scorecard, then
- * Complete booking. The invoice is the only GolfClock connector.
- */
 export function OfferSheet<T extends string>({
   id,
   toggleLabel,

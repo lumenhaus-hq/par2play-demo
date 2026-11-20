@@ -134,7 +134,7 @@ test("membership scorecard price uses readable large type", async ({ page }) => 
   await expect(figure).toBeVisible();
   const size = await figure.evaluate((node) => parseFloat(getComputedStyle(node).fontSize));
   expect(size).toBeGreaterThanOrEqual(28);
-  const title = page.locator(".page-bento .membership-bento__title").first();
+  const title = page.locator(".what-you-get__title").first();
   const titleSize = await title.evaluate((node) => parseFloat(getComputedStyle(node).fontSize));
   expect(titleSize).toBeGreaterThanOrEqual(17);
 });
@@ -255,7 +255,7 @@ test("coaching toggles a 10 pack and a single lesson without fitting copy", asyn
   const panel = page.locator("#coaching-offer");
   await expect(panel.getByRole("button", { name: /^10 Pack/ })).toHaveAttribute("aria-pressed", "true");
   await expect(panel.locator("[data-invoice-total]")).toHaveText("$750");
-  await expect(panel.getByText("Ten private lessons.", { exact: true })).toBeVisible();
+  await expect(panel.getByText("10 private lessons", { exact: true })).toBeVisible();
   await expect(panel.locator("dd")).toHaveCount(0);
   await expect(panel.getByRole("slider")).toHaveCount(0);
   await panel.getByRole("button", { name: /^1 Lesson/ }).click();
@@ -266,7 +266,7 @@ test("coaching toggles a 10 pack and a single lesson without fitting copy", asyn
   await expect(page.getByRole("heading", { name: "Club fitting" })).toHaveCount(0);
   await expect(page.getByText(/Nick Schiavo|Nick Monticello/)).toHaveCount(0);
   const imagesOutsidePanel = await page.locator("article img").evaluateAll((nodes) =>
-    nodes.filter((node) => !node.closest("#coaching-offer") && !node.closest(".page-atmosphere")).length,
+    nodes.filter((node) => !node.closest("#coaching-offer") && !node.closest(".page-atmosphere") && !node.closest(".what-you-get")).length,
   );
   expect(imagesOutsidePanel).toBe(0);
   await expect(page.getByText(/never expire|no blackout|plan for what to change/i)).toHaveCount(0);

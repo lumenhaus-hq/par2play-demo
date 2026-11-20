@@ -3,18 +3,12 @@ export type InvoiceRow = {
   value: string;
 };
 
-/**
- * Scorecard receipt. Selection changes are announced through a polite live region.
- * The figure remounts when the total changes so the pop plays once.
- * Reduced motion and Pause motion skip it.
- */
 export function PriceInvoice({
   title,
   rows,
   totalLabel,
   totalCaption = "On the card",
   membersPrice,
-  orderRef,
   live,
   note,
   className = "",
@@ -23,9 +17,7 @@ export function PriceInvoice({
   rows: readonly InvoiceRow[];
   totalLabel: string;
   totalCaption?: string;
-  /** Membership floor. Omitted on lessons and juniors. */
   membersPrice?: number;
-  orderRef?: string;
   live: string;
   note?: string;
   className?: string;
@@ -48,17 +40,11 @@ export function PriceInvoice({
       </div>
       <div className="scorecard__total">
         <span className="scorecard__total-label">{totalCaption}</span>
-        <p
-          key={totalLabel}
-          data-invoice-total
-          data-members-price={membersPrice}
-          className="scorecard__figure"
-        >
+        <p key={totalLabel} data-invoice-total data-members-price={membersPrice} className="scorecard__figure">
           {totalLabel}
         </p>
       </div>
       {note ? <p className="scorecard__note">{note}</p> : null}
-      {orderRef ? <p className="scorecard__ref">{orderRef}</p> : null}
     </div>
   );
 }

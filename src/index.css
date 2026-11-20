@@ -654,7 +654,6 @@ html.motion-paused .page-atmosphere__glyph {
   }
 }
 
-/* Subpage title. No frost plate — that lives on home section titles. */
 .play-title {
   margin: 0;
   max-width: 100%;
@@ -665,16 +664,6 @@ html.motion-paused .page-atmosphere__glyph {
   overflow-wrap: anywhere;
 }
 
-.play-lead {
-  margin: 0.85rem 0 0;
-  max-width: 28rem;
-  font-size: 1.25rem;
-  font-weight: 600;
-  line-height: 1.3;
-  color: var(--ink);
-}
-
-/* Dark scorecard sheet. Glyphs stay still. No blur, no looping motion. */
 .play-sheet,
 .swing-hero {
   position: relative;
@@ -814,15 +803,6 @@ html.motion-paused .page-atmosphere__glyph {
   color: rgb(255 255 255 / 0.92);
 }
 
-.scorecard__ref {
-  margin: 0.45rem 0 0;
-  text-align: right;
-  font-family: ui-monospace, monospace;
-  font-size: 0.75rem;
-  color: rgb(255 255 255 / 0.75);
-  overflow-wrap: anywhere;
-}
-
 @media (prefers-reduced-motion: no-preference) {
   html:not(.motion-paused) .scorecard__figure {
     animation: score-pop 380ms cubic-bezier(0.2, 0.7, 0.2, 1);
@@ -839,35 +819,12 @@ html.motion-paused .page-atmosphere__glyph {
 }
 
 .swing-hero {
+  margin-top: 1.5rem;
   padding: 1.35rem 1.1rem 1.3rem;
 }
 
-.swing-hero__mark {
-  margin: 0;
-  font-family: var(--font-offer);
-  font-size: 0.85rem;
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-.swing-hero .play-title,
-.swing-hero__title {
-  color: #fff;
-  max-width: 100%;
-}
-
-.swing-hero__lead {
-  margin: 0.7rem 0 0;
-  max-width: 18rem;
-  font-size: 1.2rem;
-  font-weight: 600;
-  line-height: 1.3;
-}
-
 .swing-hero__price {
-  margin: 0.85rem 0 0;
+  margin: 0;
   font-family: var(--font-offer);
   font-size: clamp(3.4rem, 18vw, 6rem);
   font-weight: 800;
@@ -884,24 +841,55 @@ html.motion-paused .page-atmosphere__glyph {
 
 .swing-hero__cta {
   margin-top: 1.1rem;
-  max-width: 24rem;
 }
 
 .swing-hero__cta .cta-shell {
   width: 100%;
 }
 
-.swing-hero__film {
-  margin-top: 1rem;
-  overflow: hidden;
-  border-radius: 1.4rem;
+.what-you-get {
+  margin-top: 2.75rem;
 }
 
-.swing-get {
-  margin-top: 2.5rem;
+.what-you-get__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
 }
 
-/* Equal-width tee toggles. One track, two options. */
+.what-you-get__card {
+  min-width: 0;
+  border-radius: 1.15rem;
+  padding: 0.85rem 0.75rem 0.95rem;
+  background: linear-gradient(160deg, #1a1d1b 0%, #0b0f0c 55%, #060908 100%);
+  color: #f4f6f5;
+}
+
+.what-you-get__card img {
+  display: block;
+  width: 2.75rem;
+  height: auto;
+}
+
+.what-you-get__title {
+  margin: 0.55rem 0 0;
+  font-family: var(--font-offer);
+  font-size: 1.125rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.what-you-get__line {
+  margin: 0.3rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.3;
+  color: rgb(255 255 255 / 0.92);
+}
+
 .joint-toggle {
   display: grid;
   grid-template-columns: 1fr 1fr;
