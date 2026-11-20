@@ -7,7 +7,7 @@ export function PriceInvoice({
   title,
   rows,
   totalLabel,
-  totalCaption = "On the card",
+  totalCaption = "You pay",
   membersPrice,
   live,
   note,
@@ -25,7 +25,6 @@ export function PriceInvoice({
   return (
     <div data-invoice aria-live="polite" aria-atomic="true" className={`scorecard ${className}`}>
       <p className="sr-only">{live}</p>
-      <p className="scorecard__kicker">Scorecard</p>
       <p className="scorecard__title">{title}</p>
       <div className="scorecard__rows">
         {rows.map((row, index) => (
@@ -40,7 +39,12 @@ export function PriceInvoice({
       </div>
       <div className="scorecard__total">
         <span className="scorecard__total-label">{totalCaption}</span>
-        <p key={totalLabel} data-invoice-total data-members-price={membersPrice} className="scorecard__figure">
+        <p
+          key={totalLabel}
+          data-invoice-total
+          data-members-price={membersPrice}
+          className={`scorecard__figure${totalLabel.startsWith("$") ? "" : " scorecard__figure--words"}`}
+        >
           {totalLabel}
         </p>
       </div>
