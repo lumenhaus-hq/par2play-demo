@@ -57,4 +57,8 @@ export const EVENTS_HERO_FILM = {
   src: media("media/events/events-hero.mp4"),
   srcMobile: media("media/events/events-hero-mobile.mp4"),
   poster: media("media/events/events-hero-poster.jpg"),
+  posterAvif: media("media/events/events-hero-poster.avif"),
+  posterWebp: media("media/events/events-hero-poster.webp"),
+  width: 800,
+  height: 450,
 } as const;

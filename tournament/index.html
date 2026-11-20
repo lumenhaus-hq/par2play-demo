@@ -10,8 +10,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="%BASE_URL%apple-touch-icon.png" />
     <link rel="manifest" href="%BASE_URL%site.webmanifest" />
     <link rel="preload" href="%BASE_URL%fonts/chakra-petch-600.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="%BASE_URL%fonts/permanent-marker-400.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" as="image" href="%BASE_URL%media/events/events-hero-poster.jpg" fetchpriority="high" />
+    <link rel="preload" as="image" href="%BASE_URL%media/events/events-hero-poster.avif" type="image/avif" fetchpriority="high" />
     <title>Indoor Golf League in Somerset, NJ | Par2Play</title>
     <meta name="description" content="Par2Play Fall League, an indoor golf league on Full Swing simulators in Somerset, NJ. Coming soon. Join the list or call (732) 448-2769." />
     <link rel="canonical" href="https://par2play.com/tournament/" />
@@ -31,6 +30,15 @@
     <meta name="twitter:image:alt" content="Par2Play storefront in Somerset, New Jersey" />
   </head>
   <body>
+    <img id="league-poster" alt="Par2Play indoor golf" width="800" height="450" fetchpriority="high" decoding="async" src="%BASE_URL%media/events/events-hero-poster.avif" />
+    <script>
+      document.addEventListener("playing", function (event) {
+        var target = event.target;
+        if (!target || target.tagName !== "VIDEO") return;
+        var poster = document.getElementById("league-poster");
+        if (poster) poster.hidden = true;
+      }, true);
+    </script>
     <div id="root"></div>
     <script>
       window.addEventListener("load", function () {

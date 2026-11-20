@@ -62,7 +62,7 @@ export function PricingHero({
   comparison?: ReactNode;
   primary: PricingCta;
   secondary?: PricingCta;
-  film: { src: string; srcMobile?: string; poster: string };
+  film: { src: string; srcMobile?: string; poster: string; posterAvif?: string; posterWebp?: string; width?: number; height?: number };
   /** Itemised price summary. When set, it replaces the standalone figure. */
   invoice?: ReactNode;
   heading?: string;
@@ -123,6 +123,10 @@ export function PricingHero({
             src={film.src}
             srcMobile={film.srcMobile}
             poster={film.poster}
+            posterAvif={film.posterAvif}
+            posterWebp={film.posterWebp}
+            posterWidth={film.width}
+            posterHeight={film.height}
             className="absolute inset-0 h-full w-full"
             pausable
             priority
