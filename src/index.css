@@ -3138,3 +3138,10 @@ html.motion-paused .benefit-card--dim {
     transform: translateX(-38%) rotate(4deg) translateY(-4px);
   }
 }
+
+/* Clip the atmosphere wash (inset: -18%) and edge glyphs. `clip` does not
+   create a scroll container, so position: sticky on the site header still works. */
+html,
+body {
+  overflow-x: clip;
+}
