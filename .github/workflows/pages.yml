@@ -30,7 +30,7 @@ jobs:
         env:
           VITE_BASE: /${{ github.event.repository.name }}/
       - name: Check membership and homepage behavior
-        run: npx playwright test tests/membership.spec.ts tests/site-updates.spec.ts tests/cookies-and-membership-links.spec.ts tests/atmosphere.spec.ts tests/pricing-flow.spec.ts
+        run: npx playwright test tests/membership.spec.ts tests/site-updates.spec.ts tests/cookies-and-membership-links.spec.ts tests/atmosphere.spec.ts tests/pricing-flow.spec.ts tests/go-live-polish.spec.ts
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

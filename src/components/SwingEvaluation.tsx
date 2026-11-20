@@ -1,3 +1,4 @@
+import { AskUsLink } from "./AskUsLink";
 import { BookLink } from "./Cta";
 import { PRICES } from "../data/business";
 import { money } from "../data/membershipEstimate";
@@ -23,6 +24,7 @@ export function SwingEvaluation() {
         <BookLink className="w-full" offer="swing-evaluation">
           Book swing evaluation
         </BookLink>
+        <AskUsLink />
       </div>
     </header>
   );

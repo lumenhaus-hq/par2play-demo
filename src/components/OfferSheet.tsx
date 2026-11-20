@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { AskUsLink } from "./AskUsLink";
 import { BookLink } from "./Cta";
 import { JointToggle } from "./JointToggle";
 import type { BookingOffer } from "../data/business";
@@ -9,6 +10,7 @@ type Choice<T extends string> = {
   value: T;
   label: string;
   price?: string;
+  note?: string;
 };
 
 export function OfferSheet<T extends string>({
@@ -23,7 +25,7 @@ export function OfferSheet<T extends string>({
   id: string;
   toggleLabel: string;
   value: T;
-  options: readonly [Choice<T>, Choice<T>];
+  options: readonly Choice<T>[];
   onChange: (value: T) => void;
   invoice: ReactNode;
   offer: BookingOffer;
@@ -54,6 +56,7 @@ export function OfferSheet<T extends string>({
         <BookLink className="w-full" offer={offer}>
           Complete booking
         </BookLink>
+        <AskUsLink />
       </div>
     </section>
   );

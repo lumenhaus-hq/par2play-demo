@@ -10,6 +10,9 @@ export function CoachingPanel() {
   const [mode, setMode] = useState<Mode>("pack");
   const pack = mode === "pack";
   const figure = pack ? money(PRICES.lessonPack10) : money(PRICES.lessonSingle);
+  const packList = PRICES.lessonSingle * 10;
+  const savePercent = Math.round(((packList - PRICES.lessonPack10) / packList) * 100);
+  const packNote = `Save ${savePercent}% with 10 pack`;
   const heading = pack ? "10 Pack" : "Single lesson";
   const access = pack ? "10 private lessons" : `${PRICES.lessonMinutes} minutes`;
   const offer: BookingOffer = pack ? "lesson-pack" : "lesson";
@@ -26,7 +29,7 @@ export function CoachingPanel() {
       offer={offer}
       options={[
         { value: "single", label: "1 Lesson", price: money(PRICES.lessonSingle) },
-        { value: "pack", label: "10 Pack", price: money(PRICES.lessonPack10) },
+        { value: "pack", label: "10 Pack", price: money(PRICES.lessonPack10), note: packNote },
       ]}
       invoice={
         <PriceInvoice

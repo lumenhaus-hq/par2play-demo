@@ -14,14 +14,22 @@ import { pageHref } from "../data/routes";
 import { JsonLd } from "../components/JsonLd";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { PageBento } from "../components/PageBento";
+import { DisplayTitle } from "../components/DisplayTitle";
 import { WhatYouGet, type GetCard } from "../components/WhatYouGet";
+import { PRICES, SIMULATOR_COURSE_COUNT } from "../data/business";
+import { money } from "../data/membershipEstimate";
+import { HOURS_LABEL } from "../data/site";
 import { coachingGraph, eventsGraph, juniorsGraph, membershipGraph, swingEvaluationGraph, tournamentGraph } from "../data/schema";
 
 const MEMBERSHIP_GET: readonly [GetCard, GetCard, GetCard, GetCard] = [
-  { icon: "flag.png", title: "Bay hour", line: "Up to one hour a day." },
-  { icon: "club-strike.png", title: "Four bays", line: "Full Swing simulators." },
-  { icon: "bag.png", title: "Clubs on hand", line: "Premium clubs included." },
-  { icon: "ball.png", title: "Every day", line: "10am–10pm daily." },
+  { icon: "flag.png", title: "Ease of Mind", line: `One simple ${money(PRICES.unlimitedMonthly)}/mo plan. No surprises.` },
+  { icon: "cart.png", title: "Flexible Schedule", line: `Open ${HOURS_LABEL}, up to an hour a day.` },
+  { icon: "bag.png", title: "Top Equipment", line: "Premium clubs are on hand." },
+  {
+    icon: "swing.png",
+    title: "Awesome Gaming Tech",
+    line: `Full Swing simulators, ${SIMULATOR_COURSE_COUNT}+ courses, and shot analytics.`,
+  },
 ];
 
 const COACHING_GET: readonly [GetCard, GetCard, GetCard, GetCard] = [
@@ -45,13 +53,20 @@ const SWING_GET: readonly [GetCard, GetCard, GetCard, GetCard] = [
   { icon: "bag.png", title: "Four bays", line: "Clubs on hand." },
 ];
 
+const EVENTS_GET: readonly [GetCard, GetCard, GetCard, GetCard] = [
+  { icon: "flag.png", title: "Price on request", line: "Tell us the date and the group." },
+  { icon: "club-strike.png", title: "Four enclosed bays", line: "Each bay holds up to 6 guests." },
+  { icon: "swing.png", title: "A golf pro", line: "Mini-lessons and casual games." },
+  { icon: "bag.png", title: "Clubs on hand", line: "Complimentary clubs. Food can be brought in." },
+];
+
 export function MembershipPage() {
   return (
     <PageFrame>
       <article className={pageSpace}>
         <JsonLd data={membershipGraph()} />
         <Breadcrumbs current="Membership" />
-        <h1 className="offer-title play-title">Become a Member</h1>
+        <DisplayTitle as="h1" className="offer-title play-title" text="Become a Member" accent="Member" />
         <MembershipCalculator />
         <WhatYouGet items={MEMBERSHIP_GET} />
         <p className="mt-8 text-lg">
@@ -70,7 +85,7 @@ export function CoachingPage() {
       <article className={pageSpace}>
         <JsonLd data={coachingGraph()} />
         <Breadcrumbs current="Golf lessons" />
-        <h1 className="offer-title play-title">Golf lessons in Somerset, NJ</h1>
+        <DisplayTitle as="h1" className="offer-title play-title" text="Golf lessons in Somerset, NJ" accent="lessons" />
         <CoachingPanel />
         <WhatYouGet items={COACHING_GET} />
         <p className="mt-10 text-lg">
@@ -89,7 +104,7 @@ export function SwingEvaluationPage() {
       <article className={pageSpace}>
         <JsonLd data={swingEvaluationGraph()} />
         <Breadcrumbs current="Swing evaluation" />
-        <h1 className="offer-title play-title">Swing evaluation</h1>
+        <DisplayTitle as="h1" className="offer-title play-title" text="Swing evaluation" accent="evaluation" />
         <SwingEvaluation />
         <WhatYouGet items={SWING_GET} />
       </article>
@@ -103,7 +118,7 @@ export function JuniorsPage() {
       <article className={pageSpace}>
         <JsonLd data={juniorsGraph()} />
         <Breadcrumbs current="Golf for Kids" />
-        <h1 className="offer-title play-title">Golf for Kids</h1>
+        <DisplayTitle as="h1" className="offer-title play-title" text="Golf for Kids" accent="Kids" />
         <JuniorsPanel />
         <WhatYouGet items={JUNIORS_GET} />
         <StillGrid photos={JUNIORS_GALLERY} />
@@ -118,15 +133,21 @@ export function EventsPage() {
       <article className={pageSpace}>
         <JsonLd data={eventsGraph()} />
         <Breadcrumbs current="Events" />
+        <DisplayTitle
+          as="h1"
+          className="offer-title play-title"
+          text="Golf simulator parties and events"
+          accent="events"
+        />
         <EventsPanel />
-        <PageBento page="events" />
+        <WhatYouGet items={EVENTS_GET} />
         <div className="mt-16">
           <EventTypeList />
         </div>
         <div className="mt-8">
           <EventGallery />
         </div>
-        <p className="mt-8 text-lg text-[#4B5563]">2-hour or 3-hour bookings. Package price on request.</p>
+        <p className="mt-8 text-lg text-[#4B5563]">2, 3, or 6 hour bookings. Package price on request.</p>
         <p className="mt-8">
           <a href={pageHref("")} className={`inline-flex min-h-11 items-center text-lg font-semibold underline decoration-2 underline-offset-4 ${buttonFocus}`}>
             Back to the landing page

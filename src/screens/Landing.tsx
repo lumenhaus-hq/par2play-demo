@@ -20,6 +20,7 @@ import { VideoSlot } from "../components/VideoSlot";
 import { ValuePoint } from "../components/ValuePoint";
 import { NAP, golfClockBookingReady } from "../data/business";
 import { HERO_TICKER } from "../data/heroTicker";
+import { DisplayTitle } from "../components/DisplayTitle";
 import { HeroLocation, HeroTitle } from "../components/HeroTitle";
 import type { HeroTypeId } from "../data/heroType";
 import { JsonLd } from "../components/JsonLd";
@@ -198,7 +199,12 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
             />
           </ScrollReveal>
           <ScrollReveal tone="rise" delay={80}>
-            <h2 className="section-title offer-title text-3xl @5xl:text-5xl">Get fitted and swinging!</h2>
+            <DisplayTitle
+              as="h2"
+              className="section-title offer-title"
+              text="Get fitted and swinging!"
+              accent="swinging"
+            />
             <p className="mt-8 max-w-md font-display text-2xl font-semibold leading-tight tracking-tight">
               PGA professional coaches for 1:1 lessons and swing evaluations.
             </p>
@@ -237,7 +243,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
             />
           </ScrollReveal>
           <ScrollReveal tone="tilt" delay={80}>
-            <h2 className="section-title offer-title text-3xl @5xl:text-5xl">Golf for kids</h2>
+            <DisplayTitle as="h2" className="section-title offer-title" text="Golf for kids" accent="kids" />
             <p className="mt-8 max-w-md font-display text-2xl font-semibold leading-tight tracking-tight">
               Building the golfers of tomorrow.
             </p>
@@ -272,7 +278,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
 
       <section id="events" className={`${sectionSpace} cv-auto`}>
         <ScrollReveal tone="sheen">
-          <h2 className="section-title text-4xl @5xl:text-6xl">Events</h2>
+          <DisplayTitle as="h2" className="section-title offer-title" text="Events" accent="Events" />
           <p className="mt-6 max-w-xl text-lg leading-relaxed">
             Four enclosed bays, with a golf pro for mini-lessons and casual games.
           </p>
@@ -292,9 +298,12 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
 
       <section id="tournament" className={`${sectionSpace} cv-auto text-center`}>
         <ScrollReveal tone="rise">
-          <h2 className="section-title mx-auto max-w-xl text-4xl leading-tight @5xl:text-5xl">
-            Par2Play Fall League Coming Soon!
-          </h2>
+          <DisplayTitle
+            as="h2"
+            className="section-title offer-title mx-auto max-w-xl"
+            text="Par2Play Fall League Coming Soon!"
+            accent="League"
+          />
           <div className="mt-10">
             <TournamentForm />
           </div>
@@ -303,7 +312,12 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
 
       <section className="cv-auto bg-void px-6 py-24 text-white @3xl:px-12 @3xl:py-28">
         <ScrollReveal className="mx-auto max-w-3xl text-center" tone="tilt">
-          <h2 className="section-title section-title--on-dark text-4xl @5xl:text-6xl">Your bay is waiting.</h2>
+          <DisplayTitle
+            as="h2"
+            className="section-title section-title--on-dark offer-title display-title--on-dark"
+            text="Your bay is waiting."
+            accent="bay"
+          />
           <p className="mx-auto mt-6 max-w-md text-lg leading-relaxed text-white/85">
             Book a simulator bay or become a member — Somerset’s indoor golf clubhouse is ready when you are.
           </p>

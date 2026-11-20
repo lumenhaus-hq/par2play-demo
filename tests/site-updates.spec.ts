@@ -124,6 +124,7 @@ test("hero shows a Try now cue aimed at Book a Bay", async ({ page }) => {
         fontSize: parseFloat(getComputedStyle(node.querySelector(".hero-try-now__label")!).fontSize),
         dotted: getComputedStyle(stroke).strokeDasharray,
         anim: getComputedStyle(stroke).animationName,
+        glow: getComputedStyle(node.querySelector(".hero-try-now__arrow")!).filter,
       };
     }),
   ]).then(([cueBox, bookBox, style]) => {
@@ -144,8 +145,9 @@ test("hero shows a Try now cue aimed at Book a Bay", async ({ page }) => {
   expect(place.midY).toBeGreaterThan(place.bookBottom - 8);
   expect(place.midY).toBeLessThan(place.bookBottom + 140);
   expect(place.fontSize).toBeGreaterThanOrEqual(18);
-  expect(place.dotted).not.toBe("none");
-  expect(place.dotted).not.toBe("");
+  // Solid cursive stroke — the dashed trail is gone. Glow is a static drop-shadow.
+  expect(place.dotted === "none" || place.dotted === "").toBe(true);
+  expect(place.glow).toContain("drop-shadow");
   // Arrow stays static (no dash/draw loop).
   expect(place.anim === "none" || place.anim === "").toBe(true);
 });
@@ -220,7 +222,9 @@ test("mobile homepage membership uses the golf bento grid", async ({ page }) => 
   await expect(page.locator("#events img")).toHaveCount(0);
   await expect(band.getByRole("link", { name: "Experience a free Member Day", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Around the club" })).toHaveCount(0);
+  await page.locator("#coaching").scrollIntoViewIfNeeded();
   await expect(page.locator("#coaching").getByRole("heading", { name: "Get fitted and swinging!" })).toBeVisible();
+  await page.locator("#juniors").scrollIntoViewIfNeeded();
   await expect(page.locator("#juniors").getByRole("heading", { name: "Golf for kids" })).toBeVisible();
   await expect(page.locator("#hero").getByRole("link", { name: "Call us at (732) 448-2769", exact: true })).toHaveAttribute("href", "tel:+17324482769");
   await expect(page.locator("#coaching").getByRole("link", { name: "Swing evaluation", exact: true })).toHaveAttribute("href", /\/swing-evaluation\/$/);
