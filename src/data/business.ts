@@ -54,6 +54,11 @@ export const PRICES = {
    * $40", which does not match those slots, so the calculator uses this rate.
    */
   baySession: 70,
+  /**
+   * Struck-through value on the free members day price line.
+   * Owner confirmed $70. Null hides the strike and leaves the FREE coupon.
+   */
+  membersDayValue: 70 as number | null,
   /** Confirmed: 10 x 60-minute practice sessions. Not the lesson 10-pack. */
   tenPack: 400,
   unlimitedMonthly: 200,

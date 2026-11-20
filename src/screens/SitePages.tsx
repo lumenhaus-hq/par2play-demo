@@ -5,7 +5,6 @@ import { MembershipCalculator } from "../components/MembershipCalculator";
 import { SwingEvaluation } from "../components/SwingEvaluation";
 import { TournamentPanel } from "../components/TournamentPanel";
 import { EventGallery, StillGrid } from "../components/PhotoStrips";
-import { DaySteps } from "../components/DaySteps";
 import { OfferFacts } from "../components/OfferFacts";
 import { OfferLayout } from "../components/OfferLayout";
 import { PageFrame, pageSpace } from "../components/SiteChrome";
@@ -21,7 +20,6 @@ import { DisplayTitle } from "../components/DisplayTitle";
 import { WhatYouGet, type GetCard } from "../components/WhatYouGet";
 import { PRICES, SIMULATOR_COURSE_COUNT } from "../data/business";
 import { money } from "../data/membershipEstimate";
-import { PHOTOS } from "../data/photos";
 import { HOURS_LABEL } from "../data/site";
 import { coachingGraph, eventsGraph, juniorsGraph, membershipGraph, swingEvaluationGraph, tournamentGraph } from "../data/schema";
 
@@ -159,38 +157,7 @@ export function SwingEvaluationPage() {
             </>
           }
           buy={<SwingEvaluation />}
-          story={
-            <>
-              <DaySteps
-                steps={[
-                  {
-                    photo: PHOTOS.range,
-                    title: "You swing",
-                    line: `${PRICES.swingEvaluationMinutes} minutes on a Full Swing simulator. The cameras record the swing.`,
-                  },
-                  {
-                    photo: PHOTOS.bays,
-                    title: "You read the data",
-                    line: "Shot data is on the screen. You look at it in the bay.",
-                  },
-                  {
-                    photo: PHOTOS.lounge,
-                    title: "You leave with it",
-                    line: "The camera read and the shot data from the session. Then a lesson or a 10-pack, if you want one.",
-                  },
-                ]}
-              />
-              <OfferFacts
-                heading="Who it is for"
-                items={[
-                  { q: "Starting out", a: "A first look before a lesson. Beginners and players who already play." },
-                  { q: "The price", a: `${money(PRICES.swingEvaluation)} for ${PRICES.swingEvaluationMinutes} minutes.` },
-                  { q: "The bay", a: "Four Full Swing bays. Premium clubs on hand, or bring your own." },
-                ]}
-              />
-              <WhatYouGet items={SWING_GET} />
-            </>
-          }
+          story={<WhatYouGet items={SWING_GET} />}
         />
       </article>
     </PageFrame>

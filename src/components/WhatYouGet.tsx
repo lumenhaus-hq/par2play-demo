@@ -15,7 +15,16 @@ export function WhatYouGet({ items }: { items: readonly [GetCard, GetCard, GetCa
       <ul className="what-you-get__grid">
         {items.map((item) => (
           <li key={item.title} className="what-you-get__card">
-            <img src={`${iconBase}/${item.icon}`} alt="" aria-hidden="true" width={64} height={50} decoding="async" />
+            <img
+              src={`${iconBase}/${item.icon}`}
+              alt=""
+              aria-hidden="true"
+              width={64}
+              height={50}
+              decoding="async"
+              loading="lazy"
+              fetchPriority="low"
+            />
             <h3 className="what-you-get__title">{item.title}</h3>
             <p className="what-you-get__line">{item.line}</p>
           </li>

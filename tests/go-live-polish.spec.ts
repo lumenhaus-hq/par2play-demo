@@ -67,7 +67,8 @@ test("scorecards drop the eyebrow and say You pay", async ({ page }) => {
   await expect(page.locator("[data-invoice]")).toContainText("Members price");
   await page.goto("swing-evaluation/");
   await expect(page.getByText(/^scorecard$/i)).toHaveCount(0);
-  await expect(page.locator("[data-invoice]")).toHaveCount(0);
+  await expect(page.locator("[data-invoice]")).toContainText("You pay");
+  await expect(page.locator("[data-invoice-total]")).toHaveText("$100");
 });
 
 test("ask-us link sits under booking CTAs and clears WCAG AA", async ({ page }) => {

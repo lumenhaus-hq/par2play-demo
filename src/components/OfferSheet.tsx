@@ -11,6 +11,7 @@ type Choice<T extends string> = {
   label: string;
   price?: string;
   note?: string;
+  noteIcon?: "spark" | "gift";
 };
 
 export function OfferSheet<T extends string>({
@@ -40,6 +41,7 @@ export function OfferSheet<T extends string>({
         width={64}
         height={50}
         decoding="async"
+        fetchPriority="low"
       />
       <img
         className="play-sheet__glyph play-sheet__glyph--b"
@@ -49,6 +51,7 @@ export function OfferSheet<T extends string>({
         width={64}
         height={50}
         decoding="async"
+        fetchPriority="low"
       />
       <div className="play-sheet__body">
         <JointToggle value={value} options={options} onChange={onChange} label={toggleLabel} tone="dark" />

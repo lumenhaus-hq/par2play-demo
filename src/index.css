@@ -764,6 +764,52 @@ html.motion-paused .page-atmosphere__glyph {
   min-width: 0;
 }
 
+.coupon-burst {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.coupon-burst span {
+  position: absolute;
+  top: 38%;
+  left: 62%;
+  width: 0.4rem;
+  height: 0.65rem;
+  border-radius: 0.08rem;
+  opacity: 0;
+}
+
+.coupon-burst.is-on span {
+  animation: coupon-pop 720ms cubic-bezier(0.2, 0.7, 0.2, 1) 1 both;
+}
+
+@keyframes coupon-pop {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(0deg);
+  }
+  18% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--x), var(--y)) rotate(var(--r));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coupon-burst span {
+    animation: none;
+  }
+}
+
+html.motion-paused .coupon-burst span {
+  animation: none;
+}
+
 .play-sheet__glyph {
   position: absolute;
   width: 4.25rem;
@@ -868,6 +914,28 @@ html.motion-paused .page-atmosphere__glyph {
   line-height: 1.05;
   letter-spacing: -0.03em;
   text-align: right;
+}
+
+.scorecard__figure--coupon {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 0.35rem 0.55rem;
+  max-width: none;
+}
+
+.scorecard__was {
+  color: rgb(255 255 255 / 0.78);
+  font-size: 0.42em;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: line-through;
+  text-decoration-thickness: 0.12em;
+}
+
+.scorecard__free {
+  color: var(--accent);
 }
 
 .scorecard__note {
@@ -1013,6 +1081,10 @@ html.motion-paused .page-atmosphere__glyph {
   padding: 0;
   border-radius: 0;
   background: transparent;
+}
+
+.joint-toggle[data-count="1"] {
+  grid-template-columns: 1fr;
 }
 
 .joint-toggle--dark {
@@ -3724,48 +3796,6 @@ body {
   line-height: 1.45;
 }
 
-.day-steps {
-  display: grid;
-  gap: 0.85rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.day-steps__item {
-  display: grid;
-  grid-template-columns: 6.5rem minmax(0, 1fr);
-  gap: 0.75rem;
-  align-items: center;
-}
-
-.day-steps__media {
-  aspect-ratio: 16 / 10;
-  overflow: hidden;
-  border-radius: 0.75rem;
-  background: var(--void);
-}
-
-.day-steps__index {
-  margin: 0;
-  color: var(--accent);
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-}
-
-.day-steps__title {
-  margin: 0.1rem 0 0;
-  font-size: 1.15rem;
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-.day-steps__line {
-  margin: 0.2rem 0 0;
-  line-height: 1.4;
-}
-
 @container (min-width: 64rem) {
   .offer-layout {
     grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
@@ -3776,6 +3806,16 @@ body {
 
   .offer-layout__title {
     grid-column: 1 / -1;
+  }
+
+  /* One step up on the desktop story grid: descriptions to base, titles stay bold. */
+  .offer-layout__story .what-you-get__line {
+    font-size: 1rem;
+  }
+
+  .offer-layout__story .what-you-get__title {
+    font-size: 1.25rem;
+    font-weight: 800;
   }
 }
 

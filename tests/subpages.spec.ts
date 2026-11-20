@@ -20,6 +20,12 @@ test("members day walks the visit and books the bay", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Arrive" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Pick up a club" })).toBeVisible();
   await expect(page.getByText("Full Swing simulators and 100+ courses.")).toBeVisible();
+  const invoice = page.locator("[data-invoice]");
+  await expect(invoice).toContainText("You pay");
+  await expect(invoice.locator(".scorecard__was")).toHaveText("$70");
+  await expect(invoice.locator(".scorecard__free")).toHaveText("FREE");
+  await expect(page.locator(".joint-toggle__badge")).toContainText("FREE");
+  await expect(page.locator(".coupon-burst.is-on")).toHaveCount(0);
   const book = page.getByRole("link", { name: "Complete booking", exact: true });
   await expect(book).toHaveAttribute("href", BAY);
   await expect(book).toHaveAttribute("target", "_blank");
@@ -33,12 +39,14 @@ test("members day walks the visit and books the bay", async ({ page }) => {
 test("swing evaluation explains the 30 minutes", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("swing-evaluation/");
-  await expect(page.getByText("$100").first()).toBeVisible();
-  await expect(page.getByRole("heading", { name: "You swing" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "You read the data" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "You leave with it" })).toBeVisible();
-  await expect(page.getByText("30 minutes on a Full Swing simulator.")).toBeVisible();
-  await expect(page.getByRole("link", { name: "Book swing evaluation", exact: true })).toBeVisible();
+  const invoice = page.locator("[data-invoice]");
+  await expect(invoice.locator("[data-invoice-total]")).toHaveText("$100");
+  await expect(invoice).toContainText("You pay");
+  await expect(invoice).toContainText("30 minutes");
+  await expect(invoice).toContainText("Full Swing");
+  await expect(page.getByRole("heading", { name: "Who it is for" })).toHaveCount(0);
+  await expect(page.locator(".what-you-get__card")).toHaveCount(4);
+  await expect(page.getByRole("link", { name: "Complete booking", exact: true })).toBeVisible();
 });
 
 test("desktop subpages put the price card beside the story", async ({ page }) => {
@@ -54,6 +62,13 @@ test("desktop subpages put the price card beside the story", async ({ page }) =>
       return buy.getBoundingClientRect().left < story.getBoundingClientRect().left ? 1 : 0;
     });
     expect(order, route).toBe(1);
+    const type = await page.locator(".what-you-get__line").first().evaluate((node) => {
+      const style = getComputedStyle(node);
+      return { size: style.fontSize, weight: style.fontWeight };
+    });
+    expect(type.size, route).toBe("16px");
+    const titleWeight = await page.locator(".what-you-get__title").first().evaluate((node) => getComputedStyle(node).fontWeight);
+    expect(Number(titleWeight), route).toBeGreaterThanOrEqual(700);
   }
 });
 
