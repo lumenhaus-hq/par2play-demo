@@ -26,9 +26,9 @@ export function MembershipCalculator() {
       <section id="why-membership" aria-labelledby="why-membership-heading" className="membership-pricing px-5 py-5 @3xl:px-7 @3xl:py-7">
         <span className="membership-pricing__orb membership-pricing__orb--a" aria-hidden="true" />
         <span className="membership-pricing__orb membership-pricing__orb--b" aria-hidden="true" />
-        <img className="membership-pricing__glyph membership-pricing__glyph--a" src={`${iconBase}/flag.png`} alt="" aria-hidden="true" />
-        <img className="membership-pricing__glyph membership-pricing__glyph--b" src={`${iconBase}/ball.png`} alt="" aria-hidden="true" />
-        <img className="membership-pricing__glyph membership-pricing__glyph--c" src={`${iconBase}/crossed-clubs.png`} alt="" aria-hidden="true" />
+        <img className="membership-pricing__glyph membership-pricing__glyph--a" src={`${iconBase}/flag.png`} alt="" aria-hidden="true" width={64} height={50} />
+        <img className="membership-pricing__glyph membership-pricing__glyph--b" src={`${iconBase}/ball.png`} alt="" aria-hidden="true" width={64} height={50} />
+        <img className="membership-pricing__glyph membership-pricing__glyph--c" src={`${iconBase}/crossed-clubs.png`} alt="" aria-hidden="true" width={64} height={50} />
 
         <div className="membership-pricing__body">
           <h1 id="why-membership-heading" className="offer-title text-2xl tracking-tight text-white @3xl:text-3xl">

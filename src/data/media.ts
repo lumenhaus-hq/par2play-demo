@@ -3,15 +3,11 @@
  * approved soundtrack muxed in: AAC on the mp4, Opus on the webm.
  * The aerial is fully generated, so there is no satellite-imagery credit.
  * The poster is unchanged and is also the Open Graph / Twitter image.
+ * The opening Earth frame plays from hero.mp4 with a CSS zoom. The separate
+ * NY→NJ map files are not requested.
  *   public/media/hero.mp4
  *   public/media/hero.webm
  *   public/media/hero-poster.jpg
- *
- * Short LP5-style storefront zoom intro (2.4s, same 1920×1080 / 30fps HD
- * pipeline) — see heroIntroZoom.ts. Silent; reduced-motion uses its poster.
- *   public/media/hero-intro-zoom.mp4
- *   public/media/hero-intro-zoom.webm
- *   public/media/hero-intro-zoom-poster.jpg
  */
 const media = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 
@@ -22,19 +18,6 @@ export const HERO_MEDIA = {
   poster: media("media/hero-poster.jpg"),
   posterMobileAvif: media("media/hero-poster-mobile.avif"),
   posterMobileWebp: media("media/hero-poster-mobile.webp"),
-} as const;
-
-/** Map→storefront zoom that plays once before the looping hero film. */
-export const HERO_INTRO_MEDIA = {
-  // Cache-bust when the cut changes (Pages CDN can keep stale hero-intro-zoom.*).
-  mp4: media("media/hero-intro-zoom.mp4?v=hd5"),
-  webm: media("media/hero-intro-zoom.webm?v=hd5"),
-  poster: media("media/hero-intro-zoom-poster.jpg?v=hd5"),
-  /** Seconds — must stay ≤ HERO_INTRO_ZOOM.timing.maxSeconds. */
-  durationS: 2.4,
-  /** Seek the looping hero here so the handoff stays on the dusk storefront. */
-  loopHandoffS: 6.2,
-  alt: "Animated HD map of New York zooming into New Jersey with golf icons, ending on the Par2Play storefront in Somerset",
 } as const;
 
 /**
