@@ -2,9 +2,10 @@
  * Hero film paths. The current cut is v3 (29.3s, 1920×1080) with the
  * approved soundtrack muxed in: AAC on the mp4, Opus on the webm.
  * The aerial is fully generated, so there is no satellite-imagery credit.
- * The poster is unchanged and is also the Open Graph / Twitter image.
- * The opening Earth frame plays from hero.mp4 with a CSS zoom. The separate
- * NY→NJ map files are not requested.
+ * Open Graph still uses the storefront still (hero-poster.jpg).
+ * The on-screen LCP poster is the zoomed Earth frame at 0.5s, the same
+ * frame the film seeks to before it is shown. The separate NY→NJ map
+ * files are not requested.
  *   public/media/hero.mp4
  *   public/media/hero.webm
  *   public/media/hero-poster.jpg

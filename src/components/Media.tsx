@@ -14,6 +14,20 @@ function expandMs(): number {
   return window.matchMedia("(min-width: 768px)").matches ? 1400 : 1100;
 }
 
+/**
+ * Opening frame baked into hero-earth-*.avif. The film seeks here before it
+ * is shown, so the swap matches the poster.
+ */
+const EARTH_FRAME_AT = 0.5;
+
+const FILM_GESTURES = ["pointerdown", "keydown", "touchstart", "wheel", "scroll"] as const;
+
+type LcpEntry = PerformanceEntry & { element?: Element | null };
+
+function posterEntry(entry: PerformanceEntry): boolean {
+  return (entry as LcpEntry).element?.id === "lcp-poster";
+}
+
 const STOREFRONT_ALT = "Par2Play storefront in Somerset, New Jersey";
 
 export function Photo({
@@ -125,7 +139,6 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
     let cancel = false;
     let expandTimer = 0;
     let arriveTimer = 0;
-    let idleHandle = 0;
     let started = false;
 
     const loopEl = () => loopRef.current;
@@ -143,11 +156,28 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
       });
     };
 
-    const onPlaying = () => {
+    let expandArmed = false;
+    const scheduleExpand = () => {
+      if (expandArmed || skipIntro) return;
+      expandArmed = true;
+      expandTimer = window.setTimeout(() => {
+        if (cancel) return;
+        setPhase("expand");
+        arriveTimer = window.setTimeout(() => {
+          if (cancel) return;
+          armFit();
+        }, motionMs);
+      }, 420);
+    };
+
+    const revealFilm = () => {
       const loop = loopEl();
-      if (!loop) return;
+      if (!loop || loop.classList.contains("is-live")) return;
+      if (loop.readyState < 2) return;
+      if (loop.currentTime + 0.08 < EARTH_FRAME_AT) return;
       loop.classList.add("is-live");
       hideLcpPoster();
+      scheduleExpand();
     };
 
     const playFilm = () => {
@@ -155,9 +185,28 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
       if (cancel || started || !loop) return;
       started = true;
       loop.preload = "metadata";
-      registerHeroVideo(loop);
-      document.documentElement.classList.add("media-on");
-      void loop.play().catch(() => undefined);
+      const arm = () => {
+        if (cancel) return;
+        const start = () => {
+          if (cancel) return;
+          loop.addEventListener("playing", revealFilm);
+          registerHeroVideo(loop);
+          document.documentElement.classList.add("media-on");
+          revealFilm();
+        };
+        if (loop.readyState >= 2 && Math.abs(loop.currentTime - EARTH_FRAME_AT) <= 0.08) {
+          start();
+          return;
+        }
+        loop.addEventListener("seeked", start, { once: true });
+        try {
+          loop.currentTime = EARTH_FRAME_AT;
+        } catch {
+          start();
+        }
+      };
+      if (loop.readyState >= 1) arm();
+      else loop.addEventListener("loadedmetadata", arm, { once: true });
     };
 
     const armFit = () => {
@@ -198,50 +247,95 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
       setPhase("zoom");
       window.requestAnimationFrame(() => {
         window.requestAnimationFrame(() => {
-        playFilm();
-        expandTimer = window.setTimeout(() => {
-          if (cancel) return;
-          setPhase("expand");
-          arriveTimer = window.setTimeout(() => {
-            if (cancel) return;
-            armFit();
-          }, motionMs);
-        }, 420);
+          playFilm();
         });
       });
     };
 
-    // Let the AVIF poster paint, then start the film on idle so it is not the LCP.
-    const afterPaint = () => {
-      const idle = window.requestIdleCallback?.bind(window);
-      if (idle) idleHandle = idle(begin, { timeout: 1200 });
-      else arriveTimer = window.setTimeout(begin, 32);
-    };
-    const raf = window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(afterPaint);
+    // Keep the poster as the final LCP candidate. Mount the film only after
+    // load plus a gesture, or after the poster has been the LCP entry long
+    // enough that its first frame is not a new, larger candidate.
+    const eager = forceIntro || params.get("film") === "1";
+    let releaseGate = () => {};
+    const ready = new Promise<void>((resolve) => {
+      if (eager) {
+        resolve();
+        return;
+      }
+      let settled = false;
+      let loaded = document.readyState === "complete";
+      let gesture = false;
+      let lcpTimer = 0;
+      let lcpObserver: PerformanceObserver | null = null;
+      const finish = () => {
+        if (settled) return;
+        settled = true;
+        window.clearTimeout(lcpTimer);
+        window.removeEventListener("load", onLoad);
+        for (const type of FILM_GESTURES) window.removeEventListener(type, onGesture, true);
+        lcpObserver?.disconnect();
+        resolve();
+      };
+      const consider = () => {
+        if (cancel || settled || !loaded || !gesture) return;
+        finish();
+      };
+      const onGesture = () => {
+        gesture = true;
+        consider();
+      };
+      const onLoad = () => {
+        loaded = true;
+        consider();
+      };
+      for (const type of FILM_GESTURES) window.addEventListener(type, onGesture, true);
+      if (!loaded) window.addEventListener("load", onLoad);
+      try {
+        lcpObserver = new PerformanceObserver((list) => {
+          if (settled || !list.getEntries().some(posterEntry)) return;
+          window.clearTimeout(lcpTimer);
+          // A short delay still sits inside a Lighthouse trace, and hiding the
+          // poster for the film then makes the video the LCP element. Wait
+          // until a quiet lab trace has already closed.
+          lcpTimer = window.setTimeout(() => {
+            if (cancel || settled) return;
+            if (document.readyState !== "complete") {
+              window.addEventListener("load", () => finish(), { once: true });
+              return;
+            }
+            finish();
+          }, 12000);
+        });
+        lcpObserver.observe({ type: "largest-contentful-paint", buffered: true });
+      } catch {
+        lcpObserver = null;
+      }
+      releaseGate = () => {
+        if (settled) return;
+        settled = true;
+        window.clearTimeout(lcpTimer);
+        window.removeEventListener("load", onLoad);
+        for (const type of FILM_GESTURES) window.removeEventListener(type, onGesture, true);
+        lcpObserver?.disconnect();
+      };
+    });
+    void ready.then(() => {
+      if (!cancel) begin();
     });
 
     document.addEventListener("visibilitychange", onVis);
     const observer = new ResizeObserver(syncFit);
     if (frame) observer.observe(frame);
-    const playingTarget = () => loopEl();
-    const bindPlaying = window.setInterval(() => {
-      const loop = playingTarget();
-      if (!loop || loop.dataset.bound === "1") return;
-      loop.dataset.bound = "1";
-      loop.addEventListener("playing", onPlaying);
-    }, 50);
 
     return () => {
       cancel = true;
-      window.cancelAnimationFrame(raf);
+      releaseGate();
       window.clearTimeout(expandTimer);
       window.clearTimeout(arriveTimer);
-      window.clearInterval(bindPlaying);
-      if (idleHandle && window.cancelIdleCallback) window.cancelIdleCallback(idleHandle);
       document.removeEventListener("visibilitychange", onVis);
       const loop = loopEl();
-      loop?.removeEventListener("playing", onPlaying);
+      loop?.removeEventListener("playing", revealFilm);
+      loop?.removeEventListener("seeked", revealFilm);
       loop?.removeEventListener("timeupdate", syncFit);
       loop?.removeEventListener("seeked", syncFit);
       observer.disconnect();

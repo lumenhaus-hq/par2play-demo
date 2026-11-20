@@ -24,7 +24,8 @@
     </script>
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preload" as="image" href="%BASE_URL%media/hero-poster-mobile.avif" type="image/avif" media="(max-width: 767px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="%BASE_URL%media/hero-earth-mobile.avif" type="image/avif" media="(max-width: 767px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="%BASE_URL%media/hero-earth-desktop.avif" type="image/avif" media="(min-width: 768px)" fetchpriority="high" />
     <meta name="google-site-verification" content="SVSAswdfSTzqPRciWqf77ANCHuDDCbzeVF89P6ECFzM" />
     <link rel="icon" type="image/png" sizes="32x32" href="%BASE_URL%favicon-32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="%BASE_URL%favicon-16.png" />
@@ -59,15 +60,18 @@
     <meta name="twitter:image:alt" content="Par2Play storefront in Somerset, New Jersey" />
   </head>
   <body>
-    <img
-      id="lcp-poster"
-      alt="Indoor golf at Par2Play in Somerset, NJ"
-      width="780"
-      height="439"
-      fetchpriority="high"
-      decoding="async"
-      src="%BASE_URL%media/hero-poster-mobile.avif"
-    />
+    <picture>
+      <source media="(min-width: 768px)" srcset="%BASE_URL%media/hero-earth-desktop.avif" type="image/avif" />
+      <img
+        id="lcp-poster"
+        alt="Earth at night, the opening frame of the Par2Play film"
+        width="824"
+        height="1646"
+        fetchpriority="high"
+        decoding="async"
+        src="%BASE_URL%media/hero-earth-mobile.avif"
+      />
+    </picture>
     <div id="root"></div>
     <script>
       window.addEventListener("load", function () {

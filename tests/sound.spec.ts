@@ -58,7 +58,7 @@ test.beforeEach(async ({ page }) => {
 
 test("rejected autoplay stays muted until one gesture, then the icon matches", async ({ page }) => {
   await blockFirstUnmutedPlay(page);
-  await page.goto("/");
+  await page.goto("/?film=1");
 
   const sound = page.getByRole("button", { name: /sound/i });
   const video = page.locator("#hero video").first();
@@ -71,7 +71,9 @@ test("rejected autoplay stays muted until one gesture, then the icon matches", a
   await expect(sound.locator("path").nth(1)).toHaveAttribute("d", /10\.2 6\.2/);
 
   const bootCalls = await playCalls(page);
-  expect(bootCalls[0]).toMatchObject({ muted: false, volume: 1 });
+  // The hero seeks to the poster frame before play(), so another muted clip can start first.
+  const heroAttempt = bootCalls.find((call) => !call.muted);
+  expect(heroAttempt).toMatchObject({ muted: false, volume: 1 });
   expect(bootCalls.some((call) => call.muted)).toBe(true);
 
   await page.mouse.click(48, 420);
@@ -107,7 +109,7 @@ test("rejected autoplay stays muted until one gesture, then the icon matches", a
 
 test("keydown is enough to unmute inside that gesture", async ({ page }) => {
   await blockFirstUnmutedPlay(page);
-  await page.goto("/");
+  await page.goto("/?film=1");
   await expect.poll(async () => (await probe(page)).armed).toBe(true);
   await page.keyboard.press("a");
   await expect.poll(async () => (await probe(page)).live).toBe(true);
@@ -120,7 +122,7 @@ test("keydown is enough to unmute inside that gesture", async ({ page }) => {
 
 test("scroll is enough to unmute inside that gesture", async ({ page }) => {
   await blockFirstUnmutedPlay(page);
-  await page.goto("/");
+  await page.goto("/?film=1");
   await expect.poll(async () => (await probe(page)).armed).toBe(true);
   await page.mouse.wheel(0, 200);
   await expect.poll(async () => (await probe(page)).live).toBe(true);
@@ -132,7 +134,7 @@ test.describe("touch", () => {
 
   test("touchstart is enough to unmute inside that gesture", async ({ page }) => {
     await blockFirstUnmutedPlay(page);
-    await page.goto("/");
+    await page.goto("/?film=1");
     await expect.poll(async () => (await probe(page)).armed).toBe(true);
     await page.touchscreen.tap(48, 420);
     await expect.poll(async () => (await probe(page)).live).toBe(true);
@@ -142,7 +144,7 @@ test.describe("touch", () => {
 
 test("a stored mute never turns itself back on", async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem("par2play-sound", "off"));
-  await page.goto("/");
+  await page.goto("/?film=1");
   const sound = page.getByRole("button", { name: /sound/i });
   await expect(sound).toBeVisible({ timeout: 15_000 });
   await expect.poll(async () => (await probe(page)).armed).toBe(false);
@@ -164,7 +166,7 @@ test("Sound starts with the soundtrack and the loop takes over past the hero", a
     }
   });
 
-  await page.goto("/");
+  await page.goto("/?film=1");
   const sound = page.getByRole("button", { name: /sound/i });
   // Looping hero is first in the bay; the silent intro sits on top until handoff.
   const video = page.locator("#hero video").first();

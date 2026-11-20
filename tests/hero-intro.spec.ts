@@ -9,6 +9,16 @@ test("reduced motion shows the storefront poster without video", async ({ page }
   await expect(poster).toHaveAttribute("alt", /Par2Play storefront/i);
 });
 
+test("the hero film stays unmounted until a gesture so the poster can stay LCP", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("./");
+  await page.waitForTimeout(400);
+  await expect(page.locator("#hero video")).toHaveCount(0);
+  await expect(page.locator("#lcp-poster")).toBeVisible();
+  await page.mouse.wheel(0, 80);
+  await expect.poll(() => page.locator("#hero video").count()).toBe(1);
+});
+
 test("earth intro zooms hero.mp4 and does not load the map cut", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   const hits: string[] = [];
