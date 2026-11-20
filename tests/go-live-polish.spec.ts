@@ -135,8 +135,16 @@ test("subpage titles clear the sticky header and use the swoosh", async ({ page 
   expect(gap).toBeGreaterThanOrEqual(8);
   const title = page.getByRole("heading", { name: "Swing your way to your first birdie and hole in one!", exact: true });
   await expect(title).toBeVisible();
-  await expect(title.locator(".display-swoosh")).toBeVisible();
-  await expect(title.locator(".display-title__accent")).toHaveText(/birdie/);
+  const titleFace = await title.evaluate((node) => ({
+    font: getComputedStyle(node).fontFamily,
+    shadow: getComputedStyle(node).textShadow,
+    hidden: node.querySelectorAll("[aria-hidden]").length,
+    name: node.textContent,
+  }));
+  expect(titleFace.font.toLowerCase()).toContain("archivo");
+  expect(titleFace.shadow).not.toBe("none");
+  expect(titleFace.hidden).toBe(0);
+  expect(titleFace.name).toBe("Swing your way to your first birdie and hole in one!");
   const motion = await title.evaluate((node) => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     return { reduce, animation: getComputedStyle(node).animationName };
@@ -194,7 +202,9 @@ test("home section titles use the same display treatment", async ({ page }) => {
     await page.locator(selector).scrollIntoViewIfNeeded();
     const heading = page.locator(selector).getByRole("heading", { name, exact: true });
     await expect(heading).toHaveClass(/display-title/);
-    await expect(heading.locator(".display-swoosh")).toBeVisible();
+    const face = await heading.evaluate((node) => getComputedStyle(node).fontFamily.toLowerCase());
+    expect(face).toContain("archivo");
+    expect(await heading.evaluate((node) => node.querySelectorAll("[aria-hidden]").length)).toBe(0);
   }
 });
 

@@ -9,30 +9,22 @@ export function HeroTryNow({ visible }: { visible: boolean }) {
   const [retired, setRetired] = useState(false);
 
   useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
     let done = false;
-    const targets: EventTarget[] = [window];
-    const smooth = root.closest<HTMLElement>("[data-smooth-root]");
-    if (smooth) targets.push(smooth);
-    let parent = root.parentElement;
-    while (parent) {
-      const overflow = getComputedStyle(parent).overflowY;
-      if (overflow === "auto" || overflow === "scroll") targets.push(parent);
-      parent = parent.parentElement;
-    }
-    const onScroll = (event: Event) => {
+    const root = document.querySelector("[data-smooth-root]");
+    const onScroll = () => {
       if (done) return;
-      const current = event.currentTarget;
-      const top = current === window ? window.scrollY : (current as HTMLElement).scrollTop;
-      if (top <= 12) return;
+      const nested = root instanceof HTMLElement ? root.scrollTop : 0;
+      if (Math.max(window.scrollY, nested) <= 12) return;
       done = true;
       setRetired(true);
-      for (const target of targets) target.removeEventListener("scroll", onScroll);
+      window.removeEventListener("scroll", onScroll);
+      root?.removeEventListener("scroll", onScroll);
     };
-    for (const target of targets) target.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
+    root?.addEventListener("scroll", onScroll, { passive: true });
     return () => {
-      for (const target of targets) target.removeEventListener("scroll", onScroll);
+      window.removeEventListener("scroll", onScroll);
+      root?.removeEventListener("scroll", onScroll);
     };
   }, []);
 
@@ -86,38 +78,33 @@ export function HeroTryNow({ visible }: { visible: boolean }) {
       data-testid="hero-try-now"
       data-retired={retired ? "true" : "false"}
     >
-      <svg className="hero-try-now__arrow" viewBox="0 0 96 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg className="hero-try-now__arrow" viewBox="0 0 80 110" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
-          d="M16 118 C 8 96, 44 102, 32 76 S 4 50, 38 34 C 50 28, 54 20, 52 10"
+          d="M 14 100 C 22 72, 34 40, 40 18"
           stroke="#06110b"
-          strokeWidth="8"
+          strokeWidth="9"
           strokeLinecap="round"
-          fill="none"
+          pathLength="1"
         />
         <path
           className="hero-try-now__stroke"
-          d="M16 118 C 8 96, 44 102, 32 76 S 4 50, 38 34 C 50 28, 54 20, 52 10"
+          d="M 14 100 C 22 72, 34 40, 40 18"
           stroke="currentColor"
-          strokeWidth="4.2"
+          strokeWidth="5.2"
           strokeLinecap="round"
-          fill="none"
+          pathLength="1"
         />
-        <path
-          d="M34 26 C 42 16, 48 12, 52 8 M 52 8 C 60 16, 66 20, 74 30"
-          stroke="#06110b"
-          strokeWidth="8"
-          strokeLinecap="round"
-          fill="none"
-        />
+        <path d="M 26 24 L 40 6 L 56 26" stroke="#06110b" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" fill="none" />
         <path
           className="hero-try-now__head"
-          d="M34 26 C 42 16, 48 12, 52 8 M 52 8 C 60 16, 66 20, 74 30"
+          d="M 26 24 L 40 6 L 56 26"
           stroke="currentColor"
-          strokeWidth="4.2"
+          strokeWidth="5.2"
           strokeLinecap="round"
+          strokeLinejoin="round"
           fill="none"
         />
-        <circle data-arrow-tip="" cx="52" cy="8" r="2.2" fill="transparent" />
+        <circle data-arrow-tip="" cx="40" cy="6" r="2.2" fill="transparent" />
       </svg>
       <span className="hero-try-now__label">Try now</span>
     </div>

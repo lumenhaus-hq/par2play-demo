@@ -66,7 +66,7 @@ export function MembershipPage() {
       <article className={pageSpace}>
         <JsonLd data={membershipGraph()} />
         <Breadcrumbs current="Membership" />
-        <DisplayTitle as="h1" className="offer-title play-title" text="The membership that rewards your passion more!" accent="passion" />
+        <DisplayTitle as="h1" className="offer-title play-title" text="The membership that rewards your passion more!" />
         <MembershipCalculator />
         <WhatYouGet items={MEMBERSHIP_GET} />
         <p className="mt-8 text-lg">
@@ -85,7 +85,7 @@ export function CoachingPage() {
       <article className={pageSpace}>
         <JsonLd data={coachingGraph()} />
         <Breadcrumbs current="Golf lessons" />
-        <DisplayTitle as="h1" className="offer-title play-title" text="Swing your way to your first birdie and hole in one!" accent="birdie" />
+        <DisplayTitle as="h1" className="offer-title play-title" text="Swing your way to your first birdie and hole in one!" />
         <CoachingPanel />
         <WhatYouGet items={COACHING_GET} />
         <p className="mt-10 text-lg">
@@ -104,7 +104,7 @@ export function SwingEvaluationPage() {
       <article className={pageSpace}>
         <JsonLd data={swingEvaluationGraph()} />
         <Breadcrumbs current="Swing evaluation" />
-        <DisplayTitle as="h1" className="offer-title play-title" text="Swing evaluation" accent="evaluation" />
+        <DisplayTitle as="h1" className="offer-title play-title" text="Swing evaluation" />
         <SwingEvaluation />
         <WhatYouGet items={SWING_GET} />
       </article>
@@ -118,7 +118,7 @@ export function JuniorsPage() {
       <article className={pageSpace}>
         <JsonLd data={juniorsGraph()} />
         <Breadcrumbs current="Golf for Kids" />
-        <DisplayTitle as="h1" className="offer-title play-title" text="Golf for Kids" accent="Kids" />
+        <DisplayTitle as="h1" className="offer-title play-title" text="Golf for Kids" />
         <JuniorsPanel />
         <WhatYouGet items={JUNIORS_GET} />
         <StillGrid photos={JUNIORS_GALLERY} />
@@ -133,12 +133,7 @@ export function EventsPage() {
       <article className={pageSpace}>
         <JsonLd data={eventsGraph()} />
         <Breadcrumbs current="Events" />
-        <DisplayTitle
-          as="h1"
-          className="offer-title play-title"
-          text="Golf simulator parties and events"
-          accent="events"
-        />
+        <DisplayTitle as="h1" className="offer-title play-title" text="Golf simulator parties and events" />
         <EventsPanel />
         <WhatYouGet items={EVENTS_GET} />
         <div className="mt-16">
