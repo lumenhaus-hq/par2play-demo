@@ -118,8 +118,15 @@ export function PricingHero({
           )}
           <AskUsLink />
         </div>
-        <div className="relative flex min-h-72 w-full min-w-0 flex-col justify-end overflow-hidden @3xl:min-h-full">
-          <VideoSlot src={film.src} srcMobile={film.srcMobile} poster={film.poster} className="absolute inset-0 h-full w-full" pausable />
+        <div className="offer-film relative flex min-h-72 w-full min-w-0 flex-col justify-end overflow-hidden @3xl:min-h-full">
+          <VideoSlot
+            src={film.src}
+            srcMobile={film.srcMobile}
+            poster={film.poster}
+            className="absolute inset-0 h-full w-full"
+            pausable
+            priority
+          />
         </div>
       </div>
     </section>

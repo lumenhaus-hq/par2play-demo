@@ -16,6 +16,7 @@ export function VideoSlot({
   pausable = false,
   framed = false,
   label = "",
+  priority = false,
 }: {
   src: string;
   srcMobile?: string;
@@ -26,6 +27,8 @@ export function VideoSlot({
   /** Sport frame for in-section films. Stills and full-bleed heroes stay plain. */
   framed?: boolean;
   label?: string;
+  /** Poster is in the first viewport, so it loads with the document instead of lazily. */
+  priority?: boolean;
 }) {
   const reduce = usePrefersReducedMotion();
   const box = useRef<HTMLDivElement>(null);
@@ -77,7 +80,16 @@ export function VideoSlot({
   return (
     <div ref={box} className={`${framed ? "clip-frame" : "overflow-hidden bg-bay"} ${className}`}>
       <div className="relative h-full w-full">
-        <img src={poster} alt={posterAlt} width={1280} height={720} decoding="async" loading="lazy" className="h-full w-full object-cover" />
+        <img
+          src={poster}
+          alt={posterAlt}
+          width={1280}
+          height={720}
+          decoding="async"
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : "auto"}
+          className="h-full w-full object-cover"
+        />
         {playable && mounted ? (
           <video
             ref={videoRef}
