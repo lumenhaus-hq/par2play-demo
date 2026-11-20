@@ -19,18 +19,18 @@ const FLOATERS: readonly {
   rotate: string;
   spin: string;
 }[] = [
-  { file: "bag.png", top: "7%", left: "6%", size: "4.1rem", depth: "far", drift: "26s", delay: "0s", rotate: "-8deg", spin: "1" },
-  { file: "club-strike.png", top: "10%", left: "78%", size: "3.5rem", depth: "far", drift: "28s", delay: "-12s", rotate: "-6deg", spin: "-0.8" },
-  { file: "swing.png", top: "24%", left: "46%", size: "4.4rem", depth: "mid", drift: "20s", delay: "-4s", rotate: "6deg", spin: "1.2" },
-  { file: "ball.png", top: "34%", left: "22%", size: "2.9rem", depth: "near", drift: "16s", delay: "-9s", rotate: "0deg", spin: "1.6" },
-  { file: "putter.png", top: "48%", left: "68%", size: "3.7rem", depth: "mid", drift: "21s", delay: "-14s", rotate: "-12deg", spin: "-1.1" },
-  { file: "flag.png", top: "52%", left: "8%", size: "3.9rem", depth: "mid", drift: "22s", delay: "-2s", rotate: "4deg", spin: "0.9" },
-  { file: "crossed-clubs.png", top: "64%", left: "38%", size: "4.6rem", depth: "near", drift: "18s", delay: "-11s", rotate: "-4deg", spin: "-1.4" },
-  { file: "grass.png", top: "76%", left: "84%", size: "3.3rem", depth: "far", drift: "24s", delay: "-7s", rotate: "2deg", spin: "0.7" },
-  { file: "cart.png", top: "84%", left: "18%", size: "3.8rem", depth: "far", drift: "30s", delay: "-6s", rotate: "8deg", spin: "-0.6" },
-  { file: "ball.png", top: "18%", left: "62%", size: "2.6rem", depth: "mid", drift: "19s", delay: "-15s", rotate: "10deg", spin: "1.3" },
-  { file: "flag.png", top: "40%", left: "90%", size: "3.2rem", depth: "far", drift: "25s", delay: "-3s", rotate: "-10deg", spin: "-0.9" },
-  { file: "club-strike.png", top: "70%", left: "52%", size: "3.4rem", depth: "near", drift: "17s", delay: "-8s", rotate: "14deg", spin: "1.5" },
+  { file: "bag.png", top: "7%", left: "6%", size: "4.8rem", depth: "far", drift: "26s", delay: "0s", rotate: "-8deg", spin: "1" },
+  { file: "club-strike.png", top: "10%", left: "78%", size: "4.2rem", depth: "far", drift: "28s", delay: "-12s", rotate: "-6deg", spin: "-0.8" },
+  { file: "swing.png", top: "24%", left: "46%", size: "5.1rem", depth: "mid", drift: "20s", delay: "-4s", rotate: "6deg", spin: "1.2" },
+  { file: "ball.png", top: "34%", left: "22%", size: "3.6rem", depth: "near", drift: "16s", delay: "-9s", rotate: "0deg", spin: "1.6" },
+  { file: "putter.png", top: "48%", left: "68%", size: "4.4rem", depth: "mid", drift: "21s", delay: "-14s", rotate: "-12deg", spin: "-1.1" },
+  { file: "flag.png", top: "52%", left: "8%", size: "4.6rem", depth: "mid", drift: "22s", delay: "-2s", rotate: "4deg", spin: "0.9" },
+  { file: "crossed-clubs.png", top: "64%", left: "38%", size: "5.3rem", depth: "near", drift: "18s", delay: "-11s", rotate: "-4deg", spin: "-1.4" },
+  { file: "grass.png", top: "76%", left: "84%", size: "4rem", depth: "far", drift: "24s", delay: "-7s", rotate: "2deg", spin: "0.7" },
+  { file: "cart.png", top: "84%", left: "18%", size: "4.5rem", depth: "far", drift: "30s", delay: "-6s", rotate: "8deg", spin: "-0.6" },
+  { file: "ball.png", top: "18%", left: "62%", size: "3.3rem", depth: "mid", drift: "19s", delay: "-15s", rotate: "10deg", spin: "1.3" },
+  { file: "flag.png", top: "40%", left: "90%", size: "3.9rem", depth: "far", drift: "25s", delay: "-3s", rotate: "-10deg", spin: "-0.9" },
+  { file: "club-strike.png", top: "70%", left: "52%", size: "4.1rem", depth: "near", drift: "17s", delay: "-8s", rotate: "14deg", spin: "1.5" },
 ];
 
 const DEPTH_PARALLAX: Record<FloaterDepth, number> = {
@@ -134,13 +134,13 @@ export function PageAtmosphere({
               } as CSSProperties
             }
           >
-            <img
-              src={`${iconBase}/${item.file}`}
-              alt=""
-              decoding="async"
-              loading="eager"
-              width={72}
-              height={56}
+            <span
+              className="page-atmosphere__glyph"
+              style={
+                {
+                  "--glyph-url": `url("${iconBase}/${item.file}")`,
+                } as CSSProperties
+              }
             />
           </li>
         ))}
