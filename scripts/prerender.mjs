@@ -17,10 +17,18 @@ try {
   await page.emulateMedia({ reducedMotion: "no-preference" });
 
   for (const route of ROUTES) {
-    await page.goto(new URL(route, baseUrl).href, { waitUntil: "networkidle" });
+    const href = new URL(route, baseUrl);
+    href.searchParams.set("prerender", "1");
+    await page.goto(href.href, { waitUntil: "networkidle" });
     await page.locator("h1").first().waitFor({ state: "visible", timeout: 30_000 });
     await page.evaluate(() => {
       document.documentElement.classList.remove("media-on", "ticker-on");
+      document.getElementById("lcp-poster")?.removeAttribute("data-bay");
+      for (const video of document.querySelectorAll("video")) {
+        video.pause();
+        video.preload = "none";
+        video.classList.remove("is-live");
+      }
     });
     const html = ("<!doctype html>\n" + (await page.content())).replace(/react-aria\d+-/g, "react-aria-");
     const file = route === "" ? resolve("dist/index.html") : resolve("dist", route, "index.html");

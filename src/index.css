@@ -422,9 +422,12 @@ body {
  * glyph fill stays ≥7:1 on paper; body ink contrast is unchanged (glyphs are aria-hidden).
  */
 .page-atmosphere {
-  position: absolute;
+  /* Viewport-sized so a font reflow cannot stretch this layer and score as CLS. */
+  position: fixed;
   inset: 0;
   z-index: 0;
+  width: 100%;
+  height: 100svh;
   overflow: visible;
   pointer-events: none;
   /* No contain:paint — that traps position:fixed floaters to the page box. */
@@ -452,6 +455,9 @@ body {
 
 /* Phone-frame demo runs inside a desktop viewport — media queries won't fire. */
 .page-atmosphere--framed {
+  position: absolute;
+  width: auto;
+  height: auto;
   --atmosphere-icon: 0.74;
 }
 
@@ -538,6 +544,16 @@ body {
 
 .page-atmosphere__floater--near {
   opacity: var(--atmosphere-icon);
+}
+
+.cookie-slot {
+  min-height: 22rem;
+}
+
+@media (min-width: 768px) {
+  .cookie-slot {
+    min-height: 10rem;
+  }
 }
 
 /* Masked silhouette — brand fill stays WCAG-readable; neon halo for dark bands.
@@ -1450,7 +1466,7 @@ html.motion-paused .page-atmosphere__glyph {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 0;
+  z-index: 2;
   width: 100%;
   height: 100svh;
   object-fit: cover;
@@ -1493,28 +1509,19 @@ html.lenis.lenis-smooth {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: var(--bay);
+  /* Transparent so the AVIF #lcp-poster shows through until the film is playing. */
+  background: transparent;
   transform-origin: 50% 42%;
   will-change: transform;
 }
 
-/* Near-full open — heavy zoom made the aerial soft before expand. */
+/* Earth opening: tight on the sphere, then ease out to full bleed. */
 .hero-bay-frame--zoom {
-  transform: perspective(900px) scale(1.08) rotateX(0.5deg);
+  transform: perspective(1200px) scale(2.65) rotateX(7deg);
 }
 
 .hero-bay-frame--expand {
-  transform: perspective(900px) scale(1) rotateX(0deg);
-}
-
-@media (min-width: 768px) {
-  .hero-bay-frame--zoom {
-    transform: perspective(1200px) scale(1.12) rotateX(1deg);
-  }
-
-  .hero-bay-frame--expand {
-    transform: perspective(1200px) scale(1) rotateX(0deg);
-  }
+  transform: perspective(1200px) scale(1) rotateX(0deg);
 }
 
 .hero-bay-frame--full {
@@ -2025,6 +2032,15 @@ body:has(#lcp-poster) #hero {
 }
 
 html.media-on .hero-video {
+  opacity: 1;
+}
+
+/* Home film stays invisible until a frame is playing, so the AVIF poster remains LCP. */
+html.media-on .hero-bay-frame .hero-video {
+  opacity: 0;
+}
+
+html.media-on .hero-bay-frame .hero-video.is-live {
   opacity: 1;
 }
 

@@ -48,6 +48,8 @@ function MontageFilm({ paused, reduce }: { paused: boolean; reduce: boolean }) {
       <img
         src={MEMBERSHIP_MONTAGE.poster}
         alt="Golfers on a simulator at Par2Play"
+        width={1280}
+        height={720}
         loading="lazy"
         decoding="async"
         className="absolute inset-0 h-full w-full object-cover object-center"
