@@ -24,6 +24,11 @@ try {
     await page.evaluate(() => {
       document.documentElement.classList.remove("media-on", "ticker-on");
       document.getElementById("lcp-poster")?.removeAttribute("data-bay");
+      // The print stylesheet flips to media=all on load. Keep the saved HTML deferred
+      // so the poster can paint before the full sheet.
+      for (const link of document.querySelectorAll('link[rel="stylesheet"][onload]')) {
+        link.media = "print";
+      }
       for (const video of document.querySelectorAll("video")) {
         video.pause();
         video.preload = "none";

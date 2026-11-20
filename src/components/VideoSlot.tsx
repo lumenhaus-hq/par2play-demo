@@ -58,7 +58,7 @@ export function VideoSlot({
   return (
     <div ref={box} className={`overflow-hidden bg-bay ${className}`}>
       <div className="relative h-full w-full">
-        <img src={poster} alt={posterAlt} decoding="async" className="h-full w-full object-cover" />
+        <img src={poster} alt={posterAlt} decoding="async" loading="lazy" className="h-full w-full object-cover" />
         {playable ? (
           <video
             ref={videoRef}
