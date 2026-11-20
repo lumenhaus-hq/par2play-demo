@@ -29,11 +29,22 @@ try {
       for (const link of document.querySelectorAll('link[rel="stylesheet"][onload]')) {
         link.media = "print";
       }
+      // Lenis injects its sheet from this preview origin. Drop only that file.
+      // The main sheet is also served from this origin during prerender; keep it.
+      for (const link of document.querySelectorAll('link[rel="stylesheet"]')) {
+        const raw = link.getAttribute("href") || "";
+        if (raw.includes("lenis") || link.href.includes("/lenis-")) link.remove();
+      }
+      // The arrow's transform is measured at this desktop viewport. Leave it
+      // unset so the first mobile paint uses the CSS position, then JS refines it.
+      for (const cue of document.querySelectorAll(".hero-try-now")) {
+        cue.removeAttribute("style");
+      }
       // First client render keeps posters only. Effects mount clips after paint,
       // so the saved HTML must not include videos the effects already attached.
       for (const video of document.querySelectorAll("video")) video.remove();
     });
-    const html = ("<!doctype html>\n" + (await page.content())).replace(/react-aria\d+-/g, "react-aria-");
+    const html = ("<!doctype html>\n" + (await page.content())).replace(/react-aria\d+-/g, "react-aria-").replaceAll("http://127.0.0.1:4193", "");
     const file = route === "" ? resolve("dist/index.html") : resolve("dist", route, "index.html");
     await writeFile(file, html);
     const words = html

@@ -1401,6 +1401,9 @@ html.motion-paused .page-atmosphere__glyph {
 
 @media (max-width: 767px) {
   .hero-try-now {
+    top: 3.05rem;
+    left: auto;
+    right: 1.15rem;
     max-width: 11rem;
   }
 
@@ -1853,7 +1856,6 @@ html.lenis.lenis-smooth {
 }
 
 .reveal-block[data-reveal="out"] {
-  opacity: 0;
   transform: translateY(0.9rem);
 }
 
