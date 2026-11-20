@@ -272,7 +272,7 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
         settled = true;
         window.clearTimeout(lcpTimer);
         window.removeEventListener("load", onLoad);
-        for (const type of FILM_GESTURES) window.removeEventListener(type, onGesture, true);
+        for (const type of FILM_GESTURES) window.removeEventListener(type, onGesture, { capture: true });
         lcpObserver?.disconnect();
         resolve();
       };
@@ -288,7 +288,7 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
         loaded = true;
         consider();
       };
-      for (const type of FILM_GESTURES) window.addEventListener(type, onGesture, true);
+      for (const type of FILM_GESTURES) window.addEventListener(type, onGesture, { capture: true, passive: true });
       if (!loaded) window.addEventListener("load", onLoad);
       try {
         lcpObserver = new PerformanceObserver((list) => {
@@ -315,7 +315,7 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
         settled = true;
         window.clearTimeout(lcpTimer);
         window.removeEventListener("load", onLoad);
-        for (const type of FILM_GESTURES) window.removeEventListener(type, onGesture, true);
+        for (const type of FILM_GESTURES) window.removeEventListener(type, onGesture, { capture: true });
         lcpObserver?.disconnect();
       };
     });

@@ -3,17 +3,32 @@ import { BookLink, MembershipLink } from "./Cta";
 import { MembershipBento } from "./MembershipBento";
 import { MEMBERSHIP_MONTAGE } from "../data/films";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
+import { NEAR_VIEWPORT } from "../motion/nearViewport";
 
 function MontageFilm({ paused, reduce }: { paused: boolean; reduce: boolean }) {
   const ref = useRef<HTMLVideoElement>(null);
   const box = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const node = box.current;
+    if (!node || reduce || mounted) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry?.isIntersecting) return;
+      setMounted(true);
+      observer.disconnect();
+    }, NEAR_VIEWPORT);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [mounted, reduce]);
 
   useEffect(() => {
     const video = ref.current;
     const node = box.current;
-    if (!video || !node || reduce) return;
+    if (!video || !node || reduce || !mounted) return;
     video.muted = true;
     video.defaultMuted = true;
+    video.preload = "none";
     if (paused) {
       video.pause();
       return;
@@ -41,7 +56,7 @@ function MontageFilm({ paused, reduce }: { paused: boolean; reduce: boolean }) {
       window.removeEventListener("load", start);
       video.pause();
     };
-  }, [paused, reduce]);
+  }, [paused, reduce, mounted]);
 
   return (
     <div ref={box} className="absolute inset-0">
@@ -54,7 +69,7 @@ function MontageFilm({ paused, reduce }: { paused: boolean; reduce: boolean }) {
         decoding="async"
         className="absolute inset-0 h-full w-full object-cover object-center"
       />
-      {reduce ? null : (
+      {!reduce && mounted ? (
         <video
           ref={ref}
           className="hero-video absolute inset-0 h-full w-full object-cover object-center"
@@ -66,7 +81,7 @@ function MontageFilm({ paused, reduce }: { paused: boolean; reduce: boolean }) {
           <source src={MEMBERSHIP_MONTAGE.srcMobile} type="video/mp4" media="(max-width: 767px)" />
           <source src={MEMBERSHIP_MONTAGE.src} type="video/mp4" />
         </video>
-      )}
+      ) : null}
     </div>
   );
 }

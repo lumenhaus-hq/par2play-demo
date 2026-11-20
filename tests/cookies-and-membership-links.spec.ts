@@ -32,9 +32,11 @@ for (const width of [390, 1280]) {
       await expect(cta).toHaveAttribute("href", siteHref("membership/"));
       await expect(cta).not.toHaveAttribute("target", "_blank");
     }
-    await expect(page.locator("#hero").getByRole("link", { name: "Bay Rental Call Us", exact: true })).toHaveAttribute(
+    const phone = page.locator("#hero").getByRole("link", { name: "Call us at (732) 448-2769", exact: true });
+    await expect(phone).toHaveAttribute("href", "tel:+17324482769");
+    await expect(page.locator("#hero").getByRole("link", { name: "Become a Member", exact: true })).toHaveAttribute(
       "href",
-      "tel:+17324482769",
+      siteHref("membership/"),
     );
     await page.locator("#membership").getByRole("link", { name: "Become a Member", exact: true }).click();
     await expect(page).toHaveURL(sitePathPattern("membership/"));

@@ -47,36 +47,58 @@ test("navbar shows Golf for Kids and Book a Bay on mobile widths", async ({ page
   await expect(page.getByRole("navigation", { name: "Page" }).getByRole("link", { name: "Golf for Kids", exact: true })).toBeVisible();
 });
 
-test("mobile hero keeps Bay Rental CTA visible above the ticker", async ({ page }) => {
+test("mobile hero keeps membership and phone CTAs visible above the ticker", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("./");
   await setDemoLayout(page, "mobile");
-  const cta = page.locator("#hero").getByRole("link", { name: "Bay Rental Call Us", exact: true });
-  await expect(cta).toBeVisible();
-  const metrics = await cta.evaluate((node) => {
+  const member = page.locator("#hero").getByRole("link", { name: "Become a Member", exact: true });
+  const phone = page.locator("#hero").getByRole("link", { name: "Call us at (732) 448-2769", exact: true });
+  await expect(member).toBeVisible();
+  await expect(phone).toBeVisible();
+  const metrics = await phone.evaluate((node) => {
     const rect = node.getBoundingClientRect();
+    const memberRect = document.querySelector("#hero a[data-membership]")!.getBoundingClientRect();
     const hero = document.getElementById("hero")!.getBoundingClientRect();
     const dock = document.querySelector("[data-hero-offer]")!.getBoundingClientRect();
-    const styles = getComputedStyle(document.querySelector(".hero-offer-dock")!);
     return {
       ctaTop: rect.top,
       ctaBottom: rect.bottom,
       ctaHeight: rect.height,
+      memberTop: memberRect.top,
+      memberWidth: memberRect.width,
+      phoneWidth: rect.width,
       heroTop: hero.top,
       heroHeight: hero.height,
       dockTop: dock.top,
       dockHeight: dock.height,
-      dockMax: styles.maxHeight,
     };
   });
   // Fully on screen — not a clipped sliver under overflow.
-  expect(metrics.ctaHeight).toBeGreaterThanOrEqual(40);
-  expect(metrics.ctaTop).toBeGreaterThan(metrics.heroTop + metrics.heroHeight * 0.35);
+  expect(metrics.ctaHeight).toBeGreaterThanOrEqual(44);
+  expect(metrics.memberTop).toBeGreaterThan(metrics.heroTop + metrics.heroHeight * 0.28);
   expect(metrics.ctaBottom).toBeLessThan(metrics.heroTop + metrics.heroHeight - 8);
+  expect(Math.abs(metrics.memberWidth - metrics.phoneWidth)).toBeLessThanOrEqual(2);
   // Upper film band stays open for the storefront (dock ≤ ~half the bay).
-  expect(metrics.dockTop).toBeGreaterThan(metrics.heroTop + metrics.heroHeight * 0.45);
-  expect(metrics.dockHeight).toBeLessThanOrEqual(metrics.heroHeight * 0.5);
+  expect(metrics.dockTop).toBeGreaterThan(metrics.heroTop + metrics.heroHeight * 0.4);
+  expect(metrics.dockHeight).toBeLessThanOrEqual(metrics.heroHeight * 0.58);
+});
+
+test("hero CTAs sit side by side and equal width on a wide card", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("./");
+  const member = page.locator("#hero").getByRole("link", { name: "Become a Member", exact: true });
+  const phone = page.locator("#hero").getByRole("link", { name: "Call us at (732) 448-2769", exact: true });
+  const boxes = await Promise.all([
+    member.evaluate((node) => ({ top: node.offsetTop, width: node.offsetWidth, height: node.offsetHeight })),
+    phone.evaluate((node) => ({ top: node.offsetTop, width: node.offsetWidth, height: node.offsetHeight })),
+  ]);
+  const memberBox = boxes[0];
+  const phoneBox = boxes[1];
+  expect(Math.abs(memberBox.top - phoneBox.top)).toBeLessThanOrEqual(2);
+  expect(Math.abs(memberBox.width - phoneBox.width)).toBeLessThanOrEqual(2);
+  expect(memberBox.height).toBeGreaterThanOrEqual(44);
+  expect(phoneBox.height).toBeGreaterThanOrEqual(44);
 });
 
 test("hero shows a Try now cue aimed at Book a Bay", async ({ page }) => {
@@ -181,7 +203,7 @@ test("mobile homepage membership uses the golf bento grid", async ({ page }) => 
     };
   });
   expect(metrics.availabilityTop).toBeGreaterThanOrEqual(metrics.gridTop);
-  expect(metrics.filmCount).toBe(1);
+  await expect.poll(() => band.locator("video").count()).toBe(1);
   expect(metrics.gridInsideFilm).toBe(true);
   const [firstHeight, ...restHeights] = metrics.tileHeights;
   expect(firstHeight).toBeGreaterThan(0);
@@ -198,7 +220,7 @@ test("mobile homepage membership uses the golf bento grid", async ({ page }) => 
   await expect(page.getByRole("heading", { name: "Around the club" })).toHaveCount(0);
   await expect(page.locator("#coaching").getByRole("heading", { name: "Get fitted and swinging!" })).toBeVisible();
   await expect(page.locator("#juniors").getByRole("heading", { name: "Golf for kids" })).toBeVisible();
-  await expect(page.locator("#hero").getByRole("link", { name: "Bay Rental Call Us", exact: true })).toHaveAttribute("href", "tel:+17324482769");
+  await expect(page.locator("#hero").getByRole("link", { name: "Call us at (732) 448-2769", exact: true })).toHaveAttribute("href", "tel:+17324482769");
   await expect(page.locator("#coaching").getByRole("link", { name: "Book swing evaluation" })).toHaveAttribute("data-offer", "swing-evaluation");
   await expect(page.locator("#coaching").getByRole("link", { name: "Book lessons" })).toHaveAttribute("href", /\/coaching\/$/);
   await expect(page.locator("#juniors").getByRole("link", { name: "Become a Junior Member" })).toHaveAttribute("data-offer", "junior");

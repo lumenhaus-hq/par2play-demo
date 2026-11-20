@@ -29,11 +29,9 @@ try {
       for (const link of document.querySelectorAll('link[rel="stylesheet"][onload]')) {
         link.media = "print";
       }
-      for (const video of document.querySelectorAll("video")) {
-        video.pause();
-        video.preload = "none";
-        video.classList.remove("is-live");
-      }
+      // First client render keeps posters only. Effects mount clips after paint,
+      // so the saved HTML must not include videos the effects already attached.
+      for (const video of document.querySelectorAll("video")) video.remove();
     });
     const html = ("<!doctype html>\n" + (await page.content())).replace(/react-aria\d+-/g, "react-aria-");
     const file = route === "" ? resolve("dist/index.html") : resolve("dist", route, "index.html");

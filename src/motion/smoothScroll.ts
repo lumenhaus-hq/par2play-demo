@@ -1,4 +1,4 @@
-import Lenis from "lenis";
+import type Lenis from "lenis";
 
 type BindOptions = {
   /** Element scroller (phone frame). Omit for window scroll. */
@@ -8,7 +8,7 @@ type BindOptions = {
 
 let lenis: Lenis | null = null;
 let lockObserver: MutationObserver | null = null;
-let rafBound = false;
+let generation = 0;
 
 /** Expo out — the usual Awwwards / Studio Freight curve. */
 function easeOutExpo(t: number) {
@@ -33,7 +33,6 @@ function destroy() {
   lockObserver = null;
   lenis?.destroy();
   lenis = null;
-  rafBound = false;
   // Lenis should clear these; force-remove so reduced-motion never leaves a sticky class.
   document.documentElement.classList.remove("lenis", "lenis-smooth", "lenis-scrolling", "lenis-stopped");
 }
@@ -68,38 +67,44 @@ export function smoothScrollTo(
   target.scrollIntoView({ behavior: options.immediate ? "auto" : "smooth", block: "start" });
 }
 
-/** Create or replace the site Lenis instance. Pass null wrapper for window scroll. */
-export function bindSmoothScroll({ wrapper, content }: BindOptions = {}) {
-  destroy();
-
-  const isElement = wrapper instanceof HTMLElement;
-  lenis = new Lenis({
-    wrapper: isElement ? wrapper : window,
-    content: isElement ? (content ?? wrapper!) : document.documentElement,
-    eventsTarget: isElement ? wrapper! : window,
-    autoRaf: true,
-    anchors: { offset: -96, duration: 1.35, easing: easeOutExpo },
-    // Lerp (not duration) for wheel inertia — duration is reserved for scrollTo / anchors.
-    lerp: 0.075,
-    smoothWheel: true,
-    syncTouch: isElement,
-    syncTouchLerp: 0.08,
-    wheelMultiplier: 0.86,
-    touchMultiplier: 1.35,
-    overscroll: true,
-    autoToggle: false,
-    prevent: (node) => Boolean(node.closest("[data-lenis-prevent]")),
-  });
-
-  rafBound = true;
-  watchLock();
-  return () => {
-    if (!rafBound) return;
+/**
+ * Create or replace the site Lenis instance. Pass null wrapper for window scroll.
+ * Lenis is loaded on demand so coarse pointers never parse it or attach
+ * non-passive touch/wheel listeners.
+ */
+export function bindSmoothScroll({ wrapper, content }: BindOptions = {}): Promise<() => void> {
+  const token = ++generation;
+  return Promise.all([import("lenis"), import("lenis/dist/lenis.css")]).then(([{ default: LenisCtor }]) => {
+    if (token !== generation) return () => {};
     destroy();
-  };
+    const isElement = wrapper instanceof HTMLElement;
+    lenis = new LenisCtor({
+      wrapper: isElement ? wrapper : window,
+      content: isElement ? (content ?? wrapper!) : document.documentElement,
+      eventsTarget: isElement ? wrapper! : window,
+      autoRaf: true,
+      anchors: { offset: -96, duration: 1.35, easing: easeOutExpo },
+      // Lerp (not duration) for wheel inertia — duration is reserved for scrollTo / anchors.
+      lerp: 0.075,
+      smoothWheel: true,
+      syncTouch: isElement,
+      syncTouchLerp: 0.08,
+      wheelMultiplier: 0.86,
+      touchMultiplier: 1.35,
+      overscroll: true,
+      autoToggle: false,
+      prevent: (node) => Boolean(node.closest("[data-lenis-prevent]")),
+    });
+    watchLock();
+    return () => {
+      if (token !== generation) return;
+      destroy();
+    };
+  });
 }
 
-/** Tear down Lenis (reduced motion / Pause motion / unmount). */
+/** Tear down Lenis (reduced motion / Pause motion / coarse pointer / unmount). */
 export function unbindSmoothScroll() {
+  generation += 1;
   destroy();
 }

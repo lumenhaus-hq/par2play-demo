@@ -5,7 +5,7 @@ import { buttonFocus } from "./Cta";
 export function FaqSection() {
   const [open, setOpen] = useState(0);
   return (
-    <section id="faq" className="px-6 py-16 @3xl:px-12" aria-labelledby="faq-heading">
+    <section id="faq" className="cv-auto px-6 py-16 @3xl:px-12" aria-labelledby="faq-heading">
       <h2 id="faq-heading" className="font-display text-3xl font-semibold tracking-tight @3xl:text-4xl">
         Questions about Par2Play
       </h2>
