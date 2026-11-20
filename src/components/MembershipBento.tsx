@@ -46,7 +46,15 @@ function MembershipGolfIcon({
   );
 }
 
-function Tile({
+export function BentoGrid({ children }: { children: ReactNode }) {
+  return (
+    <div className="membership-bento__grid" role="list">
+      {children}
+    </div>
+  );
+}
+
+export function BentoTile({
   className = "",
   children,
   label,
@@ -111,14 +119,14 @@ export function MembershipBento() {
   const reduce = usePrefersReducedMotion();
 
   return (
-    <div className="membership-bento__grid" role="list">
-      <Tile className="membership-bento__tile--clubs" label="Club lineup">
+    <BentoGrid>
+      <BentoTile className="membership-bento__tile--clubs" label="Club lineup">
         <p className="membership-bento__eyebrow">Equipment</p>
         <h3 className="membership-bento__title">Clubs on standby</h3>
         <ClubStack />
-      </Tile>
+      </BentoTile>
 
-      <Tile className="membership-bento__tile--availability" label="Preferred availability">
+      <BentoTile className="membership-bento__tile--availability" label="Preferred availability">
         <p className="membership-bento__eyebrow">Availability</p>
         <h3 className="membership-bento__title">Your times, held</h3>
         <ul className="membership-bento__slots">
@@ -129,9 +137,9 @@ export function MembershipBento() {
             </li>
           ))}
         </ul>
-      </Tile>
+      </BentoTile>
 
-      <Tile className="membership-bento__tile--stats" label="Simulator stats">
+      <BentoTile className="membership-bento__tile--stats" label="Simulator stats">
         <div className="membership-bento__stats-top">
           <div className="membership-bento__stats-copy">
             <p className="membership-bento__eyebrow">Simulator</p>
@@ -153,9 +161,9 @@ export function MembershipBento() {
             <strong>8.4</strong>
           </li>
         </ul>
-      </Tile>
+      </BentoTile>
 
-      <Tile className="membership-bento__tile--chart" label="Progress">
+      <BentoTile className="membership-bento__tile--chart" label="Progress">
         <div className="membership-bento__chart-head">
           <p className="membership-bento__eyebrow">Progress</p>
           <p className="membership-bento__chart-value">
@@ -172,7 +180,7 @@ export function MembershipBento() {
             </div>
           ))}
         </div>
-      </Tile>
-    </div>
+      </BentoTile>
+    </BentoGrid>
   );
 }
