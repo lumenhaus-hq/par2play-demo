@@ -9,7 +9,6 @@ type TileCopy = { eyebrow: string; title: string; line: string };
 const hour = `$${PRICES.unlimitedMonthly} a month`;
 const lesson = `$${PRICES.lessonSingle} for ${PRICES.lessonMinutes} minutes`;
 const pack = `$${PRICES.lessonPack10}`;
-const swing = `$${PRICES.swingEvaluation} for ${PRICES.swingEvaluationMinutes} minutes`;
 const juniorOnce = `$${PRICES.juniorOneLessonWeekly} a month`;
 const juniorTwice = `$${PRICES.juniorTwoLessonsWeekly} a month`;
 
@@ -42,7 +41,7 @@ const PAGES: Record<PageId, { heading: string; lead: string; tiles: readonly Til
   },
   coaching: {
     heading: "Lessons that fit a lunch break",
-    lead: `A private lesson is ${lesson}. A 10-pack is ${pack}. A swing evaluation is ${swing}. PGA professionals teach on Full Swing simulators with swing-evaluation cameras, at ${ADDRESS_LINE}. The studio is open ${HOURS_LABEL}, with more than ${SIMULATOR_COURSE_COUNT} courses and clubs on hand.`,
+    lead: `A private lesson is ${lesson}. A 10-pack is ${pack}. PGA professionals teach on Full Swing simulators at ${ADDRESS_LINE}. The studio is open ${HOURS_LABEL}, with more than ${SIMULATOR_COURSE_COUNT} courses and clubs on hand.`,
     tiles: [
       {
         eyebrow: "Single lesson",
@@ -55,9 +54,9 @@ const PAGES: Record<PageId, { heading: string; lead: string; tiles: readonly Til
         line: "Ten private lessons in one pack. The studio is open 10am to 10pm every day, so the next lesson can sit on a weekday.",
       },
       {
-        eyebrow: "Swing evaluation",
-        title: swing,
-        line: "Thirty minutes on the swing-evaluation cameras. A clear place to start before a lesson pack.",
+        eyebrow: "The coach",
+        title: "PGA professionals",
+        line: `Private lessons on Full Swing simulators. The studio is open ${HOURS_LABEL}.`,
       },
       {
         eyebrow: "The studio",
@@ -150,7 +149,7 @@ export function PageBento({ page }: { page: PageId }) {
   const copy = PAGES[page];
   return (
     <section className="page-bento scroll-mt-32 mt-16" aria-labelledby={`${page}-bento-heading`}>
-      <h2 id={`${page}-bento-heading`} className="font-display text-3xl font-semibold tracking-tight">
+      <h2 id={`${page}-bento-heading`} className="offer-title text-4xl tracking-tight">
         {copy.heading}
       </h2>
       <p className="mt-4 max-w-2xl text-lg leading-relaxed">{copy.lead}</p>

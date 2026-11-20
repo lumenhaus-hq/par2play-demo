@@ -115,6 +115,7 @@ export function PageAtmosphere({
     <div
       ref={layerRef}
       className={`page-atmosphere page-atmosphere--${intensity}${scrollRoot ? " page-atmosphere--framed" : ""}${reduce ? " page-atmosphere--still" : ""}`}
+      style={{ overflow: "hidden" }}
       aria-hidden="true"
       data-testid="page-atmosphere"
     >

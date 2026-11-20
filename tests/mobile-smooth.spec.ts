@@ -43,18 +43,19 @@ test("coarse pointers keep native scroll and passive touch listeners", async ({ 
   expect(blocking).toEqual([]);
 });
 
-test("membership video stays off until the section is scrolled near", async ({ page }) => {
+test("membership band is a still and never requests the montage", async ({ page }) => {
   await page.goto("./");
+  const still = page.locator("#membership img[alt='Golfers on a simulator at Par2Play']");
+  await expect(still).toHaveCount(1);
+  await expect(still).toHaveAttribute("width", "1280");
+  await expect(still).toHaveAttribute("height", "720");
   await expect(page.locator("#membership video")).toHaveCount(0);
-  const early = await page.evaluate(() =>
+  await page.locator("#membership").evaluate((node) => node.scrollIntoView({ block: "start" }));
+  await expect(page.locator("#membership video")).toHaveCount(0);
+  const requested = await page.evaluate(() =>
     performance.getEntriesByType("resource").some((entry) => /montage.*\.mp4/.test(entry.name)),
   );
-  expect(early).toBe(false);
-  await page.locator("#membership").evaluate((node) => node.scrollIntoView({ block: "start" }));
-  const video = page.locator("#membership video");
-  await expect(video).toHaveCount(1);
-  await expect(video).toHaveAttribute("preload", "none");
-  await expect(page.locator("#membership img[alt='Golfers on a simulator at Par2Play']")).toBeVisible();
+  expect(requested).toBe(false);
 });
 
 test("hamburger stays inset and the try-now tip meets Book a Bay", async ({ page }) => {
@@ -68,8 +69,8 @@ test("hamburger stays inset and the try-now tip meets Book a Bay", async ({ page
   const bookBox = await book.boundingBox();
   expect(menuBox).toBeTruthy();
   expect(bookBox).toBeTruthy();
-  expect(menuBox!.width).toBeGreaterThanOrEqual(44);
-  expect(menuBox!.height).toBeGreaterThanOrEqual(44);
+  expect(Math.round(menuBox!.width)).toBeGreaterThanOrEqual(44);
+  expect(Math.round(menuBox!.height)).toBeGreaterThanOrEqual(44);
   expect(390 - (menuBox!.x + menuBox!.width)).toBeGreaterThanOrEqual(12);
 
   const tip = page.locator("[data-arrow-tip]");

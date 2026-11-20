@@ -547,7 +547,12 @@ body {
 }
 
 .cookie-slot {
-  min-height: 22rem;
+  /* Tall enough for the wrapped notice in fallback and final fonts, so the bar does not jump. */
+  min-height: 28rem;
+}
+
+.cookie-slot .leading-snug {
+  min-height: 10rem;
 }
 
 @media (min-width: 768px) {
@@ -654,200 +659,259 @@ html.motion-paused .page-atmosphere__glyph {
   }
 }
 
-/* Membership pricing stage — dark body panel aligned with coaching/juniors. taste-skill-ignore */
-.membership-pricing {
+.play-title {
+  margin: 0;
+  max-width: 100%;
+  font-size: clamp(2.6rem, 11vw, 5.5rem);
+  line-height: 0.9;
+  /* Two lines stay reserved when the offer font swaps in. */
+  min-height: 2.35em;
+  letter-spacing: -0.045em;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.play-sheet,
+.swing-hero {
   position: relative;
-  isolation: isolate;
   overflow: hidden;
-  border-radius: 1.25rem;
-  background:
-    radial-gradient(ellipse 70% 55% at 12% 0%, rgb(20 212 94 / 0.18), transparent 55%),
-    radial-gradient(ellipse 55% 45% at 100% 100%, rgb(125 255 176 / 0.1), transparent 50%),
-    var(--void, #020806);
-  box-shadow:
-    0 18px 48px rgb(10 15 11 / 0.28),
-    0 0 0 1px rgb(20 212 94 / 0.18);
+  border-radius: 1.6rem;
+  background: var(--void);
+  color: #fff;
 }
 
-.membership-pricing__orb {
+.play-sheet {
+  margin-top: 2.5rem;
+  padding: 1.15rem 1rem 1.25rem;
+  min-height: 36rem;
+  box-shadow: 0 16px 36px rgb(10 15 11 / 0.2);
+  container-type: inline-size;
+}
+
+.play-sheet__body {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.play-sheet__glyph {
   position: absolute;
-  border-radius: 9999px;
+  width: 4.25rem;
+  height: auto;
+  opacity: 0.18;
   pointer-events: none;
-  z-index: 0;
-  filter: blur(2px);
+  user-select: none;
 }
 
-.membership-pricing__orb--a {
-  width: 9rem;
-  height: 9rem;
-  top: -2.5rem;
-  right: -1.5rem;
-  background: rgb(20 212 94 / 0.28);
+.play-sheet__glyph--a {
+  top: 0.7rem;
+  right: 0.7rem;
+  transform: rotate(12deg);
 }
 
-.membership-pricing__orb--b {
-  width: 7rem;
-  height: 7rem;
-  bottom: 18%;
-  left: -2rem;
-  background: rgb(125 255 176 / 0.16);
-}
-
-.membership-pricing__glyph {
-  position: absolute;
-  z-index: 0;
-  opacity: 0.22;
-  pointer-events: none;
-  width: 3.5rem;
-  animation: page-atmosphere-drift 16s linear infinite;
-}
-
-.membership-pricing__glyph--a {
-  top: 1.25rem;
-  right: 1.5rem;
-  width: 4rem;
-  animation-delay: -3s;
-  transform: rotate(8deg);
-}
-
-.membership-pricing__glyph--b {
+.play-sheet__glyph--b {
   bottom: 5.5rem;
-  left: 1rem;
-  width: 3.25rem;
-  animation-delay: -9s;
+  left: -0.6rem;
+  width: 3.4rem;
   transform: rotate(-10deg);
 }
 
-.membership-pricing__glyph--c {
-  top: 42%;
-  right: 8%;
-  width: 2.75rem;
-  animation-delay: -6s;
-  opacity: 0.1;
+.play-sheet .cta-shell {
+  width: 100%;
 }
 
-.membership-pricing__body {
-  position: relative;
-  z-index: 1;
+.scorecard {
+  min-width: 0;
+  border: 2px solid color-mix(in srgb, var(--accent) 72%, #fff);
+  border-radius: 1.1rem;
+  padding: 0.85rem 0.9rem 1rem;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 
-/* Dark membership panel — larger-than-life glowing benefit tiles. */
-.member-benefits {
+.scorecard__kicker {
+  margin: 0;
+  font-family: var(--font-offer);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.scorecard__title {
+  margin: 0.25rem 0 0;
+  font-family: var(--font-offer);
+  font-size: clamp(1.6rem, 6vw, 2.15rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.scorecard__row {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr) auto;
+  gap: 0.55rem;
+  align-items: baseline;
+  padding: 0.55rem 0;
+  border-bottom: 1px dashed rgb(255 255 255 / 0.32);
+  font-size: 1rem;
+}
+
+.scorecard__hole {
+  font-family: var(--font-offer);
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.scorecard__label {
+  color: rgb(255 255 255 / 0.86);
+}
+
+.scorecard__value {
+  font-weight: 700;
+  text-align: right;
+}
+
+.scorecard__total {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.35rem 0.75rem;
+  margin-top: 0.85rem;
+  min-height: 4.25rem;
+}
+
+.scorecard__total-label {
+  font-family: var(--font-offer);
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.scorecard__figure {
+  margin: 0;
+  max-width: 100%;
+  font-family: var(--font-offer);
+  font-size: clamp(2.15rem, 12cqi, 4.6rem);
+  font-weight: 800;
+  line-height: 0.85;
+  letter-spacing: -0.045em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.scorecard__note {
+  margin: 0.75rem 0 0;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: rgb(255 255 255 / 0.92);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.motion-paused) .scorecard__figure {
+    animation: score-pop 380ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+}
+
+@keyframes score-pop {
+  from {
+    transform: translateY(0.35rem);
+  }
+  to {
+    transform: none;
+  }
+}
+
+.swing-hero {
+  margin-top: 1.5rem;
+  padding: 1.35rem 1.1rem 1.3rem;
+}
+
+.swing-hero__price {
+  margin: 0;
+  font-family: var(--font-offer);
+  font-size: clamp(3.4rem, 18vw, 6rem);
+  font-weight: 800;
+  line-height: 0.85;
+  letter-spacing: -0.05em;
+  color: var(--accent);
+}
+
+.swing-hero__length {
+  margin: 0.35rem 0 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.swing-hero__cta {
+  margin-top: 1.1rem;
+}
+
+.swing-hero__cta .cta-shell {
+  width: 100%;
+}
+
+.what-you-get {
+  margin-top: 2.75rem;
+  min-height: 18rem;
+}
+
+.what-you-get__grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.85rem;
-  margin: 1.75rem 0 0;
+  gap: 0.65rem;
+  margin: 1rem 0 0;
   padding: 0;
   list-style: none;
 }
 
-.member-benefits__tile {
-  position: relative;
-  overflow: hidden;
-  border-radius: 1.25rem;
-  padding: 1.1rem 1rem 1.15rem;
-  background:
-    radial-gradient(130% 100% at 8% 0%, rgb(20 212 94 / 0.42), transparent 55%),
-    radial-gradient(90% 80% at 100% 100%, rgb(198 255 26 / 0.12), transparent 50%),
-    rgb(255 255 255 / 0.08);
-  box-shadow:
-    0 0 0 1px rgb(198 255 26 / 0.32),
-    0 0 1.8rem rgb(20 212 94 / 0.28),
-    0 10px 28px rgb(0 0 0 / 0.28);
-  transition:
-    transform var(--motion-fast) var(--motion-ease-press),
-    box-shadow var(--motion-base) var(--motion-ease-press);
+.what-you-get__card {
+  min-width: 0;
+  border-radius: 1.15rem;
+  padding: 0.85rem 0.75rem 0.95rem;
+  background: linear-gradient(160deg, #1a1d1b 0%, #0b0f0c 55%, #060908 100%);
+  color: #f4f6f5;
 }
 
-.member-benefits__tile:hover,
-.member-benefits__tile:focus-within {
-  transform: translateY(-2px);
-  box-shadow:
-    0 0 0 1px rgb(198 255 26 / 0.48),
-    0 0 2.4rem rgb(20 212 94 / 0.4),
-    0 14px 32px rgb(0 0 0 / 0.32);
-}
-
-.member-benefits__tile img {
-  width: 3.25rem;
-  height: auto;
+.what-you-get__card img {
   display: block;
-  filter:
-    drop-shadow(0 0 0.45rem rgb(198 255 26 / 0.75))
-    drop-shadow(0 0 1.1rem rgb(20 212 94 / 0.55));
+  width: 2.75rem;
+  height: auto;
 }
 
-.member-benefits__title {
-  margin: 0.7rem 0 0;
+.what-you-get__title {
+  margin: 0.55rem 0 0;
   font-family: var(--font-offer);
   font-size: 1.125rem;
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1.15;
-  color: #fff;
-  text-shadow: 0 0 0.7em rgb(20 212 94 / 0.35);
 }
 
-.member-benefits__line {
-  margin: 0.35rem 0 0;
-  font-size: 1rem;
-  line-height: 1.4;
-  color: rgb(255 255 255 / 0.9);
+.what-you-get__line {
+  margin: 0.3rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.3;
+  color: rgb(255 255 255 / 0.92);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  html:not(.motion-paused) .member-benefits__tile {
-    animation: member-benefits-glow 4.2s ease-in-out infinite;
-  }
-
-  html:not(.motion-paused) .member-benefits__tile:nth-child(2) {
-    animation-delay: -1.05s;
-  }
-
-  html:not(.motion-paused) .member-benefits__tile:nth-child(3) {
-    animation-delay: -2.1s;
-  }
-
-  html:not(.motion-paused) .member-benefits__tile:nth-child(4) {
-    animation-delay: -3.15s;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .member-benefits__tile:hover,
-  .member-benefits__tile:focus-within {
-    transform: none;
-  }
-}
-
-@keyframes member-benefits-glow {
-  0%,
-  100% {
-    box-shadow:
-      0 0 0 1px rgb(198 255 26 / 0.26),
-      0 0 1.4rem rgb(20 212 94 / 0.22),
-      0 10px 28px rgb(0 0 0 / 0.28);
-  }
-  50% {
-    box-shadow:
-      0 0 0 1px rgb(198 255 26 / 0.52),
-      0 0 2.3rem rgb(20 212 94 / 0.42),
-      0 10px 28px rgb(0 0 0 / 0.28);
-  }
-}
-
-/* One track, two options — not two separate pills. */
 .joint-toggle {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.2rem;
+  gap: 0.55rem;
   width: 100%;
-  padding: 0.25rem;
-  border-radius: 9999px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 .joint-toggle--dark {
-  background: rgb(255 255 255 / 0.12);
+  background: transparent;
 }
 
 .joint-toggle--light {
@@ -856,29 +920,44 @@ html.motion-paused .page-atmosphere__glyph {
 }
 
 .joint-toggle__option {
-  min-height: 2.75rem;
-  border: 0;
-  border-radius: 9999px;
-  padding: 0.5rem 0.75rem;
+  min-height: 3.5rem;
+  border: 2px solid transparent;
+  border-radius: 0.95rem;
+  padding: 0.55rem 0.7rem;
+  font-family: var(--font-offer);
   font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
   cursor: pointer;
   transition:
     background-color 160ms ease,
     color 160ms ease,
-    box-shadow 160ms ease;
+    border-color 160ms ease;
+}
+
+.joint-toggle__label,
+.joint-toggle__price {
+  display: block;
+}
+
+.joint-toggle__price {
+  margin-top: 0.15rem;
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
 }
 
 .joint-toggle--dark .joint-toggle__option {
   background: transparent;
+  border-color: rgb(255 255 255 / 0.4);
   color: #fff;
 }
 
 .joint-toggle--dark .joint-toggle__option.is-active {
-  background: #fff;
-  color: var(--ink);
-  box-shadow: 0 6px 18px rgb(0 0 0 / 0.18);
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-foreground);
+  box-shadow: none;
 }
 
 .joint-toggle--light .joint-toggle__option {
@@ -895,12 +974,6 @@ html.motion-paused .page-atmosphere__glyph {
 @media (prefers-reduced-motion: reduce) {
   .joint-toggle__option {
     transition: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .membership-pricing__glyph {
-    animation: none;
   }
 }
 
@@ -945,8 +1018,8 @@ html.motion-paused .page-atmosphere__glyph {
  */
 .hero-shell {
   justify-content: flex-end;
-  /* Keep Try now / offer chrome inside the bay (taste spill checks). */
-  overflow: hidden;
+  /* Visible so the Try now cue can paint above the sticky header. Page overflow-x:clip holds the edges. */
+  overflow: visible;
 }
 
 .hero-offer-dock {
@@ -1161,19 +1234,19 @@ html.motion-paused .page-atmosphere__glyph {
   overflow: hidden;
 }
 
-/* Anchored to the header Book a Bay control. JS sets left/top/rotation. */
+/* Anchored to the header Book a Bay control. JS moves it with transform only. */
 .hero-try-now {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 25;
+  z-index: 45;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.05rem;
   width: max-content;
-  max-width: 8.5rem;
-  color: var(--accent);
+  max-width: 12rem;
+  color: #d6ff4a;
   opacity: 0;
   pointer-events: none;
 }
@@ -1186,7 +1259,9 @@ html.motion-paused .page-atmosphere__glyph {
 .hero-try-now__label {
   order: 2;
   font-family: var(--font-marker);
-  font-size: clamp(1.35rem, 2.2vw, 1.85rem);
+  /* Was clamp(1.35rem, 2.2vw, 1.85rem): 29.6px at 1280, the text-3xl step.
+     Two steps up is text-5xl (48px) plus 2px. */
+  font-size: 50px;
   line-height: 0.92;
   letter-spacing: 0.02em;
   color: #fff;
@@ -1199,9 +1274,10 @@ html.motion-paused .page-atmosphere__glyph {
 
 .hero-try-now__arrow {
   order: 1;
-  width: 3.35rem;
+  width: 6.5rem;
   height: auto;
-  color: color-mix(in srgb, var(--accent) 92%, white);
+  overflow: visible;
+  color: #d6ff4a;
 }
 
 .hero-try-now__stroke {
@@ -1217,15 +1293,17 @@ html.motion-paused .page-atmosphere__glyph {
 
 @media (max-width: 767px) {
   .hero-try-now {
-    max-width: 7.25rem;
+    max-width: 11rem;
   }
 
   .hero-try-now__label {
-    font-size: clamp(1.2rem, 5.2vw, 1.45rem);
+    /* Was clamp(1.2rem, 5.2vw, 1.45rem): 20.3px at 390, the text-xl step.
+       Two steps up is text-3xl (30px) plus 2px. */
+    font-size: 32px;
   }
 
   .hero-try-now__arrow {
-    width: 3rem;
+    width: 5.5rem;
   }
 }
 
@@ -1532,10 +1610,8 @@ html.lenis.lenis-smooth {
 }
 
 /*
- * Section titles: stronger display type + frosted plate + soft brand halo.
- * taste-skill-ignore: owner asked for glow/outline + blur behind titles;
- * ink stays dark / white so body contrast remains ≥7:1. No filter on the
- * title itself — that would break backdrop-filter on the plate.
+ * Section titles: display type over a feathered tint. No edge, no blur.
+ * taste-skill-ignore: ink stays dark / white so contrast remains ≥7:1 on the page.
  */
 .section-title {
   position: relative;
@@ -1558,12 +1634,18 @@ html.lenis.lenis-smooth {
   content: "";
   position: absolute;
   z-index: -1;
-  inset: -0.08em -0.22em;
-  border-radius: 0.4em;
-  background: color-mix(in srgb, var(--surface) 42%, transparent);
-  -webkit-backdrop-filter: blur(5px);
-  backdrop-filter: blur(5px);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ink) 16%, transparent);
+  inset: -0.55em -0.9em;
+  border: 0;
+  border-radius: 0;
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--surface) 82%, transparent) 0%,
+    color-mix(in srgb, var(--surface) 36%, transparent) 42%,
+    transparent 72%
+  );
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
   pointer-events: none;
 }
 
@@ -1576,8 +1658,13 @@ html.lenis.lenis-smooth {
 }
 
 .section-title--on-dark::before {
-  background: color-mix(in srgb, var(--void) 46%, transparent);
-  box-shadow: 0 0 0 1px color-mix(in srgb, #fff 18%, transparent);
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--void) 78%, transparent) 0%,
+    color-mix(in srgb, var(--void) 28%, transparent) 46%,
+    transparent 74%
+  );
+  box-shadow: none;
 }
 
 /* Full-width centered titles still get a plate that hugs the type. */
@@ -2441,6 +2528,20 @@ html.motion-paused .benefit-card--dim {
   isolation: isolate;
 }
 
+.membership-film__still {
+  position: absolute;
+  inset: 0;
+}
+
+.membership-film__still-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
 .membership-film__shade {
   position: absolute;
   inset: 0;
@@ -3236,17 +3337,12 @@ html.motion-paused .benefit-card--dim {
  * grain blend are the expensive layers during the first swipes.
  */
 @media (max-width: 767px), (pointer: coarse) {
-  .section-title::before {
-    inset: -0.04em -0.14em;
-    background: color-mix(in srgb, var(--surface) 62%, transparent);
+  .section-title::before,
+  .section-title--on-dark::before {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--ink) 14%, transparent);
-  }
-
-  .section-title--on-dark::before {
-    background: color-mix(in srgb, var(--void) 68%, transparent);
-    box-shadow: 0 0 0 1px color-mix(in srgb, #fff 16%, transparent);
+    box-shadow: none;
+    border: 0;
   }
 
   .hero-panel-depth,
@@ -3339,4 +3435,11 @@ html.motion-paused .benefit-card--dim {
   text-transform: uppercase;
   pointer-events: none;
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+/* Clip the atmosphere wash (inset: -18%) and edge glyphs. `clip` does not
+   create a scroll container, so position: sticky on the site header still works. */
+html,
+body {
+  overflow-x: clip;
 }

@@ -18,7 +18,7 @@ import { EventTypeList } from "../components/EventTypeList";
 import { OfferTicker } from "../components/OfferTicker";
 import { VideoSlot } from "../components/VideoSlot";
 import { ValuePoint } from "../components/ValuePoint";
-import { NAP, OCLOCK, golfClockBookingReady } from "../data/business";
+import { NAP, golfClockBookingReady } from "../data/business";
 import { HERO_TICKER } from "../data/heroTicker";
 import { HeroLocation, HeroTitle } from "../components/HeroTitle";
 import type { HeroTypeId } from "../data/heroType";
@@ -141,7 +141,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
       </header>
       <section
         id="hero"
-        className={`hero-shell relative -mt-[4.5rem] flex flex-col overflow-hidden bg-ink ${
+        className={`hero-shell relative -mt-[4.5rem] flex flex-col overflow-visible bg-ink ${
           mobile ? "min-h-full shrink-0" : "h-svh"
         }`}
         aria-busy={chromeReady ? undefined : true}
@@ -211,11 +211,11 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
               />
             </div>
             <CtaPair className="mt-8">
-              <BookLink className="w-full" offer="swing-evaluation">
-                Book swing evaluation
-              </BookLink>
+              <CtaAnchor href={pageHref("swing-evaluation")} className="w-full">
+                Swing evaluation
+              </CtaAnchor>
               <CtaAnchor href={pageHref("coaching")} tone="line" className="w-full">
-                Book lessons
+                Lessons
               </CtaAnchor>
             </CtaPair>
           </ScrollReveal>
@@ -259,12 +259,12 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
               />
             </div>
             <CtaPair className="mt-8">
-              <BookLink className="w-full" offer="junior">
+              <CtaAnchor href={pageHref("juniors")} className="w-full">
                 Become a Junior Member
-              </BookLink>
-              <BookLink className="w-full" offer="junior-plus" tone="line">
+              </CtaAnchor>
+              <CtaAnchor href={pageHref("juniors")} tone="line" className="w-full">
                 Experience a Junior Class
-              </BookLink>
+              </CtaAnchor>
             </CtaPair>
           </ScrollReveal>
         </div>
@@ -283,7 +283,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
             <CtaAnchor href={pageHref("events")} className="w-full">
               See events
             </CtaAnchor>
-            <CtaAnchor href={OCLOCK.events} tone="line" className="w-full" offer="group" external>
+            <CtaAnchor href={pageHref("events")} tone="line" className="w-full">
               Check availability
             </CtaAnchor>
           </CtaPair>
@@ -309,9 +309,9 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
           </p>
           <CtaPair className="mx-auto mt-10 justify-center">
             <MembershipLink className="cta-sheen w-full">Become a Member</MembershipLink>
-            <BookLink className="w-full" offer="bay" tone="inverted">
+            <CtaAnchor href="#hero" tone="inverted" className="w-full">
               Book a Bay
-            </BookLink>
+            </CtaAnchor>
           </CtaPair>
         </ScrollReveal>
       </section>

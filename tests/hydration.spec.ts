@@ -1,6 +1,6 @@
 import { expect, test } from "./fixtures";
 
-const ROUTES = ["", "membership/", "coaching/", "juniors/", "events/", "tournament/", "privacy-policy/"];
+const ROUTES = ["", "membership/", "coaching/", "swing-evaluation/", "juniors/", "events/", "tournament/", "privacy-policy/"];
 
 test("routes hydrate without a React hydration error", async ({ page }) => {
   const errors: string[] = [];

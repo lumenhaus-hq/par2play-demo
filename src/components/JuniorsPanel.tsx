@@ -1,14 +1,12 @@
 import { useState } from "react";
-import { BookingCheckout, appendCheckoutParams } from "./BookingCheckout";
-import { CompareBoxes, PricingHero } from "./PricingHero";
-import { JointToggle } from "./JointToggle";
-import { OCLOCK, PRICES } from "../data/business";
-import { JUNIORS_FILM } from "../data/films";
+import { OfferSheet } from "./OfferSheet";
+import { PriceInvoice } from "./PriceInvoice";
+import { PRICES, type BookingOffer } from "../data/business";
 import { money } from "../data/membershipEstimate";
 
 const PLANS = [
-  { value: "once", label: "Once a week", price: PRICES.juniorOneLessonWeekly },
-  { value: "twice", label: "Twice a week", price: PRICES.juniorTwoLessonsWeekly },
+  { value: "once", label: "Once a week", price: `${money(PRICES.juniorOneLessonWeekly)}/mo` },
+  { value: "twice", label: "Twice a week", price: `${money(PRICES.juniorTwoLessonsWeekly)}/mo` },
 ] as const;
 
 type PlanId = (typeof PLANS)[number]["value"];
@@ -16,54 +14,27 @@ type PlanId = (typeof PLANS)[number]["value"];
 export function JuniorsPanel() {
   const [planId, setPlanId] = useState<PlanId>("twice");
   const plan = PLANS.find((item) => item.value === planId) ?? PLANS[1];
-  const figure = `${money(plan.price)}/mo`;
-  const live = `${plan.label} ${figure}. Once a week ${money(PRICES.juniorOneLessonWeekly)} a month. Twice a week ${money(PRICES.juniorTwoLessonsWeekly)} a month.`;
-  const offerParam = planId === "once" ? "junior_once_weekly" : "junior_twice_weekly";
-  const orderRef = planId === "once" ? "ord_p2p_junior_once" : "ord_p2p_junior_twice";
+  const offer: BookingOffer = planId === "once" ? "junior" : "junior-plus";
+  const live = `${plan.label} ${plan.price}. Once a week ${money(PRICES.juniorOneLessonWeekly)} a month. Twice a week ${money(PRICES.juniorTwoLessonsWeekly)} a month.`;
 
   return (
-    <PricingHero
+    <OfferSheet
       id="juniors-offer"
-      pageTitle="Golf for Kids"
-      heading={plan.label}
-      figure={figure}
-      live={live}
-      film={JUNIORS_FILM}
-      primary={{ offer: "junior", label: "Become a Junior Member" }}
-      secondary={{ offer: "junior-plus", label: "Experience a Junior Class" }}
-      selector={
-        <JointToggle
-          value={planId}
-          options={[
-            { value: "once", label: "Once a week" },
-            { value: "twice", label: "Twice a week" },
-          ]}
-          onChange={setPlanId}
-          label="Junior plan"
-          tone="dark"
-        />
-      }
-      comparison={
-        <CompareBoxes
-          mutedLabel="Once a week"
-          muted={`${money(PRICES.juniorOneLessonWeekly)}/mo`}
-          highlightLabel="Twice a week"
-          highlight={`${money(PRICES.juniorTwoLessonsWeekly)}/mo`}
-          emphasized={planId === "once" ? "left" : "right"}
-        />
-      }
-      checkout={
-        <BookingCheckout
-          summaryTitle={plan.label}
+      toggleLabel="Junior plan"
+      value={planId}
+      onChange={setPlanId}
+      offer={offer}
+      options={PLANS}
+      invoice={
+        <PriceInvoice
+          title={plan.label}
           rows={[
             { label: "Offer", value: "Golf for Kids" },
             { label: "Cadence", value: plan.label },
             { label: "Billing", value: "Monthly" },
-            { label: "Membership", value: figure },
           ]}
-          totalLabel={figure}
-          orderRef={orderRef}
-          checkoutHref={(fields) => appendCheckoutParams(OCLOCK.lessons, fields, offerParam)}
+          totalLabel={plan.price}
+          live={live}
         />
       }
     />

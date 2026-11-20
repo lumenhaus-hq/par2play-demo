@@ -37,7 +37,9 @@ test("mobile membership shows CTAs and bento over the film", async ({ page }) =>
   await expectMembershipBento(band);
   await expect(band.locator(".membership-film__overlay")).toBeVisible();
   await expect(band.getByRole("link", { name: "Become a Member", exact: true })).toBeVisible();
-  await expect(band.getByRole("button", { name: /^(Play|Pause) video$/ })).toBeVisible();
+  await expect(band.getByRole("img", { name: "Golfers on a simulator at Par2Play" })).toBeVisible();
+  await expect(band.locator("video")).toHaveCount(0);
+  await expect(band.getByRole("button", { name: /^(Play|Pause) video$/ })).toHaveCount(0);
 });
 
 test("mobile membership Member Day CTA stays a single readable line", async ({ page }) => {
@@ -74,7 +76,15 @@ test("desktop membership shows CTAs and bento over the film", async ({ page }) =
   await band.scrollIntoViewIfNeeded();
   await expectMembershipBento(band);
   await expect(band.locator(".membership-film__overlay")).toBeVisible();
-  await expect(band.getByRole("button", { name: /^(Play|Pause) video$/ })).toBeVisible();
+  await expect(band.locator("video")).toHaveCount(0);
+  const still = await band.locator(".membership-film__still-img").evaluate((node) => ({
+    width: node.getAttribute("width"),
+    height: node.getAttribute("height"),
+    ratio: getComputedStyle(node).aspectRatio,
+  }));
+  expect(still.width).toBe("1280");
+  expect(still.height).toBe("720");
+  expect(still.ratio).toMatch(/16\s*\/\s*9|1\.777/);
   const stacking = await band.evaluate((node) => {
     const film = node.querySelector(".membership-film")!;
     const grid = node.querySelector(".membership-bento__grid")!;
@@ -91,21 +101,20 @@ test("desktop membership shows CTAs and bento over the film", async ({ page }) =
   expect(stacking.gridInsideFilm).toBe(true);
 });
 
-test("membership montage pauses, resumes, and stays paused off screen", async ({ page }) => {
+test("membership band is a sized still with no film", async ({ page }) => {
   await page.goto("./");
   const band = page.locator("#membership");
-  const video = band.locator("video");
   await band.scrollIntoViewIfNeeded();
-  await expect.poll(() => video.evaluate((node: HTMLVideoElement) => node.paused), { timeout: 15_000 }).toBe(false);
-  await expect.poll(() => video.evaluate((node: HTMLVideoElement) => node.muted)).toBe(true);
-  // Overlay owns the hits — toggle via the control itself.
-  await band.getByRole("button", { name: "Pause video", exact: true }).evaluate((node: HTMLButtonElement) => node.click());
-  await expect.poll(() => video.evaluate((node: HTMLVideoElement) => node.paused)).toBe(true);
-  await band.getByRole("button", { name: "Play video", exact: true }).evaluate((node: HTMLButtonElement) => node.click());
-  await expect.poll(() => video.evaluate((node: HTMLVideoElement) => node.paused)).toBe(false);
-  await page.locator("footer").last().scrollIntoViewIfNeeded();
-  await expect.poll(() => band.evaluate((node) => node.getBoundingClientRect().bottom)).toBeLessThanOrEqual(0);
-  await expect.poll(() => video.evaluate((node: HTMLVideoElement) => node.paused)).toBe(true);
+  const still = band.getByRole("img", { name: "Golfers on a simulator at Par2Play" });
+  await expect(still).toBeVisible();
+  await expect(still).toHaveAttribute("width", "1280");
+  await expect(still).toHaveAttribute("height", "720");
+  await expect(band.locator("video")).toHaveCount(0);
+  await expect(band.getByRole("button", { name: /^(Play|Pause) video$/ })).toHaveCount(0);
+  const requests = await page.evaluate(() =>
+    performance.getEntriesByType("resource").some((entry) => /montage.*\.mp4/.test(entry.name)),
+  );
+  expect(requests).toBe(false);
 });
 
 test("reduced motion uses the membership poster without a video", async ({ page }) => {
@@ -126,7 +135,7 @@ for (const width of [320, 360, 390, 430, 1280]) {
     const panel = page.locator("#why-membership");
     for (const [label, amount] of [["Unlimited Practice", "$200"]] as const) {
       await expect(panel.getByText(label, { exact: true }).first()).toBeVisible();
-      const fee = panel.locator('[aria-live="polite"] p').last();
+      const fee = panel.locator("[data-invoice-total]");
       await expect(fee).toContainText(amount);
       const layout = await fee.evaluate((node) => {
         const bounds = node.closest("section")!.getBoundingClientRect();

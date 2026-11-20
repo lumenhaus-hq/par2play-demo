@@ -186,10 +186,8 @@ export function coachingGraph() {
         serviceType: "Golf instruction",
         provider: { "@id": id("/#location") },
         areaServed: "Somerset, NJ",
-        description:
-          "Private golf lessons and swing evaluations with PGA professionals on Full Swing simulators with swing-evaluation cameras.",
+        description: "Private golf lessons with PGA professionals on Full Swing simulators.",
         offers: [
-          offer("Swing evaluation (30 min)", PRICES.swingEvaluation, OCLOCK.lessons),
           offer("Private lesson (30 min)", PRICES.lessonSingle, OCLOCK.lessons),
           offer("10-pack of lessons", PRICES.lessonPack10, OCLOCK.lessonPacks),
         ],
@@ -216,6 +214,32 @@ export function membershipGraph() {
         offers: [offer("Unlimited Practice", PRICES.unlimitedMonthly, OCLOCK.practiceUnlimited, "MONTH")],
       },
       breadcrumb("Membership", "membership/"),
+    ],
+  };
+}
+
+export function swingEvaluationGraph() {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        url: absoluteUrl("swing-evaluation/"),
+        name: "Swing evaluation in Somerset, NJ",
+        about: { "@id": id("/#location") },
+      },
+      {
+        "@type": "Service",
+        "@id": id("/swing-evaluation/#session"),
+        name: "Swing evaluation in Somerset, NJ",
+        serviceType: "Golf swing evaluation",
+        provider: { "@id": id("/#location") },
+        areaServed: "Somerset, NJ",
+        description:
+          "A 30-minute swing evaluation on Full Swing simulators with swing-evaluation cameras. $100.",
+        offers: [offer("Swing evaluation (30 min)", PRICES.swingEvaluation, OCLOCK.lessons)],
+      },
+      breadcrumb("Swing evaluation", "swing-evaluation/"),
     ],
   };
 }

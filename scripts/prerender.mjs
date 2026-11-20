@@ -3,7 +3,7 @@ import { preview } from "vite";
 import { writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
-const ROUTES = ["", "membership/", "coaching/", "juniors/", "events/", "tournament/", "privacy-policy/"];
+const ROUTES = ["", "membership/", "coaching/", "swing-evaluation/", "juniors/", "events/", "tournament/", "privacy-policy/"];
 const port = 4193;
 const server = await preview({ preview: { port, strictPort: true, host: "127.0.0.1" } });
 const baseUrl = new URL(server.config.base, `http://127.0.0.1:${port}`);

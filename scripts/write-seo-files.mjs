@@ -27,6 +27,7 @@ const routes = [
   ["", "Indoor golf in Somerset, NJ"],
   ["membership/", "Indoor golf membership"],
   ["coaching/", "Golf lessons"],
+  ["swing-evaluation/", "Swing evaluation"],
   ["juniors/", "Junior golf"],
   ["events/", "Events"],
   ["tournament/", "Fall League"],
@@ -109,7 +110,8 @@ const llms = `# Par2Play
 ## Pages
 - [Home](${origin}/): indoor golf in Somerset, NJ
 - [Membership](${origin}/membership/): Unlimited Practice, $${unlimited} a month
-- [Golf lessons](${origin}/coaching/): ${lessonMinutes}-minute lessons, 10-pack, swing evaluation
+- [Golf lessons](${origin}/coaching/): ${lessonMinutes}-minute lessons and the 10-pack
+- [Swing evaluation](${origin}/swing-evaluation/): ${swingMinutes} minutes, $${swing}
 - [Junior golf](${origin}/juniors/): junior coaching once or twice a week
 - [Events](${origin}/events/): holiday parties, company events, birthdays. Price on request
 - [Fall League](${origin}/tournament/): indoor golf league. Price on request
