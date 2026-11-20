@@ -20,6 +20,7 @@ function PaymentMark({ label, children }: { label: string; children: ReactNode }
     <span
       className="inline-flex h-10 min-w-[3.25rem] items-center justify-center rounded-md border border-white/20 bg-white/10 px-2 text-white/55 grayscale"
       title={label}
+      role="img"
       aria-label={label}
     >
       {children}
@@ -76,7 +77,6 @@ export function BookingCheckout({
   totalLabel,
   orderRef,
   checkoutHref,
-  analyticsTier,
 }: {
   title?: string;
   summaryTitle: string;
@@ -84,7 +84,6 @@ export function BookingCheckout({
   totalLabel: string;
   orderRef: string;
   checkoutHref: (fields: CheckoutFields) => string;
-  analyticsTier?: "gold" | "silver";
 }) {
   const formId = useId();
   const [fields, setFields] = useState<CheckoutFields>(emptyCheckout);
@@ -106,7 +105,7 @@ export function BookingCheckout({
     const href = checkoutHref(fields);
     const probe = document.createElement("a");
     probe.href = href;
-    trackAnchor(probe, analyticsTier ? { membership_tier: analyticsTier } : {});
+    trackAnchor(probe);
     window.open(href, "_blank", "noopener,noreferrer");
   };
 

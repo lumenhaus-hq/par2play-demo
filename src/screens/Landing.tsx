@@ -8,6 +8,7 @@ import { HeroTryNow } from "../components/HeroTryNow";
 import { MembershipBand } from "../components/MembershipBand";
 import { HeroVideo, type HeroIntroPhase } from "../components/Media";
 import { LayoutToggle } from "../components/LayoutToggle";
+import { SiteMenu } from "../components/SiteMenu";
 import { MotionToggle } from "../components/MotionToggle";
 import { PageAtmosphere } from "../components/PageAtmosphere";
 import { ScrollReveal } from "../components/ScrollReveal";
@@ -25,6 +26,7 @@ import { JsonLd } from "../components/JsonLd";
 import { FaqSection } from "../components/FaqSection";
 import { VisitLine } from "../components/VisitLine";
 import { faqGraph, homeGraph } from "../data/schema";
+import { showDemoChrome } from "../data/site";
 import { COACHING_FILM, JUNIORS_FILM } from "../data/films";
 import { SITE_NAV, pageHref } from "../data/routes";
 import { useFlow } from "../state/flow";
@@ -35,7 +37,6 @@ const navButton = `nav-link inline-flex min-h-11 items-center px-1 text-base fon
 
 export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
   const flow = useFlow();
-  const [menu, setMenu] = useState(false);
   const [onFilm, setOnFilm] = useState(true);
   const [active, setActive] = useState<string | null>(null);
   const [intro, setIntro] = useState<HeroIntroPhase>("arrived");
@@ -111,58 +112,32 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
       <JsonLd data={homeGraph()} />
       <JsonLd data={faqGraph()} />
       <header
-        className={`sticky top-0 z-30 shrink-0 px-6 py-3 @5xl:px-12 ${onFilm ? "hero-toolbar" : "header-bar"} ${
+        className={`relative sticky top-0 z-30 shrink-0 px-6 py-3 @5xl:px-12 ${onFilm ? "hero-toolbar" : "header-bar"} ${
           chromeReady ? "hero-chrome-in" : "pointer-events-none opacity-0"
         }`}
         aria-hidden={chromeReady ? undefined : true}
       >
         <div className="flex items-center justify-between gap-4">
           <Mark light={onFilm} />
-          <nav className="hidden items-center gap-3 @3xl:flex @5xl:gap-6" aria-label="Page">
-            {SITE_NAV.map((item) => (
-              <a
-                key={item.slug}
-                href={pageHref(item.slug)}
-                className={`${filmLink} ${active === item.slug ? "is-active" : ""}`}
-                aria-current={active === item.slug ? "page" : undefined}
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
           <div className="flex items-center gap-2">
-            <LayoutToggle className={onFilm ? "text-white" : "text-ink"} />
+            {showDemoChrome() ? <LayoutToggle className={onFilm ? "text-white" : "text-ink"} /> : null}
             <SoundToggle className={onFilm ? "text-white" : "text-ink"} />
             <BookLink offer="bay" tone="brand" className="shrink-0">
               Book a Bay
             </BookLink>
-            <button
-              type="button"
-              className={`${filmLink} @3xl:hidden`}
-              aria-expanded={menu}
-              onClick={() => setMenu((open) => !open)}
-            >
-              {menu ? "Close" : "Menu"}
-            </button>
+            <SiteMenu
+              className={onFilm ? "text-white" : "text-ink"}
+              linkClass={filmLink}
+              panelClass={onFilm ? "bg-ink text-white" : "border-b border-ink/10 bg-paper text-ink shadow-[0_16px_40px_rgb(10_15_11/0.12)]"}
+              items={SITE_NAV.map((item) => ({
+                slug: item.slug,
+                label: item.label,
+                href: pageHref(item.slug),
+                current: active === item.slug,
+              }))}
+            />
           </div>
         </div>
-        {menu && (
-          <nav
-            className={`mt-2 flex flex-col items-start gap-1 @3xl:hidden ${onFilm ? "hero-panel rounded-2xl px-3 py-2" : ""}`}
-            aria-label="Page"
-          >
-            {SITE_NAV.map((item) => (
-              <a
-                key={item.slug}
-                href={pageHref(item.slug)}
-                className={`${filmLink} ${active === item.slug ? "is-active" : ""}`}
-                aria-current={active === item.slug ? "page" : undefined}
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
-        )}
       </header>
       <section
         id="hero"
@@ -235,10 +210,10 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
             </div>
             <CtaPair className="mt-8">
               <BookLink className="w-full" offer="swing-evaluation">
-                Swing eval
+                Book swing evaluation
               </BookLink>
               <CtaAnchor href={pageHref("coaching")} tone="line" className="w-full">
-                Book a single lesson
+                Book lessons
               </CtaAnchor>
             </CtaPair>
           </ScrollReveal>

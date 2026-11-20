@@ -30,6 +30,11 @@ export const OPENING_HOURS_SPEC = {
   closes: "22:00",
 } as const;
 
+/** Layout switcher for the GitHub Pages demo. Cutover sets VITE_DEMO=false. */
+export function showDemoChrome(): boolean {
+  return import.meta.env.VITE_DEMO !== "false";
+}
+
 export function siteOrigin(): string {
   return SITE_URL.replace(/\/$/, "");
 }

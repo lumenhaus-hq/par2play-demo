@@ -2,14 +2,11 @@ import type { BookingOffer } from "../data/business";
 import { ANALYTICS_EVENTS } from "../data/analytics";
 import { hasConsent } from "./consent";
 
-export type MembershipTier = "silver" | "gold" | "platinum";
-
 export type TrackParams = {
   cta_label: string;
   cta_location: string;
   link_url?: string;
   booking_type?: string;
-  membership_tier?: MembershipTier;
   form_name?: string;
   contact_method?: "phone";
   lead_interest?: string;
@@ -71,7 +68,6 @@ const LESSON_TYPES: Record<string, string> = {
 };
 
 function golfclockType(href: string): string {
-  if (href.includes("prod_golf_improvement_bundle")) return "store_bundle";
   if (href.includes("prod_lesson_packs")) return "store_lesson_packs";
   if (href.includes("prod_practice_unlimited")) return "store_practice_unlimited";
   if (href.includes("category=Memberships")) return "store_memberships";

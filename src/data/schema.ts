@@ -31,12 +31,13 @@ export const FAQS = [
   },
   {
     question: "How much is a golf lesson in Somerset at Par2Play?",
-    answer: "A Swing Evaluation session is $100 for 50 to 60 minutes. Single lesson pricing is confirmed at booking.",
+    answer:
+      "A swing evaluation is $100 for 30 minutes. A single lesson is $100 for 30 minutes. A 10-pack of lessons is $750.",
   },
   {
     question: "Are lessons good for beginners?",
     answer:
-      "Yes. Par2Play offers private and semi-private lessons for beginner and advanced players. A Swing Evaluation session ($100, 50 to 60 minutes) is the place to start.",
+      "Yes. Par2Play offers private and semi-private lessons for beginner and advanced players. A swing evaluation ($100, 30 minutes) is the place to start.",
   },
   {
     question: "Does Par2Play offer junior golf?",
@@ -46,7 +47,7 @@ export const FAQS = [
   {
     question: "How does Par2Play membership work?",
     answer:
-      "Silver membership is $200 a month, Gold is $250 a month, and Platinum is $4,500 a year. A single bay rental is the way to try Par2Play first.",
+      "Unlimited Practice is $200 a month, up to 1 hour a day. A single bay rental is the way to try Par2Play first.",
   },
   {
     question: "Can I host a party or company event at Par2Play?",
@@ -142,7 +143,6 @@ export function homeGraph() {
           { "@type": "LocationFeatureSpecification", name: "Enclosed simulator bays", value: 4 },
           { "@type": "LocationFeatureSpecification", name: "Complimentary premium golf clubs", value: true },
         ],
-        employee: [{ "@id": id("/coaching/#nick-schiavo") }, { "@id": id("/coaching/#nick-monticello") }],
         potentialAction: { "@type": "ReserveAction", target: OCLOCK.book, name: "Book a bay or lesson" },
         sameAs: [...SAME_AS],
       },
@@ -189,8 +189,9 @@ export function coachingGraph() {
         description:
           "Private golf lessons and swing evaluations with PGA professionals on Full Swing simulators with swing-evaluation cameras.",
         offers: [
-          offer("Swing Evaluation Session (50–60 min)", PRICES.swingEvaluation, OCLOCK.lessons),
-          offer("Golf Improvement Bundle", PRICES.golfImprovementBundle, OCLOCK.golfImprovementBundle),
+          offer("Swing evaluation (30 min)", PRICES.swingEvaluation, OCLOCK.lessons),
+          offer("Private lesson (30 min)", PRICES.lessonSingle, OCLOCK.lessons),
+          offer("10-pack of lessons", PRICES.lessonPack10, OCLOCK.lessonPacks),
         ],
       },
       breadcrumb("Golf lessons", "coaching/"),
@@ -212,11 +213,7 @@ export function membershipGraph() {
         "@type": "Service",
         name: "Become a Member",
         provider: { "@id": id("/#location") },
-        offers: [
-          offer("Silver membership", 200, OCLOCK.memberships, "MONTH"),
-          offer("Gold membership", 250, OCLOCK.memberships, "MONTH"),
-          offer("Platinum membership", 4500, OCLOCK.memberships, "YEAR"),
-        ],
+        offers: [offer("Unlimited Practice", PRICES.unlimitedMonthly, OCLOCK.practiceUnlimited, "MONTH")],
       },
       breadcrumb("Membership", "membership/"),
     ],

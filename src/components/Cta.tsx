@@ -75,14 +75,12 @@ export function MembershipLink({
   tone = "brand",
   className = "",
   href,
-  tier,
 }: {
   children: ReactNode;
   tone?: Tone;
   className?: string;
   /** Overrides the on-site membership page. The membership page passes GolfClock. */
   href?: string;
-  tier?: string;
 }) {
   const target = href ?? membershipHref();
   return (
@@ -91,7 +89,7 @@ export function MembershipLink({
       className={`${tones[tone]} ${className}`}
       {...externalProps(target)}
       data-membership="true"
-      onClick={(event) => trackAnchor(event.currentTarget, tier ? { membership_tier: tier as "silver" | "gold" | "platinum" } : {})}
+      onClick={(event) => trackAnchor(event.currentTarget)}
     >
       <span className="cta-fill" aria-hidden="true" />
       <CtaLabel>{children}</CtaLabel>

@@ -37,7 +37,7 @@ export function EventsPanel() {
             <output htmlFor={sliderId} className="font-display text-5xl font-semibold leading-none text-mint tabular-nums">
               {guests}
             </output>
-            {guestWord} in the group
+            {`${guestWord} in the group`}
           </label>
           <div className="mt-3 flex items-center gap-3">
             <StepButton label="Fewer guests" onClick={() => setGuests((value) => Math.max(GUEST_MIN, value - 1))}>
@@ -68,13 +68,11 @@ export function EventsPanel() {
                 aria-pressed={hours === choice}
                 onClick={() => setHours(choice)}
               >
-                {choice} hours
+                {`${choice} hours`}
               </button>
             ))}
           </div>
-          <p className="mt-4 text-lg font-semibold text-white">
-            {bays} {bayWord} · {hours} {hourWord}
-          </p>
+          <p className="mt-4 text-lg font-semibold text-white">{`${bays} ${bayWord} · ${hours} ${hourWord}`}</p>
         </div>
       }
     />

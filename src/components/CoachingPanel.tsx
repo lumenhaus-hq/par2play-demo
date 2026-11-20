@@ -35,8 +35,8 @@ export function CoachingPanel() {
       figure={figure}
       live={live}
       film={COACHING_FILM}
-      primary={{ offer: "swing-evaluation", label: "Swing eval" }}
-      secondary={{ offer: pack ? "lesson-pack" : "lesson", label: pack ? "Buy 10 Pack" : "Book a single lesson" }}
+      primary={{ offer: "swing-evaluation", label: "Book swing evaluation" }}
+      secondary={{ offer: pack ? "lesson-pack" : "lesson", label: "Book lessons" }}
       selector={<JointToggle value={mode} options={OPTIONS} onChange={setMode} label="Lesson offer" tone="dark" />}
       comparison={<p className="text-lg font-semibold text-white/85">{note}</p>}
       checkout={

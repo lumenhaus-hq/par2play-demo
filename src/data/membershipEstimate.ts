@@ -83,27 +83,6 @@ export function estimateMembership(months: PeriodMonths, visitsPerWeek: VisitsPe
   };
 }
 
-/** Members price never displays below this monthly amount. Annual floor is this times 12. */
-export const MIN_MEMBER_MONTHLY = 200;
-
-export function memberPriceFloor(period: BillingPeriod): number {
-  switch (period) {
-    case "month":
-      return MIN_MEMBER_MONTHLY;
-    case "year":
-      return MIN_MEMBER_MONTHLY * 12;
-    default: {
-      const exhaustive: never = period;
-      return exhaustive;
-    }
-  }
-}
-
-/** Comparison-box total. Does not change which tier is recommended. */
-export function flooredMemberTotal(total: number, period: BillingPeriod): number {
-  return Math.max(memberPriceFloor(period), total);
-}
-
 export function money(amount: number): string {
   const rounded = Math.round(amount * 100) / 100;
   const whole = Math.abs(rounded - Math.round(rounded)) < 0.001;
@@ -129,14 +108,6 @@ export const COMPARE_HOURS_MAX = 16;
 
 /** Membership allows up to 1 hour a day, so the week slider stops at 7. */
 export const HOURS_PER_WEEK_MAX = 7;
-
-/**
- * Fraction off Silver and Gold when billed annually. Null hides the Save chip.
- * Platinum is already an annual plan and is not discounted again.
- */
-export const ANNUAL_PLAN_DISCOUNT: number | null = 0.1;
-
-export type BillingPeriod = "month" | "year";
 
 /**
  * First hour in a month where pay-as-you-go costs at least as much as Practice Unlimited.
@@ -165,79 +136,6 @@ export type WeekPace = MonthPace & {
   /** Pay-as-you-go minus membership, times 12. Same monthly rate, not a separate price. */
   savePerYear: number;
 };
-
-export type MemberTierId = "silver" | "gold" | "platinum";
-
-export type MemberTier = {
-  id: MemberTierId;
-  name: string;
-  /** What the carousel shows as the price. Platinum is a year. */
-  priceLabel: string;
-  /** Monthly fee used in the pace math. Platinum is $4,500 / 12. */
-  monthlyFee: number;
-  yearlyFee: number | null;
-  includedHours: number;
-  /** Fraction off additional bay hours. 0.3 means 30% off. */
-  bayDiscount: number;
-};
-
-/** Membership prices and weekly allowances confirmed by Chandan, 30 Oct 2026. */
-export const MEMBER_TIERS: readonly MemberTier[] = [
-  {
-    id: "silver",
-    name: "Silver",
-    priceLabel: "$200/month",
-    monthlyFee: 200,
-    yearlyFee: null,
-    includedHours: 4,
-    bayDiscount: 0.3,
-  },
-  {
-    id: "gold",
-    name: "Gold",
-    priceLabel: "$250/month",
-    monthlyFee: 250,
-    yearlyFee: null,
-    includedHours: 8,
-    bayDiscount: 0.4,
-  },
-  {
-    id: "platinum",
-    name: "Platinum",
-    priceLabel: "$4,500/year",
-    monthlyFee: 4500 / 12,
-    yearlyFee: 4500,
-    includedHours: 20,
-    bayDiscount: 0.7,
-  },
-];
-
-export type TierQuote = MemberTier & { total: number };
-
-export function tierMonthCost(tier: MemberTier, monthHours: number): number {
-  const extra = Math.max(0, monthHours - tier.includedHours);
-  return tier.monthlyFee + extra * PRICES.baySession * (1 - tier.bayDiscount);
-}
-
-/** Monthly fee after the annual discount. Platinum stays on its published year price. */
-export function effectiveMonthlyFee(tier: MemberTier, period: BillingPeriod): number {
-  if (period === "month" || tier.yearlyFee != null || ANNUAL_PLAN_DISCOUNT == null) return tier.monthlyFee;
-  return tier.monthlyFee * (1 - ANNUAL_PLAN_DISCOUNT);
-}
-
-/** What this pace costs on a tier for the selected billing view. */
-export function periodPaceTotal(tier: MemberTier, monthHours: number, period: BillingPeriod): number {
-  const extra = Math.max(0, monthHours - tier.includedHours);
-  const monthly = effectiveMonthlyFee(tier, period) + extra * PRICES.baySession * (1 - tier.bayDiscount);
-  return period === "year" ? monthly * 12 : monthly;
-}
-
-export function quoteWeek(hoursPerWeek: number): WeekPace & { tiers: TierQuote[]; best: TierQuote; normal: number } {
-  const week = estimateWeek(hoursPerWeek);
-  const tiers = MEMBER_TIERS.map((tier) => ({ ...tier, total: tierMonthCost(tier, week.hours) }));
-  const best = tiers.reduce((lowest, tier) => (tier.total < lowest.total ? tier : lowest));
-  return { ...week, tiers, best, normal: week.payg };
-}
 
 /** One hour a week, counted as 4 weeks in the month. */
 export function estimateWeek(hoursPerWeek: number): WeekPace {

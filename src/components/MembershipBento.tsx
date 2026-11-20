@@ -56,7 +56,7 @@ function Tile({
   label?: string;
 }) {
   return (
-    <article className={`membership-bento__tile ${className}`} aria-label={label}>
+    <article className={`membership-bento__tile ${className}`} role="listitem" aria-label={label}>
       {children}
     </article>
   );

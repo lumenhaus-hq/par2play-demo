@@ -39,7 +39,7 @@ export function CoachingPage() {
         <Breadcrumbs current="Golf lessons" />
         <CoachingPanel />
         <p className="mt-10 max-w-2xl text-lg leading-relaxed">
-          Lessons and swing evaluations with PGA professionals.{" "}
+          {"Lessons and swing evaluations with PGA professionals. "}
           <a className={`underline decoration-2 underline-offset-4 ${buttonFocus}`} href={pageHref("membership")}>
             Indoor golf membership
           </a>

@@ -73,7 +73,6 @@ export function MembershipCalculator() {
               ]}
               totalLabel={totalLabel}
               orderRef="ord_p2p_practice_unlimited"
-              analyticsTier="gold"
               checkoutHref={(fields) => appendCheckoutParams(OCLOCK.practiceUnlimited, fields, "practice_unlimited")}
             />
           </div>
@@ -87,9 +86,7 @@ export function MembershipCalculator() {
         <h2 id="join-heading" className="offer-title text-3xl tracking-tight text-ink">
           compare plans
         </h2>
-        <p className="mx-auto mt-3 max-w-lg text-lg text-ink/80">
-          Silver, Gold, and Platinum live on GolfClock. Pick the bay hours that fit your week.
-        </p>
+        <p className="mx-auto mt-3 max-w-lg text-lg text-ink/80">Other bay offers are on GolfClock.</p>
         <div className="mt-6 flex justify-center">
           <a
             href={OCLOCK.memberships}
@@ -108,7 +105,7 @@ export function MembershipCalculator() {
         <p className="mt-6 text-lg leading-snug text-ink/85">
           {NAP.street}
           <br />
-          {NAP.city}, {NAP.region} {NAP.postalCode}
+          {`${NAP.city}, ${NAP.region} ${NAP.postalCode}`}
           <br />
           <PhoneLink className="aa-focus underline decoration-2 underline-offset-4">{NAP.phoneDisplay}</PhoneLink>
         </p>

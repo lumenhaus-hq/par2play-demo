@@ -1,5 +1,5 @@
 import type { Page } from "@playwright/test";
-import { expect, test } from "./fixtures";
+import { basePath, expect, test } from "./fixtures";
 
 type Probe = {
   live: boolean;
@@ -202,7 +202,7 @@ test("Sound starts with the soundtrack and the loop takes over past the hero", a
   });
   expect(audible.bytes).toBeGreaterThan(0);
   expect(audible.tracks).toBeGreaterThan(0);
-  expect(audible.src).toMatch(/\/par2play-demo\/media\/hero\.(webm|mp4)/);
+  expect(audible.src).toMatch(new RegExp(`${basePath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}media/hero\\.(webm|mp4)`));
 
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await expect

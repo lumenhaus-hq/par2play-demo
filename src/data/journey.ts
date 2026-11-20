@@ -91,7 +91,7 @@ export function offerDetail(id: OfferId, plan: PlanId | null): string {
     case "annual":
       return `${chosen.name} has no minimum term and no prepaid discount. Twelve months would be ${money(annualPrice(chosen))}, the same as ${money(annualRack(chosen))} at the monthly rate.`;
     case "lesson-series":
-      return "A pack of three 30-minute lessons is $240, tax included. The single-lesson price and the 5, 10, and 20 packs are still TBD.";
+      return "A 30-minute lesson is $100, tax included. A 10-pack of lessons is $750.";
     case "guest-round":
       return "A bay is $70 a session, tax included, for the group in that bay.";
     default: {

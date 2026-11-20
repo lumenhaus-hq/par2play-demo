@@ -63,7 +63,7 @@ function OfferCard() {
             {`Add the 3-lesson pack for ${money(RATES.lessonPack3)}`}
           </Button>
           <Button className={pill} variant={flow.acceptPack ? "outline" : "primary"} onPress={() => flow.setAcceptPack(false)}>
-            30-minute lesson price TBD
+            30-minute lesson is $100
           </Button>
         </Card.Footer>
       )}
@@ -396,7 +396,7 @@ export function PlanStep() {
 
 const PRODUCTS: { id: Product; label: string; detail: string }[] = [
   { id: "simulator", label: "Bay session", detail: `${money(RATES.baySession)} tax included.` },
-  { id: "coaching", label: "Lesson", detail: `30 minutes with a PGA professional. Single price TBD.` },
+  { id: "coaching", label: "Lesson", detail: `30 minutes with a PGA professional. $100.` },
 ];
 
 export function BookStep() {
