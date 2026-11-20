@@ -2,6 +2,7 @@ export type SiteRoute =
   | "home"
   | "membership"
   | "coaching"
+  | "swing-evaluation"
   | "juniors"
   | "events"
   | "tournament"
@@ -11,6 +12,7 @@ export type SiteRoute =
 export const SITE_NAV = [
   { slug: "membership", label: "Membership" },
   { slug: "coaching", label: "Coaching" },
+  { slug: "swing-evaluation", label: "Swing evaluation" },
   { slug: "juniors", label: "Golf for Kids" },
   { slug: "events", label: "Events" },
   { slug: "tournament", label: "Tournament" },
@@ -38,6 +40,8 @@ export function currentRoute(): SiteRoute {
       return "membership";
     case "coaching":
       return "coaching";
+    case "swing-evaluation":
+      return "swing-evaluation";
     case "juniors":
       return "juniors";
     case "events":

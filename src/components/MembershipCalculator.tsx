@@ -1,110 +1,46 @@
-import { trackAnchor } from "../analytics/track";
-import { BookLink, PhoneLink, buttonFocus } from "./Cta";
-import { PriceChoice } from "./PriceChoice";
+import { useState } from "react";
+import { OfferSheet } from "./OfferSheet";
 import { PriceInvoice } from "./PriceInvoice";
-import { NAP, OCLOCK, PRICES } from "../data/business";
-import { money } from "../data/membershipEstimate";
-
-const iconBase = `${import.meta.env.BASE_URL}media/membership-icons`;
-
-const BENEFITS = [
-  { file: "flag.png", title: "Bay hour daily", line: "Keep a practice hour every day." },
-  { file: "club-strike.png", title: "Shot data", line: "Track every swing in the bay." },
-  { file: "bag.png", title: "Clubs on hand", line: "Premium sticks waiting when you arrive." },
-  { file: "cart.png", title: "Priority times", line: "Hours that bend around your week." },
-] as const;
+import { PRICES } from "../data/business";
+import { membersPrice, money, type MembersPeriod } from "../data/membershipEstimate";
 
 export function MembershipCalculator() {
-  const monthly = PRICES.unlimitedMonthly;
-  const figure = `${money(monthly)}/mo`;
-  const heading = "Unlimited Practice";
-  const live = `Unlimited Practice ${money(monthly)} a month. Up to 1 hour a day.`;
-  const line = "Practice Unlimited (monthly)";
-  const note = "Members keep a bay hour every day for less than a few 10-packs.";
+  const [period, setPeriod] = useState<MembersPeriod>("month");
+  const yearly = period === "year";
+  const amount = membersPrice(period);
+  const figure = yearly ? `${money(amount)}/yr` : `${money(amount)}/mo`;
+  const monthly = `${money(PRICES.unlimitedMonthly)}/mo`;
+  const live = yearly
+    ? `Unlimited Practice. Members price ${figure}. Twelve months at ${monthly}.`
+    : `Unlimited Practice. Members price ${figure}. Up to 1 hour a day.`;
 
   return (
-    <div className="mx-auto grid w-full max-w-3xl gap-6 @3xl:gap-8">
-      <section id="why-membership" aria-labelledby="why-membership-heading" className="membership-pricing px-5 py-5 @3xl:px-7 @3xl:py-7">
-        <span className="membership-pricing__orb membership-pricing__orb--a" aria-hidden="true" />
-        <span className="membership-pricing__orb membership-pricing__orb--b" aria-hidden="true" />
-        <img className="membership-pricing__glyph membership-pricing__glyph--a" src={`${iconBase}/flag.png`} alt="" aria-hidden="true" width={64} height={50} decoding="async" loading="lazy" />
-        <img className="membership-pricing__glyph membership-pricing__glyph--b" src={`${iconBase}/ball.png`} alt="" aria-hidden="true" width={64} height={50} decoding="async" loading="lazy" />
-        <img className="membership-pricing__glyph membership-pricing__glyph--c" src={`${iconBase}/crossed-clubs.png`} alt="" aria-hidden="true" width={64} height={50} decoding="async" loading="lazy" />
-
-        <div className="membership-pricing__body">
-          <h1 id="why-membership-heading" className="offer-title text-2xl tracking-tight text-white @3xl:text-3xl">
-            Become a Member
-          </h1>
-          <div className="mt-6">
-            <PriceChoice
-              label="Membership"
-              value="unlimited"
-              onChange={() => undefined}
-              options={[{ value: "unlimited", label: heading, price: figure }]}
-            />
-          </div>
-          <PriceInvoice
-            className="mt-5"
-            title={heading}
-            rows={[
-              { label: "Offer", value: line },
-              { label: "Access", value: "Up to 1 hour a day" },
-              { label: "Billing", value: "Monthly" },
-              { label: "Membership", value: figure },
-            ]}
-            totalLabel={figure}
-            orderRef="ord_p2p_practice_unlimited"
-            live={live}
-            note={note}
-          />
-          <div className="mt-6">
-            <BookLink className="w-full" offer="practice-unlimited">
-              Complete booking
-            </BookLink>
-          </div>
-          <ul className="member-benefits" aria-label="Member benefits">
-            {BENEFITS.map((benefit) => (
-              <li key={benefit.title} className="member-benefits__tile">
-                <img src={`${iconBase}/${benefit.file}`} alt="" aria-hidden="true" width={64} height={50} decoding="async" loading="lazy" />
-                <p className="member-benefits__title">{benefit.title}</p>
-                <p className="member-benefits__line">{benefit.line}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      <section
-        className="rounded-2xl border border-[#E5E7EB] bg-white px-5 py-5 text-center shadow-[0_8px_30px_rgb(10_15_11/0.06)] @3xl:px-7 @3xl:py-6"
-        aria-labelledby="join-heading"
-      >
-        <h2 id="join-heading" className="offer-title text-3xl tracking-tight text-ink">
-          compare plans
-        </h2>
-        <p className="mx-auto mt-3 max-w-lg text-lg text-ink/80">Other bay offers are on GolfClock.</p>
-        <div className="mt-6 flex justify-center">
-          <a
-            href={OCLOCK.memberships}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-membership="true"
-            onClick={(event) => trackAnchor(event.currentTarget)}
-            className={`cta-shell cta-line cta-lift inline-flex min-h-12 items-center justify-center rounded-full px-8 text-lg font-semibold ${buttonFocus}`}
-          >
-            <span className="cta-fill" aria-hidden="true" />
-            <span className="cta-label">
-              <span className="cta-label-text">compare plans</span>
-            </span>
-          </a>
-        </div>
-        <p className="mt-6 text-lg leading-snug text-ink/85">
-          {NAP.street}
-          <br />
-          {`${NAP.city}, ${NAP.region} ${NAP.postalCode}`}
-          <br />
-          <PhoneLink className="aa-focus underline decoration-2 underline-offset-4">{NAP.phoneDisplay}</PhoneLink>
-        </p>
-      </section>
-    </div>
+    <OfferSheet
+      id="why-membership"
+      toggleLabel="Membership term"
+      value={period}
+      onChange={setPeriod}
+      offer="practice-unlimited"
+      options={[
+        { value: "month", label: "Monthly", price: monthly },
+        { value: "year", label: "Year", price: `${money(membersPrice("year"))}/yr` },
+      ]}
+      invoice={
+        <PriceInvoice
+          title="Unlimited Practice"
+          rows={[
+            { label: "Offer", value: yearly ? "Practice Unlimited" : "Practice Unlimited (monthly)" },
+            { label: "Access", value: "Up to 1 hour a day" },
+            { label: "Billing", value: yearly ? "Twelve months" : "Monthly" },
+          ]}
+          totalLabel={figure}
+          totalCaption="Members price"
+          membersPrice={amount}
+          orderRef="ord_p2p_practice_unlimited"
+          live={live}
+          note={yearly ? `Twelve months at ${monthly}.` : "One plan. A bay hour, every day."}
+        />
+      }
+    />
   );
 }

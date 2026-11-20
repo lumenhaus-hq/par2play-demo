@@ -25,7 +25,8 @@
 ## Pages
 - [Home](https://par2play.com/): indoor golf in Somerset, NJ
 - [Membership](https://par2play.com/membership/): Unlimited Practice, $200 a month
-- [Golf lessons](https://par2play.com/coaching/): 30-minute lessons, 10-pack, swing evaluation
+- [Golf lessons](https://par2play.com/coaching/): 30-minute lessons and the 10-pack
+- [Swing evaluation](https://par2play.com/swing-evaluation/): 30 minutes, $100
 - [Junior golf](https://par2play.com/juniors/): junior coaching once or twice a week
 - [Events](https://par2play.com/events/): holiday parties, company events, birthdays. Price on request
 - [Fall League](https://par2play.com/tournament/): indoor golf league. Price on request

@@ -83,6 +83,17 @@ export function estimateMembership(months: PeriodMonths, visitsPerWeek: VisitsPe
   };
 }
 
+export type MembersPeriod = "month" | "year";
+
+/**
+ * Unlimited Practice is one plan. The displayed members price never drops
+ * below $200 a month or $2,400 a year (twelve months at that rate).
+ */
+export function membersPrice(period: MembersPeriod, quoted?: number): number {
+  const floor = period === "year" ? PRICES.unlimitedMonthly * 12 : PRICES.unlimitedMonthly;
+  return Math.max(quoted ?? floor, floor);
+}
+
 export function money(amount: number): string {
   const rounded = Math.round(amount * 100) / 100;
   const whole = Math.abs(rounded - Math.round(rounded)) < 0.001;

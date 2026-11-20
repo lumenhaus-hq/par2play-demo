@@ -30,6 +30,7 @@ export default defineConfig({
         main: resolve(fileURLToPath(new URL(".", import.meta.url)), "index.html"),
         membership: resolve(fileURLToPath(new URL(".", import.meta.url)), "membership/index.html"),
         coaching: resolve(fileURLToPath(new URL(".", import.meta.url)), "coaching/index.html"),
+        "swing-evaluation": resolve(fileURLToPath(new URL(".", import.meta.url)), "swing-evaluation/index.html"),
         juniors: resolve(fileURLToPath(new URL(".", import.meta.url)), "juniors/index.html"),
         events: resolve(fileURLToPath(new URL(".", import.meta.url)), "events/index.html"),
         tournament: resolve(fileURLToPath(new URL(".", import.meta.url)), "tournament/index.html"),
