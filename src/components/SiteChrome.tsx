@@ -1,14 +1,16 @@
 import type { ReactNode } from "react";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { Mark } from "./Chrome";
 import { BookLink, buttonFocus } from "./Cta";
 import { LayoutToggle } from "./LayoutToggle";
+import { SiteMenu } from "./SiteMenu";
 import { MotionToggle } from "./MotionToggle";
 import { PageAtmosphere, type AtmosphereIntensity } from "./PageAtmosphere";
 import { SoundToggle } from "./SoundToggle";
 import { golfClockBookingReady, NAP } from "../data/business";
 import { VisitLine } from "./VisitLine";
 import { SITE_NAV, currentRoute, pageHref, type SiteRoute } from "../data/routes";
+import { showDemoChrome } from "../data/site";
 import { useFlow } from "../state/flow";
 
 function atmosphereFor(route: SiteRoute): AtmosphereIntensity {
@@ -33,57 +35,32 @@ function atmosphereFor(route: SiteRoute): AtmosphereIntensity {
 const navClass = `nav-link inline-flex min-h-11 items-center px-1 text-base font-semibold text-ink ${buttonFocus}`;
 
 export function SiteHeader() {
-  const [menu, setMenu] = useState(false);
   const route = currentRoute();
 
   return (
-    <header className="header-bar sticky top-0 z-30 px-6 py-3 @5xl:px-12">
+    <header className="header-bar relative sticky top-0 z-30 px-6 py-3 @5xl:px-12">
       <div className="flex items-center justify-between gap-4">
         <a href={pageHref("")} className={`inline-flex min-h-11 items-center ${buttonFocus}`}>
           <Mark />
         </a>
-        <nav className="hidden items-center gap-3 @3xl:flex @5xl:gap-6" aria-label="Page">
-          {SITE_NAV.map((item) => (
-            <a
-              key={item.slug}
-              href={pageHref(item.slug)}
-              className={`${navClass} ${route === item.slug ? "is-active" : ""}`}
-              aria-current={route === item.slug ? "page" : undefined}
-            >
-              {item.label}
-            </a>
-          ))}
-        </nav>
         <div className="flex items-center gap-2">
-          <LayoutToggle className="text-ink" />
+          {showDemoChrome() ? <LayoutToggle className="text-ink" /> : null}
           <SoundToggle className="text-ink" />
           <BookLink offer="bay" className="shrink-0">
             Book a Bay
           </BookLink>
-          <button
-            type="button"
-            className={`${navClass} @3xl:hidden`}
-            aria-expanded={menu}
-            onClick={() => setMenu((open) => !open)}
-          >
-            {menu ? "Close" : "Menu"}
-          </button>
+          <SiteMenu
+            className="text-ink"
+            linkClass={navClass}
+            items={SITE_NAV.map((item) => ({
+              slug: item.slug,
+              label: item.label,
+              href: pageHref(item.slug),
+              current: route === item.slug,
+            }))}
+          />
         </div>
       </div>
-      {menu && (
-        <nav className="mt-2 flex flex-col items-start gap-1 @3xl:hidden" aria-label="Page" data-cta-location="mobile_menu">
-          {SITE_NAV.map((item) => (
-            <a
-              key={item.slug}
-              href={pageHref(item.slug)}
-              className={navClass}
-              aria-current={route === item.slug ? "page" : undefined}
-            >
-              {item.label}
-            </a>
-          ))}
-        </nav>
-      )}
     </header>
   );
 }

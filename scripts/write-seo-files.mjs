@@ -7,6 +7,22 @@ const courses = business.match(/export const SIMULATOR_COURSE_COUNT = (\d+)/)?.[
 if (!site || !courses) throw new Error("Could not read SITE_URL or SIMULATOR_COURSE_COUNT");
 const origin = site.replace(/\/$/, "");
 
+function readNumber(name) {
+  const value = business.match(new RegExp(`^\\s*${name}: (\\d+)`, "m"))?.[1];
+  if (!value) throw new Error(`Could not read ${name} from business.ts`);
+  return value;
+}
+
+const unlimited = readNumber("unlimitedMonthly");
+const lesson = readNumber("lessonSingle");
+const lessonMinutes = readNumber("lessonMinutes");
+const pack = readNumber("lessonPack10");
+const swing = readNumber("swingEvaluation");
+const swingMinutes = readNumber("swingEvaluationMinutes");
+const juniorOnce = readNumber("juniorOneLessonWeekly");
+const juniorTwice = readNumber("juniorTwoLessonsWeekly");
+const LASTMOD = "2026-11-20";
+
 const routes = [
   ["", "Indoor golf in Somerset, NJ"],
   ["membership/", "Indoor golf membership"],
@@ -23,7 +39,7 @@ ${routes
   .map(
     ([path]) => `  <url>
     <loc>${origin}/${path}</loc>
-    <lastmod>2026-10-30</lastmod>
+    <lastmod>${LASTMOD}</lastmod>
   </url>`,
   )
   .join("\n")}
@@ -68,37 +84,35 @@ Sitemap: ${origin}/sitemap.xml
 
 const llms = `# Par2Play
 
-> Par2Play is an indoor golf studio at 695 Hamilton Street, Suite G, Somerset, NJ 08873 (Franklin Township, near New Brunswick). Four enclosed Full Swing golf simulator bays, private golf lessons with PGA professionals Nick Schiavo and Nick Monticello, junior golf coaching, memberships, and private events. Phone (732) 448-2769. Email info@par2play.com.
+> Par2Play is an indoor golf studio at 695 Hamilton Street, Suite G, Somerset, NJ 08873 (Franklin Township, near New Brunswick). Four enclosed Full Swing golf simulator bays, private golf lessons with PGA professionals, junior golf coaching, memberships, and private events. Phone (732) 448-2769. Email info@par2play.com.
 
 ## Key facts
 - Address: 695 Hamilton Street, Suite G, Somerset, NJ 08873
 - Phone: (732) 448-2769
 - Hours: 10am–10pm, Monday–Sunday
 - Simulators: Full Swing, 4 enclosed bays, complimentary premium golf clubs, ${courses}+ courses
-- Coaches: Nick Schiavo, PGA (PGA Professional since 2011; Penn State PGM; former GOLFTEC Director of Instruction); Nick Monticello, PGA (PGA member since 2011; Methodist University PGM; former Lead Instructor, Basking Ridge Country Club)
+- Coaching: PGA professionals for private lessons and swing evaluations
 - Booking: https://par2play.oclock.app/book
 - Instagram: https://www.instagram.com/par2play/
 - Facebook: https://www.facebook.com/people/Par2play/100090440193611/ (the page linked from the live par2play.com footer). A Google listing points at a different page, facebook.com/102565266099864. That second page is not used here.
 
 ## Prices (USD)
-- Silver membership: $100/month
-- Gold membership: $250/month
-- Platinum membership: $4,500/year
+- Unlimited Practice membership: $${unlimited}/month, up to 1 hour a day
 - Single bay rental: shown at checkout
-- Private lesson, 30 min: $100; packs 5/$400, 10/$750, 20/$1,400, 30/$2,000, 50/$3,000 (never expire)
-- Swing Evaluation (50–60 min): $100
-- Golf Improvement Bundle: $599
-- Junior coaching, once a week: $249/month
-- Junior coaching, twice a week: $399/month
-- Club fitting, event packages, and the league fee: not published
+- Private lesson, ${lessonMinutes} min: $${lesson}
+- Lesson 10-pack: $${pack}
+- Swing evaluation, ${swingMinutes} min: $${swing}
+- Junior coaching, once a week: $${juniorOnce}/month
+- Junior coaching, twice a week: $${juniorTwice}/month
+- Event packages and the league fee: price on request
 
 ## Pages
 - [Home](${origin}/): indoor golf in Somerset, NJ
-- [Membership](${origin}/membership/): Silver, Gold, and Platinum
-- [Golf lessons](${origin}/coaching/): PGA coaches, lesson packs, swing evaluation, club fitting
+- [Membership](${origin}/membership/): Unlimited Practice, $${unlimited} a month
+- [Golf lessons](${origin}/coaching/): ${lessonMinutes}-minute lessons, 10-pack, swing evaluation
 - [Junior golf](${origin}/juniors/): junior coaching once or twice a week
-- [Events](${origin}/events/): holiday parties, company events, birthdays
-- [Fall League](${origin}/tournament/): indoor golf league (coming soon)
+- [Events](${origin}/events/): holiday parties, company events, birthdays. Price on request
+- [Fall League](${origin}/tournament/): indoor golf league. Price on request
 `;
 
 writeFileSync(new URL("../public/sitemap.xml", import.meta.url), sitemap);

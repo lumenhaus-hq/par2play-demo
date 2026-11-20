@@ -54,14 +54,11 @@ export const PRICES = {
    * $40", which does not match those slots, so the calculator uses this rate.
    */
   baySession: 70,
-  /**
-   * TODO(pricing): Atul confirmed a 10-pack exists. No confirmed price is in
-   * the repo. Do not publish a dollar amount for it.
-   */
-  /** Confirmed: 10 x 60-minute sessions. */
+  /** Confirmed: 10 x 60-minute practice sessions. Not the lesson 10-pack. */
   tenPack: 400,
   unlimitedMonthly: 200,
-  swingEvaluationMinutes: 50,
+  /** Swing evaluation length. Locked 20 Nov 2026: 30 minutes at $100. */
+  swingEvaluationMinutes: 30,
   swingEvaluation: 100,
   /**
    * 30-minute private lesson.
@@ -73,8 +70,8 @@ export const PRICES = {
   /** In the repo only. The public lessons page does not list a 3-pack. */
   lessonPack3: 240,
   /**
-   * Lesson packs. Source: https://par2play.com/golf-lessions/
-   * Pack 5 $400, Pack 10 $750, Pack 20 $1400, Pack 30 $2000, Pack 50 $3000.
+   * The public site publishes the 10-pack only.
+   * Older lesson-page pack amounts stay here and are not rendered.
    */
   lessonPack5: 400,
   lessonPack10: 750,
@@ -87,11 +84,6 @@ export const PRICES = {
   eventPackage: null as number | null,
   /** Fall league entry fee is not published. */
   leagueEntry: null as number | null,
-  /**
-   * Source: https://par2play.oclock.app/store/prod_golf_improvement_bundle ($599.00).
-   * Includes a swing evaluation, a TPI assessment, five 30-minute lessons, a 2-hour practice session, a workout routine, workshop access, and coach check-ins.
-   */
-  golfImprovementBundle: 599,
   /** Once-a-week plan. In the repo only; the public membership carousel does not list it. */
   juniorOneLessonWeekly: 249,
   /**
@@ -131,30 +123,12 @@ export const OCLOCK = {
   liveMembership: "https://par2play.com/membership",
   tenPracticePack: "https://par2play.oclock.app/store/prod_10_practice_pack",
   lessonPacks: "https://par2play.oclock.app/store/prod_lesson_packs",
-  golfImprovementBundle: "https://par2play.oclock.app/store/prod_golf_improvement_bundle",
   book: "https://par2play.oclock.app/book",
   store: "https://par2play.oclock.app/store",
   memberships: "https://par2play.oclock.app/store?category=Memberships",
   seriesPackages: "https://par2play.oclock.app/store?category=Series+Packages",
   events: "https://par2play.oclock.app/events",
 } as const;
-
-/**
- * Per-tier GolfClock product URLs. Empty until those products exist.
- * membershipCheckoutHref falls back to the Memberships category.
- */
-export const TIER_CHECKOUT = {
-  silver: "",
-  gold: "",
-  platinum: "",
-} as const;
-
-export type MemberTierCheckoutId = keyof typeof TIER_CHECKOUT;
-
-export function membershipCheckoutHref(tier?: MemberTierCheckoutId): string {
-  if (tier && TIER_CHECKOUT[tier]) return TIER_CHECKOUT[tier];
-  return OCLOCK.memberships;
-}
 
 export const GOLF_CLOCK = {
   bookingUrl: OCLOCK.book,

@@ -265,7 +265,7 @@ export function recommendReason(answers: Answers, plan: PlanId, hint: PlanId | n
     case "unlimited":
       if (answers.intent === "learn") {
         reason =
-          "Start with a 50-minute swing evaluation, $100 tax included, once per golfer. Unlimited practice is $200 a month if the bay becomes the habit. No minimum term.";
+          "Start with a 30-minute swing evaluation, $100 tax included, once per golfer. Unlimited practice is $200 a month, up to 1 hour a day, if the bay becomes the habit. No minimum term.";
       } else if (answers.cadence === "occasional") {
         reason =
           "A bay is $70 a session, tax included. Unlimited practice is $200 a month and covers itself from the third session. No minimum term.";

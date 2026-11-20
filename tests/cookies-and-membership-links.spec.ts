@@ -1,4 +1,4 @@
-import { expect, setDemoLayout, test } from "./fixtures";
+import { expect, setDemoLayout, siteHref, sitePathPattern, test } from "./fixtures";
 
 for (const width of [390, 1280]) {
   for (const action of ["Accept all", "Reject non-essential", "Save my choices"]) {
@@ -29,7 +29,7 @@ for (const width of [390, 1280]) {
     const count = await ctas.count();
     expect(count).toBeGreaterThanOrEqual(2);
     for (const cta of await ctas.all()) {
-      await expect(cta).toHaveAttribute("href", "/par2play-demo/membership/");
+      await expect(cta).toHaveAttribute("href", siteHref("membership/"));
       await expect(cta).not.toHaveAttribute("target", "_blank");
     }
     await expect(page.locator("#hero").getByRole("link", { name: "Bay Rental Call Us", exact: true })).toHaveAttribute(
@@ -37,7 +37,7 @@ for (const width of [390, 1280]) {
       "tel:+17324482769",
     );
     await page.locator("#membership").getByRole("link", { name: "Become a Member", exact: true }).click();
-    await expect(page).toHaveURL(/\/par2play-demo\/membership\/$/);
+    await expect(page).toHaveURL(sitePathPattern("membership/"));
     await expect(page.locator("#why-membership")).toBeVisible();
   });
 }
@@ -83,6 +83,6 @@ test("membership CTA opens the subpage from the mobile preview", async ({ page }
   await page.getByRole("button", { name: "Reject non-essential", exact: true }).click();
   await setDemoLayout(page, "mobile");
   await page.locator("#membership").getByRole("link", { name: "Become a Member", exact: true }).click();
-  await expect(page).toHaveURL(/\/par2play-demo\/membership\/$/);
+  await expect(page).toHaveURL(sitePathPattern("membership/"));
   await expect(page.locator("#why-membership")).toBeVisible();
 });

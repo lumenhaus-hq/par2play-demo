@@ -10,7 +10,8 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && node scripts/write-seo-files.mjs && vite build && node scripts/prerender.mjs",
+    "build": "tsc -b && node scripts/write-seo-files.mjs && vite build && node scripts/prerender.mjs && node scripts/write-redirects.mjs",
+    "build:prod": "VITE_BASE=/ VITE_DEMO=false npm run build",
     "lint": "oxlint",
     "preview": "vite preview"
   },

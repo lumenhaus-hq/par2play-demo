@@ -5,7 +5,11 @@ import { PageFrame, pageSpace } from "../components/SiteChrome";
 import source from "../content/privacy-policy.md?raw";
 import { privacyGraph } from "../data/schema";
 
-const SIGN_OFF = /\[NEEDS ATUL\/CHANDAN SIGN-OFF:\s*([^\]]+)\]/g;
+const SIGN_OFF_SOURCE = "\\[NEEDS ATUL\\/CHANDAN SIGN-OFF:\\s*([^\\]]+)\\]";
+
+function countSignOffs(text: string): number {
+  return text.match(new RegExp(SIGN_OFF_SOURCE, "g"))?.length ?? 0;
+}
 
 function stripDraftMarks(text: string): string {
   return text
@@ -30,7 +34,7 @@ function inline(text: string, keyPrefix: string): ReactNode[] {
     if (match[1]) {
       nodes.push(
         <span key={key} className="mx-0.5 inline-block rounded bg-[#fff3bf] px-1.5 py-0.5 text-sm font-semibold text-ink">
-          TBD — needs Atul/Chandan sign-off: {match[1].trim()}
+          {`TBD — needs Atul/Chandan sign-off: ${match[1].trim()}`}
         </span>,
       );
     } else if (match[2]) {
@@ -124,7 +128,7 @@ const headingClass: Record<1 | 2 | 3 | 4, string> = {
 };
 
 export function PrivacyPage() {
-  const signOffs = source.match(SIGN_OFF)?.length ?? 0;
+  const signOffs = countSignOffs(source);
   return (
     <PageFrame>
       <article className={`${pageSpace} max-w-3xl`}>

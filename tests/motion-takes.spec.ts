@@ -26,23 +26,24 @@ test("pause motion persists and stops the hero film", async ({ page }) => {
   await expect(page.locator("#hero img").first()).toBeVisible();
 });
 
-test("closing frame and numbered membership chapters are on the homepage", async ({ page }) => {
+test("closing frame and membership bento are on the homepage", async ({ page }) => {
   await page.goto("./");
   await setDemoLayout(page, "web");
-  await expect(page.getByRole("heading", { name: "Your bay is waiting." })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Book a bay", exact: true })).toBeVisible();
+  const closing = page.locator("section").filter({ has: page.getByRole("heading", { name: "Your bay is waiting." }) });
+  await expect(closing.getByRole("heading", { name: "Your bay is waiting." })).toBeVisible();
+  await expect(closing.getByRole("link", { name: "Book a Bay", exact: true })).toBeVisible();
   const band = page.locator("#membership");
-  await expect(band.getByText("01 / 03", { exact: true }).first()).toBeVisible();
-  await expect(band.getByRole("heading", { name: "Member benefits" })).toBeVisible();
-  await expect(band.getByRole("heading", { name: "Track your progress" })).toBeVisible();
-  await expect(band.getByRole("heading", { name: "Fit it around your day" })).toBeVisible();
+  await expect(band.getByRole("heading", { name: "Membership", exact: true })).toBeVisible();
+  await expect(band.getByLabel("Simulator stats")).toBeVisible();
+  await expect(band.getByLabel("Progress")).toBeVisible();
+  await expect(band.getByRole("link", { name: "Experience a free Member Day", exact: true })).toBeVisible();
 });
 
 test("sound control names the action on the hero", async ({ page }) => {
   await page.goto("./");
   const sound = page.getByRole("button", { name: /turn sound on|sound on/i });
   await expect(sound).toBeVisible();
-  await expect(sound).toContainText(/sound/i);
+  await expect(sound).toHaveAttribute("aria-label", /sound/i);
 });
 
 test("Lenis smooth scroll is live, and Pause motion turns it off", async ({ page }) => {
