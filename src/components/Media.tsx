@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { bootAmbient, registerHeroVideo } from "../audio/soundtrack";
 import { HERO_MEDIA, type ClipAsset } from "../data/media";
 import type { PhotoAsset } from "../data/photos";
@@ -20,12 +21,88 @@ function expandMs(): number {
  */
 const EARTH_FRAME_AT = 0.5;
 
+/**
+ * After the poster has painted, mount on idle or this long after load —
+ * whichever comes first. A gesture still mounts immediately.
+ */
+const AUTOPLAY_IDLE_MS = 1200;
+
 const FILM_GESTURES = ["pointerdown", "keydown", "touchstart", "wheel", "scroll"] as const;
 
-type LcpEntry = PerformanceEntry & { element?: Element | null };
+function bufferedSpan(loop: HTMLVideoElement): number {
+  if (loop.buffered.length === 0) return 0;
+  return loop.buffered.end(loop.buffered.length - 1) - loop.buffered.start(0);
+}
 
-function posterEntry(entry: PerformanceEntry): boolean {
-  return (entry as LcpEntry).element?.id === "lcp-poster";
+/** canplaythrough, or enough decoded media to start without an empty fade. */
+function bufferReady(loop: HTMLVideoElement): boolean {
+  if (loop.readyState >= 4) return true;
+  const span = bufferedSpan(loop);
+  if (loop.readyState >= 3 && span >= 1.25) return true;
+  if (loop.readyState >= 2 && Number.isFinite(loop.duration) && loop.duration > 0 && span / loop.duration >= 0.12) {
+    return true;
+  }
+  return false;
+}
+
+function bufferFraction(loop: HTMLVideoElement): number | null {
+  if (!Number.isFinite(loop.duration) || loop.duration <= 0 || loop.buffered.length === 0) return null;
+  return Math.max(0, Math.min(1, loop.buffered.end(loop.buffered.length - 1) / loop.duration));
+}
+
+const BUFFER_RADIUS = 10;
+const BUFFER_TURN = 2 * Math.PI * BUFFER_RADIUS;
+
+/** Thin lime ring in the hero corner. Does not take hits or change layout. */
+function HeroBuffer({ progress }: { progress: number | null }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+    const place = () => {
+      const hero = document.getElementById("hero");
+      if (!hero) return;
+      const box = hero.getBoundingClientRect();
+      const visible = box.bottom > 72 && box.top < window.innerHeight;
+      node.style.visibility = visible ? "visible" : "hidden";
+      node.style.top = `${box.top + 84}px`;
+      node.style.left = `${box.left + 16}px`;
+    };
+    place();
+    const options = { passive: true } as const;
+    window.addEventListener("scroll", place, options);
+    window.addEventListener("resize", place, options);
+    return () => {
+      window.removeEventListener("scroll", place);
+      window.removeEventListener("resize", place);
+    };
+  }, []);
+
+  const indeterminate = progress === null;
+  const offset = indeterminate ? BUFFER_TURN * 0.72 : BUFFER_TURN * (1 - progress);
+
+  return createPortal(
+    <div
+      ref={ref}
+      className={`hero-buffer${indeterminate ? " hero-buffer--wait" : ""}`}
+      data-hero-loader
+      aria-hidden="true"
+    >
+      <svg viewBox="0 0 28 28" focusable="false">
+        <circle className="hero-buffer__track" cx="14" cy="14" r={BUFFER_RADIUS} />
+        <circle
+          className="hero-buffer__value"
+          cx="14"
+          cy="14"
+          r={BUFFER_RADIUS}
+          strokeDasharray={`${BUFFER_TURN} ${BUFFER_TURN}`}
+          strokeDashoffset={offset}
+        />
+      </svg>
+    </div>,
+    document.body,
+  );
 }
 
 const STOREFRONT_ALT = "Par2Play storefront in Somerset, New Jersey";
@@ -113,6 +190,9 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
   const [fit, setFit] = useState<EndCardFit | null>(null);
   const [phase, setPhase] = useState<HeroIntroPhase>(INITIAL_INTRO);
   const [filmOn, setFilmOn] = useState(false);
+  const [preloadMode, setPreloadMode] = useState<"none" | "metadata" | "auto">("none");
+  const [buffering, setBuffering] = useState(false);
+  const [bufferProgress, setBufferProgress] = useState<number | null>(null);
 
   useEffect(() => {
     onPhase?.(phase);
@@ -139,6 +219,7 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
     let cancel = false;
     let expandTimer = 0;
     let arriveTimer = 0;
+    let seekTimer = 0;
     let started = false;
 
     const loopEl = () => loopRef.current;
@@ -176,20 +257,64 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
       if (loop.readyState < 2) return;
       if (loop.currentTime + 0.08 < EARTH_FRAME_AT) return;
       loop.classList.add("is-live");
+      loop.removeEventListener("timeupdate", revealFilm);
       hideLcpPoster();
+      setBuffering(false);
       scheduleExpand();
     };
 
-    const playFilm = () => {
+    const publishBuffer = (loop: HTMLVideoElement) => {
+      const next = bufferFraction(loop);
+      setBufferProgress((current) => {
+        if (current === next) return current;
+        if (current !== null && next !== null && Math.abs(current - next) < 0.03) return current;
+        return next;
+      });
+    };
+
+    let stopBufferWait = () => {};
+    const whenBuffered = (loop: HTMLVideoElement) =>
+      new Promise<void>((resolve) => {
+        const finish = () => {
+          stopBufferWait();
+          resolve();
+        };
+        const check = () => {
+          if (cancel) {
+            finish();
+            return;
+          }
+          publishBuffer(loop);
+          if (bufferReady(loop)) finish();
+        };
+        stopBufferWait = () => {
+          loop.removeEventListener("canplaythrough", check);
+          loop.removeEventListener("canplay", check);
+          loop.removeEventListener("progress", check);
+          loop.removeEventListener("loadeddata", check);
+        };
+        if (bufferReady(loop)) {
+          finish();
+          return;
+        }
+        loop.addEventListener("canplaythrough", check);
+        loop.addEventListener("canplay", check);
+        loop.addEventListener("progress", check);
+        loop.addEventListener("loadeddata", check);
+      });
+
+    const playFilm = (waitForBuffer: boolean) => {
       const loop = loopEl();
       if (cancel || started || !loop) return;
       started = true;
-      loop.preload = "metadata";
+      loop.setAttribute("fetchpriority", "low");
+      if (loop.preload !== "auto") loop.preload = "metadata";
       const arm = () => {
         if (cancel) return;
         const start = () => {
-          if (cancel) return;
+          if (cancel || loop.classList.contains("is-live")) return;
           loop.addEventListener("playing", revealFilm);
+          loop.addEventListener("timeupdate", revealFilm);
           registerHeroVideo(loop);
           document.documentElement.classList.add("media-on");
           revealFilm();
@@ -198,15 +323,35 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
           start();
           return;
         }
-        loop.addEventListener("seeked", start, { once: true });
+        let opened = false;
+        const open = () => {
+          if (opened) return;
+          opened = true;
+          start();
+        };
+        loop.addEventListener("seeked", open, { once: true });
         try {
           loop.currentTime = EARTH_FRAME_AT;
         } catch {
-          start();
+          open();
+          return;
         }
+        seekTimer = window.setTimeout(() => {
+          if (!opened && !cancel) open();
+        }, 500);
       };
-      if (loop.readyState >= 1) arm();
-      else loop.addEventListener("loadedmetadata", arm, { once: true });
+      const startArm = () => {
+        if (cancel) return;
+        if (loop.readyState >= 1) arm();
+        else loop.addEventListener("loadedmetadata", arm, { once: true });
+      };
+      if (!waitForBuffer) {
+        startArm();
+        return;
+      }
+      void whenBuffered(loop).then(() => {
+        if (!cancel) startArm();
+      });
     };
 
     const armFit = () => {
@@ -229,17 +374,20 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
     };
 
     // ?intro=play and ?film=1 mount immediately and may run the Earth zoom.
-    // A gesture, or the late LCP gate, must not: that zoom adds hero-scroll-lock.
+    // Automatic start must not: the zoom phase sets hero-scroll-lock and scrollTo(0, 0).
     const eager = forceIntro || params.get("film") === "1";
 
     const begin = () => {
       if (cancel) return;
+      const zoom = eager && !skipIntro;
+      setPreloadMode(zoom ? "metadata" : "auto");
+      setBuffering(!zoom);
       setFilmOn(true);
-      if (skipIntro || !eager) {
+      if (!zoom) {
         setPhase("arrived");
         window.requestAnimationFrame(() => {
           window.requestAnimationFrame(() => {
-            playFilm();
+            playFilm(true);
             armFit();
           });
         });
@@ -251,14 +399,13 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
       setPhase("zoom");
       window.requestAnimationFrame(() => {
         window.requestAnimationFrame(() => {
-          playFilm();
+          playFilm(false);
         });
       });
     };
 
-    // Keep the poster as the final LCP candidate. Mount the film only after
-    // load plus a gesture, or after the poster has been the LCP entry long
-    // enough that its first frame is not a new, larger candidate.
+    // Poster paints first. Then mount on idle or ~1.2s after load, whichever
+    // is sooner, or on the first gesture if that happens earlier.
     let releaseGate = () => {};
     const ready = new Promise<void>((resolve) => {
       if (eager) {
@@ -266,60 +413,63 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
         return;
       }
       let settled = false;
-      let loaded = document.readyState === "complete";
-      let gesture = false;
-      let lcpTimer = 0;
-      let lcpObserver: PerformanceObserver | null = null;
-      const finish = () => {
-        if (settled) return;
-        settled = true;
-        window.clearTimeout(lcpTimer);
+      let timer = 0;
+      let idleId = 0;
+      const posterAbort = new AbortController();
+      const clearWait = () => {
+        window.clearTimeout(timer);
+        if (idleId) window.cancelIdleCallback(idleId);
         window.removeEventListener("load", onLoad);
         for (const type of FILM_GESTURES) window.removeEventListener(type, onGesture, { capture: true });
-        lcpObserver?.disconnect();
+        posterAbort.abort();
+      };
+      const finish = () => {
+        if (settled || cancel) return;
+        settled = true;
+        clearWait();
         resolve();
       };
-      const consider = () => {
-        if (cancel || settled || !loaded || !gesture) return;
-        finish();
+      const armIdle = () => {
+        if (settled || cancel) return;
+        setBuffering(true);
+        window.requestAnimationFrame(() => {
+          window.requestAnimationFrame(() => {
+            if (settled || cancel) return;
+            timer = window.setTimeout(finish, AUTOPLAY_IDLE_MS);
+            if (typeof window.requestIdleCallback === "function") {
+              idleId = window.requestIdleCallback(() => finish(), { timeout: AUTOPLAY_IDLE_MS });
+            }
+          });
+        });
+      };
+      const posterReady = () => {
+        const poster = document.getElementById("lcp-poster");
+        return !(poster instanceof HTMLImageElement) || poster.complete;
+      };
+      const whenPoster = (andThen: () => void) => {
+        if (posterReady()) {
+          andThen();
+          return;
+        }
+        const poster = document.getElementById("lcp-poster");
+        poster?.addEventListener("load", andThen, { once: true, signal: posterAbort.signal });
+        poster?.addEventListener("error", andThen, { once: true, signal: posterAbort.signal });
       };
       const onGesture = () => {
-        gesture = true;
-        consider();
+        whenPoster(finish);
       };
       const onLoad = () => {
-        loaded = true;
-        consider();
+        whenPoster(armIdle);
       };
-      for (const type of FILM_GESTURES) window.addEventListener(type, onGesture, { capture: true, passive: true });
-      if (!loaded) window.addEventListener("load", onLoad);
-      try {
-        lcpObserver = new PerformanceObserver((list) => {
-          if (settled || !list.getEntries().some(posterEntry)) return;
-          window.clearTimeout(lcpTimer);
-          // A short delay still sits inside a Lighthouse trace, and hiding the
-          // poster for the film then makes the video the LCP element. Wait
-          // until a quiet lab trace has already closed.
-          lcpTimer = window.setTimeout(() => {
-            if (cancel || settled) return;
-            if (document.readyState !== "complete") {
-              window.addEventListener("load", () => finish(), { once: true });
-              return;
-            }
-            finish();
-          }, 12000);
-        });
-        lcpObserver.observe({ type: "largest-contentful-paint", buffered: true });
-      } catch {
-        lcpObserver = null;
+      for (const type of FILM_GESTURES) {
+        window.addEventListener(type, onGesture, { capture: true, passive: true });
       }
+      if (document.readyState === "complete") whenPoster(armIdle);
+      else window.addEventListener("load", onLoad);
       releaseGate = () => {
         if (settled) return;
         settled = true;
-        window.clearTimeout(lcpTimer);
-        window.removeEventListener("load", onLoad);
-        for (const type of FILM_GESTURES) window.removeEventListener(type, onGesture, { capture: true });
-        lcpObserver?.disconnect();
+        clearWait();
       };
     });
     void ready.then(() => {
@@ -333,12 +483,15 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
     return () => {
       cancel = true;
       releaseGate();
+      stopBufferWait();
       window.clearTimeout(expandTimer);
       window.clearTimeout(arriveTimer);
+      window.clearTimeout(seekTimer);
       document.removeEventListener("visibilitychange", onVis);
       const loop = loopEl();
       loop?.removeEventListener("playing", revealFilm);
       loop?.removeEventListener("seeked", revealFilm);
+      loop?.removeEventListener("timeupdate", revealFilm);
       loop?.removeEventListener("timeupdate", syncFit);
       loop?.removeEventListener("seeked", syncFit);
       observer.disconnect();
@@ -366,6 +519,7 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
     <div ref={bayRef} className={`absolute inset-0 overflow-hidden ${phase === "arrived" ? "" : "bg-ink"}`}>
       <p className="sr-only">{STOREFRONT_ALT}</p>
       <div className={frameClassFor(phase)}>
+        {buffering ? <HeroBuffer progress={bufferProgress} /> : null}
         {filmOn ? (
         <video
           ref={loopRef}
@@ -380,7 +534,7 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
           }
           loop
           playsInline
-          preload="none"
+          preload={preloadMode}
           muted
           aria-hidden="true"
         >

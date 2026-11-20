@@ -133,10 +133,10 @@ test("subpage titles clear the sticky header and use the swoosh", async ({ page 
     return title.getBoundingClientRect().top - header.getBoundingClientRect().bottom;
   });
   expect(gap).toBeGreaterThanOrEqual(8);
-  const title = page.getByRole("heading", { name: "Golf lessons in Somerset, NJ", exact: true });
+  const title = page.getByRole("heading", { name: "Swing your way to your first birdie and hole in one!", exact: true });
   await expect(title).toBeVisible();
   await expect(title.locator(".display-swoosh")).toBeVisible();
-  await expect(title.locator(".display-title__accent")).toHaveText(/lessons/);
+  await expect(title.locator(".display-title__accent")).toHaveText(/birdie/);
   const motion = await title.evaluate((node) => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     return { reduce, animation: getComputedStyle(node).animationName };

@@ -11,7 +11,8 @@ for (const width of [360, 1280]) {
     await page.goto("membership/");
     if (width === 1280) await setDemoLayout(page, "web");
     const panel = page.locator("#why-membership");
-    await expect(page.getByRole("heading", { name: "Become a Member" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "The membership that rewards your passion more!" })).toBeVisible();
+    await expect(page).toHaveTitle("Indoor Golf Membership in Somerset, NJ | Par2Play");
     await expect(panel.getByText("Unlimited Practice", { exact: true }).first()).toBeVisible();
     await expect(panel.locator("[data-invoice-total]")).toHaveText("$200/mo");
     await expect(panel.getByRole("slider")).toHaveCount(0);
@@ -163,8 +164,42 @@ test("membership scorecard price uses readable large type", async ({ page }) => 
   expect(titleSize).toBeGreaterThanOrEqual(17);
 });
 
+for (const width of [320, 390]) {
+  test(`membership and coaching titles wrap inside ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 700 });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    const pages = [
+      ["membership/", "The membership that rewards your passion more!"],
+      ["coaching/", "Swing your way to your first birdie and hole in one!"],
+    ] as const;
+    for (const [route, heading] of pages) {
+      await page.goto(route);
+      const h1 = page.getByRole("heading", { level: 1, name: heading, exact: true });
+      await expect(h1).toBeVisible();
+      const fit = await h1.evaluate((node) => {
+        const rect = node.getBoundingClientRect();
+        const style = getComputedStyle(node);
+        const lineHeight = parseFloat(style.lineHeight);
+        return {
+          overflow: node.scrollWidth - node.clientWidth,
+          page: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+          right: rect.right,
+          lines: lineHeight > 0 ? Math.round(rect.height / lineHeight) : 1,
+          view: window.innerWidth,
+        };
+      });
+      expect(fit.overflow).toBeLessThanOrEqual(1);
+      expect(fit.page).toBeLessThanOrEqual(1);
+      expect(fit.right).toBeLessThanOrEqual(fit.view + 1);
+      expect(fit.lines).toBeGreaterThan(1);
+    }
+  });
+}
+
 test("coaching and juniors pricing keeps the invoice and drops checkout", async ({ page }) => {
   await page.goto("coaching/");
+  await expect(page.getByRole("heading", { name: "Swing your way to your first birdie and hole in one!" })).toBeVisible();
+  await expect(page).toHaveTitle("Golf Lessons in Somerset, NJ – PGA Coaches | Par2Play");
   const coaching = page.locator("#coaching-offer");
   await expect(coaching.locator("[data-invoice]")).toBeVisible();
   await expect(coaching.getByRole("heading", { name: "Finalize your booking" })).toHaveCount(0);

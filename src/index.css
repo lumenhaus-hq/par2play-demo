@@ -1728,6 +1728,7 @@ html {
   object-fit: cover;
   object-position: center center;
   pointer-events: none;
+  transition: opacity 420ms var(--motion-ease-enter);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1745,6 +1746,56 @@ html {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
+  transition:
+    opacity 420ms var(--motion-ease-enter),
+    visibility 0s linear 420ms;
+}
+
+/* Corner buffer cue. Fixed so it sits above the body-level poster. */
+.hero-buffer {
+  position: fixed;
+  z-index: 4;
+  width: 1.75rem;
+  height: 1.75rem;
+  pointer-events: none;
+}
+
+.hero-buffer svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.hero-buffer__track,
+.hero-buffer__value {
+  fill: none;
+  stroke-width: 2;
+}
+
+.hero-buffer__track {
+  stroke: rgb(255 255 255 / 0.45);
+}
+
+.hero-buffer__value {
+  stroke: var(--accent);
+  stroke-linecap: round;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.motion-paused) .hero-buffer--wait svg {
+    animation: hero-buffer-spin 1.1s linear infinite;
+  }
+}
+
+@keyframes hero-buffer-spin {
+  from {
+    transform: rotate(-90deg);
+  }
+
+  to {
+    transform: rotate(270deg);
+  }
 }
 
 html.hero-scroll-lock,
@@ -1765,8 +1816,8 @@ html.lenis.lenis-smooth {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  /* Transparent so the AVIF #lcp-poster shows through until the film is playing. */
-  background: transparent;
+  /* Poster sits above #root, so this only shows in the film's 2px LCP inset. */
+  background: #020806;
   transform-origin: 50% 42%;
   will-change: transform;
 }
@@ -2251,10 +2302,23 @@ body:has(#lcp-poster) #hero {
   transform: translateZ(0);
   backface-visibility: hidden;
   transition:
-    opacity 280ms var(--motion-ease-enter),
+    opacity 420ms var(--motion-ease-enter),
     transform 520ms var(--motion-ease-wipe);
   will-change: opacity, transform;
   object-position: center center;
+}
+
+/*
+ * The poster is 100svh − 1px so it qualifies as LCP. Keep the arrived film
+ * strictly smaller so its first frame cannot replace #lcp-poster.
+ */
+.hero-bay-frame--full > .hero-video {
+  top: 0;
+  right: auto;
+  bottom: auto;
+  left: 0;
+  width: calc(100% - 1px);
+  height: calc(100% - 2px);
 }
 
 @media (min-width: 768px) {
@@ -2435,6 +2499,7 @@ html.motion-paused .section-title,
 html.motion-paused .section-title::before,
 html.motion-paused .reveal-block,
 html.motion-paused .hero-film-loader,
+html.motion-paused .hero-buffer--wait svg,
 html.motion-paused .hero-bay-frame--breathe,
 html.motion-paused .display-title,
 html.motion-paused .display-swoosh__stroke {
@@ -2470,6 +2535,13 @@ html.motion-paused .reveal-block {
   .hero-film-loader--wipe {
     animation: none !important;
     opacity: 0;
+  }
+
+  .hero-buffer--wait svg,
+  #lcp-poster,
+  #lcp-poster[data-bay="1"] {
+    transition: none;
+    animation: none;
   }
 
   .hero-bay-frame--breathe {
@@ -3642,4 +3714,164 @@ html.motion-paused .benefit-card--dim {
 html,
 body {
   overflow-x: clip;
+}
+
+/* Dark cinematic footer. Stacks inside a narrow page container (390px and the phone frame). */
+.site-footer {
+  container-name: footer;
+  container-type: inline-size;
+  position: relative;
+  z-index: 1;
+  color: #f4f7f2;
+  background:
+    radial-gradient(ellipse at 0% 0%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 46%),
+    var(--void);
+  border-top: 3px solid var(--accent);
+}
+
+.site-footer__main {
+  display: grid;
+  gap: 1.75rem;
+  padding: 2.25rem 1.25rem 1.25rem;
+}
+
+.site-footer__logo {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  width: fit-content;
+}
+
+.site-footer__logo:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.site-footer__grid {
+  display: grid;
+  gap: 1.5rem 2rem;
+}
+
+.site-footer__label {
+  margin: 0 0 0.35rem;
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.site-footer__address {
+  font-style: normal;
+}
+
+.site-footer__address p,
+.site-footer__note,
+.site-footer__copy {
+  margin: 0;
+  color: #f4f7f2;
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.site-footer__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-footer__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  padding-inline: 0.1rem;
+  border: 0;
+  background: none;
+  color: #fff;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-decoration-color: color-mix(in srgb, var(--accent) 75%, white);
+  text-underline-offset: 0.22em;
+  cursor: pointer;
+}
+
+.site-footer__link:hover {
+  color: var(--accent);
+}
+
+.site-footer__link:focus-visible,
+.site-footer .aa-focus:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  box-shadow: none;
+}
+
+.site-footer__bar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  padding: 0.75rem 1.25rem 1.5rem;
+  border-top: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.site-footer__copy {
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+}
+
+.site-footer__note {
+  padding: 0 1.25rem 1.25rem;
+}
+
+@container footer (min-width: 40rem) {
+  .site-footer__main {
+    padding-inline: 2rem;
+  }
+
+  .site-footer__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .site-footer__bar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 1.5rem;
+    padding-inline: 2rem;
+  }
+
+  .site-footer__note {
+    padding-inline: 2rem;
+  }
+}
+
+@container footer (min-width: 64rem) {
+  .site-footer__main {
+    grid-template-columns: minmax(11rem, 16rem) minmax(0, 1fr);
+    align-items: start;
+    column-gap: 3rem;
+    padding: 2.75rem 3rem 1.5rem;
+  }
+
+  .site-footer__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .site-footer__bar {
+    padding-inline: 3rem;
+  }
+
+  .site-footer__note {
+    padding-inline: 3rem;
+  }
 }

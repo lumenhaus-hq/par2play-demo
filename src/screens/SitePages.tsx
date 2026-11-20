@@ -66,7 +66,7 @@ export function MembershipPage() {
       <article className={pageSpace}>
         <JsonLd data={membershipGraph()} />
         <Breadcrumbs current="Membership" />
-        <DisplayTitle as="h1" className="offer-title play-title" text="Become a Member" accent="Member" />
+        <DisplayTitle as="h1" className="offer-title play-title" text="The membership that rewards your passion more!" accent="passion" />
         <MembershipCalculator />
         <WhatYouGet items={MEMBERSHIP_GET} />
         <p className="mt-8 text-lg">
@@ -85,7 +85,7 @@ export function CoachingPage() {
       <article className={pageSpace}>
         <JsonLd data={coachingGraph()} />
         <Breadcrumbs current="Golf lessons" />
-        <DisplayTitle as="h1" className="offer-title play-title" text="Golf lessons in Somerset, NJ" accent="lessons" />
+        <DisplayTitle as="h1" className="offer-title play-title" text="Swing your way to your first birdie and hole in one!" accent="birdie" />
         <CoachingPanel />
         <WhatYouGet items={COACHING_GET} />
         <p className="mt-10 text-lg">
