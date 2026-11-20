@@ -26,9 +26,20 @@ test("members day walks the visit and books the bay", async ({ page }) => {
   await expect(invoice.locator(".scorecard__free")).toHaveText("FREE");
   await expect(page.locator(".joint-toggle__badge")).toContainText("FREE");
   await expect(page.locator(".coupon-burst.is-on")).toHaveCount(0);
-  const book = page.getByRole("link", { name: "Complete booking", exact: true });
-  await expect(book).toHaveAttribute("href", BAY);
-  await expect(book).toHaveAttribute("target", "_blank");
+  const book = page.getByRole("button", { name: "Reserve time & day", exact: true });
+  await expect(book).toHaveAttribute("aria-expanded", "false");
+  await book.click();
+  await page.getByRole("radio", { name: "10:00 AM", exact: true }).click();
+  await page.getByLabel("First name").fill("Ada");
+  await page.getByLabel("Last name").fill("Lovelace");
+  const purchase = page.getByRole("link", { name: "Complete Purchase", exact: true });
+  const href = await purchase.getAttribute("href");
+  expect(href).toContain(BAY.split("?")[0]);
+  expect(href).toContain("flow=flow_bf_bay_rental");
+  expect(href).toContain("date=");
+  expect(href).toContain("tr=");
+  expect(href).not.toContain("Ada");
+  await expect(purchase).not.toHaveAttribute("target", "_blank");
   await expect(page.getByRole("link", { name: /Ask us anything/ })).toHaveAttribute("href", "tel:+17324482769");
   const json = await page.locator('script[type="application/ld+json"]').allTextContents();
   expect(json.join(" ")).not.toContain('"@type":"Person"');
@@ -46,7 +57,7 @@ test("swing evaluation explains the 30 minutes", async ({ page }) => {
   await expect(invoice).toContainText("Full Swing");
   await expect(page.getByRole("heading", { name: "Who it is for" })).toHaveCount(0);
   await expect(page.locator(".what-you-get__card")).toHaveCount(4);
-  await expect(page.getByRole("link", { name: "Complete booking", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Reserve time & day", exact: true })).toBeVisible();
 });
 
 test("desktop subpages put the price card beside the story", async ({ page }) => {

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { AskUsLink } from "./AskUsLink";
-import { BookLink } from "./Cta";
 import { JointToggle } from "./JointToggle";
+import { ReserveTime } from "./ReserveTime";
 import type { BookingOffer } from "../data/business";
 
 const icon = (file: string) => `${import.meta.env.BASE_URL}media/membership-icons/${file}`;
@@ -56,9 +56,7 @@ export function OfferSheet<T extends string>({
       <div className="play-sheet__body">
         <JointToggle value={value} options={options} onChange={onChange} label={toggleLabel} tone="dark" />
         {invoice}
-        <BookLink className="w-full" offer={offer}>
-          Complete booking
-        </BookLink>
+        <ReserveTime offer={offer} />
         <AskUsLink />
       </div>
     </section>

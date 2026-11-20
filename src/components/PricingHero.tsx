@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { AskUsLink } from "./AskUsLink";
 import { BookLink, CtaAnchor, CtaPair } from "./Cta";
+import { ReserveTime } from "./ReserveTime";
 import { DisplayTitle } from "./DisplayTitle";
 import { VideoSlot } from "./VideoSlot";
 import type { BookingOffer } from "../data/business";
@@ -9,6 +10,8 @@ type PricingCta = {
   label: string;
   offer?: BookingOffer;
   href?: string;
+  /** Subpage checkout opens the inline reserve step instead of leaving the page. */
+  reserve?: boolean;
 };
 
 const figureClass =
@@ -98,7 +101,12 @@ export function PricingHero({
           ) : null}
           {!invoice && selector ? <div className="mt-6 min-w-0">{selector}</div> : null}
           {!invoice && comparison ? <div className="mt-6 min-w-0">{comparison}</div> : null}
-          {secondary ? (
+          {primary.reserve && primary.offer ? (
+            <ReserveTime
+              offer={primary.offer}
+              beside={secondary ? <PricingCtaLink action={secondary} tone="inverted" /> : undefined}
+            />
+          ) : secondary ? (
             <CtaPair className="mt-6">
               <PricingCtaLink action={primary} tone="brand" />
               <PricingCtaLink action={secondary} tone="inverted" />

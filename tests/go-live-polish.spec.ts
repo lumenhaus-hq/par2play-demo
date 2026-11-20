@@ -80,12 +80,12 @@ test("ask-us link sits under booking CTAs and clears WCAG AA", async ({ page }) 
     await expect(link).toHaveCount(1);
     await expect(link).toHaveAttribute("href", "tel:+17324482769");
     await expect(link).toHaveText(ASK);
-    const booking = page.locator("a.cta-shell").first();
+    const booking = page.locator("[data-reserve-trigger]").first();
     const order = await page.locator("main").evaluate(() => {
       const root = document.querySelector("main");
       if (!root) return [-1, -1];
       const all = [...root.querySelectorAll("*")];
-      const cta = root.querySelector("a.cta-shell");
+      const cta = root.querySelector("[data-reserve-trigger]");
       const ask = root.querySelector("[data-ask-us]");
       return [cta ? all.indexOf(cta) : -1, ask ? all.indexOf(ask) : -1];
     });
@@ -248,17 +248,23 @@ test("events offers 2, 3, and 6 hours at price on request", async ({ page }) => 
   await expect(invoice.locator("[data-invoice-total]")).toHaveText("Price on request");
   await expect(invoice).toContainText("You pay");
   await expect(invoice).not.toContainText("$");
-  const booking = panel.getByRole("link", { name: "Complete booking", exact: true });
-  await expect(booking).toHaveAttribute("href", EVENTS);
-  await expect(booking).toHaveAttribute("data-offer", "group");
+  const booking = panel.getByRole("button", { name: "Reserve time & day", exact: true });
+  await expect(booking).toHaveAttribute("aria-expanded", "false");
+  await booking.click();
+  await panel.getByLabel("Start date").fill("2026-12-01");
+  await panel.getByLabel("First name").fill("Ada");
+  await panel.getByLabel("Last name").fill("Lovelace");
+  const purchase = panel.getByRole("link", { name: "Complete Purchase", exact: true });
+  await expect(purchase).toHaveAttribute("href", EVENTS);
+  await expect(purchase).toHaveAttribute("data-offer", "group");
   await panel.getByRole("button", { name: "6 hours, Price on request" }).click();
   await expect(invoice).toContainText("6 hours");
   await expect(invoice.locator("[data-invoice-total]")).toHaveText("Price on request");
-  await expect(booking).toHaveAttribute("href", EVENTS);
+  await expect(panel.getByRole("link", { name: "Complete Purchase", exact: true })).toHaveAttribute("href", EVENTS);
   await expect(page.locator(".what-you-get__card")).toHaveCount(4);
   const order = await page.locator("main").evaluate((node) => {
     const all = [...node.querySelectorAll("*")];
-    return ["[data-price-options]", "[data-invoice]", "a.cta-shell", "[data-ask-us]", "[data-what-you-get]"].map((sel) => {
+    return ["[data-price-options]", "[data-invoice]", "[data-reserve-trigger]", "[data-ask-us]", "[data-what-you-get]"].map((sel) => {
       const match = node.querySelector(sel);
       return match ? all.indexOf(match) : -1;
     });

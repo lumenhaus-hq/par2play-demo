@@ -25,10 +25,7 @@ for (const width of [360, 1280]) {
     await expect(panel.getByRole("button", { name: "10 Sessions", exact: true })).toHaveCount(0);
     await expect(panel.getByLabel("Member benefits")).toHaveCount(0);
     await expect(panel.getByRole("button", { name: /^Monthly/ })).toHaveAttribute("aria-pressed", "true");
-    await expect(panel.getByRole("link", { name: "Complete booking", exact: true })).toHaveAttribute(
-      "href",
-      "https://par2play.oclock.app/store/prod_practice_unlimited",
-    );
+    await expect(panel.getByRole("button", { name: "Reserve time & day", exact: true })).toHaveAttribute("aria-expanded", "false");
     await expect(panel.getByRole("link", { name: "Try a free members day", exact: true })).toHaveCount(0);
     await expect(panel.getByRole("heading", { name: "Finalize your booking" })).toHaveCount(0);
     await expect(panel.getByLabel("Name")).toHaveCount(0);
@@ -277,7 +274,7 @@ test("removed sections and junior paragraph stay absent on their pages", async (
   await page.goto("coaching/");
   const offer = page.locator("#coaching-offer");
   await expect(offer.getByRole("button", { name: /^10 Pack/ })).toHaveAttribute("aria-pressed", "true");
-  await expect(offer.getByRole("link", { name: "Complete booking", exact: true })).toHaveAttribute("data-offer", "lesson-pack");
+  await expect(offer.getByRole("button", { name: "Reserve time & day", exact: true })).toBeVisible();
   await expect(offer.getByText(/swing evaluation/i)).toHaveCount(0);
   await expect(page.locator("main").getByRole("link", { name: "Swing evaluation", exact: true })).toBeVisible();
 });
@@ -323,7 +320,7 @@ test("coaching toggles a 10 pack and a single lesson without fitting copy", asyn
   await panel.getByRole("button", { name: /^1 Lesson/ }).click();
   await expect(panel.getByRole("button", { name: /^1 Lesson/ })).toHaveAttribute("aria-pressed", "true");
   await expect(panel.locator("[data-invoice-total]")).toHaveText("$100");
-  await expect(panel.getByRole("link", { name: "Complete booking", exact: true })).toHaveAttribute("data-offer", "lesson");
+  await expect(panel.getByRole("button", { name: "Reserve time & day", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Lesson packs" })).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "Club fitting" })).toHaveCount(0);
   await expect(page.getByText(/Nick Schiavo|Nick Monticello/)).toHaveCount(0);
