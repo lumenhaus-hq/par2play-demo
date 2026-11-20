@@ -12,6 +12,7 @@ import { JUNIORS_GALLERY } from "../data/gallery";
 import { pageHref } from "../data/routes";
 import { JsonLd } from "../components/JsonLd";
 import { Breadcrumbs } from "../components/Breadcrumbs";
+import { PageBento } from "../components/PageBento";
 import { coachingGraph, eventsGraph, juniorsGraph, membershipGraph, tournamentGraph } from "../data/schema";
 
 export function MembershipPage() {
@@ -21,6 +22,7 @@ export function MembershipPage() {
         <JsonLd data={membershipGraph()} />
         <Breadcrumbs current="Membership" />
         <MembershipCalculator />
+        <PageBento page="membership" />
         <p className="mt-8 text-lg">
           <a className={`underline decoration-2 underline-offset-4 ${buttonFocus}`} href={pageHref("coaching")}>
             Golf lessons in Somerset
@@ -38,6 +40,7 @@ export function CoachingPage() {
         <JsonLd data={coachingGraph()} />
         <Breadcrumbs current="Golf lessons" />
         <CoachingPanel />
+        <PageBento page="coaching" />
         <p className="mt-10 max-w-2xl text-lg leading-relaxed">
           {"Lessons and swing evaluations with PGA professionals. "}
           <a className={`underline decoration-2 underline-offset-4 ${buttonFocus}`} href={pageHref("membership")}>
@@ -56,6 +59,7 @@ export function JuniorsPage() {
         <JsonLd data={juniorsGraph()} />
         <Breadcrumbs current="Golf for Kids" />
         <JuniorsPanel />
+        <PageBento page="juniors" />
         <StillGrid photos={JUNIORS_GALLERY} />
       </article>
     </PageFrame>
@@ -69,6 +73,7 @@ export function EventsPage() {
         <JsonLd data={eventsGraph()} />
         <Breadcrumbs current="Events" />
         <EventsPanel />
+        <PageBento page="events" />
         <div className="mt-16">
           <EventTypeList />
         </div>
@@ -93,6 +98,7 @@ export function TournamentPage() {
         <JsonLd data={tournamentGraph()} />
         <Breadcrumbs current="Fall League" />
         <TournamentPanel />
+        <PageBento page="tournament" />
         <p className="mx-auto mt-10 max-w-xl text-center text-lg text-[#4B5563]">18 holes per round. Entry price on request.</p>
         <div className="mt-10">
           <TournamentForm />
