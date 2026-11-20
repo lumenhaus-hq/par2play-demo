@@ -64,7 +64,7 @@ export function CookieNotice() {
     (previous.analytics && !choice.analytics) || (previous.marketing && !choice.marketing);
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 flex justify-center p-3 @3xl:p-6">
+    <div data-cookie-slot="" className="cookie-slot pointer-events-none fixed inset-x-0 bottom-0 z-30 flex justify-center p-3 @3xl:p-6">
       {mode === "banner" ? (
         <div className="pointer-events-auto w-full max-w-3xl rounded-2xl border border-ink/15 bg-paper px-4 py-3 text-ink shadow-[0_12px_40px_color-mix(in_srgb,var(--ink)_18%,transparent)]">
           <p className="text-base font-semibold">Cookies at Par2Play</p>
