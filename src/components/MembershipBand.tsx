@@ -1,86 +1,19 @@
-import { useEffect, useRef, useState } from "react";
-import { CtaAnchor, MembershipLink } from "./Cta";
+import { MembershipLink } from "./Cta";
 import { MembershipBento } from "./MembershipBento";
-import { pageHref } from "../data/routes";
-import { MEMBERSHIP_MONTAGE } from "../data/films";
-import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
+import { MEMBERSHIP_POSTER } from "../data/films";
 
-function MontageFilm({ paused, reduce }: { paused: boolean; reduce: boolean }) {
-  const ref = useRef<HTMLVideoElement>(null);
-  const box = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const video = ref.current;
-    const node = box.current;
-    if (!video || !node || reduce) return;
-    video.muted = true;
-    video.defaultMuted = true;
-    if (paused) {
-      video.pause();
-      return;
-    }
-    let visible = false;
-    const start = () => {
-      if (!visible) return;
-      void video.play().catch(() => undefined);
-    };
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        visible = Boolean(entry?.isIntersecting);
-        if (!visible) {
-          video.pause();
-          return;
-        }
-        if (document.readyState === "complete") start();
-        else window.addEventListener("load", start, { once: true });
-      },
-      { rootMargin: "0px" },
-    );
-    observer.observe(node);
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("load", start);
-      video.pause();
-    };
-  }, [paused, reduce]);
-
+function MembershipStill() {
   return (
-    <div ref={box} className="absolute inset-0">
+    <div className="membership-film__still">
       <img
-        src={MEMBERSHIP_MONTAGE.poster}
-        alt="Golfers on a simulator at Par2Play"
-        width={1280}
-        height={720}
-        loading="lazy"
+        src={MEMBERSHIP_POSTER.src}
+        alt={MEMBERSHIP_POSTER.alt}
+        width={MEMBERSHIP_POSTER.width}
+        height={MEMBERSHIP_POSTER.height}
         decoding="async"
-        className="absolute inset-0 h-full w-full object-cover object-center"
+        className="membership-film__still-img"
       />
-      {reduce ? null : (
-        <video
-          ref={ref}
-          className="hero-video absolute inset-0 h-full w-full object-cover object-center"
-          muted
-          playsInline
-          loop
-          preload="none"
-        >
-          <source src={MEMBERSHIP_MONTAGE.srcMobile} type="video/mp4" media="(max-width: 767px)" />
-          <source src={MEMBERSHIP_MONTAGE.src} type="video/mp4" />
-        </video>
-      )}
     </div>
-  );
-}
-
-function FilmToggle({ paused, onToggle }: { paused: boolean; onToggle: () => void }) {
-  return (
-    <button
-      type="button"
-      className="absolute inset-0 z-10 cursor-default bg-transparent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-white"
-      aria-pressed={paused}
-      aria-label={paused ? "Play video" : "Pause video"}
-      onClick={onToggle}
-    />
   );
 }
 
@@ -90,25 +23,20 @@ function MembershipIntro() {
       <h2 className="section-title section-title--on-dark offer-title text-4xl @5xl:text-6xl">Membership</h2>
       <div className="mt-5 grid w-full max-w-md grid-cols-1 gap-3">
         <MembershipLink className="cta-sheen w-full">Become a Member</MembershipLink>
-        <CtaAnchor href={pageHref("membership")} tone="inverted" className="w-full">
+        <MembershipLink className="w-full" tone="inverted">
           Experience a free Member Day
-        </CtaAnchor>
+        </MembershipLink>
       </div>
     </header>
   );
 }
 
-/** Title, CTAs, and bento grid stacked over the membership montage. */
+/** Title, CTAs, and bento grid stacked over the membership still. */
 function MembershipStage() {
-  const reduce = usePrefersReducedMotion();
-  const [paused, setPaused] = useState(false);
-  const toggle = () => setPaused((value) => !value);
-
   return (
     <div className="membership-film relative overflow-hidden bg-void text-white">
-      <MontageFilm paused={paused} reduce={reduce} />
+      <MembershipStill />
       <div className="membership-film__shade" aria-hidden="true" />
-      {reduce ? null : <FilmToggle paused={paused} onToggle={toggle} />}
       <div className="membership-film__overlay pointer-events-none relative z-20 mx-auto flex w-full max-w-6xl flex-col items-center gap-6 px-4 py-10 @3xl:gap-8 @3xl:px-10 @3xl:py-14">
         <div className="pointer-events-auto w-full max-w-md">
           <MembershipIntro />

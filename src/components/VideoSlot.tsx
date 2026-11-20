@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
+import { NEAR_VIEWPORT } from "../motion/nearViewport";
 
 /**
  * Muted inline video. The mobile file is used under 768px.
@@ -13,6 +14,8 @@ export function VideoSlot({
   posterAlt = "Par2Play indoor golf",
   className = "",
   pausable = false,
+  framed = false,
+  label = "",
 }: {
   src: string;
   srcMobile?: string;
@@ -20,17 +23,33 @@ export function VideoSlot({
   posterAlt?: string;
   className?: string;
   pausable?: boolean;
+  /** Sport frame for in-section films. Stills and full-bleed heroes stay plain. */
+  framed?: boolean;
+  label?: string;
 }) {
   const reduce = usePrefersReducedMotion();
   const box = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [paused, setPaused] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const playable = src.trim().length > 0 && !reduce;
 
   useEffect(() => {
     const node = box.current;
+    if (!node || !playable || mounted) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry?.isIntersecting) return;
+      setMounted(true);
+      observer.disconnect();
+    }, NEAR_VIEWPORT);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [mounted, playable]);
+
+  useEffect(() => {
+    const node = box.current;
     const video = videoRef.current;
-    if (!node || !video || !playable) return;
+    if (!node || !video || !playable || !mounted) return;
     let seen = false;
     const start = () => {
       if (!seen || paused) return;
@@ -53,13 +72,13 @@ export function VideoSlot({
     );
     observer.observe(node);
     return () => observer.disconnect();
-  }, [paused, playable]);
+  }, [paused, playable, mounted]);
 
   return (
-    <div ref={box} className={`overflow-hidden bg-bay ${className}`}>
+    <div ref={box} className={`${framed ? "clip-frame" : "overflow-hidden bg-bay"} ${className}`}>
       <div className="relative h-full w-full">
-        <img src={poster} alt={posterAlt} decoding="async" loading="lazy" className="h-full w-full object-cover" />
-        {playable ? (
+        <img src={poster} alt={posterAlt} width={1280} height={720} decoding="async" loading="lazy" className="h-full w-full object-cover" />
+        {playable && mounted ? (
           <video
             ref={videoRef}
             className="hero-video absolute inset-0 h-full w-full object-cover"
@@ -81,6 +100,17 @@ export function VideoSlot({
             aria-label={paused ? "Play video" : "Pause video"}
             onClick={() => setPaused((value) => !value)}
           />
+        ) : null}
+        {framed ? (
+          <>
+            <span className="clip-frame__shade" aria-hidden="true" />
+            <span className="clip-frame__brackets" aria-hidden="true" />
+            {label ? (
+              <span className="clip-frame__chip" aria-hidden="true">
+                {label}
+              </span>
+            ) : null}
+          </>
         ) : null}
       </div>
     </div>

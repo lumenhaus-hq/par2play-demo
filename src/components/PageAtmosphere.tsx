@@ -1,5 +1,6 @@
 import { useEffect, useRef, type CSSProperties, type RefObject } from "react";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
+import { prefersNativeScroll } from "../motion/nativeScroll";
 
 const iconBase = `${import.meta.env.BASE_URL}media/membership-icons`;
 
@@ -93,7 +94,10 @@ export function PageAtmosphere({
     };
 
     paint();
-    if (reduce) {
+    // Coarse pointers and phones skip the scroll-linked style writes. Those
+    // updates restyle every filtered glyph on each frame and fight native scroll.
+    const quiet = reduce || prefersNativeScroll() || window.matchMedia("(max-width: 767px)").matches;
+    if (quiet) {
       if (root) layer.style.setProperty("--frame-h", `${root.clientHeight}px`);
       return;
     }

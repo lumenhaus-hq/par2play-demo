@@ -39,15 +39,15 @@ export function SiteHeader() {
   const route = currentRoute();
 
   return (
-    <header className="header-bar relative sticky top-0 z-30 px-6 py-3 @5xl:px-12">
-      <div className="flex items-center justify-between gap-4">
+    <header className="site-header header-bar relative sticky top-0 z-30 py-3">
+      <div className="site-header__row">
         <a href={pageHref("")} className={`inline-flex min-h-11 items-center ${buttonFocus}`}>
           <Mark />
         </a>
-        <div className="flex items-center gap-2">
+        <div className="site-header__tools">
           {showDemoChrome() ? <LayoutToggle className="text-ink" /> : null}
           <SoundToggle className="text-ink" />
-          <BookLink offer="bay" className="shrink-0">
+          <BookLink offer="bay" className="cta-raised shrink-0">
             Book a Bay
           </BookLink>
           <SiteMenu

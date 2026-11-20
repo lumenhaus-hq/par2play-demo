@@ -89,7 +89,7 @@ function armGesture() {
   if (armed || suppressAuto) return;
   armed = true;
   for (const type of GESTURES) {
-    window.addEventListener(type, onGesture, true);
+    window.addEventListener(type, onGesture, { capture: true, passive: true });
   }
   emit();
 }
@@ -98,7 +98,7 @@ function disarm() {
   if (!armed) return;
   armed = false;
   for (const type of GESTURES) {
-    window.removeEventListener(type, onGesture, true);
+    window.removeEventListener(type, onGesture, { capture: true });
   }
   emit();
 }

@@ -56,11 +56,12 @@ export const JUNIORS_FILM = {
   poster: media("media/juniors/juniors-loop-poster.jpg"),
 } as const;
 
-/** Home montage: real Par2Play golfers, PING/TaylorMade equipment, zoom and blur cuts. */
-export const MEMBERSHIP_MONTAGE = {
-  src: media("media/membership/montage.mp4"),
-  srcMobile: media("media/membership/montage-mobile.mp4"),
-  poster: media("media/membership/montage-poster.jpg"),
+/** Still behind the home membership band. The montage video is not loaded. */
+export const MEMBERSHIP_POSTER = {
+  src: media("media/membership/montage-poster.jpg"),
+  alt: "Golfers on a simulator at Par2Play",
+  width: 1280,
+  height: 720,
 } as const;
 
 export const EVENTS_HERO_FILM = {

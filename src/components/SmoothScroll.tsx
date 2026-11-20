@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import "lenis/dist/lenis.css";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
+import { prefersNativeScroll } from "../motion/nativeScroll";
 import { bindSmoothScroll, unbindSmoothScroll } from "../motion/smoothScroll";
 import { useFlow } from "../state/flow";
 
@@ -18,7 +18,7 @@ export function SmoothScroll() {
     const osReduce =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce || osReduce) {
+    if (reduce || osReduce || prefersNativeScroll()) {
       unbindSmoothScroll();
       return;
     }
@@ -28,7 +28,17 @@ export function SmoothScroll() {
     let tries = 0;
 
     const mount = () => {
-      if (cancel) return;
+      if (cancel || prefersNativeScroll()) return;
+      const arm = (options: Parameters<typeof bindSmoothScroll>[0]) => {
+        void bindSmoothScroll(options).then((stop) => {
+          if (cancel || prefersNativeScroll()) {
+            stop();
+            unbindSmoothScroll();
+            return;
+          }
+          dispose = stop;
+        });
+      };
       if (layout === "mobile") {
         const wrapper = document.querySelector<HTMLElement>("[data-smooth-root]");
         const content = wrapper?.querySelector<HTMLElement>("[data-smooth-content]") ?? wrapper;
@@ -38,17 +48,29 @@ export function SmoothScroll() {
           }
           return;
         }
-        dispose = bindSmoothScroll({ wrapper, content });
+        arm({ wrapper, content });
         return;
       }
-      dispose = bindSmoothScroll({});
+      arm({});
     };
 
     mount();
+    const coarse = window.matchMedia("(pointer: coarse)");
+    const hoverNone = window.matchMedia("(hover: none)");
+    const onPointer = () => {
+      if (!prefersNativeScroll()) return;
+      cancel = true;
+      dispose?.();
+      unbindSmoothScroll();
+    };
+    coarse.addEventListener("change", onPointer);
+    hoverNone.addEventListener("change", onPointer);
     return () => {
       cancel = true;
       dispose?.();
       unbindSmoothScroll();
+      coarse.removeEventListener("change", onPointer);
+      hoverNone.removeEventListener("change", onPointer);
     };
   }, [reduce, layout]);
 

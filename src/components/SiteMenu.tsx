@@ -65,7 +65,7 @@ export function SiteMenu({
       <button
         ref={buttonRef}
         type="button"
-        className={`inline-flex size-11 shrink-0 items-center justify-center rounded-full ${buttonFocus} ${className}`}
+        className={`site-menu inline-flex size-11 min-h-11 min-w-11 shrink-0 items-center justify-center rounded-full ${buttonFocus} ${className}`}
         aria-label={open ? "Close menu" : "Open menu"}
         aria-expanded={open}
         aria-controls={panelId}

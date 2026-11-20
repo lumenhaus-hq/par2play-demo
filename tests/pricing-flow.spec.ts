@@ -44,7 +44,7 @@ test("index CTAs open subpages and the header Book a Bay stays on GolfClock", as
   await expect(headerBook).toHaveAttribute("href", BAY);
   await expect(headerBook).toHaveAttribute("target", "_blank");
 
-  await expect(page.locator("#hero").getByRole("link", { name: "Bay Rental Call Us", exact: true })).toHaveAttribute(
+  await expect(page.locator("#hero").getByRole("link", { name: "Call us at (732) 448-2769", exact: true })).toHaveAttribute(
     "href",
     "tel:+17324482769",
   );

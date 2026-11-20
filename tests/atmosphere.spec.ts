@@ -79,7 +79,7 @@ test("mobile preview keeps the scattered glyph field inside the phone frame", as
   expect(paint.mask).toMatch(/url\(/);
 });
 
-test("section titles carry a frosted blur plate", async ({ page }) => {
+test("section titles carry a feathered tint with no edge", async ({ page }) => {
   await page.goto("./");
   await setDemoLayout(page, "web");
   const plate = await page.locator(".section-title").first().evaluate((node) => {
@@ -87,11 +87,15 @@ test("section titles carry a frosted blur plate", async ({ page }) => {
     return {
       content: before.content,
       filter: before.backdropFilter || (before as CSSStyleDeclaration & { webkitBackdropFilter?: string }).webkitBackdropFilter || "",
+      shadow: before.boxShadow,
+      background: before.backgroundImage,
       z: before.zIndex,
     };
   });
   expect(plate.content).not.toBe("none");
-  expect(plate.filter).toMatch(/blur\(/);
+  expect(plate.filter === "none" || plate.filter === "").toBe(true);
+  expect(plate.shadow === "none" || plate.shadow === "").toBe(true);
+  expect(plate.background).toMatch(/radial-gradient/);
   expect(Number(plate.z)).toBeLessThan(0);
 });
 

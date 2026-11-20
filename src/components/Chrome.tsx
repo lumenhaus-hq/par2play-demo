@@ -16,7 +16,9 @@ export function Mark({ light = false }: { light?: boolean }) {
     <img
       src={`${import.meta.env.BASE_URL}brand/logo.png`}
       alt="Par2Play"
-      className={light ? "h-11 w-auto @3xl:h-14" : "h-11 w-auto max-w-36 rounded-xl bg-slate-950 px-2 py-1 @3xl:h-14 @3xl:max-w-none"}
+      width={209}
+      height={167}
+      className={light ? "site-header__logo h-11 w-auto @3xl:h-14" : "site-header__logo h-11 w-auto max-w-36 rounded-xl bg-slate-950 px-2 py-1 @3xl:h-14 @3xl:max-w-none"}
     />
   );
 }

@@ -547,7 +547,12 @@ body {
 }
 
 .cookie-slot {
-  min-height: 22rem;
+  /* Tall enough for the wrapped notice in fallback and final fonts, so the bar does not jump. */
+  min-height: 28rem;
+}
+
+.cookie-slot .leading-snug {
+  min-height: 10rem;
 }
 
 @media (min-width: 768px) {
@@ -659,6 +664,8 @@ html.motion-paused .page-atmosphere__glyph {
   max-width: 100%;
   font-size: clamp(2.6rem, 11vw, 5.5rem);
   line-height: 0.9;
+  /* Two lines stay reserved when the offer font swaps in. */
+  min-height: 2.35em;
   letter-spacing: -0.045em;
   color: var(--ink);
   overflow-wrap: anywhere;
@@ -676,6 +683,7 @@ html.motion-paused .page-atmosphere__glyph {
 .play-sheet {
   margin-top: 2.5rem;
   padding: 1.15rem 1rem 1.25rem;
+  min-height: 36rem;
   box-shadow: 0 16px 36px rgb(10 15 11 / 0.2);
   container-type: inline-size;
 }
@@ -773,6 +781,7 @@ html.motion-paused .page-atmosphere__glyph {
   justify-content: space-between;
   gap: 0.35rem 0.75rem;
   margin-top: 0.85rem;
+  min-height: 4.25rem;
 }
 
 .scorecard__total-label {
@@ -849,6 +858,7 @@ html.motion-paused .page-atmosphere__glyph {
 
 .what-you-get {
   margin-top: 2.75rem;
+  min-height: 18rem;
 }
 
 .what-you-get__grid {
@@ -994,7 +1004,6 @@ html.motion-paused .page-atmosphere__glyph {
     inset 0 1px 0 rgb(255 255 255 / 0.16);
   transform: none;
   transform-origin: center bottom;
-  backdrop-filter: blur(14px);
 }
 
 .hero-offer-card {
@@ -1009,8 +1018,8 @@ html.motion-paused .page-atmosphere__glyph {
  */
 .hero-shell {
   justify-content: flex-end;
-  /* Keep Try now / offer chrome inside the bay (taste spill checks). */
-  overflow: hidden;
+  /* Visible so the Try now cue can paint above the sticky header. Page overflow-x:clip holds the edges. */
+  overflow: visible;
 }
 
 .hero-offer-dock {
@@ -1225,36 +1234,34 @@ html.motion-paused .page-atmosphere__glyph {
   overflow: hidden;
 }
 
-/* Tucked under header Book a Bay — short static dotted arrow (no loop/pulse). */
+/* Anchored to the header Book a Bay control. JS moves it with transform only. */
 .hero-try-now {
   position: absolute;
-  top: 4.65rem;
-  right: 1.1rem;
-  z-index: 25;
+  top: 0;
+  left: 0;
+  z-index: 45;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   gap: 0.05rem;
-  width: min(7.5rem, 18vw);
-  color: var(--accent);
+  width: max-content;
+  max-width: 12rem;
+  color: #d6ff4a;
   opacity: 0;
-  transform: translate3d(0, 0.35rem, 0) rotate(6deg);
   pointer-events: none;
-  filter:
-    drop-shadow(0 0 0.3rem rgb(198 255 26 / 0.4))
-    drop-shadow(0 0 0.7rem rgb(20 212 94 / 0.3));
 }
 
 .hero-try-now--in {
   opacity: 1;
-  transform: translate3d(0, 0, 0) rotate(4deg);
   transition: opacity 420ms var(--motion-ease-enter) 120ms;
 }
 
 .hero-try-now__label {
   order: 2;
   font-family: var(--font-marker);
-  font-size: clamp(1.35rem, 2.2vw, 1.85rem);
+  /* Was clamp(1.35rem, 2.2vw, 1.85rem): 29.6px at 1280, the text-3xl step.
+     Two steps up is text-5xl (48px) plus 2px. */
+  font-size: 50px;
   line-height: 0.92;
   letter-spacing: 0.02em;
   color: #fff;
@@ -1267,14 +1274,10 @@ html.motion-paused .page-atmosphere__glyph {
 
 .hero-try-now__arrow {
   order: 1;
-  width: min(4.25rem, 12vw);
+  width: 6.5rem;
   height: auto;
-  margin-right: 0.35rem;
-  margin-bottom: -0.15rem;
-  color: color-mix(in srgb, var(--accent) 92%, white);
-  filter:
-    drop-shadow(0 0 0.25rem rgb(198 255 26 / 0.55))
-    drop-shadow(0 0 0.55rem rgb(20 212 94 / 0.4));
+  overflow: visible;
+  color: #d6ff4a;
 }
 
 .hero-try-now__stroke {
@@ -1290,22 +1293,17 @@ html.motion-paused .page-atmosphere__glyph {
 
 @media (max-width: 767px) {
   .hero-try-now {
-    top: 4.35rem;
-    right: 0.65rem;
-    width: min(6.5rem, 42vw);
-    transform: translate3d(0, 0.25rem, 0) rotate(5deg);
-  }
-
-  .hero-try-now--in {
-    transform: translate3d(0, 0, 0) rotate(3deg);
+    max-width: 11rem;
   }
 
   .hero-try-now__label {
-    font-size: clamp(1.2rem, 5.2vw, 1.45rem);
+    /* Was clamp(1.2rem, 5.2vw, 1.45rem): 20.3px at 390, the text-xl step.
+       Two steps up is text-3xl (30px) plus 2px. */
+    font-size: 32px;
   }
 
   .hero-try-now__arrow {
-    width: min(3.5rem, 26vw);
+    width: 5.5rem;
   }
 }
 
@@ -1612,10 +1610,8 @@ html.lenis.lenis-smooth {
 }
 
 /*
- * Section titles: stronger display type + frosted plate + soft brand halo.
- * taste-skill-ignore: owner asked for glow/outline + blur behind titles;
- * ink stays dark / white so body contrast remains ≥7:1. No filter on the
- * title itself — that would break backdrop-filter on the plate.
+ * Section titles: display type over a feathered tint. No edge, no blur.
+ * taste-skill-ignore: ink stays dark / white so contrast remains ≥7:1 on the page.
  */
 .section-title {
   position: relative;
@@ -1638,14 +1634,18 @@ html.lenis.lenis-smooth {
   content: "";
   position: absolute;
   z-index: -1;
-  inset: -0.32em -0.55em;
-  border-radius: 0.65em;
-  background: color-mix(in srgb, var(--surface) 82%, transparent);
-  -webkit-backdrop-filter: blur(16px) saturate(1.2);
-  backdrop-filter: blur(16px) saturate(1.2);
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--ink) 6%, transparent),
-    0 10px 28px color-mix(in srgb, var(--ink) 8%, transparent);
+  inset: -0.55em -0.9em;
+  border: 0;
+  border-radius: 0;
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--surface) 82%, transparent) 0%,
+    color-mix(in srgb, var(--surface) 36%, transparent) 42%,
+    transparent 72%
+  );
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
   pointer-events: none;
 }
 
@@ -1658,10 +1658,13 @@ html.lenis.lenis-smooth {
 }
 
 .section-title--on-dark::before {
-  background: color-mix(in srgb, var(--void) 78%, transparent);
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, #fff 10%, transparent),
-    0 12px 32px rgb(0 0 0 / 0.35);
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--void) 78%, transparent) 0%,
+    color-mix(in srgb, var(--void) 28%, transparent) 46%,
+    transparent 74%
+  );
+  box-shadow: none;
 }
 
 /* Full-width centered titles still get a plate that hugs the type. */
@@ -1676,22 +1679,6 @@ html.lenis.lenis-smooth {
 .offer-title {
   font-family: var(--font-offer);
   font-weight: 800;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html:not(.motion-paused) .section-title::before {
-    animation: section-title-plate 4.8s ease-in-out infinite;
-  }
-}
-
-@keyframes section-title-plate {
-  0%,
-  100% {
-    opacity: 0.88;
-  }
-  50% {
-    opacity: 1;
-  }
 }
 
 .reveal-block {
@@ -2541,6 +2528,20 @@ html.motion-paused .benefit-card--dim {
   isolation: isolate;
 }
 
+.membership-film__still {
+  position: absolute;
+  inset: 0;
+}
+
+.membership-film__still-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
 .membership-film__shade {
   position: absolute;
   inset: 0;
@@ -3200,6 +3201,240 @@ html.motion-paused .benefit-card--dim {
   html:not(.motion-paused) .membership-bento__tile--clubs:hover .membership-bento__club--front {
     transform: translateX(-38%) rotate(4deg) translateY(-4px);
   }
+}
+
+/* Header inset matches the logo side. Tools stay inside the padding. */
+.site-header {
+  box-sizing: border-box;
+  width: 100%;
+  overflow: visible;
+  padding-inline: max(1rem, env(safe-area-inset-left, 0px)) max(1rem, env(safe-area-inset-right, 0px));
+}
+
+.site-header__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.site-header__tools {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.site-header__logo {
+  display: block;
+  width: auto;
+  max-width: 4.75rem;
+}
+
+.site-header__tools .cta-shell {
+  padding-inline: 0.7rem;
+  font-size: 0.9375rem;
+}
+
+.site-menu {
+  flex: 0 0 2.75rem;
+}
+
+@media (min-width: 768px) {
+  .site-header {
+    padding-inline: 1.5rem;
+  }
+
+  .site-header__tools {
+    gap: 0.5rem;
+  }
+
+  .site-header__logo {
+    max-width: none;
+  }
+
+  .site-header__tools .cta-shell {
+    padding-inline: 1.5rem;
+    font-size: 1.125rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  .site-header {
+    padding-inline: 3rem;
+  }
+}
+
+/* Raised lime pill for the header Book a Bay control. No filter, no loop. */
+.cta-shell.cta-raised {
+  filter: none;
+  box-shadow:
+    0 4px 0 color-mix(in srgb, var(--accent) 42%, #102006),
+    0 8px 14px rgb(0 0 0 / 0.28);
+  transition:
+    transform var(--motion-fast) var(--motion-ease-press),
+    box-shadow var(--motion-fast) var(--motion-ease-press);
+}
+
+.cta-shell.cta-raised:active {
+  filter: none;
+  transform: translateY(3px);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--accent) 42%, #102006),
+    0 4px 8px rgb(0 0 0 / 0.22);
+}
+
+.cta-shell.cta-raised:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--surface),
+    0 0 0 4px var(--ink),
+    0 4px 0 color-mix(in srgb, var(--accent) 42%, #102006),
+    0 8px 14px rgb(0 0 0 / 0.28);
+}
+
+/* Hero card pair: stacked until the card is wide enough for two equal columns. */
+.hero-cta-pair {
+  container-type: inline-size;
+  width: 100%;
+}
+
+.hero-cta-pair__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.65rem;
+  width: 100%;
+}
+
+.hero-cta-pair__button {
+  width: 100%;
+  min-height: 2.75rem;
+  height: 100%;
+  padding-inline: 0.85rem;
+  font-size: 1rem;
+}
+
+.hero-call-label {
+  white-space: normal;
+  text-wrap: balance;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.hero-call-number {
+  white-space: nowrap;
+}
+
+@container (min-width: 26rem) {
+  .hero-cta-pair__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+/*
+ * Phone scroll budget. Backdrop blurs, infinite glyph/ticker motion, and the
+ * grain blend are the expensive layers during the first swipes.
+ */
+@media (max-width: 767px), (pointer: coarse) {
+  .section-title::before,
+  .section-title--on-dark::before {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: none;
+    border: 0;
+  }
+
+  .hero-panel-depth,
+  .membership-film__intro,
+  .header-bar,
+  .membership-bento__hero-chips span {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .membership-film__intro {
+    background: rgb(5 12 8 / 0.84);
+    box-shadow: none;
+  }
+
+  .page-atmosphere__glyph {
+    animation: none;
+    filter: drop-shadow(0 0 0.35rem color-mix(in srgb, var(--accent) 45%, transparent));
+  }
+
+  .page-atmosphere__floater {
+    will-change: auto;
+  }
+
+  .page-grid::before {
+    display: none;
+  }
+
+  html.ticker-on .benefit-track,
+  html.ticker-on .usp-track,
+  .membership-pricing__glyph {
+    animation: none;
+  }
+
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 48rem;
+  }
+}
+
+/* In-section films: hairline, corner brackets, vignette. No filters. */
+.clip-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.15rem;
+  background: var(--void, #020806);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent) 78%, transparent),
+    0 14px 28px rgb(2 8 6 / 0.18);
+}
+
+.clip-frame__shade {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 52%, rgb(2 8 6 / 0.55) 100%);
+}
+
+.clip-frame__brackets {
+  position: absolute;
+  inset: 0.45rem;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--accent), var(--accent)) left top / 0.85rem 2px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) left top / 2px 0.85rem no-repeat,
+    linear-gradient(var(--accent), var(--accent)) right top / 0.85rem 2px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) right top / 2px 0.85rem no-repeat,
+    linear-gradient(var(--accent), var(--accent)) left bottom / 0.85rem 2px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) left bottom / 2px 0.85rem no-repeat,
+    linear-gradient(var(--accent), var(--accent)) right bottom / 0.85rem 2px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) right bottom / 2px 0.85rem no-repeat;
+}
+
+.clip-frame__chip {
+  position: absolute;
+  z-index: 4;
+  top: 0.55rem;
+  left: 0.55rem;
+  padding: 0.22rem 0.5rem;
+  border-radius: 999px;
+  background: rgb(5 12 8 / 0.88);
+  color: var(--accent);
+  font-family: var(--font-offer);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+  pointer-events: none;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 70%, transparent);
 }
 
 /* Clip the atmosphere wash (inset: -18%) and edge glyphs. `clip` does not

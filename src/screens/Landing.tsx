@@ -112,17 +112,17 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
       <JsonLd data={homeGraph()} />
       <JsonLd data={faqGraph()} />
       <header
-        className={`relative sticky top-0 z-30 shrink-0 px-6 py-3 @5xl:px-12 ${onFilm ? "hero-toolbar" : "header-bar"} ${
+        className={`site-header relative sticky top-0 z-30 shrink-0 py-3 ${onFilm ? "hero-toolbar" : "header-bar"} ${
           chromeReady ? "hero-chrome-in" : "pointer-events-none opacity-0"
         }`}
         aria-hidden={chromeReady ? undefined : true}
       >
-        <div className="flex items-center justify-between gap-4">
+        <div className="site-header__row">
           <Mark light={onFilm} />
-          <div className="flex items-center gap-2">
+          <div className="site-header__tools">
             {showDemoChrome() ? <LayoutToggle className={onFilm ? "text-white" : "text-ink"} /> : null}
             <SoundToggle className={onFilm ? "text-white" : "text-ink"} />
-            <BookLink offer="bay" tone="brand" className="shrink-0">
+            <BookLink offer="bay" tone="brand" className="cta-raised shrink-0">
               Book a Bay
             </BookLink>
             <SiteMenu
@@ -141,7 +141,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
       </header>
       <section
         id="hero"
-        className={`hero-shell relative -mt-[4.5rem] flex flex-col overflow-hidden bg-ink ${
+        className={`hero-shell relative -mt-[4.5rem] flex flex-col overflow-visible bg-ink ${
           mobile ? "min-h-full shrink-0" : "h-svh"
         }`}
         aria-busy={chromeReady ? undefined : true}
@@ -169,7 +169,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
               </div>
             </div>
             <div className="hero-stage hero-stage--cta relative z-[1] shrink-0 pt-2 @3xl:pt-3">
-              <HeroMembershipAction className="cta-sheen w-full @3xl:w-auto" />
+              <HeroMembershipAction className="w-full" />
             </div>
           </div>
         </div>
@@ -183,7 +183,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
 
       <MembershipBand />
 
-      <section id="coaching" className={sectionSpace}>
+      <section id="coaching" className={`${sectionSpace} cv-auto`}>
         <div className="grid items-start gap-10 @3xl:grid-cols-2 @3xl:gap-16">
           <ScrollReveal tone="tilt">
             <VideoSlot
@@ -193,6 +193,8 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
               posterAlt="An adult golfer reviewing shot data in a Par2Play simulator bay"
               className="aspect-video"
               pausable
+              framed
+              label="Swing"
             />
           </ScrollReveal>
           <ScrollReveal tone="rise" delay={80}>
@@ -220,7 +222,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
         </div>
       </section>
 
-      <section id="juniors" className={sectionSpace}>
+      <section id="juniors" className={`${sectionSpace} cv-auto`}>
         <div className="grid items-start gap-10 @3xl:grid-cols-2 @3xl:gap-16">
           <ScrollReveal tone="rise">
             <VideoSlot
@@ -230,6 +232,8 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
               posterAlt="A junior golfer swinging in a Par2Play simulator bay"
               className="aspect-video"
               pausable
+              framed
+              label="Juniors"
             />
           </ScrollReveal>
           <ScrollReveal tone="tilt" delay={80}>
@@ -266,7 +270,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
         </div>
       </section>
 
-      <section id="events" className={sectionSpace}>
+      <section id="events" className={`${sectionSpace} cv-auto`}>
         <ScrollReveal tone="sheen">
           <h2 className="section-title text-4xl @5xl:text-6xl">Events</h2>
           <p className="mt-6 max-w-xl text-lg leading-relaxed">
@@ -286,7 +290,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
         </ScrollReveal>
       </section>
 
-      <section id="tournament" className={`${sectionSpace} text-center`}>
+      <section id="tournament" className={`${sectionSpace} cv-auto text-center`}>
         <ScrollReveal tone="rise">
           <h2 className="section-title mx-auto max-w-xl text-4xl leading-tight @5xl:text-5xl">
             Par2Play Fall League Coming Soon!
@@ -297,7 +301,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
         </ScrollReveal>
       </section>
 
-      <section className="bg-void px-6 py-24 text-white @3xl:px-12 @3xl:py-28">
+      <section className="cv-auto bg-void px-6 py-24 text-white @3xl:px-12 @3xl:py-28">
         <ScrollReveal className="mx-auto max-w-3xl text-center" tone="tilt">
           <h2 className="section-title section-title--on-dark text-4xl @5xl:text-6xl">Your bay is waiting.</h2>
           <p className="mx-auto mt-6 max-w-md text-lg leading-relaxed text-white/85">
@@ -314,7 +318,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
 
       <FaqSection />
 
-      <footer className="px-6 py-20 @3xl:px-12 @3xl:py-24">
+      <footer className="cv-auto px-6 py-20 @3xl:px-12 @3xl:py-24">
         <div className="grid items-start gap-x-12 gap-y-8 @3xl:grid-cols-2 @5xl:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)_auto]">
           <VisitLine />
           <nav className="flex min-w-0 flex-wrap items-center gap-x-6 gap-y-1" aria-label="Footer">

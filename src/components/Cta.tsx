@@ -118,13 +118,22 @@ export function PhoneLink({
   );
 }
 
-/** Home hero — call the studio to rent a bay. */
+/** Home hero — membership primary plus the studio phone, equal width. */
 export function HeroMembershipAction({ className = "" }: { className?: string }) {
   return (
-    <PhoneLink className={`${tones.inverted} ${className}`} offer="bay">
-      <span className="cta-fill" aria-hidden="true" />
-      <CtaLabel>Bay Rental Call Us</CtaLabel>
-    </PhoneLink>
+    <div className={`hero-cta-pair ${className}`}>
+      <div className="hero-cta-pair__grid">
+        <MembershipLink className="hero-cta-pair__button cta-sheen">Become a Member</MembershipLink>
+        <PhoneLink className={`${tones.inverted} hero-cta-pair__button`} offer="bay">
+          <span className="cta-fill" aria-hidden="true" />
+          <span className="cta-label">
+            <span className="cta-label-text hero-call-label">
+              Call us at <span className="hero-call-number">{NAP.phoneDisplay}</span>
+            </span>
+          </span>
+        </PhoneLink>
+      </div>
+    </div>
   );
 }
 
