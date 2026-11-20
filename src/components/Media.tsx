@@ -228,10 +228,14 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
       if (started) void loop.play().catch(() => undefined);
     };
 
+    // ?intro=play and ?film=1 mount immediately and may run the Earth zoom.
+    // A gesture, or the late LCP gate, must not: that zoom adds hero-scroll-lock.
+    const eager = forceIntro || params.get("film") === "1";
+
     const begin = () => {
       if (cancel) return;
       setFilmOn(true);
-      if (skipIntro) {
+      if (skipIntro || !eager) {
         setPhase("arrived");
         window.requestAnimationFrame(() => {
           window.requestAnimationFrame(() => {
@@ -255,7 +259,6 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
     // Keep the poster as the final LCP candidate. Mount the film only after
     // load plus a gesture, or after the poster has been the LCP entry long
     // enough that its first frame is not a new, larger candidate.
-    const eager = forceIntro || params.get("film") === "1";
     let releaseGate = () => {};
     const ready = new Promise<void>((resolve) => {
       if (eager) {
