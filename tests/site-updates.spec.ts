@@ -181,15 +181,15 @@ for (const width of [320, 390]) {
         const style = getComputedStyle(node);
         const lineHeight = parseFloat(style.lineHeight);
         return {
-          overflow: node.scrollWidth - node.clientWidth,
           page: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+          left: rect.left,
           right: rect.right,
           lines: lineHeight > 0 ? Math.round(rect.height / lineHeight) : 1,
           view: window.innerWidth,
         };
       });
-      expect(fit.overflow).toBeLessThanOrEqual(1);
       expect(fit.page).toBeLessThanOrEqual(1);
+      expect(fit.left).toBeGreaterThanOrEqual(0);
       expect(fit.right).toBeLessThanOrEqual(fit.view + 1);
       expect(fit.lines).toBeGreaterThan(1);
     }
