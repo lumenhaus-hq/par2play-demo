@@ -676,15 +676,38 @@ html.motion-paused .page-atmosphere__glyph {
 .display-title {
   max-width: 100%;
   scroll-margin-top: 6.5rem;
-  font-family: var(--font-offer);
-  font-weight: 800;
-  letter-spacing: -0.045em;
-  line-height: 0.9;
   /* Glow stays on .section-title / .play-title / .display-title--panel. Do not reset text-shadow. */
+}
+
+.section-title.display-title {
+  font-size: clamp(2.35rem, 8vw, 4.6rem);
+  line-height: 0.88;
+  letter-spacing: -0.045em;
+}
+
+.display-title__accent {
+  position: relative;
+  display: inline;
+  color: inherit;
+  font-family: var(--font-marker);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 0.85;
+  white-space: nowrap;
 }
 
 .display-title--on-dark {
   color: #fff;
+}
+
+.display-title.display-title--on-dark .display-title__accent {
+  color: #eaff6a;
+  /* Hard offset shadows stand in for a text stroke. No blur, no stroke paint. */
+  text-shadow:
+    0 0.05em 0 #06110b,
+    0 -0.04em 0 #06110b,
+    0.045em 0 0 #06110b,
+    -0.045em 0 0 #06110b;
 }
 
 .display-title--panel {
@@ -693,6 +716,27 @@ html.motion-paused .page-atmosphere__glyph {
   line-height: 0.9;
   min-height: 0;
   color: #fff;
+}
+
+.display-swoosh {
+  position: absolute;
+  left: -0.04em;
+  bottom: -0.22em;
+  display: block;
+  width: 108%;
+  height: 0.38em;
+  color: #4d7c0f;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.display-title--on-dark .display-swoosh {
+  color: #d6ff4a;
+}
+
+.display-swoosh__stroke {
+  stroke-dasharray: none;
+  stroke-dashoffset: 0;
 }
 
 .play-sheet,
@@ -2020,19 +2064,37 @@ html.lenis.lenis-smooth {
  * taste-skill-ignore: owner asked for solid block shadow on CTAs; 0-blur drop-shadow
  * keeps overflow:hidden for the wipe without clipping the stamp.
  */
+.cta-stamp {
+  display: inline-flex;
+  max-width: 100%;
+  filter: drop-shadow(-4px 4px 0 var(--ink));
+}
+
+.hero-cta-pair__grid > .cta-stamp,
+.grid > .cta-stamp {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+}
+
+.cta-stamp:has(:active) {
+  filter: drop-shadow(-1px 2px 0 var(--ink));
+}
+
 .cta-shell {
   --cta-stamp: var(--ink);
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  filter: drop-shadow(-4px 4px 0 var(--cta-stamp));
-  transition:
-    transform var(--motion-fast) var(--motion-ease-press),
-    filter var(--motion-fast) var(--motion-ease-press);
+  transition: transform var(--motion-fast) var(--motion-ease-press);
+}
+
+.grid > .cta-stamp > .cta-shell,
+.hero-cta-pair__grid > .cta-stamp > .cta-shell {
+  width: 100%;
 }
 
 .cta-shell:active {
-  filter: drop-shadow(-1px 2px 0 var(--cta-stamp));
   transform: translate(1px, 2px) scale(0.985);
 }
 
@@ -2059,11 +2121,7 @@ html.lenis.lenis-smooth {
 
 .cta-label-text {
   display: block;
-  /* Keep one line — the old 1.1em text-shadow wipe stacked a ghost copy over wrapped labels. */
   white-space: nowrap;
-  text-shadow:
-    0 0 0.55em color-mix(in srgb, currentColor 35%, transparent),
-    0 0 1.1em color-mix(in srgb, var(--accent) 28%, transparent);
 }
 
 /* Alias kept for markup that still names the stamp lift. */
@@ -3669,7 +3727,7 @@ body {
 .site-footer__quick {
   display: flex;
   flex-wrap: wrap;
-  gap: 0 0.75rem;
+  gap: 0.5rem 0.75rem;
 }
 
 .site-footer__toggle {

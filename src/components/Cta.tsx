@@ -35,6 +35,10 @@ function CtaLabel({ children }: { children: ReactNode }) {
   );
 }
 
+function Stamped({ children }: { children: ReactNode }) {
+  return <span className="cta-stamp">{children}</span>;
+}
+
 /** Equal-width pair. Stacked full width in a narrow container, side by side once the container is wide. */
 export function CtaPair({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
@@ -57,16 +61,18 @@ export function BookLink({
 }) {
   const href = bookingHref(offer);
   return (
-    <a
-      href={href}
-      className={`${tones[tone]} ${className}`}
-      {...externalProps(href)}
-      data-offer={offer}
-      onClick={(event) => trackAnchor(event.currentTarget)}
-    >
-      <span className="cta-fill" aria-hidden="true" />
-      <CtaLabel>{children}</CtaLabel>
-    </a>
+    <Stamped>
+      <a
+        href={href}
+        className={`${tones[tone]} ${className}`}
+        {...externalProps(href)}
+        data-offer={offer}
+        onClick={(event) => trackAnchor(event.currentTarget)}
+      >
+        <span className="cta-fill" aria-hidden="true" />
+        <CtaLabel>{children}</CtaLabel>
+      </a>
+    </Stamped>
   );
 }
 
@@ -84,16 +90,18 @@ export function MembershipLink({
 }) {
   const target = href ?? membershipHref();
   return (
-    <a
-      href={target}
-      className={`${tones[tone]} ${className}`}
-      {...externalProps(target)}
-      data-membership="true"
-      onClick={(event) => trackAnchor(event.currentTarget)}
-    >
-      <span className="cta-fill" aria-hidden="true" />
-      <CtaLabel>{children}</CtaLabel>
-    </a>
+    <Stamped>
+      <a
+        href={target}
+        className={`${tones[tone]} ${className}`}
+        {...externalProps(target)}
+        data-membership="true"
+        onClick={(event) => trackAnchor(event.currentTarget)}
+      >
+        <span className="cta-fill" aria-hidden="true" />
+        <CtaLabel>{children}</CtaLabel>
+      </a>
+    </Stamped>
   );
 }
 
@@ -124,14 +132,16 @@ export function HeroMembershipAction({ className = "" }: { className?: string })
     <div className={`hero-cta-pair ${className}`}>
       <div className="hero-cta-pair__grid">
         <MembershipLink className="hero-cta-pair__button cta-sheen">Become a Member</MembershipLink>
-        <PhoneLink className={`${tones.inverted} hero-cta-pair__button`} offer="bay">
-          <span className="cta-fill" aria-hidden="true" />
-          <span className="cta-label">
-            <span className="cta-label-text hero-call-label">
-              Call us at <span className="hero-call-number">{NAP.phoneDisplay}</span>
+        <Stamped>
+          <PhoneLink className={`${tones.inverted} hero-cta-pair__button`} offer="bay">
+            <span className="cta-fill" aria-hidden="true" />
+            <span className="cta-label">
+              <span className="cta-label-text hero-call-label">
+                Call us at <span className="hero-call-number">{NAP.phoneDisplay}</span>
+              </span>
             </span>
-          </span>
-        </PhoneLink>
+          </PhoneLink>
+        </Stamped>
       </div>
     </div>
   );
@@ -154,15 +164,17 @@ export function CtaAnchor({
   external?: boolean;
 }) {
   return (
-    <a
-      href={href}
-      className={`${tones[tone]} ${className}`}
-      {...(external ? externalProps(href) : {})}
-      data-offer={offer}
-      onClick={(event) => trackAnchor(event.currentTarget)}
-    >
-      <span className="cta-fill" aria-hidden="true" />
-      <CtaLabel>{children}</CtaLabel>
-    </a>
+    <Stamped>
+      <a
+        href={href}
+        className={`${tones[tone]} ${className}`}
+        {...(external ? externalProps(href) : {})}
+        data-offer={offer}
+        onClick={(event) => trackAnchor(event.currentTarget)}
+      >
+        <span className="cta-fill" aria-hidden="true" />
+        <CtaLabel>{children}</CtaLabel>
+      </a>
+    </Stamped>
   );
 }
