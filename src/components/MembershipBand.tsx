@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { BookLink, MembershipLink } from "./Cta";
+import { CtaAnchor, MembershipLink } from "./Cta";
 import { MembershipBento } from "./MembershipBento";
+import { pageHref } from "../data/routes";
 import { MEMBERSHIP_MONTAGE } from "../data/films";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 
@@ -89,9 +90,9 @@ function MembershipIntro() {
       <h2 className="section-title section-title--on-dark offer-title text-4xl @5xl:text-6xl">Membership</h2>
       <div className="mt-5 grid w-full max-w-md grid-cols-1 gap-3">
         <MembershipLink className="cta-sheen w-full">Become a Member</MembershipLink>
-        <BookLink className="w-full" offer="bay" tone="inverted">
+        <CtaAnchor href={pageHref("membership")} tone="inverted" className="w-full">
           Experience a free Member Day
-        </BookLink>
+        </CtaAnchor>
       </div>
     </header>
   );
