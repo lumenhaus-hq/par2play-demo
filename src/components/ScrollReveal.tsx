@@ -24,13 +24,14 @@ export function ScrollReveal({
   useEffect(() => {
     const node = ref.current;
     if (!node) return;
-    if (reduce || navigator.webdriver) {
-      node.dataset.reveal = "in";
-      return;
-    }
-    node.dataset.reveal = "out";
+    if (reduce || navigator.webdriver) return;
     // Phones get an earlier trigger so copy is readable before the thumb stops.
     const mobile = window.matchMedia("(max-width: 767px)").matches;
+    const view = window.innerHeight || document.documentElement.clientHeight;
+    const box = node.getBoundingClientRect();
+    // Already on screen: stay visible. Never start a title at opacity 0.
+    if (box.top < view * 0.94 && box.bottom > 0) return;
+    node.dataset.reveal = "out";
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry?.isIntersecting) return;
@@ -48,7 +49,7 @@ export function ScrollReveal({
       ref={ref}
       className={`reveal-block reveal-block--${tone} ${className}`}
       style={{ "--reveal-delay": `${delay}ms` } as CSSProperties}
-      data-reveal={reduce || navigator.webdriver ? "in" : "out"}
+      data-reveal="in"
     >
       {children}
     </div>

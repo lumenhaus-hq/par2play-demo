@@ -146,9 +146,9 @@ test("hero shows a Try now cue aimed at Book a Bay", async ({ page }) => {
   expect(place.midY).toBeGreaterThan(place.bookBottom - 8);
   expect(place.midY).toBeLessThan(place.bookBottom + 140);
   expect(place.fontSize).toBeGreaterThanOrEqual(18);
-  // Solid cursive stroke — the dashed trail is gone. Glow is a static drop-shadow.
+  // Solid stroke. No drop-shadow filter: that layer delayed the hero poster paint.
   expect(place.dotted === "none" || place.dotted === "").toBe(true);
-  expect(place.glow).toContain("drop-shadow");
+  expect(place.glow === "none" || !place.glow.includes("drop-shadow")).toBe(true);
   // Arrow stays static (no dash/draw loop).
   expect(place.anim === "none" || place.anim === "").toBe(true);
 });

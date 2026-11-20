@@ -39,17 +39,6 @@ export const TESTIMONIAL_FILMS: readonly TestimonialFilm[] = [
   },
 ];
 
-/**
- * Adult bay session for “Get fitted and swinging” — the prior coaching-loop
- * featured a junior and read wrong next to adult coaching CTAs.
- * Reuses the membership montage (adult golfers + shot data on screen).
- */
-export const COACHING_FILM = {
-  src: media("media/membership/montage.mp4"),
-  srcMobile: media("media/membership/montage-mobile.mp4"),
-  poster: media("media/membership/montage-poster.jpg"),
-} as const;
-
 export const JUNIORS_FILM = {
   src: media("media/juniors/juniors-loop.mp4"),
   srcMobile: media("media/juniors/juniors-loop-mobile.mp4"),

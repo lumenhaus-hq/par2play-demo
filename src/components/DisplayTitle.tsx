@@ -1,8 +1,6 @@
-import { useId } from "react";
-
 type Tag = "h1" | "h2";
 
-/** Hand underline, drawn once. Decorative — the word stays in the accessible name. */
+/** Hand underline, drawn once. Decorative — the heading name is the full sentence. */
 function Swoosh() {
   return (
     <svg className="display-swoosh" viewBox="0 0 120 14" aria-hidden="true" focusable="false">
@@ -21,7 +19,7 @@ function Swoosh() {
 
 /**
  * Display lockup: one word in marker with a lime swoosh, like the hero's
- * "all golfers." The full string stays the heading's accessible name.
+ * "all golfers." aria-label keeps the screen reader on one sentence.
  */
 export function DisplayTitle({
   as,
@@ -37,17 +35,13 @@ export function DisplayTitle({
   accent: string;
 }) {
   const TagName = as;
-  const labelId = useId();
   const at = text.toLowerCase().indexOf(accent.toLowerCase());
   const before = at >= 0 ? text.slice(0, at) : text;
   const hit = at >= 0 ? text.slice(at, at + accent.length) : "";
   const after = at >= 0 ? text.slice(at + accent.length) : "";
 
   return (
-    <TagName id={id} className={`display-title ${className}`} aria-labelledby={labelId}>
-      <span id={labelId} className="sr-only">
-        {text}
-      </span>
+    <TagName id={id} className={`display-title ${className}`} aria-label={text}>
       <span aria-hidden="true">
         {before}
         {hit ? (

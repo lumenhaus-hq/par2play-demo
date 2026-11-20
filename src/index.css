@@ -664,7 +664,7 @@ html.motion-paused .page-atmosphere__glyph {
   max-width: 100%;
   font-size: clamp(2.2rem, 10.5vw, 5.6rem);
   line-height: 0.88;
-  /* Room for two tight lines plus the accent swoosh when the offer font swaps in. */
+  /* Room for two tight lines when the offer font swaps in. */
   min-height: 2.45em;
   padding-top: 0.12em;
   scroll-margin-top: 6.5rem;
@@ -676,6 +676,7 @@ html.motion-paused .page-atmosphere__glyph {
 .display-title {
   max-width: 100%;
   scroll-margin-top: 6.5rem;
+  /* Glow stays on .section-title / .play-title / .display-title--panel. Do not reset text-shadow. */
 }
 
 .section-title.display-title {
@@ -701,10 +702,10 @@ html.motion-paused .page-atmosphere__glyph {
 
 .display-title.display-title--on-dark .display-title__accent {
   color: #eaff6a;
-  -webkit-text-stroke: 0.03em #06110b;
-  paint-order: stroke fill;
+  /* Hard offset shadows stand in for a text stroke. No blur, no stroke paint. */
   text-shadow:
     0 0.05em 0 #06110b,
+    0 -0.04em 0 #06110b,
     0.045em 0 0 #06110b,
     -0.045em 0 0 #06110b;
 }
@@ -734,30 +735,8 @@ html.motion-paused .page-atmosphere__glyph {
 }
 
 .display-swoosh__stroke {
-  stroke-dasharray: 1;
+  stroke-dasharray: none;
   stroke-dashoffset: 0;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html:not(.motion-paused) .display-title {
-    animation: display-title-in 640ms var(--motion-ease-enter) both;
-  }
-
-  html:not(.motion-paused) .display-swoosh__stroke {
-    stroke-dashoffset: 1;
-    animation: hero-mark-draw 820ms var(--motion-ease-enter) 140ms forwards;
-  }
-}
-
-@keyframes display-title-in {
-  from {
-    opacity: 0;
-    transform: translateY(0.4rem);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
 }
 
 .play-sheet,
@@ -1415,13 +1394,18 @@ html.motion-paused .page-atmosphere__glyph {
   width: max-content;
   max-width: 12rem;
   color: #d6ff4a;
-  opacity: 0;
+  opacity: 1;
   pointer-events: none;
 }
 
 .hero-try-now--in {
   opacity: 1;
   transition: opacity 420ms var(--motion-ease-enter) 120ms;
+}
+
+.hero-try-now--gone,
+.hero-try-now--in.hero-try-now--gone {
+  opacity: 0;
 }
 
 .hero-try-now__label {
@@ -1440,23 +1424,20 @@ html.motion-paused .page-atmosphere__glyph {
     0 0 0.7em rgb(20 212 94 / 0.55);
 }
 
-.hero-try-now--gone,
-.hero-try-now--in.hero-try-now--gone {
-  opacity: 0;
-}
-
 .hero-try-now__arrow {
   order: 1;
   width: 6.5rem;
   height: auto;
   overflow: visible;
   color: #d6ff4a;
-  filter:
-    drop-shadow(0 0 3px rgb(198 255 26 / 0.9))
-    drop-shadow(0 0 8px rgb(198 255 26 / 0.45));
 }
 
-.hero-try-now__stroke,
+.hero-try-now__stroke {
+  /* Solid stroke. No filter, so the poster can paint. */
+  stroke-dasharray: none;
+  stroke-dashoffset: 0;
+}
+
 .hero-try-now__head {
   stroke-dasharray: none;
   stroke-dashoffset: 0;
@@ -1464,6 +1445,9 @@ html.motion-paused .page-atmosphere__glyph {
 
 @media (max-width: 767px) {
   .hero-try-now {
+    top: 3.05rem;
+    left: auto;
+    right: 1.15rem;
     max-width: 11rem;
   }
 
@@ -1483,24 +1467,8 @@ html.motion-paused .page-atmosphere__glyph {
   .hero-try-now--gone {
     transition: none;
   }
-
-  .display-title,
-  .display-swoosh__stroke {
-    animation: none;
-    opacity: 1;
-    transform: none;
-    stroke-dashoffset: 0;
-  }
 }
 
-html {
-  scroll-padding-top: 5.75rem;
-}
-
-.site-header.header-bar {
-  height: auto;
-  min-height: 4.5rem;
-}
 
 /* Hand-drawn accent marks under script (type moment). */
 .hero-mark {
@@ -1694,7 +1662,7 @@ html {
 
 @keyframes quote-fade {
   from {
-    opacity: 0;
+    opacity: 1;
   }
 
   to {
@@ -1932,7 +1900,6 @@ html.lenis.lenis-smooth {
 }
 
 .reveal-block[data-reveal="out"] {
-  opacity: 0;
   transform: translateY(0.9rem);
 }
 
@@ -2016,44 +1983,37 @@ html.lenis.lenis-smooth {
 
 @keyframes chrome-in {
   from {
-    opacity: 0;
     transform: translateY(0.75rem);
   }
 
   to {
-    opacity: 1;
     transform: none;
   }
 }
 
 @keyframes panel-lay-on {
   from {
-    opacity: 0;
     transform: perspective(900px) rotateX(calc(18deg + var(--tilt-x, 0deg))) rotateY(var(--tilt-y, 0deg))
       translateY(1.5rem) scale(0.96);
   }
 
   to {
-    opacity: 1;
     transform: perspective(900px) rotateX(calc(3.5deg + var(--tilt-x, 0deg))) rotateY(var(--tilt-y, 0deg));
   }
 }
 
 @keyframes stage-rise {
   from {
-    opacity: 0;
     transform: translateY(0.85rem);
   }
 
   to {
-    opacity: 1;
     transform: none;
   }
 }
 
 @keyframes stage-pop {
   from {
-    opacity: 0;
     transform: scale(0.86);
   }
 
@@ -2104,19 +2064,37 @@ html.lenis.lenis-smooth {
  * taste-skill-ignore: owner asked for solid block shadow on CTAs; 0-blur drop-shadow
  * keeps overflow:hidden for the wipe without clipping the stamp.
  */
+.cta-stamp {
+  display: inline-flex;
+  max-width: 100%;
+  filter: drop-shadow(-4px 4px 0 var(--ink));
+}
+
+.hero-cta-pair__grid > .cta-stamp,
+.grid > .cta-stamp {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+}
+
+.cta-stamp:has(:active) {
+  filter: drop-shadow(-1px 2px 0 var(--ink));
+}
+
 .cta-shell {
   --cta-stamp: var(--ink);
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  filter: drop-shadow(-4px 4px 0 var(--cta-stamp));
-  transition:
-    transform var(--motion-fast) var(--motion-ease-press),
-    filter var(--motion-fast) var(--motion-ease-press);
+  transition: transform var(--motion-fast) var(--motion-ease-press);
+}
+
+.grid > .cta-stamp > .cta-shell,
+.hero-cta-pair__grid > .cta-stamp > .cta-shell {
+  width: 100%;
 }
 
 .cta-shell:active {
-  filter: drop-shadow(-1px 2px 0 var(--cta-stamp));
   transform: translate(1px, 2px) scale(0.985);
 }
 
@@ -2143,11 +2121,7 @@ html.lenis.lenis-smooth {
 
 .cta-label-text {
   display: block;
-  /* Keep one line — the old 1.1em text-shadow wipe stacked a ghost copy over wrapped labels. */
   white-space: nowrap;
-  text-shadow:
-    0 0 0.55em color-mix(in srgb, currentColor 35%, transparent),
-    0 0 1.1em color-mix(in srgb, var(--accent) 28%, transparent);
 }
 
 /* Alias kept for markup that still names the stamp lift. */
@@ -2506,19 +2480,8 @@ html.motion-paused .section-title::before,
 html.motion-paused .reveal-block,
 html.motion-paused .hero-film-loader,
 html.motion-paused .hero-buffer--wait svg,
-html.motion-paused .hero-bay-frame--breathe,
-html.motion-paused .display-title,
-html.motion-paused .display-swoosh__stroke {
+html.motion-paused .hero-bay-frame--breathe {
   animation: none !important;
-}
-
-html.motion-paused .display-title {
-  opacity: 1;
-  transform: none;
-}
-
-html.motion-paused .display-swoosh__stroke {
-  stroke-dashoffset: 0;
 }
 
 html.motion-paused .reveal-block {
@@ -3764,7 +3727,7 @@ body {
 .site-footer__quick {
   display: flex;
   flex-wrap: wrap;
-  gap: 0 0.75rem;
+  gap: 0.5rem 0.75rem;
 }
 
 .site-footer__toggle {

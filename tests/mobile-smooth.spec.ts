@@ -56,6 +56,12 @@ test("membership band is a still and never requests the montage", async ({ page 
     performance.getEntriesByType("resource").some((entry) => /montage.*\.mp4/.test(entry.name)),
   );
   expect(requested).toBe(false);
+  await page.locator("#coaching").evaluate((node) => node.scrollIntoView({ block: "center" }));
+  await expect(page.locator("#coaching video")).toHaveCount(0);
+  const afterCoaching = await page.evaluate(() =>
+    performance.getEntriesByType("resource").some((entry) => /montage.*\.mp4/.test(entry.name)),
+  );
+  expect(afterCoaching).toBe(false);
 });
 
 test("hamburger stays inset and the try-now tip meets Book a Bay", async ({ page }) => {

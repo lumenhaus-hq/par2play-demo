@@ -135,8 +135,19 @@ test("subpage titles clear the sticky header and use the swoosh", async ({ page 
   expect(gap).toBeGreaterThanOrEqual(8);
   const title = page.getByRole("heading", { name: "Swing your way to your first birdie and hole in one!", exact: true });
   await expect(title).toBeVisible();
-  await expect(title.locator(".display-swoosh")).toBeVisible();
-  await expect(title.locator(".display-title__accent")).toHaveText(/birdie/);
+  const titleFace = await title.evaluate((node) => {
+    const accent = node.querySelector(".display-title__accent");
+    return {
+      label: node.getAttribute("aria-label"),
+      accentFont: accent ? getComputedStyle(accent).fontFamily : "",
+      shadow: getComputedStyle(node).textShadow,
+      swoosh: node.querySelectorAll(".display-swoosh").length,
+    };
+  });
+  expect(titleFace.label).toBe("Swing your way to your first birdie and hole in one!");
+  expect(titleFace.accentFont.toLowerCase()).toContain("marker");
+  expect(titleFace.shadow).not.toBe("none");
+  expect(titleFace.swoosh).toBe(1);
   const motion = await title.evaluate((node) => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     return { reduce, animation: getComputedStyle(node).animationName };
@@ -164,17 +175,18 @@ test("subpage titles reuse the home section glow", async ({ page }) => {
     const title = page.getByRole("heading", { level: 1, name, exact: true });
     const style = await title.evaluate((node) => {
       const computed = getComputedStyle(node);
+      const accent = node.querySelector(".display-title__accent");
       const rect = node.getBoundingClientRect();
       return {
         shadow: computed.textShadow,
-        font: computed.fontFamily,
+        accent: accent ? getComputedStyle(accent).fontFamily : "",
         page: document.documentElement.scrollWidth - document.documentElement.clientWidth,
         right: rect.right,
         view: window.innerWidth,
       };
     });
     expect(style.shadow).toBe(glow);
-    expect(style.font.toLowerCase()).toContain("archivo");
+    expect(style.accent.toLowerCase()).toContain("marker");
     expect(style.page).toBeLessThanOrEqual(1);
     expect(style.right).toBeLessThanOrEqual(style.view + 1);
   }
@@ -194,7 +206,15 @@ test("home section titles use the same display treatment", async ({ page }) => {
     await page.locator(selector).scrollIntoViewIfNeeded();
     const heading = page.locator(selector).getByRole("heading", { name, exact: true });
     await expect(heading).toHaveClass(/display-title/);
-    await expect(heading.locator(".display-swoosh")).toBeVisible();
+    const face = await heading.evaluate((node) => {
+      const accent = node.querySelector(".display-title__accent");
+      return {
+        font: accent ? getComputedStyle(accent).fontFamily.toLowerCase() : "",
+        label: node.getAttribute("aria-label"),
+      };
+    });
+    expect(face.font).toContain("marker");
+    expect(face.label).toBe(name);
   }
 });
 

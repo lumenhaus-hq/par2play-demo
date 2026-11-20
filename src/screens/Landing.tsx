@@ -26,7 +26,7 @@ import { JsonLd } from "../components/JsonLd";
 import { FaqSection } from "../components/FaqSection";
 import { faqGraph, homeGraph } from "../data/schema";
 import { showDemoChrome } from "../data/site";
-import { COACHING_FILM, JUNIORS_FILM } from "../data/films";
+import { JUNIORS_FILM, MEMBERSHIP_POSTER } from "../data/films";
 import { SITE_NAV, pageHref } from "../data/routes";
 import { useFlow } from "../state/flow";
 
@@ -180,18 +180,16 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
 
       <MembershipBand />
 
-      <section id="coaching" className={`${sectionSpace} cv-auto`}>
+      <section id="coaching" className={sectionSpace}>
         <div className="grid items-start gap-10 @3xl:grid-cols-2 @3xl:gap-16">
           <ScrollReveal tone="tilt">
-            <VideoSlot
-              src={COACHING_FILM.src}
-              srcMobile={COACHING_FILM.srcMobile}
-              poster={COACHING_FILM.poster}
-              posterAlt="An adult golfer reviewing shot data in a Par2Play simulator bay"
-              className="aspect-video"
-              pausable
-              framed
-              label="Swing"
+            <img
+              src={MEMBERSHIP_POSTER.src}
+              alt={MEMBERSHIP_POSTER.alt}
+              width={MEMBERSHIP_POSTER.width}
+              height={MEMBERSHIP_POSTER.height}
+              decoding="async"
+              className="aspect-video h-auto w-full rounded-[1.15rem] object-cover"
             />
           </ScrollReveal>
           <ScrollReveal tone="rise" delay={80}>
@@ -224,7 +222,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
         </div>
       </section>
 
-      <section id="juniors" className={`${sectionSpace} cv-auto`}>
+      <section id="juniors" className={sectionSpace}>
         <div className="grid items-start gap-10 @3xl:grid-cols-2 @3xl:gap-16">
           <ScrollReveal tone="rise">
             <VideoSlot
@@ -272,7 +270,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
         </div>
       </section>
 
-      <section id="events" className={`${sectionSpace} cv-auto`}>
+      <section id="events" className={sectionSpace}>
         <ScrollReveal tone="sheen">
           <DisplayTitle as="h2" className="section-title offer-title" text="Events" accent="Events" />
           <p className="mt-6 max-w-xl text-lg leading-relaxed">
@@ -292,7 +290,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
         </ScrollReveal>
       </section>
 
-      <section id="tournament" className={`${sectionSpace} cv-auto text-center`}>
+      <section id="tournament" className={`${sectionSpace} text-center`}>
         <ScrollReveal tone="rise">
           <DisplayTitle
             as="h2"
@@ -306,7 +304,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
         </ScrollReveal>
       </section>
 
-      <section className="cv-auto bg-void px-6 py-24 text-white @3xl:px-12 @3xl:py-28">
+      <section className="bg-void px-6 py-24 text-white @3xl:px-12 @3xl:py-28">
         <ScrollReveal className="mx-auto max-w-3xl text-center" tone="tilt">
           <DisplayTitle
             as="h2"
@@ -328,7 +326,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
 
       <FaqSection />
 
-      <SiteFooter className="cv-auto" />
+      <SiteFooter />
       </div>
     </div>
   );
