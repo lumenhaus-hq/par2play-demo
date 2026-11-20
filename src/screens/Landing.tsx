@@ -9,7 +9,6 @@ import { MembershipBand } from "../components/MembershipBand";
 import { HeroVideo, type HeroIntroPhase } from "../components/Media";
 import { LayoutToggle } from "../components/LayoutToggle";
 import { SiteMenu } from "../components/SiteMenu";
-import { MotionToggle } from "../components/MotionToggle";
 import { PageAtmosphere } from "../components/PageAtmosphere";
 import { ScrollReveal } from "../components/ScrollReveal";
 import { SoundToggle } from "../components/SoundToggle";
@@ -18,14 +17,13 @@ import { EventTypeList } from "../components/EventTypeList";
 import { OfferTicker } from "../components/OfferTicker";
 import { VideoSlot } from "../components/VideoSlot";
 import { ValuePoint } from "../components/ValuePoint";
-import { NAP, golfClockBookingReady } from "../data/business";
+import { SiteFooter } from "../components/SiteChrome";
 import { HERO_TICKER } from "../data/heroTicker";
 import { DisplayTitle } from "../components/DisplayTitle";
 import { HeroLocation, HeroTitle } from "../components/HeroTitle";
 import type { HeroTypeId } from "../data/heroType";
 import { JsonLd } from "../components/JsonLd";
 import { FaqSection } from "../components/FaqSection";
-import { VisitLine } from "../components/VisitLine";
 import { faqGraph, homeGraph } from "../data/schema";
 import { showDemoChrome } from "../data/site";
 import { COACHING_FILM, JUNIORS_FILM } from "../data/films";
@@ -33,8 +31,6 @@ import { SITE_NAV, pageHref } from "../data/routes";
 import { useFlow } from "../state/flow";
 
 const sectionSpace = "scroll-mt-32 px-6 py-20 @3xl:px-12 @3xl:py-24";
-
-const navButton = `nav-link inline-flex min-h-11 items-center px-1 text-base font-semibold text-ink ${buttonFocus}`;
 
 export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
   const flow = useFlow();
@@ -332,30 +328,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
 
       <FaqSection />
 
-      <footer className="cv-auto px-6 py-20 @3xl:px-12 @3xl:py-24">
-        <div className="grid items-start gap-x-12 gap-y-8 @3xl:grid-cols-2 @5xl:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)_auto]">
-          <VisitLine />
-          <nav className="flex min-w-0 flex-wrap items-center gap-x-6 gap-y-1" aria-label="Footer">
-            {SITE_NAV.map((item) => (
-              <a key={item.slug} href={pageHref(item.slug)} className={navButton}>
-                {item.label}
-              </a>
-            ))}
-          </nav>
-        </div>
-        <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 text-lg">
-          <p>© 2026 Par2Play</p>
-          <MotionToggle className="text-ink" />
-          <a href={pageHref("privacy-policy")} className={navButton}>
-            Privacy
-          </a>
-        </div>
-        {!golfClockBookingReady() && (
-          <p className="mt-2 max-w-xl text-lg text-slate-700">
-            GolfClock booking link: TODO. Book calls {NAP.phoneDisplay}.
-          </p>
-        )}
-      </footer>
+      <SiteFooter className="cv-auto" />
       </div>
     </div>
   );

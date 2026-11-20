@@ -1,16 +1,16 @@
 import type { ReactNode } from "react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Mark } from "./Chrome";
-import { BookLink, buttonFocus } from "./Cta";
+import { BookLink, PhoneLink, buttonFocus } from "./Cta";
 import { LayoutToggle } from "./LayoutToggle";
 import { SiteMenu } from "./SiteMenu";
 import { MotionToggle } from "./MotionToggle";
 import { PageAtmosphere, type AtmosphereIntensity } from "./PageAtmosphere";
 import { SoundToggle } from "./SoundToggle";
+import { openCookieSettings } from "../analytics/consent";
 import { golfClockBookingReady, NAP } from "../data/business";
-import { VisitLine } from "./VisitLine";
 import { SITE_NAV, currentRoute, pageHref, type SiteRoute } from "../data/routes";
-import { showDemoChrome } from "../data/site";
+import { HOURS_LABEL, INSTAGRAM_URL, MAPS_URL, showDemoChrome } from "../data/site";
 import { useFlow } from "../state/flow";
 
 function atmosphereFor(route: SiteRoute): AtmosphereIntensity {
@@ -66,30 +66,102 @@ export function SiteHeader() {
   );
 }
 
-export function SiteFooter() {
+export function SiteFooter({ className = "" }: { className?: string }) {
+  const [moreOpen, setMoreOpen] = useState(false);
   return (
-    <footer className="px-6 py-20 @3xl:px-12 @3xl:py-24">
-      <div className="grid items-start gap-x-12 gap-y-8 @3xl:grid-cols-2 @5xl:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)_auto]">
-        <VisitLine />
-        <nav className="flex min-w-0 flex-wrap items-center gap-x-6 gap-y-1" aria-label="Footer">
-          {SITE_NAV.map((item) => (
-            <a key={item.slug} href={pageHref(item.slug)} className={navClass}>
-              {item.label}
-            </a>
-          ))}
-        </nav>
-      </div>
-      <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 text-lg">
-        <p>© 2026 Par2Play</p>
-        <MotionToggle className="text-ink" />
-        <a href={pageHref("privacy-policy")} className={navClass}>
-          Privacy
+    <footer className={`site-footer ${className}`.trim()}>
+      <div className="site-footer__main">
+        <a href={pageHref("")} className="site-footer__logo">
+          <Mark light />
         </a>
+        <address className="site-footer__nap">
+          {`${NAP.name} · ${NAP.street}, ${NAP.city}, ${NAP.region} ${NAP.postalCode} · `}
+          <PhoneLink className="site-footer__link">{NAP.phoneDisplay}</PhoneLink>
+          {` · Open ${HOURS_LABEL}.`}
+        </address>
+        <nav className="site-footer__quick" aria-label="Footer">
+          <a className="site-footer__link" href={MAPS_URL}>
+            Directions
+          </a>
+          <a className="site-footer__link" href={INSTAGRAM_URL}>
+            Instagram
+          </a>
+        </nav>
+        <button
+          type="button"
+          className="site-footer__toggle"
+          aria-expanded={moreOpen}
+          aria-controls="site-footer-more"
+          onClick={() => setMoreOpen((open) => !open)}
+        >
+          {moreOpen ? "Hide links" : "More links"}
+        </button>
+        <div id="site-footer-more" className={`site-footer__extra${moreOpen ? " is-open" : ""}`}>
+        <div className="site-footer__grid">
+          <div>
+            <h2 className="site-footer__label">Visit</h2>
+            <address className="site-footer__address">
+              <p>{NAP.name}</p>
+              <p>{`${NAP.street}, ${NAP.city}, ${NAP.region} ${NAP.postalCode}`}</p>
+              <p>{`Open ${HOURS_LABEL}.`}</p>
+              <a className="site-footer__link" href={MAPS_URL}>
+                Directions
+              </a>
+            </address>
+          </div>
+          <div>
+            <h2 className="site-footer__label">Contact</h2>
+            <p>
+              <PhoneLink className="site-footer__link">{NAP.phoneDisplay}</PhoneLink>
+            </p>
+            <p>
+              <a className="site-footer__link" href={`mailto:${NAP.email}`}>
+                {NAP.email}
+              </a>
+            </p>
+          </div>
+          <nav aria-label="Explore">
+            <h2 className="site-footer__label">Explore</h2>
+            <ul className="site-footer__list">
+              {SITE_NAV.map((item) => (
+                <li key={item.slug}>
+                  <a className="site-footer__link" href={pageHref(item.slug)}>
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <div>
+            <h2 className="site-footer__label">Follow</h2>
+            <a className="site-footer__link" href={INSTAGRAM_URL}>
+            Instagram
+          </a>
+          </div>
+        </div>
+        <div className="site-footer__mobile-actions">
+          <a className="site-footer__link" href={pageHref("privacy-policy")}>
+            Privacy policy
+          </a>
+          <button type="button" className="site-footer__link" onClick={openCookieSettings}>
+            Cookie settings
+          </button>
+          <MotionToggle className="site-footer__link" />
+        </div>
+        </div>
+      </div>
+      <div className="site-footer__bar">
+        <p className="site-footer__copy">© 2026 Par2Play</p>
+        <a className="site-footer__link" href={pageHref("privacy-policy")}>
+          Privacy policy
+        </a>
+        <button type="button" className="site-footer__link" onClick={openCookieSettings}>
+          Cookie settings
+        </button>
+        <MotionToggle className="site-footer__link" />
       </div>
       {!golfClockBookingReady() && (
-        <p className="mt-2 max-w-xl text-lg text-slate-700">
-          GolfClock booking link: TODO. Book calls {NAP.phoneDisplay}.
-        </p>
+        <p className="site-footer__note">GolfClock booking link: TODO. Book calls {NAP.phoneDisplay}.</p>
       )}
     </footer>
   );

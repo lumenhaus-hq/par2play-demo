@@ -133,16 +133,51 @@ test("subpage titles clear the sticky header and use the swoosh", async ({ page 
     return title.getBoundingClientRect().top - header.getBoundingClientRect().bottom;
   });
   expect(gap).toBeGreaterThanOrEqual(8);
-  const title = page.getByRole("heading", { name: "Golf lessons in Somerset, NJ", exact: true });
+  const title = page.getByRole("heading", { name: "Swing your way to your first birdie and hole in one!", exact: true });
   await expect(title).toBeVisible();
   await expect(title.locator(".display-swoosh")).toBeVisible();
-  await expect(title.locator(".display-title__accent")).toHaveText(/lessons/);
+  await expect(title.locator(".display-title__accent")).toHaveText(/birdie/);
   const motion = await title.evaluate((node) => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     return { reduce, animation: getComputedStyle(node).animationName };
   });
   expect(motion.reduce).toBe(true);
   expect(motion.animation === "none" || motion.animation === "").toBe(true);
+});
+
+test("subpage titles reuse the home section glow", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("./");
+  await page.locator("#coaching").scrollIntoViewIfNeeded();
+  const homeGlow = await page.locator("#coaching h2").evaluate((node) => getComputedStyle(node).textShadow);
+  const darkGlow = await page.locator("section.bg-void h2").evaluate((node) => getComputedStyle(node).textShadow);
+  const pages = [
+    ["membership/", "The membership that rewards your passion more!", homeGlow],
+    ["coaching/", "Swing your way to your first birdie and hole in one!", homeGlow],
+    ["swing-evaluation/", "Swing evaluation", homeGlow],
+    ["juniors/", "Golf for Kids", homeGlow],
+    ["events/", "Golf simulator parties and events", homeGlow],
+    ["tournament/", "Par2Play Fall League", darkGlow],
+  ] as const;
+  for (const [route, name, glow] of pages) {
+    await page.goto(route);
+    const title = page.getByRole("heading", { level: 1, name, exact: true });
+    const style = await title.evaluate((node) => {
+      const computed = getComputedStyle(node);
+      const rect = node.getBoundingClientRect();
+      return {
+        shadow: computed.textShadow,
+        font: computed.fontFamily,
+        page: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        right: rect.right,
+        view: window.innerWidth,
+      };
+    });
+    expect(style.shadow).toBe(glow);
+    expect(style.font.toLowerCase()).toContain("archivo");
+    expect(style.page).toBeLessThanOrEqual(1);
+    expect(style.right).toBeLessThanOrEqual(style.view + 1);
+  }
 });
 
 test("home section titles use the same display treatment", async ({ page }) => {
