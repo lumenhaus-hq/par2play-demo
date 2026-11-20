@@ -126,7 +126,7 @@ for (const width of [320, 360, 390, 430, 1280]) {
     const panel = page.locator("#why-membership");
     for (const [label, amount] of [["Unlimited Practice", "$200"]] as const) {
       await expect(panel.getByText(label, { exact: true }).first()).toBeVisible();
-      const fee = panel.locator('[aria-live="polite"] p').last();
+      const fee = panel.locator("[data-invoice-total]");
       await expect(fee).toContainText(amount);
       const layout = await fee.evaluate((node) => {
         const bounds = node.closest("section")!.getBoundingClientRect();

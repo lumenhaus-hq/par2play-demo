@@ -1,6 +1,7 @@
 import { trackAnchor } from "../analytics/track";
 import { BookLink, PhoneLink, buttonFocus } from "./Cta";
-import { BookingCheckout, appendCheckoutParams } from "./BookingCheckout";
+import { PriceChoice } from "./PriceChoice";
+import { PriceInvoice } from "./PriceInvoice";
 import { NAP, OCLOCK, PRICES } from "../data/business";
 import { money } from "../data/membershipEstimate";
 
@@ -14,11 +15,11 @@ const BENEFITS = [
 ] as const;
 
 export function MembershipCalculator() {
-  const figure = `${money(PRICES.unlimitedMonthly)}/mo`;
+  const monthly = PRICES.unlimitedMonthly;
+  const figure = `${money(monthly)}/mo`;
   const heading = "Unlimited Practice";
-  const live = `Unlimited Practice ${money(PRICES.unlimitedMonthly)} a month. Up to 1 hour a day.`;
+  const live = `Unlimited Practice ${money(monthly)} a month. Up to 1 hour a day.`;
   const line = "Practice Unlimited (monthly)";
-  const totalLabel = figure;
   const note = "Members keep a bay hour every day for less than a few 10-packs.";
 
   return (
@@ -34,15 +35,33 @@ export function MembershipCalculator() {
           <h1 id="why-membership-heading" className="offer-title text-2xl tracking-tight text-white @3xl:text-3xl">
             Become a Member
           </h1>
-          <p className="mt-2 font-display text-lg font-semibold tracking-tight text-mint">{heading}</p>
-          <div aria-live="polite" aria-atomic="true" className="mt-2">
-            <p className="sr-only">{live}</p>
-            <p className="font-display text-[clamp(2.25rem,10cqi,3.75rem)] font-semibold leading-none tracking-tight text-white">
-              {figure}
-            </p>
+          <div className="mt-6">
+            <PriceChoice
+              label="Membership"
+              value="unlimited"
+              onChange={() => undefined}
+              options={[{ value: "unlimited", label: heading, price: figure }]}
+            />
           </div>
-          <p className="mt-4 text-base font-semibold leading-snug text-white/90">{note}</p>
-
+          <PriceInvoice
+            className="mt-5"
+            title={heading}
+            rows={[
+              { label: "Offer", value: line },
+              { label: "Access", value: "Up to 1 hour a day" },
+              { label: "Billing", value: "Monthly" },
+              { label: "Membership", value: figure },
+            ]}
+            totalLabel={figure}
+            orderRef="ord_p2p_practice_unlimited"
+            live={live}
+            note={note}
+          />
+          <div className="mt-6">
+            <BookLink className="w-full" offer="practice-unlimited">
+              Complete booking
+            </BookLink>
+          </div>
           <ul className="member-benefits" aria-label="Member benefits">
             {BENEFITS.map((benefit) => (
               <li key={benefit.title} className="member-benefits__tile">
@@ -52,30 +71,6 @@ export function MembershipCalculator() {
               </li>
             ))}
           </ul>
-
-          <div className="mt-8 flex flex-col gap-3 @3xl:flex-row">
-            <BookLink className="w-full" offer="practice-unlimited">
-              Become a Member
-            </BookLink>
-            <BookLink className="w-full" offer="bay" tone="inverted">
-              Experience a free Member Day
-            </BookLink>
-          </div>
-
-          <div className="mt-8 border-t border-white/15 pt-8">
-            <BookingCheckout
-              summaryTitle={heading}
-              rows={[
-                { label: "Offer", value: line },
-                { label: "Access", value: "Up to 1 hour a day" },
-                { label: "Billing", value: "Monthly" },
-                { label: "Membership", value: totalLabel },
-              ]}
-              totalLabel={totalLabel}
-              orderRef="ord_p2p_practice_unlimited"
-              checkoutHref={(fields) => appendCheckoutParams(OCLOCK.practiceUnlimited, fields, "practice_unlimited")}
-            />
-          </div>
         </div>
       </section>
 

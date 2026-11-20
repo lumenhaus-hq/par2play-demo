@@ -1,6 +1,7 @@
 type Option<T extends string> = {
   value: T;
   label: string;
+  price?: string;
 };
 
 /**
@@ -30,9 +31,11 @@ export function JointToggle<T extends string>({
             type="button"
             className={`joint-toggle__option${tone === "dark" ? " aa-focus-ink" : " aa-focus"}${pressed ? " is-active" : ""}`}
             aria-pressed={pressed}
+            aria-label={option.price ? `${option.label}, ${option.price}` : option.label}
             onClick={() => onChange(option.value)}
           >
-            {option.label}
+            <span className="block">{option.label}</span>
+            {option.price ? <span className="mt-0.5 block text-sm font-bold tabular-nums">{option.price}</span> : null}
           </button>
         );
       })}
