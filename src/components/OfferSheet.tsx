@@ -22,6 +22,7 @@ export function OfferSheet<T extends string>({
   onChange,
   invoice,
   offer,
+  secondary,
 }: {
   id: string;
   toggleLabel: string;
@@ -30,6 +31,7 @@ export function OfferSheet<T extends string>({
   onChange: (value: T) => void;
   invoice: ReactNode;
   offer: BookingOffer;
+  secondary?: ReactNode;
 }) {
   return (
     <section id={id} className="play-sheet" aria-label={toggleLabel}>
@@ -56,7 +58,7 @@ export function OfferSheet<T extends string>({
       <div className="play-sheet__body">
         <JointToggle value={value} options={options} onChange={onChange} label={toggleLabel} tone="dark" />
         {invoice}
-        <ReserveTime offer={offer} />
+        <ReserveTime offer={offer} beside={secondary} />
         <AskUsLink />
       </div>
     </section>

@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
+import { PrimaryButton, PrimaryLink } from "./Cta";
 import type { BookingOffer } from "../data/business";
 import {
   addDays,
@@ -213,14 +214,13 @@ export default function ReservePanel({ offer }: { offer: BookingOffer }) {
             />
           </label>
           {complete && href ? (
-            <a className="cta-shell cta-brand aa-focus reserve-purchase" href={href} data-offer={offer}>
-              <span className="cta-fill" aria-hidden="true" />
-              <span className="cta-label">Complete Purchase</span>
-            </a>
+            <PrimaryLink className="reserve-purchase" href={href} data-offer={offer}>
+              Complete Purchase
+            </PrimaryLink>
           ) : (
-            <button type="button" className="cta-shell cta-brand aa-focus reserve-purchase" disabled>
-              <span className="cta-label">Complete Purchase</span>
-            </button>
+            <PrimaryButton className="reserve-purchase" disabled>
+              Complete Purchase
+            </PrimaryButton>
           )}
         </div>
       ) : null}

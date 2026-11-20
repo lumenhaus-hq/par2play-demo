@@ -110,7 +110,7 @@ test("hero shows a Try now cue aimed at Book a Bay", async ({ page }) => {
   const cue = page.getByTestId("hero-try-now");
   const book = page.locator("header").getByRole("link", { name: "Book a Bay", exact: true });
   await expect(cue).toBeVisible();
-  await expect(cue).toContainText("Try now");
+  await expect(cue).toContainText("Try now!");
   await expect(cue).toHaveAttribute("aria-hidden", "true");
   await expect(book).toBeVisible();
   const place = await Promise.all([
@@ -262,7 +262,7 @@ test("mobile homepage membership uses the golf bento grid", async ({ page }) => 
   await expect(page.locator("#coaching").getByRole("link", { name: "Swing evaluation", exact: true })).toHaveAttribute("href", /\/swing-evaluation\/$/);
   await expect(page.locator("#coaching").getByRole("link", { name: "Lessons", exact: true })).toHaveAttribute("href", /\/coaching\/$/);
   await expect(page.locator("#juniors").getByRole("link", { name: "Become a Junior Member" })).toHaveAttribute("href", /\/juniors\/$/);
-  await expect(page.locator("#juniors").getByRole("link", { name: "Experience a Junior Class" })).toHaveAttribute("href", /\/juniors\/$/);
+  await expect(page.locator("#juniors").getByRole("link", { name: "Experience golf for juniors" })).toHaveAttribute("href", /\/junior-golf-experience\/$/);
 });
 
 test("removed sections and junior paragraph stay absent on their pages", async ({ page }) => {

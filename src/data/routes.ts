@@ -7,6 +7,7 @@ export type SiteRoute =
   | "events"
   | "tournament"
   | "members-day"
+  | "junior-golf-experience"
   | "privacy"
   | "notfound";
 
@@ -51,6 +52,8 @@ export function currentRoute(): SiteRoute {
       return "tournament";
     case "members-day":
       return "members-day";
+    case "junior-golf-experience":
+      return "junior-golf-experience";
     case "privacy-policy":
       return "privacy";
     case "404.html":

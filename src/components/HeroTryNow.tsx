@@ -106,7 +106,7 @@ export function HeroTryNow({ visible }: { visible: boolean }) {
         />
         <circle data-arrow-tip="" cx="40" cy="6" r="2.2" fill="transparent" />
       </svg>
-      <span className="hero-try-now__label">Try now</span>
+      <span className="hero-try-now__label">Try now!</span>
     </div>
   );
 }

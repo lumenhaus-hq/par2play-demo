@@ -21,6 +21,7 @@ function atmosphereFor(route: SiteRoute): AtmosphereIntensity {
     case "juniors":
     case "events":
     case "members-day":
+    case "junior-golf-experience":
       return "strong";
     case "tournament":
     case "privacy":

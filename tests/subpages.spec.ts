@@ -47,13 +47,37 @@ test("members day walks the visit and books the bay", async ({ page }) => {
   expect(extra).toBeLessThanOrEqual(1);
 });
 
-test("swing evaluation explains the 30 minutes", async ({ page }) => {
+test("junior golf experience is free and books the lessons flow", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("junior-golf-experience/");
+  await expect(page).toHaveTitle("Experience golf for juniors | Par2Play");
+  await expect(page.getByRole("heading", { level: 1, name: "Experience golf for juniors" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1 })).not.toContainText("FREE");
+  const invoice = page.locator("[data-invoice]");
+  await expect(invoice).toContainText("You pay");
+  await expect(invoice.locator(".scorecard__free")).toHaveText("FREE");
+  await expect(invoice.locator(".scorecard__was")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "What to expect" })).toBeVisible();
+  await expect(page.locator(".what-you-get__card")).toHaveCount(4);
+  await page.getByRole("button", { name: "Reserve time & day", exact: true }).click();
+  await page.getByRole("radio", { name: "10:00 AM", exact: true }).click();
+  await page.getByLabel("First name").fill("Ada");
+  await page.getByLabel("Last name").fill("Lovelace");
+  const href = await page.getByRole("link", { name: "Complete Purchase", exact: true }).getAttribute("href");
+  expect(href).toContain("flow=flow_bf_lessons");
+  expect(href).toContain("date=");
+  expect(href).not.toContain("Ada");
+  const extra = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(extra).toBeLessThanOrEqual(1);
+});
+
+test("swing evaluation explains the 50 minutes", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("swing-evaluation/");
   const invoice = page.locator("[data-invoice]");
   await expect(invoice.locator("[data-invoice-total]")).toHaveText("$100");
   await expect(invoice).toContainText("You pay");
-  await expect(invoice).toContainText("30 minutes");
+  await expect(invoice).toContainText("50 minutes");
   await expect(invoice).toContainText("Full Swing");
   await expect(page.getByRole("heading", { name: "Who it is for" })).toHaveCount(0);
   await expect(page.locator(".what-you-get__card")).toHaveCount(4);
@@ -62,7 +86,7 @@ test("swing evaluation explains the 30 minutes", async ({ page }) => {
 
 test("desktop subpages put the price card beside the story", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
-  for (const route of ["membership/", "swing-evaluation/", "members-day/"]) {
+  for (const route of ["membership/", "swing-evaluation/", "members-day/", "junior-golf-experience/"]) {
     await page.goto(route);
     const columns = await page.locator(".offer-layout").evaluate((node) => getComputedStyle(node).gridTemplateColumns.split(" ").length);
     expect(columns, route).toBe(2);

@@ -49,7 +49,7 @@ const JUNIORS_GET: readonly [GetCard, GetCard, GetCard, GetCard] = [
 ];
 
 const SWING_GET: readonly [GetCard, GetCard, GetCard, GetCard] = [
-  { icon: "swing.png", title: "30 minutes", line: "On the cameras." },
+  { icon: "swing.png", title: `${PRICES.swingEvaluationMinutes} minutes`, line: "On the cameras." },
   { icon: "club-strike.png", title: "Full Swing", line: "Swing-evaluation cameras." },
   { icon: "crossed-clubs.png", title: "PGA coaches", line: "Before a lesson pack." },
   { icon: "bag.png", title: "Four bays", line: "Clubs on hand." },

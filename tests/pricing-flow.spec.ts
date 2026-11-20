@@ -77,7 +77,11 @@ test("index CTAs open subpages and the header Book a Bay stays on GolfClock", as
 
   const juniors = page.locator("#juniors");
   await expect(juniors.getByRole("link", { name: "Become a Junior Member", exact: true })).toHaveAttribute("href", siteHref("juniors/"));
-  await expect(juniors.getByRole("link", { name: "Experience a Junior Class", exact: true })).toHaveAttribute("href", siteHref("juniors/"));
+  const juniorPrimary = juniors.getByRole("link", { name: "Become a Junior Member", exact: true });
+  const juniorFree = juniors.getByRole("link", { name: "Experience golf for juniors", exact: true });
+  await expect(juniorFree).toHaveAttribute("href", siteHref("junior-golf-experience/"));
+  const juniorBoxes = await Promise.all([juniorPrimary.boundingBox(), juniorFree.boundingBox()]);
+  expect(Math.abs((juniorBoxes[0]?.width ?? 0) - (juniorBoxes[1]?.width ?? 0))).toBeLessThanOrEqual(2);
 
   const events = page.locator("#events");
   await expect(events.getByRole("link", { name: "See events", exact: true })).toHaveAttribute("href", siteHref("events/"));
@@ -238,7 +242,7 @@ test("swing evaluation page shows the $100 session and one booking link", async 
   await expect(page.getByRole("heading", { name: "What you get", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Who it is for" })).toHaveCount(0);
   await expect(page.locator("[data-invoice-total]")).toHaveText("$100");
-  await expect(page.locator("[data-invoice]")).toContainText("30 minutes");
+  await expect(page.locator("[data-invoice]")).toContainText("50 minutes");
   await expect(page.locator("[data-invoice]")).toContainText("You pay");
   const booking = await openPurchase(page.locator("#swing-offer"), "time");
   expect(await booking.getAttribute("href")).toContain(LESSONS);

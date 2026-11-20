@@ -6,7 +6,7 @@ import { money } from "../data/membershipEstimate";
 
 type Mode = "session";
 
-/** $100 for 30 minutes. The invoice matches the membership and coaching scorecard. */
+/** $100 for 50 minutes. The invoice matches the membership and coaching scorecard. */
 export function SwingEvaluation() {
   const [mode, setMode] = useState<Mode>("session");
   const price = money(PRICES.swingEvaluation);

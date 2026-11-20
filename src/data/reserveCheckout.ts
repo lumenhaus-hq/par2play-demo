@@ -54,6 +54,7 @@ export function reservePlan(offer: BookingOffer): ReservePlan {
     case "lesson":
     case "junior":
     case "junior-plus":
+    case "junior-experience":
       return { kind: "slots", durations: [LESSON_30], partyMax: 2, step: 30, passTime: false, note: SLOT_NOTE };
     case "swing-evaluation":
     case "swing-lab":

@@ -842,9 +842,69 @@ html.motion-paused .coupon-burst span {
 
 .reserve-time__row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.75rem;
   align-items: stretch;
+}
+
+@container (min-width: 36rem) {
+  .reserve-time__row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.free-hero {
+  position: relative;
+}
+
+.free-hero__gift {
+  position: absolute;
+  top: 0.15rem;
+  right: 0.2rem;
+  z-index: 1;
+  width: 2.4rem;
+  height: 2.4rem;
+  color: #4d7c0f;
+  pointer-events: none;
+}
+
+.free-hero__gift svg {
+  width: 100%;
+  height: 100%;
+}
+
+.free-hero__bits {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.free-hero__bits i {
+  position: absolute;
+  width: 0.45rem;
+  height: 0.7rem;
+  border-radius: 0.08rem;
+  background: #4d7c0f;
+}
+
+.free-hero__bits i:nth-child(1) { top: 8%; left: 6%; transform: rotate(-18deg); background: #65a30d; }
+.free-hero__bits i:nth-child(2) { top: 18%; right: 18%; transform: rotate(24deg); background: #d6ff4a; }
+.free-hero__bits i:nth-child(3) { bottom: 12%; left: 22%; transform: rotate(12deg); }
+.free-hero__bits i:nth-child(4) { top: 42%; right: 4%; width: 0.35rem; transform: rotate(-28deg); background: #14d45e; }
+.free-hero__bits i:nth-child(5) { bottom: 6%; right: 28%; transform: rotate(8deg); background: #d6ff4a; }
+
+.offer-still {
+  margin: 1.5rem 0 0;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 1rem;
+}
+
+.offer-still img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .reserve-time__row > .cta-stamp,
@@ -948,9 +1008,19 @@ button.reserve-purchase {
 
 .reserve-dates__day.is-selected,
 .reserve-slots__time.is-selected {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--accent-foreground);
+  border-color: #d6ff4a;
+  background: #d6ff4a;
+  color: #07140e;
+  box-shadow: 0 0 0 2px #14d45e;
+}
+
+.reserve-field input:focus-visible,
+.reserve-field select:focus-visible,
+.reserve-dates__day:focus-visible,
+.reserve-slots__time:focus-visible {
+  outline: 2px solid #d6ff4a;
+  outline-offset: 2px;
+  border-color: #d6ff4a;
 }
 
 .reserve-field {
@@ -1036,9 +1106,15 @@ button.reserve-purchase {
 }
 
 .scorecard__hole {
-  font-family: var(--font-offer);
-  font-weight: 800;
-  color: var(--accent);
+  display: grid;
+  width: 1.35rem;
+  height: 1.35rem;
+  color: #d6ff4a;
+}
+
+.scorecard__hole svg {
+  width: 1.35rem;
+  height: 1.35rem;
 }
 
 .scorecard__label {
@@ -1636,7 +1712,7 @@ button.reserve-purchase {
   align-items: center;
   gap: 0.05rem;
   width: max-content;
-  max-width: 12rem;
+  max-width: 15rem;
   color: #d6ff4a;
   opacity: 1;
   pointer-events: none;
@@ -1660,6 +1736,7 @@ button.reserve-purchase {
   font-size: 50px;
   line-height: 0.92;
   letter-spacing: 0.02em;
+  white-space: nowrap;
   color: #fff;
   -webkit-text-stroke: 0.028em #06110b;
   text-shadow:
@@ -1692,7 +1769,7 @@ button.reserve-purchase {
     top: 3.05rem;
     left: auto;
     right: 1.15rem;
-    max-width: 11rem;
+    max-width: 15rem;
   }
 
   .hero-try-now__label {
@@ -3946,26 +4023,68 @@ body {
 }
 
 .offer-facts__heading {
-  margin: 0 0 0.85rem;
-  font-size: 1.35rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
+  margin: 0 0 1rem;
+  font-size: clamp(1.8rem, 6vw, 2.6rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
 }
 
 .offer-facts__list {
   display: grid;
   gap: 0.85rem;
   margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.offer-facts__item dt {
-  font-weight: 700;
+.offer-facts__item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.85rem;
+  align-items: center;
+  min-width: 0;
+  border: 2px solid #b6f23a;
+  border-radius: 1.15rem;
+  padding: 0.95rem 1rem;
+  background:
+    radial-gradient(circle at 0% 0%, rgb(20 212 94 / 0.22), transparent 42%),
+    #07140e;
+  color: #f4f7f2;
+  box-shadow: 0 0 0 1px rgb(214 255 74 / 0.35);
 }
 
-.offer-facts__item dd {
-  margin: 0.15rem 0 0;
-  line-height: 1.45;
+.offer-facts__mark {
+  display: grid;
+  justify-items: center;
+  gap: 0.1rem;
+  min-width: 3.25rem;
+  color: #d6ff4a;
+}
+
+.offer-facts__mark svg {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+.offer-facts__mark strong {
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.offer-facts__title {
+  margin: 0;
+  font-size: clamp(1.25rem, 4vw, 1.7rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.offer-facts__line {
+  margin: 0.3rem 0 0;
+  font-size: 1.125rem;
+  line-height: 1.4;
+  color: #f4f7f2;
 }
 
 @container (min-width: 64rem) {

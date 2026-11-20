@@ -1,4 +1,5 @@
 import { lazy, Suspense, useId, useState, type ReactNode } from "react";
+import { PrimaryButton } from "./Cta";
 import type { BookingOffer } from "../data/business";
 
 const ReservePanel = lazy(() => import("./ReservePanel"));
@@ -24,19 +25,15 @@ export function ReserveTime({ offer, beside }: { offer: BookingOffer; beside?: R
   return (
     <div className="reserve-time">
       <div className={beside ? "reserve-time__row" : undefined}>
-        <span className="cta-stamp">
-          <button
-            type="button"
-            className="cta-shell cta-brand aa-focus reserve-trigger"
-            data-reserve-trigger
-            aria-expanded={open}
-            aria-controls={panelId}
-            onClick={() => setOpen((value) => !value)}
-          >
-            <span className="cta-fill" aria-hidden="true" />
-            <span className="cta-label">Reserve time & day</span>
-          </button>
-        </span>
+        <PrimaryButton
+          className="reserve-trigger"
+          data-reserve-trigger
+          aria-expanded={open}
+          aria-controls={panelId}
+          onClick={() => setOpen((value) => !value)}
+        >
+          Reserve time & day
+        </PrimaryButton>
         {beside}
       </div>
       {open ? (

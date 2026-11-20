@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 import { trackAnchor } from "../analytics/track";
 import { bookingHref, membershipHref, NAP, type BookingOffer } from "../data/business";
 
@@ -37,6 +37,48 @@ function CtaLabel({ children }: { children: ReactNode }) {
 
 function Stamped({ children }: { children: ReactNode }) {
   return <span className="cta-stamp">{children}</span>;
+}
+
+const primaryClass = `${tones.brand} cta-sheen w-full border-0 cursor-pointer`;
+
+function PrimaryFace({ children }: { children: ReactNode }) {
+  return (
+    <>
+      <span className="cta-fill" aria-hidden="true" />
+      <CtaLabel>{children}</CtaLabel>
+    </>
+  );
+}
+
+/** Same lime pill as Become a Member: stamp, fill, and label. */
+export function PrimaryButton({
+  className = "",
+  children,
+  type = "button",
+  ...props
+}: ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <Stamped>
+      <button type={type} className={`${primaryClass} ${className}`} {...props}>
+        <PrimaryFace>{children}</PrimaryFace>
+      </button>
+    </Stamped>
+  );
+}
+
+/** Same lime pill as Become a Member, as a link that stays in this tab. */
+export function PrimaryLink({
+  className = "",
+  children,
+  ...props
+}: AnchorHTMLAttributes<HTMLAnchorElement>) {
+  return (
+    <Stamped>
+      <a className={`${primaryClass} ${className}`} {...props}>
+        <PrimaryFace>{children}</PrimaryFace>
+      </a>
+    </Stamped>
+  );
 }
 
 /** Equal-width pair. Stacked full width in a narrow container, side by side once the container is wide. */

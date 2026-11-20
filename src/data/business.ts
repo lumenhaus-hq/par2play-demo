@@ -62,8 +62,8 @@ export const PRICES = {
   /** Confirmed: 10 x 60-minute practice sessions. Not the lesson 10-pack. */
   tenPack: 400,
   unlimitedMonthly: 200,
-  /** Swing evaluation length. Locked 20 Nov 2026: 30 minutes at $100. */
-  swingEvaluationMinutes: 30,
+  /** Swing evaluation length. Owner confirmed 20 Nov 2026: 50 minutes at $100. */
+  swingEvaluationMinutes: 50,
   swingEvaluation: 100,
   /**
    * 30-minute private lesson.
@@ -95,6 +95,11 @@ export const PRICES = {
    * Source: https://par2play.com/membership/ “Junior Golf Membership ($399 a Month)”, twice a week for 1 hour.
    */
   juniorTwoLessonsWeekly: 399,
+  /**
+   * Struck-through value on the free junior session. Null until the owner
+   * confirms a number. While null, the price line shows FREE only.
+   */
+  juniorSessionValue: null as number | null,
   swingLabMember: 40,
   /**
    * TODO(pricing): confirm the non-member swing lab price.
@@ -114,6 +119,7 @@ export type BookingOffer =
   | "group"
   | "junior"
   | "junior-plus"
+  | "junior-experience"
   | "lesson-pack"
   | "tournament";
 
@@ -161,6 +167,7 @@ export function bookingHref(offer: BookingOffer): string {
     case "swing-lab":
     case "junior":
     case "junior-plus":
+    case "junior-experience":
       return OCLOCK.lessons;
     case "lesson-pack":
       return OCLOCK.lessonPacks;
