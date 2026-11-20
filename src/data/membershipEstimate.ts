@@ -83,6 +83,13 @@ export function estimateMembership(months: PeriodMonths, visitsPerWeek: VisitsPe
   };
 }
 
+export type MembersPeriod = "month" | "year";
+
+/** Unlimited Practice only: $200 a month, or twelve months at that rate. */
+export function membersPrice(period: MembersPeriod): number {
+  return period === "year" ? PRICES.unlimitedMonthly * 12 : PRICES.unlimitedMonthly;
+}
+
 export function money(amount: number): string {
   const rounded = Math.round(amount * 100) / 100;
   const whole = Math.abs(rounded - Math.round(rounded)) < 0.001;

@@ -209,11 +209,11 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
               />
             </div>
             <CtaPair className="mt-8">
-              <CtaAnchor href={pageHref("coaching")} className="w-full">
-                Book swing evaluation
+              <CtaAnchor href={pageHref("swing-evaluation")} className="w-full">
+                Swing evaluation
               </CtaAnchor>
               <CtaAnchor href={pageHref("coaching")} tone="line" className="w-full">
-                Book lessons
+                Lessons
               </CtaAnchor>
             </CtaPair>
           </ScrollReveal>
