@@ -8,6 +8,7 @@ import { CookieNotice } from "./components/CookieNotice";
 import { SmoothScroll } from "./components/SmoothScroll";
 import { Landing } from "./screens/Landing";
 import { PrivacyPage } from "./screens/PrivacyPage";
+import { MembersDayPage } from "./screens/MembersDayPage";
 import { CoachingPage, EventsPage, JuniorsPage, MembershipPage, NotFoundPage, SwingEvaluationPage, TournamentPage } from "./screens/SitePages";
 import { Clubhouse } from "./screens/Clubhouse";
 import { JourneyMap } from "./screens/JourneyMap";
@@ -107,6 +108,8 @@ function Routed({ take, heroType }: { take: TakeId; heroType: HeroTypeId }) {
       return <EventsPage />;
     case "tournament":
       return <TournamentPage />;
+    case "members-day":
+      return <MembersDayPage />;
     case "privacy":
       return <PrivacyPage />;
     case "notfound":

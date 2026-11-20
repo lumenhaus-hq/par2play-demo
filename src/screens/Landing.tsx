@@ -207,7 +207,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
               <ValuePoint
                 icon={Activity}
                 label="Swing evaluation"
-                line="Swing your way to your first hole in one with drill down analysis and personalised 1:1 coaching."
+                line="30 minutes on the Full Swing cameras for $100. You leave with the shot data."
               />
             </div>
             <CtaPair className="mt-8">

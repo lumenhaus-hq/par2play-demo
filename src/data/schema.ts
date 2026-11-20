@@ -306,6 +306,23 @@ export function eventsGraph() {
   };
 }
 
+export function membersDayGraph() {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        url: absoluteUrl("members-day/"),
+        name: "Try a free members day",
+        description:
+          "A free members day at Par2Play in Somerset, NJ: a Full Swing simulator, 100+ courses, premium clubs, and shot data.",
+        about: { "@id": id("/#location") },
+      },
+      breadcrumb("Free members day", "members-day/"),
+    ],
+  };
+}
+
 export function tournamentGraph() {
   return {
     "@context": "https://schema.org",

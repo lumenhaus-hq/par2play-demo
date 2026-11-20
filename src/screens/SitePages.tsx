@@ -5,6 +5,9 @@ import { MembershipCalculator } from "../components/MembershipCalculator";
 import { SwingEvaluation } from "../components/SwingEvaluation";
 import { TournamentPanel } from "../components/TournamentPanel";
 import { EventGallery, StillGrid } from "../components/PhotoStrips";
+import { DaySteps } from "../components/DaySteps";
+import { OfferFacts } from "../components/OfferFacts";
+import { OfferLayout } from "../components/OfferLayout";
 import { PageFrame, pageSpace } from "../components/SiteChrome";
 import { CtaPair, buttonFocus } from "../components/Cta";
 import { TournamentForm } from "../components/TournamentForm";
@@ -18,6 +21,7 @@ import { DisplayTitle } from "../components/DisplayTitle";
 import { WhatYouGet, type GetCard } from "../components/WhatYouGet";
 import { PRICES, SIMULATOR_COURSE_COUNT } from "../data/business";
 import { money } from "../data/membershipEstimate";
+import { PHOTOS } from "../data/photos";
 import { HOURS_LABEL } from "../data/site";
 import { coachingGraph, eventsGraph, juniorsGraph, membershipGraph, swingEvaluationGraph, tournamentGraph } from "../data/schema";
 
@@ -65,15 +69,33 @@ export function MembershipPage() {
     <PageFrame>
       <article className={pageSpace}>
         <JsonLd data={membershipGraph()} />
-        <Breadcrumbs current="Membership" />
-        <DisplayTitle as="h1" className="offer-title play-title" text="The membership that rewards your passion more!" accent="passion" />
-        <MembershipCalculator />
-        <WhatYouGet items={MEMBERSHIP_GET} />
-        <p className="mt-8 text-lg">
-          <a className={`underline decoration-2 underline-offset-4 ${buttonFocus}`} href={pageHref("coaching")}>
-            Golf lessons in Somerset
-          </a>
-        </p>
+        <OfferLayout
+          title={
+            <>
+              <Breadcrumbs current="Membership" />
+              <DisplayTitle as="h1" className="offer-title play-title" text="The membership that rewards your passion more!" accent="passion" />
+            </>
+          }
+          buy={<MembershipCalculator />}
+          story={
+            <>
+              <OfferFacts
+                heading="How membership works"
+                items={[
+                  { q: "The plan", a: `Unlimited Practice is ${money(PRICES.unlimitedMonthly)} a month.` },
+                  { q: "The hour", a: "Up to one hour a day, on a Full Swing bay." },
+                  { q: "The studio", a: `${SIMULATOR_COURSE_COUNT}+ courses. Premium clubs on hand. Open ${HOURS_LABEL}.` },
+                ]}
+              />
+              <WhatYouGet items={MEMBERSHIP_GET} />
+              <p className="mt-8 text-lg">
+                <a className={`underline decoration-2 underline-offset-4 ${buttonFocus}`} href={pageHref("coaching")}>
+                  Golf lessons in Somerset
+                </a>
+              </p>
+            </>
+          }
+        />
       </article>
     </PageFrame>
   );
@@ -84,15 +106,41 @@ export function CoachingPage() {
     <PageFrame>
       <article className={pageSpace}>
         <JsonLd data={coachingGraph()} />
-        <Breadcrumbs current="Golf lessons" />
-        <DisplayTitle as="h1" className="offer-title play-title" text="Swing your way to your first birdie and hole in one!" accent="birdie" />
-        <CoachingPanel />
-        <WhatYouGet items={COACHING_GET} />
-        <p className="mt-10 text-lg">
-          <a className={`underline decoration-2 underline-offset-4 ${buttonFocus}`} href={pageHref("membership")}>
-            Indoor golf membership
-          </a>
-        </p>
+        <OfferLayout
+          title={
+            <>
+              <Breadcrumbs current="Golf lessons" />
+              <DisplayTitle as="h1" className="offer-title play-title" text="Swing your way to your first birdie and hole in one!" accent="birdie" />
+            </>
+          }
+          buy={<CoachingPanel />}
+          story={
+            <>
+              <p className="text-lg leading-relaxed">
+                {`A swing evaluation is ${money(PRICES.swingEvaluation)} for ${PRICES.swingEvaluationMinutes} minutes on the Full Swing cameras. Start there, or go straight to a lesson.`}
+              </p>
+              <p className="mt-3 text-lg">
+                <a className={`underline decoration-2 underline-offset-4 ${buttonFocus}`} href={pageHref("swing-evaluation")}>
+                  Swing evaluation
+                </a>
+              </p>
+              <OfferFacts
+                heading="How a lesson works"
+                items={[
+                  { q: "One lesson", a: `${money(PRICES.lessonSingle)} for ${PRICES.lessonMinutes} minutes with a PGA professional.` },
+                  { q: "10-pack", a: `${money(PRICES.lessonPack10)} for ten private lessons.` },
+                  { q: "Where", a: "On the Full Swing simulators. Premium clubs are on hand." },
+                ]}
+              />
+              <WhatYouGet items={COACHING_GET} />
+              <p className="mt-10 text-lg">
+                <a className={`underline decoration-2 underline-offset-4 ${buttonFocus}`} href={pageHref("membership")}>
+                  Indoor golf membership
+                </a>
+              </p>
+            </>
+          }
+        />
       </article>
     </PageFrame>
   );
@@ -103,10 +151,47 @@ export function SwingEvaluationPage() {
     <PageFrame>
       <article className={pageSpace}>
         <JsonLd data={swingEvaluationGraph()} />
-        <Breadcrumbs current="Swing evaluation" />
-        <DisplayTitle as="h1" className="offer-title play-title" text="Swing evaluation" accent="evaluation" />
-        <SwingEvaluation />
-        <WhatYouGet items={SWING_GET} />
+        <OfferLayout
+          title={
+            <>
+              <Breadcrumbs current="Swing evaluation" />
+              <DisplayTitle as="h1" className="offer-title play-title" text="Swing evaluation" accent="evaluation" />
+            </>
+          }
+          buy={<SwingEvaluation />}
+          story={
+            <>
+              <DaySteps
+                steps={[
+                  {
+                    photo: PHOTOS.range,
+                    title: "You swing",
+                    line: `${PRICES.swingEvaluationMinutes} minutes on a Full Swing simulator. The cameras record the swing.`,
+                  },
+                  {
+                    photo: PHOTOS.bays,
+                    title: "You read the data",
+                    line: "Shot data is on the screen. You look at it in the bay.",
+                  },
+                  {
+                    photo: PHOTOS.lounge,
+                    title: "You leave with it",
+                    line: "The camera read and the shot data from the session. Then a lesson or a 10-pack, if you want one.",
+                  },
+                ]}
+              />
+              <OfferFacts
+                heading="Who it is for"
+                items={[
+                  { q: "Starting out", a: "A first look before a lesson. Beginners and players who already play." },
+                  { q: "The price", a: `${money(PRICES.swingEvaluation)} for ${PRICES.swingEvaluationMinutes} minutes.` },
+                  { q: "The bay", a: "Four Full Swing bays. Premium clubs on hand, or bring your own." },
+                ]}
+              />
+              <WhatYouGet items={SWING_GET} />
+            </>
+          }
+        />
       </article>
     </PageFrame>
   );
@@ -117,11 +202,29 @@ export function JuniorsPage() {
     <PageFrame>
       <article className={pageSpace}>
         <JsonLd data={juniorsGraph()} />
-        <Breadcrumbs current="Golf for Kids" />
-        <DisplayTitle as="h1" className="offer-title play-title" text="Golf for Kids" accent="Kids" />
-        <JuniorsPanel />
-        <WhatYouGet items={JUNIORS_GET} />
-        <StillGrid photos={JUNIORS_GALLERY} />
+        <OfferLayout
+          title={
+            <>
+              <Breadcrumbs current="Golf for Kids" />
+              <DisplayTitle as="h1" className="offer-title play-title" text="Golf for Kids" accent="Kids" />
+            </>
+          }
+          buy={<JuniorsPanel />}
+          story={
+            <>
+              <OfferFacts
+                heading="How junior golf works"
+                items={[
+                  { q: "Once a week", a: `${money(PRICES.juniorOneLessonWeekly)} a month. One hour each session.` },
+                  { q: "Twice a week", a: `${money(PRICES.juniorTwoLessonsWeekly)} a month. One hour each session.` },
+                  { q: "The bay", a: "The same Full Swing simulators. Premium clubs on hand." },
+                ]}
+              />
+              <WhatYouGet items={JUNIORS_GET} />
+              <StillGrid photos={JUNIORS_GALLERY} />
+            </>
+          }
+        />
       </article>
     </PageFrame>
   );
@@ -132,27 +235,44 @@ export function EventsPage() {
     <PageFrame>
       <article className={pageSpace}>
         <JsonLd data={eventsGraph()} />
-        <Breadcrumbs current="Events" />
-        <DisplayTitle
-          as="h1"
-          className="offer-title play-title"
-          text="Golf simulator parties and events"
-          accent="events"
+        <OfferLayout
+          title={
+            <>
+              <Breadcrumbs current="Events" />
+              <DisplayTitle
+                as="h1"
+                className="offer-title play-title"
+                text="Golf simulator parties and events"
+                accent="events"
+              />
+            </>
+          }
+          buy={<EventsPanel />}
+          story={
+            <>
+              <OfferFacts
+                heading="How an event works"
+                items={[
+                  { q: "Length", a: "2, 3, or 6 hours. Package price on request." },
+                  { q: "The room", a: "Four enclosed bays. Each bay holds up to 6 guests." },
+                  { q: "On site", a: "A golf pro for mini-lessons and casual games. Clubs are complimentary. Food can be brought in." },
+                ]}
+              />
+              <WhatYouGet items={EVENTS_GET} />
+              <div className="mt-16">
+                <EventTypeList />
+              </div>
+              <div className="mt-8">
+                <EventGallery />
+              </div>
+              <p className="mt-8">
+                <a href={pageHref("")} className={`inline-flex min-h-11 items-center text-lg font-semibold underline decoration-2 underline-offset-4 ${buttonFocus}`}>
+                  Back to the landing page
+                </a>
+              </p>
+            </>
+          }
         />
-        <EventsPanel />
-        <WhatYouGet items={EVENTS_GET} />
-        <div className="mt-16">
-          <EventTypeList />
-        </div>
-        <div className="mt-8">
-          <EventGallery />
-        </div>
-        <p className="mt-8 text-lg text-[#4B5563]">2, 3, or 6 hour bookings. Package price on request.</p>
-        <p className="mt-8">
-          <a href={pageHref("")} className={`inline-flex min-h-11 items-center text-lg font-semibold underline decoration-2 underline-offset-4 ${buttonFocus}`}>
-            Back to the landing page
-          </a>
-        </p>
       </article>
     </PageFrame>
   );
@@ -163,13 +283,26 @@ export function TournamentPage() {
     <PageFrame>
       <article className={pageSpace}>
         <JsonLd data={tournamentGraph()} />
-        <Breadcrumbs current="Fall League" />
-        <TournamentPanel />
-        <PageBento page="tournament" />
-        <p className="mx-auto mt-10 max-w-xl text-center text-lg text-[#4B5563]">18 holes per round. Entry price on request.</p>
-        <div className="mt-10">
-          <TournamentForm />
-        </div>
+        <OfferLayout
+          title={<Breadcrumbs current="Fall League" />}
+          buy={<TournamentPanel />}
+          story={
+            <>
+              <OfferFacts
+                heading="How the league works"
+                items={[
+                  { q: "The round", a: "18 holes. Entry price on request." },
+                  { q: "The tag", a: "A League Player tag is required." },
+                  { q: "The bay", a: `Full Swing simulators, ${SIMULATOR_COURSE_COUNT}+ courses, open ${HOURS_LABEL}.` },
+                ]}
+              />
+              <PageBento page="tournament" />
+              <div className="mt-10">
+                <TournamentForm />
+              </div>
+            </>
+          }
+        />
       </article>
     </PageFrame>
   );

@@ -36,7 +36,7 @@ test("closing frame and membership bento are on the homepage", async ({ page }) 
   await expect(band.getByRole("heading", { name: "Membership", exact: true })).toBeVisible();
   await expect(band.getByLabel("Simulator stats")).toBeVisible();
   await expect(band.getByLabel("Progress")).toBeVisible();
-  await expect(band.getByRole("link", { name: "Experience a free Member Day", exact: true })).toBeVisible();
+  await expect(band.getByRole("link", { name: "Try a free members day", exact: true })).toBeVisible();
 });
 
 test("sound control names the action on the hero", async ({ page }) => {

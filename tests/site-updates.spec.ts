@@ -29,7 +29,7 @@ for (const width of [360, 1280]) {
       "href",
       "https://par2play.oclock.app/store/prod_practice_unlimited",
     );
-    await expect(panel.getByRole("link", { name: "Experience a free Member Day", exact: true })).toHaveCount(0);
+    await expect(panel.getByRole("link", { name: "Try a free members day", exact: true })).toHaveCount(0);
     await expect(panel.getByRole("heading", { name: "Finalize your booking" })).toHaveCount(0);
     await expect(panel.getByLabel("Name")).toHaveCount(0);
     await expect(panel.getByLabel("Email")).toHaveCount(0);
@@ -255,7 +255,7 @@ test("mobile homepage membership uses the golf bento grid", async ({ page }) => 
   await expect(band.getByLabel("Preferred availability")).toBeVisible();
   await expect(band.locator(".membership-bento__benefits")).toHaveCount(0);
   await expect(page.locator("#events img")).toHaveCount(0);
-  await expect(band.getByRole("link", { name: "Experience a free Member Day", exact: true })).toBeVisible();
+  await expect(band.getByRole("link", { name: "Try a free members day", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Around the club" })).toHaveCount(0);
   await page.locator("#coaching").scrollIntoViewIfNeeded();
   await expect(page.locator("#coaching").getByRole("heading", { name: "Get fitted and swinging!" })).toBeVisible();
@@ -278,7 +278,8 @@ test("removed sections and junior paragraph stay absent on their pages", async (
   const offer = page.locator("#coaching-offer");
   await expect(offer.getByRole("button", { name: /^10 Pack/ })).toHaveAttribute("aria-pressed", "true");
   await expect(offer.getByRole("link", { name: "Complete booking", exact: true })).toHaveAttribute("data-offer", "lesson-pack");
-  await expect(page.locator("main").getByText(/swing evaluation/i)).toHaveCount(0);
+  await expect(offer.getByText(/swing evaluation/i)).toHaveCount(0);
+  await expect(page.locator("main").getByRole("link", { name: "Swing evaluation", exact: true })).toBeVisible();
 });
 
 test("membership page no longer shows Silver Gold Platinum price cards", async ({ page }) => {

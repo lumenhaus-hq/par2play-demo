@@ -72,7 +72,7 @@ test("scorecards drop the eyebrow and say You pay", async ({ page }) => {
 
 test("ask-us link sits under booking CTAs and clears WCAG AA", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  const routes = ["membership/", "coaching/", "juniors/", "swing-evaluation/", "events/", "tournament/"];
+  const routes = ["membership/", "coaching/", "juniors/", "swing-evaluation/", "events/", "tournament/", "members-day/"];
   for (const route of routes) {
     await page.goto(route);
     const link = page.locator("[data-ask-us]");

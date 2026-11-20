@@ -3685,6 +3685,100 @@ body {
   overflow-x: clip;
 }
 
+.offer-layout {
+  display: grid;
+  gap: 2rem;
+  min-width: 0;
+}
+
+.offer-layout__title,
+.offer-layout__buy,
+.offer-layout__story {
+  min-width: 0;
+}
+
+.offer-facts {
+  margin-top: 0.5rem;
+}
+
+.offer-facts__heading {
+  margin: 0 0 0.85rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.offer-facts__list {
+  display: grid;
+  gap: 0.85rem;
+  margin: 0;
+}
+
+.offer-facts__item dt {
+  font-weight: 700;
+}
+
+.offer-facts__item dd {
+  margin: 0.15rem 0 0;
+  line-height: 1.45;
+}
+
+.day-steps {
+  display: grid;
+  gap: 0.85rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.day-steps__item {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.day-steps__media {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: var(--void);
+}
+
+.day-steps__index {
+  margin: 0;
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.day-steps__title {
+  margin: 0.1rem 0 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.day-steps__line {
+  margin: 0.2rem 0 0;
+  line-height: 1.4;
+}
+
+@container (min-width: 64rem) {
+  .offer-layout {
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+    column-gap: 3rem;
+    row-gap: 1.5rem;
+    align-items: start;
+  }
+
+  .offer-layout__title {
+    grid-column: 1 / -1;
+  }
+}
+
 /* Dark cinematic footer. Stacks inside a narrow page container (390px and the phone frame). */
 .site-footer {
   container-name: footer;

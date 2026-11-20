@@ -51,9 +51,9 @@ test("index CTAs open subpages and the header Book a Bay stays on GolfClock", as
 
   const membership = page.locator("#membership");
   await expect(membership.getByRole("link", { name: "Become a Member", exact: true })).toHaveAttribute("href", siteHref("membership/"));
-  await expect(membership.getByRole("link", { name: "Experience a free Member Day", exact: true })).toHaveAttribute(
+  await expect(membership.getByRole("link", { name: "Try a free members day", exact: true })).toHaveAttribute(
     "href",
-    siteHref("membership/"),
+    siteHref("members-day/"),
   );
 
   const coaching = page.locator("#coaching");
@@ -166,7 +166,7 @@ test("coaching invoice and Complete booking follow the selected lesson", async (
   await expect(invoice).toContainText("30 minutes");
   await expect(booking).toHaveAttribute("href", LESSONS);
   await expect(booking).toHaveAttribute("data-offer", "lesson");
-  await expect(page.locator("main").getByText(/swing evaluation/i)).toHaveCount(0);
+  await expect(panel.getByText(/swing evaluation/i)).toHaveCount(0);
   await expect(panel.getByRole("link", { name: "Book swing evaluation" })).toHaveCount(0);
   const jsonLd = await page.locator('script[type="application/ld+json"]').allTextContents();
   expect(jsonLd.join(" ").toLowerCase()).not.toContain("swing evaluation");
