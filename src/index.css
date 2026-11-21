@@ -3892,9 +3892,18 @@ html.motion-paused .benefit-card--dim {
   white-space: nowrap;
 }
 
+.hero-cta-pair__button .cta-label-text {
+  white-space: nowrap;
+}
+
 @container (min-width: 26rem) {
   .hero-cta-pair__grid {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .hero-cta-pair__button,
+  .hero-cta-pair__button .hero-call-label {
+    font-size: 0.84rem;
   }
 }
 
