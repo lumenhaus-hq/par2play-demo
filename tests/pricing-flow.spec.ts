@@ -58,6 +58,10 @@ test("index CTAs open subpages and the header Book a Bay stays on GolfClock", as
     "href",
     "tel:+17324482769",
   );
+  await expect(page.locator("#hero").getByRole("link", { name: "Free Members’ Day Invite!", exact: true })).toHaveAttribute(
+    "href",
+    siteHref("members-day/"),
+  );
 
   const membership = page.locator("#membership");
   await expect(membership.getByRole("link", { name: "Become a Member", exact: true })).toHaveAttribute("href", siteHref("membership/"));

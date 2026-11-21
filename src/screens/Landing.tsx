@@ -1,23 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Activity, Shield, Target, UserRound } from "lucide-react";
 import { bindHeroWatch } from "../audio/soundtrack";
-import { Mark } from "../components/Chrome";
-import { BookLink, CtaAnchor, CtaPair, HeroMembershipAction, MembershipLink, buttonFocus } from "../components/Cta";
+import { CtaAnchor, CtaPair, HeroMembershipAction, MembershipLink } from "../components/Cta";
 import { HeroProof } from "../components/HeroProof";
 import { HeroTryNow } from "../components/HeroTryNow";
 import { MembershipBand } from "../components/MembershipBand";
 import { HeroVideo, type HeroIntroPhase } from "../components/Media";
-import { LayoutToggle } from "../components/LayoutToggle";
-import { SiteMenu } from "../components/SiteMenu";
 import { PageAtmosphere } from "../components/PageAtmosphere";
 import { ScrollReveal } from "../components/ScrollReveal";
-import { SoundToggle } from "../components/SoundToggle";
 import { TournamentForm } from "../components/TournamentForm";
 import { EventTypeList } from "../components/EventTypeList";
 import { OfferTicker } from "../components/OfferTicker";
 import { VideoSlot } from "../components/VideoSlot";
 import { ValuePoint } from "../components/ValuePoint";
-import { SiteFooter } from "../components/SiteChrome";
+import { SiteFooter, SiteHeader } from "../components/SiteChrome";
 import { HERO_TICKER } from "../data/heroTicker";
 import { DisplayTitle } from "../components/DisplayTitle";
 import { HeroLocation, HeroTitle } from "../components/HeroTitle";
@@ -25,7 +21,6 @@ import type { HeroTypeId } from "../data/heroType";
 import { JsonLd } from "../components/JsonLd";
 import { FaqSection } from "../components/FaqSection";
 import { faqGraph, homeGraph } from "../data/schema";
-import { showDemoChrome } from "../data/site";
 import { JUNIORS_FILM, MEMBERSHIP_POSTER } from "../data/films";
 import { SITE_NAV, pageHref } from "../data/routes";
 import { useFlow } from "../state/flow";
@@ -34,7 +29,6 @@ const sectionSpace = "scroll-mt-32 px-6 py-20 @3xl:px-12 @3xl:py-24";
 
 export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
   const flow = useFlow();
-  const [onFilm, setOnFilm] = useState(true);
   const [active, setActive] = useState<string | null>(null);
   const [intro, setIntro] = useState<HeroIntroPhase>("arrived");
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -55,14 +49,6 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
       else window.scrollTo(0, 0);
       return;
     }
-    const read = () => {
-      const hero = document.getElementById("hero");
-      if (!hero) return;
-      setOnFilm(hero.getBoundingClientRect().bottom > 72);
-    };
-    read();
-    const target = root ?? window;
-    target.addEventListener("scroll", read, { passive: true });
     const nodes = SITE_NAV.map((item) => document.getElementById(item.slug)).filter(
       (node): node is HTMLElement => node !== null,
     );
@@ -77,7 +63,6 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
     );
     for (const node of nodes) observer.observe(node);
     return () => {
-      target.removeEventListener("scroll", read);
       observer.disconnect();
     };
   }, [mobile, chromeReady]);
@@ -90,10 +75,6 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
     document.documentElement.classList.add("hero-scroll-lock");
     return () => document.documentElement.classList.remove("hero-scroll-lock");
   }, [chromeReady]);
-
-  const filmLink = `nav-link inline-flex min-h-11 items-center px-1 text-base font-semibold ${buttonFocus} ${
-    onFilm ? "text-white" : "text-ink"
-  }`;
 
   return (
     <div
@@ -108,34 +89,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
       >
       <JsonLd data={homeGraph()} />
       <JsonLd data={faqGraph()} />
-      <header
-        className={`site-header relative sticky top-0 z-30 shrink-0 py-3 ${onFilm ? "hero-toolbar" : "header-bar"} ${
-          chromeReady ? "hero-chrome-in" : "pointer-events-none opacity-0"
-        }`}
-        aria-hidden={chromeReady ? undefined : true}
-      >
-        <div className="site-header__row">
-          <Mark light={onFilm} />
-          <div className="site-header__tools">
-            {showDemoChrome() ? <LayoutToggle className={onFilm ? "text-white" : "text-ink"} /> : null}
-            <SoundToggle className={onFilm ? "text-white" : "text-ink"} />
-            <BookLink offer="bay" tone="brand" className="cta-raised shrink-0">
-              Book a Bay
-            </BookLink>
-            <SiteMenu
-              className={onFilm ? "text-white" : "text-ink"}
-              linkClass={filmLink}
-              panelClass={onFilm ? "bg-ink text-white" : "border-b border-ink/10 bg-paper text-ink shadow-[0_16px_40px_rgb(10_15_11/0.12)]"}
-              items={SITE_NAV.map((item) => ({
-                slug: item.slug,
-                label: item.label,
-                href: pageHref(item.slug),
-                current: active === item.slug,
-              }))}
-            />
-          </div>
-        </div>
-      </header>
+      <SiteHeader active={active} ready={chromeReady} />
       <section
         id="hero"
         className={`hero-shell relative -mt-[4.5rem] flex flex-col overflow-visible bg-ink ${

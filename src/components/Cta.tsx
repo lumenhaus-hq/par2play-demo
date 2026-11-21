@@ -1,6 +1,7 @@
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 import { trackAnchor } from "../analytics/track";
 import { bookingHref, membershipHref, NAP, type BookingOffer } from "../data/business";
+import { pageHref } from "../data/routes";
 
 /** Near-black inner ring (clears green and white) plus a white outer ring (clears dark grounds). */
 export const buttonFocus = "aa-focus";
@@ -168,12 +169,14 @@ export function PhoneLink({
   );
 }
 
-/** Home hero — membership primary plus the studio phone, equal width. */
+/** Home hero — members day invite plus the studio phone, equal width. */
 export function HeroMembershipAction({ className = "" }: { className?: string }) {
   return (
     <div className={`hero-cta-pair ${className}`}>
       <div className="hero-cta-pair__grid">
-        <MembershipLink className="hero-cta-pair__button cta-sheen">Become a Member</MembershipLink>
+        <CtaAnchor href={pageHref("members-day")} className="hero-cta-pair__button cta-sheen">
+          Free Members’ Day Invite!
+        </CtaAnchor>
         <Stamped>
           <PhoneLink className={`${tones.inverted} hero-cta-pair__button`} offer="bay">
             <span className="cta-fill" aria-hidden="true" />
