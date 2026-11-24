@@ -3908,8 +3908,9 @@ html.motion-paused .benefit-card--dim {
 }
 
 /*
- * Phone scroll budget. Backdrop blurs, infinite glyph/ticker motion, and the
- * grain blend are the expensive layers during the first swipes.
+ * Phone scroll budget. Backdrop blurs, floating glyphs, and the grain blend
+ * are the expensive layers during the first swipes. The benefit ticker stays
+ * on: it is a transform loop, and turning it off left the strip frozen.
  */
 @media (max-width: 767px), (pointer: coarse) {
   .section-title::before,
@@ -3946,8 +3947,6 @@ html.motion-paused .benefit-card--dim {
     display: none;
   }
 
-  html.ticker-on .benefit-track,
-  html.ticker-on .usp-track,
   .membership-pricing__glyph {
     animation: none;
   }
