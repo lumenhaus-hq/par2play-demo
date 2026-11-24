@@ -11,21 +11,32 @@ export function VideoSlot({
   src,
   srcMobile,
   poster,
+  posterAvif,
+  posterWebp,
+  posterWidth = 1280,
+  posterHeight = 720,
   posterAlt = "Par2Play indoor golf",
   className = "",
   pausable = false,
   framed = false,
   label = "",
+  priority = false,
 }: {
   src: string;
   srcMobile?: string;
   poster: string;
+  posterAvif?: string;
+  posterWebp?: string;
+  posterWidth?: number;
+  posterHeight?: number;
   posterAlt?: string;
   className?: string;
   pausable?: boolean;
   /** Sport frame for in-section films. Stills and full-bleed heroes stay plain. */
   framed?: boolean;
   label?: string;
+  /** Poster is in the first viewport, so it loads with the document instead of lazily. */
+  priority?: boolean;
 }) {
   const reduce = usePrefersReducedMotion();
   const box = useRef<HTMLDivElement>(null);
@@ -77,7 +88,21 @@ export function VideoSlot({
   return (
     <div ref={box} className={`${framed ? "clip-frame" : "overflow-hidden bg-bay"} ${className}`}>
       <div className="relative h-full w-full">
-        <img src={poster} alt={posterAlt} width={1280} height={720} decoding="async" loading="lazy" className="h-full w-full object-cover" />
+        <picture>
+          {posterAvif ? <source srcSet={posterAvif} type="image/avif" /> : null}
+          {posterWebp ? <source srcSet={posterWebp} type="image/webp" /> : null}
+          <img
+            src={poster}
+            alt={posterAlt}
+            width={posterWidth}
+            height={posterHeight}
+            decoding="async"
+            loading={priority ? "eager" : "lazy"}
+            fetchPriority={priority ? "high" : "auto"}
+            style={priority ? { width: "100%", height: "18rem", objectFit: "cover", display: "block" } : undefined}
+            className="h-full w-full object-cover"
+          />
+        </picture>
         {playable && mounted ? (
           <video
             ref={videoRef}

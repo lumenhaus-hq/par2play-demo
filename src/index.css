@@ -439,6 +439,7 @@ body {
   --floater-shift: 0rem;
   --floater-spin: 0deg;
   --frame-h: 100vh;
+  --frame-h: 100svh;
 }
 
 .page-atmosphere--strong {
@@ -1506,7 +1507,9 @@ button.reserve-purchase {
  */
 [data-layout="mobile"] .hero-shell {
   height: min(844px, calc(100vh - 88px));
+  height: min(844px, calc(100svh - 88px));
   min-height: min(844px, calc(100vh - 88px));
+  min-height: min(844px, calc(100svh - 88px));
 }
 
 @container (min-width: 48rem) {
@@ -1884,6 +1887,7 @@ button.reserve-purchase {
 .phone-frame {
   width: 390px;
   height: min(844px, calc(100vh - 88px));
+  height: min(844px, calc(100svh - 88px));
 }
 
 @media (prefers-reduced-motion: no-preference) {
