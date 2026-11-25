@@ -480,6 +480,23 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
     const observer = new ResizeObserver(syncFit);
     if (frame) observer.observe(frame);
 
+    // Stop decoding once the bay leaves the viewport so membership swipes
+    // are not fighting a full-bleed film compositor layer.
+    const heroNode = document.getElementById("hero");
+    const viewObserver = new IntersectionObserver(
+      ([entry]) => {
+        const loop = loopEl();
+        if (!loop || !started || cancel || document.hidden || !entry) return;
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.2) {
+          void loop.play().catch(() => undefined);
+          return;
+        }
+        loop.pause();
+      },
+      { threshold: [0, 0.1, 0.2, 0.35, 0.5, 1] },
+    );
+    if (heroNode) viewObserver.observe(heroNode);
+
     return () => {
       cancel = true;
       releaseGate();
@@ -495,6 +512,7 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
       loop?.removeEventListener("timeupdate", syncFit);
       loop?.removeEventListener("seeked", syncFit);
       observer.disconnect();
+      viewObserver.disconnect();
       loop?.pause();
       registerHeroVideo(null);
       document.documentElement.classList.remove("hero-bay");
@@ -538,7 +556,8 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
           muted
           aria-hidden="true"
         >
-          {/* 1080p on every width. The separate map intro is not loaded. */}
+          {/* Phones decode 720p; desktop keeps the 1080p webm/mp4 pair. */}
+          <source src={HERO_MEDIA.mp4Mobile} type="video/mp4" media="(max-width: 767px)" />
           <source src={HERO_MEDIA.webm} type="video/webm" media="(min-width: 768px)" />
           <source src={HERO_MEDIA.mp4} type="video/mp4" />
         </video>

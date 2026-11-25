@@ -99,39 +99,30 @@ test("section titles carry a feathered tint with no edge", async ({ page }) => {
   expect(Number(plate.z)).toBeLessThan(0);
 });
 
-test("scroll shifts near floaters more than far ones", async ({ page }) => {
+test("scroll keeps floater parallax off so Lenis stays light on desktop", async ({ page }) => {
   await page.goto("./");
   await setDemoLayout(page, "web");
   const atmosphere = page.getByTestId("page-atmosphere");
-  const before = await atmosphere.evaluate((node) => {
-    const near = node.querySelector<HTMLElement>('[data-depth="near"]')!;
-    const far = node.querySelector<HTMLElement>('[data-depth="far"]')!;
-    return {
-      nearTop: near.getBoundingClientRect().top,
-      farTop: far.getBoundingClientRect().top,
-      shift: getComputedStyle(node).getPropertyValue("--floater-shift").trim(),
-    };
-  });
+  await page.evaluate(() => document.documentElement.classList.remove("is-scrolling"));
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight * 0.55));
-  await expect.poll(async () =>
-    atmosphere.evaluate((node) => getComputedStyle(node).getPropertyValue("--floater-shift").trim()),
-  ).not.toBe(before.shift === "" ? "0rem" : before.shift);
-  await expect.poll(async () =>
-    atmosphere.evaluate((node) => getComputedStyle(node).getPropertyValue("--floater-spin").trim()),
-  ).not.toBe("0deg");
-  const after = await atmosphere.evaluate((node) => {
+  await page.evaluate(() => document.documentElement.classList.remove("is-scrolling"));
+  await expect
+    .poll(() => atmosphere.evaluate((node) => getComputedStyle(node).getPropertyValue("--floater-shift").trim()))
+    .toBe("0rem");
+  await expect
+    .poll(() => atmosphere.evaluate((node) => getComputedStyle(node).getPropertyValue("--floater-spin").trim()))
+    .toBe("0deg");
+  const depth = await atmosphere.evaluate((node) => {
     const near = node.querySelector<HTMLElement>('[data-depth="near"]')!;
     const far = node.querySelector<HTMLElement>('[data-depth="far"]')!;
     return {
-      nearDelta: near.getBoundingClientRect().top,
-      farDelta: far.getBoundingClientRect().top,
       nearParallax: Number(getComputedStyle(near).getPropertyValue("--parallax")),
       farParallax: Number(getComputedStyle(far).getPropertyValue("--parallax")),
+      washX: getComputedStyle(node.closest(".page-grid") ?? node).getPropertyValue("--scroll-x").trim(),
     };
   });
-  expect(after.nearParallax).toBeGreaterThan(after.farParallax);
-  // Near layer should have moved farther from its pre-scroll position than far.
-  expect(Math.abs(after.nearDelta - before.nearTop)).toBeGreaterThan(Math.abs(after.farDelta - before.farTop) - 0.5);
+  expect(depth.nearParallax).toBeGreaterThan(depth.farParallax);
+  expect(depth.washX.length).toBeGreaterThan(0);
 });
 
 test("reduced motion freezes atmosphere floaters", async ({ page }) => {

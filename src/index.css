@@ -2126,6 +2126,7 @@ html.lenis.lenis-smooth {
 
 .hero-bay-frame--full {
   transform: none;
+  will-change: auto;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -2677,6 +2678,30 @@ html.ticker-on .benefit-track {
   animation: usp-marquee 36s linear infinite;
 }
 
+/* Yield continuous paint while the page is moving — resume when the wheel settles. */
+html.is-scrolling.ticker-on .usp-track,
+html.is-scrolling.ticker-on .benefit-track {
+  animation-play-state: paused;
+}
+
+html.is-scrolling .page-atmosphere__floaters {
+  opacity: 0;
+}
+
+html.is-scrolling .page-atmosphere__glyph {
+  animation-play-state: paused;
+}
+
+html.is-scrolling .hero-bay-frame--breathe {
+  animation-play-state: paused;
+}
+
+html.is-scrolling .membership-film__intro,
+html.is-scrolling .hero-panel-depth {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
 .usp-static,
 .benefit-static {
   display: none;
@@ -3090,6 +3115,11 @@ html.motion-paused .benefit-card--dim {
 }
 
 /* Membership film — title, CTAs, and bento grid over the montage. */
+.membership-band {
+  /* Limit style/layout invalidation from the looping hero above. */
+  contain: layout style;
+}
+
 .membership-film {
   isolation: isolate;
 }
@@ -3909,8 +3939,8 @@ html.motion-paused .benefit-card--dim {
 
 /*
  * Phone scroll budget. Backdrop blurs, floating glyphs, and the grain blend
- * are the expensive layers during the first swipes. The benefit ticker stays
- * on: it is a transform loop, and turning it off left the strip frozen.
+ * are the expensive layers during the first swipes. The benefit ticker keeps
+ * its transform loop when idle; html.is-scrolling pauses it for the swipe.
  */
 @media (max-width: 767px), (pointer: coarse) {
   .section-title::before,
