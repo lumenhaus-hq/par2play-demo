@@ -120,11 +120,11 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
           }`}
           aria-hidden={chromeReady ? undefined : true}
         >
-          <div className="hero-panel hero-panel-depth hero-offer-card pointer-events-auto flex max-h-full w-full max-w-[36rem] flex-col overflow-hidden rounded-[1.35rem] px-4 py-3 @3xl:px-7 @3xl:py-6">
+          <div className="hero-panel hero-panel-depth hero-offer-card pointer-events-auto flex max-h-full w-full max-w-[36rem] flex-col overflow-hidden rounded-[1.35rem] px-4 py-3 @3xl:overflow-visible @3xl:px-7 @3xl:py-6">
             <div className="hero-offer-sheen" aria-hidden="true" />
-            {/* Body can shrink; CTA stays pinned so phones never crop Bay Rental. */}
-            <div className="hero-offer-body relative flex min-h-0 min-w-0 flex-1 flex-col gap-2 overflow-hidden @3xl:gap-5">
-              <div className="hero-stage hero-stage--copy min-w-0 max-w-full shrink" data-hero-type={heroType}>
+            {/* Body can shrink on phones; CTA stays pinned. Desktop keeps copy unclipped. */}
+            <div className="hero-offer-body relative flex min-h-0 min-w-0 flex-1 flex-col gap-2 overflow-hidden @3xl:gap-5 @3xl:overflow-visible">
+              <div className="hero-stage hero-stage--copy min-w-0 max-w-full shrink @3xl:shrink-0" data-hero-type={heroType}>
                 <HeroTitle concept={heroType} />
                 <HeroLocation concept={heroType} />
               </div>

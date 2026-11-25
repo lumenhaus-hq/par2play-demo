@@ -645,13 +645,16 @@ html.motion-paused .page-atmosphere__glyph {
   margin: 0;
   max-width: 100%;
   font-size: clamp(2.2rem, 10.5vw, 5.6rem);
-  line-height: 0.88;
-  /* Room for two tight lines when the offer font swaps in. */
-  min-height: 2.45em;
-  padding-top: 0.12em;
+  /* Tight leading clipped ascenders once the deferred sheet loads over critical CSS. */
+  line-height: 1.05;
+  /* Room for two lines + marker accent / swoosh. */
+  min-height: 2.6em;
+  padding-top: 0.2em;
+  padding-bottom: 0.18em;
   scroll-margin-top: 6.5rem;
   letter-spacing: -0.05em;
   color: var(--ink);
+  overflow: visible;
   overflow-wrap: normal;
 }
 
@@ -833,6 +836,20 @@ html.motion-paused .coupon-burst span {
   .reserve-time__row {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
+}
+
+/* Stamp is inline-flex by default — stretch it so Reserve matches the invoice width. */
+.reserve-time > div > .cta-stamp,
+.reserve-time__row > .cta-stamp {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+}
+
+.reserve-time > div > .cta-stamp > .cta-shell,
+.reserve-time__row > .cta-stamp > .cta-shell {
+  width: 100%;
+  justify-content: center;
 }
 
 .free-hero {
@@ -1493,6 +1510,27 @@ button.reserve-purchase {
   min-height: min(844px, calc(100svh - 88px));
 }
 
+/*
+ * Desktop: unlock the dock. Use a viewport media query (not only @container)
+ * so deferred critical CSS cannot keep max-height: 42% and clip "all golfers."
+ */
+@media (min-width: 768px) {
+  .hero-offer-dock {
+    max-height: none;
+    flex: 1 1 auto;
+    align-items: flex-end;
+  }
+
+  .hero-offer-card,
+  .hero-offer-body {
+    overflow: visible;
+  }
+
+  .hero-stage--copy {
+    flex-shrink: 0;
+  }
+}
+
 @container (min-width: 48rem) {
   .hero-offer-dock {
     max-height: none;
@@ -1682,11 +1720,17 @@ button.reserve-purchase {
   }
 }
 
-/* Mask reveal needs room so stroke/shadow is not cut. */
+/* Mask reveal needs room so stroke/shadow/brush descenders are not cut. */
 .hero-mask {
-  padding-block: 0.14em;
-  margin-block: -0.08em;
+  padding-block: 0.22em;
+  margin-block: -0.1em;
   overflow: hidden;
+}
+
+.hero-sticker--brush .hero-mask,
+.hero-sticker--script .hero-mask {
+  padding-block: 0.28em;
+  margin-block: -0.12em;
 }
 
 /* Anchored to the header Book a Bay control. JS moves it with transform only. */
