@@ -45,7 +45,7 @@ function MembershipStage() {
           <CtaPair>
             <MembershipLink className="cta-sheen w-full min-w-[12rem]">Become a Member</MembershipLink>
             <CtaAnchor href={pageHref("members-day")} tone="line" className="w-full min-w-[12rem]">
-              Free members day
+              Try a free members day
             </CtaAnchor>
           </CtaPair>
         </div>
