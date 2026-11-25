@@ -9,10 +9,9 @@ import { PriceInvoice } from "../components/PriceInvoice";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { PageFrame, pageSpace } from "../components/SiteChrome";
 import { WhatYouGet, type GetCard } from "../components/WhatYouGet";
-import { ADDRESS_LINE, PRICES, SIMULATOR_COURSE_COUNT } from "../data/business";
+import { PRICES, SIMULATOR_COURSE_COUNT } from "../data/business";
 import { money } from "../data/membershipEstimate";
 import { membersDayGraph } from "../data/schema";
-import { HOURS_LABEL } from "../data/site";
 
 const DAY_GET: readonly [GetCard, GetCard, GetCard, GetCard] = [
   { icon: "flag.png", title: "Arrive", line: "Come in and meet the members." },
@@ -77,9 +76,12 @@ export function MembersDayPage() {
               <OfferFacts
                 heading="Before you come"
                 items={[
-                  { q: "The hour", a: "Members play up to an hour a day." },
-                  { q: "Where", a: `${ADDRESS_LINE}.` },
-                  { q: "When", a: `Open ${HOURS_LABEL}.` },
+                  { q: "Just show up", a: "Walk in for your free hour. No membership yet — just curiosity." },
+                  { q: "Settle in", a: "Take your time getting comfortable in the bay. Staff help you start." },
+                  {
+                    q: "Then you get it",
+                    a: "A ton of courses, clubs, and unique experiences — the joyful aha that makes membership make sense.",
+                  },
                 ]}
               />
             </>

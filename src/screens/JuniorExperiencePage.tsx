@@ -9,11 +9,10 @@ import { PriceInvoice } from "../components/PriceInvoice";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { PageFrame, pageSpace } from "../components/SiteChrome";
 import { WhatYouGet, type GetCard } from "../components/WhatYouGet";
-import { ADDRESS_LINE, PRICES } from "../data/business";
+import { PRICES } from "../data/business";
 import { money } from "../data/membershipEstimate";
 import { PHOTOS } from "../data/photos";
 import { juniorExperienceGraph } from "../data/schema";
-import { HOURS_LABEL } from "../data/site";
 
 const JUNIOR_GET: readonly [GetCard, GetCard, GetCard, GetCard] = [
   { icon: "swing.png", title: "The bay", line: "A Full Swing simulator." },
@@ -86,9 +85,12 @@ export function JuniorExperiencePage() {
               <OfferFacts
                 heading="What to expect"
                 items={[
-                  { q: "The bay", a: "A Full Swing simulator. Premium clubs are on hand." },
-                  { q: "The coaches", a: "PGA professionals. Juniors are with staff in the bay." },
-                  { q: "Where", a: `${ADDRESS_LINE}. Open ${HOURS_LABEL}.` },
+                  { q: "Just show up", a: "Kids walk in, grab a club, and meet the coach. Easy from the start." },
+                  { q: "Settle in", a: "Take your time getting comfortable — staff stay close in the bay." },
+                  {
+                    q: "Then the spark",
+                    a: "Courses, games, and that 10x joyful moment when a clean strike lights up their face.",
+                  },
                 ]}
               />
               <WhatYouGet items={JUNIOR_GET} />

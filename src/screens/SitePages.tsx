@@ -80,9 +80,12 @@ export function MembershipPage() {
               <OfferFacts
                 heading="How membership works"
                 items={[
-                  { q: "The plan", a: `Unlimited Practice is ${money(PRICES.unlimitedMonthly)} a month.` },
-                  { q: "The hour", a: "Up to one hour a day, on a Full Swing bay." },
-                  { q: "The studio", a: `${SIMULATOR_COURSE_COUNT}+ courses. Premium clubs on hand. Open ${HOURS_LABEL}.` },
+                  { q: "Just show up", a: "Walk in whenever you like. No bag required — clubs are waiting." },
+                  { q: "Settle in", a: "Take your time getting comfortable in the bay. No rush, no pressure." },
+                  {
+                    q: "Then it opens up",
+                    a: `A ton of courses, clubs, and unique experiences to choose from — that first pure strike hits different.`,
+                  },
                 ]}
               />
               <WhatYouGet items={MEMBERSHIP_GET} />
@@ -125,9 +128,12 @@ export function CoachingPage() {
               <OfferFacts
                 heading="How a lesson works"
                 items={[
-                  { q: "One lesson", a: `${money(PRICES.lessonSingle)} for ${PRICES.lessonMinutes} minutes with a PGA professional.` },
-                  { q: "10-pack", a: `${money(PRICES.lessonPack10)} for ten private lessons.` },
-                  { q: "Where", a: "On the Full Swing simulators. Premium clubs are on hand." },
+                  { q: "Just show up", a: "Come as you are. Clubs are on hand, and your coach meets you at the bay." },
+                  { q: "Ease into it", a: "Take a few warm swings. Get comfortable before the real work starts." },
+                  {
+                    q: "Then it clicks",
+                    a: "One clean strike with the numbers to prove it — the kind of aha that makes you want the next lesson.",
+                  },
                 ]}
               />
               <WhatYouGet items={COACHING_GET} />
@@ -182,9 +188,12 @@ export function JuniorsPage() {
               <OfferFacts
                 heading="How junior golf works"
                 items={[
-                  { q: "Once a week", a: `${money(PRICES.juniorOneLessonWeekly)} a month. One hour each session.` },
-                  { q: "Twice a week", a: `${money(PRICES.juniorTwoLessonsWeekly)} a month. One hour each session.` },
-                  { q: "The bay", a: "The same Full Swing simulators. Premium clubs on hand." },
+                  { q: "Just show up", a: "Kids walk in, pick a club, and meet their coach. No fuss." },
+                  { q: "Settle in", a: "Take your time getting comfortable — staff stay with them in the bay." },
+                  {
+                    q: "Then the spark",
+                    a: "Courses, games, and that first joyful strike when golf suddenly feels like theirs.",
+                  },
                 ]}
               />
               <WhatYouGet items={JUNIORS_GET} />
@@ -220,9 +229,12 @@ export function EventsPage() {
               <OfferFacts
                 heading="How an event works"
                 items={[
-                  { q: "Length", a: "2, 3, or 6 hours. Package price on request." },
-                  { q: "The room", a: "Four enclosed bays. Each bay holds up to 6 guests." },
-                  { q: "On site", a: "A golf pro for mini-lessons and casual games. Clubs are complimentary. Food can be brought in." },
+                  { q: "Just show up", a: "Your group walks in together. Clubs are complimentary — no gear stress." },
+                  { q: "Settle in", a: "Take your time getting comfortable across the bays. Music on, snacks welcome." },
+                  {
+                    q: "Then the room lights up",
+                    a: "Courses, mini-lessons, and contests — that moment when the whole group erupts on one great shot.",
+                  },
                 ]}
               />
               <WhatYouGet items={EVENTS_GET} />
@@ -258,9 +270,12 @@ export function TournamentPage() {
               <OfferFacts
                 heading="How the league works"
                 items={[
-                  { q: "The round", a: "18 holes. Entry price on request." },
-                  { q: "The tag", a: "A League Player tag is required." },
-                  { q: "The bay", a: `Full Swing simulators, ${SIMULATOR_COURSE_COUNT}+ courses, open ${HOURS_LABEL}.` },
+                  { q: "Just show up", a: "Walk in for your round. Clubs on hand if you leave the bag at home." },
+                  { q: "Find your rhythm", a: "Take your time getting comfortable — eighteen holes, your pace." },
+                  {
+                    q: "Then the rush",
+                    a: `A ton of courses and that huge aha when a perfect strike decides the leaderboard.`,
+                  },
                 ]}
               />
               <PageBento page="tournament" />
