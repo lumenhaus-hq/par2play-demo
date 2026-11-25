@@ -15,7 +15,7 @@ test("phones load the 720p hero cut, not the 1080p master", async ({ page }) => 
   expect(hits.some((url) => /\/media\/hero\.webm$/.test(url))).toBe(false);
 });
 
-test("desktop hero film pauses once membership fills the viewport", async ({ page }) => {
+test("desktop hero film freezes on the first wheel notch", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("./?film=1");
@@ -27,24 +27,24 @@ test("desktop hero film pauses once membership fills the viewport", async ({ pag
     })
     .toBe(true);
 
-  await page.evaluate(() => {
-    const membership = document.getElementById("membership");
-    membership?.scrollIntoView({ block: "start" });
-    window.scrollBy(0, Math.round(window.innerHeight * 0.35));
-  });
+  await page.mouse.wheel(0, 240);
   await expect
     .poll(async () => {
       return page.evaluate(() => {
         const film = document.querySelector("#hero video") as HTMLVideoElement | null;
-        const hero = document.getElementById("hero");
-        if (!film || !hero) return false;
-        const box = hero.getBoundingClientRect();
-        const visible = Math.max(0, Math.min(box.bottom, window.innerHeight) - Math.max(box.top, 0));
-        const ratio = visible / Math.max(1, box.height);
-        return film.paused && ratio < 0.2;
+        return Boolean(film?.paused && window.scrollY > 24);
       });
     }, { timeout: 8_000 })
     .toBe(true);
+});
+
+test("desktop never mounts Lenis on the landing page", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("./");
+  await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains("lenis"))).toBe(false);
+  await expect.poll(() => page.evaluate(() => getComputedStyle(document.querySelector(".hero-panel-depth")!).backdropFilter)).toBe(
+    "none",
+  );
 });
 
 test("desktop wheel yields atmosphere and ticker, then restores them when idle", async ({ page }) => {

@@ -99,7 +99,7 @@ test("section titles carry a feathered tint with no edge", async ({ page }) => {
   expect(Number(plate.z)).toBeLessThan(0);
 });
 
-test("scroll keeps floater parallax off so Lenis stays light on desktop", async ({ page }) => {
+test("scroll keeps floater parallax off on desktop", async ({ page }) => {
   await page.goto("./");
   await setDemoLayout(page, "web");
   const atmosphere = page.getByTestId("page-atmosphere");

@@ -46,13 +46,9 @@ test("sound control names the action on the hero", async ({ page }) => {
   await expect(sound).toHaveAttribute("aria-label", /sound/i);
 });
 
-test("Lenis smooth scroll is live, and Pause motion turns it off", async ({ page }) => {
+test("desktop uses native scroll, not Lenis", async ({ page }) => {
   await page.goto("./");
   await setDemoLayout(page, "web");
-  await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains("lenis"))).toBe(true);
-  const pause = page.getByRole("button", { name: "Pause motion", exact: true });
-  await pause.scrollIntoViewIfNeeded();
-  await pause.click();
   await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains("lenis"))).toBe(false);
 });
 

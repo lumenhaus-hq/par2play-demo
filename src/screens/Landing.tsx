@@ -82,7 +82,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
       data-smooth-root={mobile ? "" : undefined}
       className={`@container page-grid text-base text-ink ${scroll} ${chromeReady ? "" : "overflow-hidden"}`}
     >
-      <PageAtmosphere scrollRoot={mobile ? scrollRef : undefined} intensity="strong" />
+      <PageAtmosphere scrollRoot={mobile ? scrollRef : undefined} intensity="base" />
       <div
         data-smooth-content={mobile ? "" : undefined}
         className={`relative z-10 ${mobile ? "flex min-h-full flex-col" : ""}`}
