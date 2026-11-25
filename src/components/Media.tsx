@@ -363,16 +363,6 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
       loop?.addEventListener("seeked", syncFit);
     };
 
-    const onVis = () => {
-      const loop = loopEl();
-      if (!loop) return;
-      if (document.hidden) {
-        loop.pause();
-        return;
-      }
-      if (started) void loop.play().catch(() => undefined);
-    };
-
     // ?intro=play and ?film=1 mount immediately and may run the Earth zoom.
     // Automatic start must not: the zoom phase sets hero-scroll-lock and scrollTo(0, 0).
     const eager = forceIntro || params.get("film") === "1";
@@ -476,9 +466,36 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
       if (!cancel) begin();
     });
 
-    document.addEventListener("visibilitychange", onVis);
     const observer = new ResizeObserver(syncFit);
     if (frame) observer.observe(frame);
+
+    // Freeze decode on the first wheel/scroll — even while the bay still fills
+    // the screen — then only resume when the visitor is parked back at the top.
+    const heroNode = document.getElementById("hero");
+    const filmShouldPlay = (ratio: number) =>
+      !document.hidden && window.scrollY < 32 && ratio >= 0.55;
+
+    const syncPlayback = (ratio = 1) => {
+      const loop = loopEl();
+      if (!loop || !started || cancel) return;
+      if (filmShouldPlay(ratio)) void loop.play().catch(() => undefined);
+      else loop.pause();
+    };
+
+    const onVis = () => syncPlayback();
+    const onScrollFilm = () => syncPlayback();
+    document.addEventListener("visibilitychange", onVis);
+    window.addEventListener("scroll", onScrollFilm, { passive: true });
+    window.addEventListener("wheel", onScrollFilm, { passive: true });
+
+    const viewObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry) return;
+        syncPlayback(entry.intersectionRatio);
+      },
+      { threshold: [0, 0.2, 0.55, 0.75, 1] },
+    );
+    if (heroNode) viewObserver.observe(heroNode);
 
     return () => {
       cancel = true;
@@ -488,6 +505,8 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
       window.clearTimeout(arriveTimer);
       window.clearTimeout(seekTimer);
       document.removeEventListener("visibilitychange", onVis);
+      window.removeEventListener("scroll", onScrollFilm);
+      window.removeEventListener("wheel", onScrollFilm);
       const loop = loopEl();
       loop?.removeEventListener("playing", revealFilm);
       loop?.removeEventListener("seeked", revealFilm);
@@ -495,6 +514,7 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
       loop?.removeEventListener("timeupdate", syncFit);
       loop?.removeEventListener("seeked", syncFit);
       observer.disconnect();
+      viewObserver.disconnect();
       loop?.pause();
       registerHeroVideo(null);
       document.documentElement.classList.remove("hero-bay");
@@ -538,7 +558,8 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
           muted
           aria-hidden="true"
         >
-          {/* 1080p on every width. The separate map intro is not loaded. */}
+          {/* Phones decode 720p; desktop keeps the 1080p webm/mp4 pair. */}
+          <source src={HERO_MEDIA.mp4Mobile} type="video/mp4" media="(max-width: 767px)" />
           <source src={HERO_MEDIA.webm} type="video/webm" media="(min-width: 768px)" />
           <source src={HERO_MEDIA.mp4} type="video/mp4" />
         </video>

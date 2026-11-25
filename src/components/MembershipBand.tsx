@@ -54,7 +54,7 @@ function MembershipStage() {
 
 export function MembershipBand() {
   return (
-    <section id="membership" className="scroll-mt-32">
+    <section id="membership" className="membership-band scroll-mt-32">
       <MembershipStage />
     </section>
   );
