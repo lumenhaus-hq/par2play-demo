@@ -84,12 +84,13 @@ export function bindSmoothScroll({ wrapper, content }: BindOptions = {}): Promis
       eventsTarget: isElement ? wrapper! : window,
       autoRaf: true,
       anchors: { offset: -96, duration: 1.35, easing: easeOutExpo },
-      // Lerp (not duration) for wheel inertia — duration is reserved for scrollTo / anchors.
-      lerp: 0.075,
+      // Snappier lerp + full wheel steps so a heavy membership paint cannot
+      // eat three notches before the page moves one viewport.
+      lerp: 0.12,
       smoothWheel: true,
       syncTouch: isElement,
       syncTouchLerp: 0.08,
-      wheelMultiplier: 0.86,
+      wheelMultiplier: 1,
       touchMultiplier: 1.35,
       overscroll: true,
       autoToggle: false,

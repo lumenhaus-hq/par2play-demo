@@ -578,33 +578,14 @@ body {
   -webkit-mask-position: center;
   mask-position: center;
   user-select: none;
-  filter:
-    drop-shadow(0.7px 0 0 var(--atmosphere-glyph-fill))
-    drop-shadow(-0.7px 0 0 var(--atmosphere-glyph-fill))
-    drop-shadow(0 0.7px 0 var(--atmosphere-glyph-fill))
-    drop-shadow(0 -0.7px 0 var(--atmosphere-glyph-fill))
-    drop-shadow(0.55px 0.55px 0 var(--atmosphere-glyph-fill))
-    drop-shadow(-0.55px -0.55px 0 var(--atmosphere-glyph-fill))
-    drop-shadow(0.55px -0.55px 0 var(--atmosphere-glyph-fill))
-    drop-shadow(-0.55px 0.55px 0 var(--atmosphere-glyph-fill))
-    drop-shadow(0 0 0.45rem color-mix(in srgb, var(--accent) 78%, transparent))
-    drop-shadow(0 0 1.05rem color-mix(in srgb, var(--mint) 58%, transparent))
-    drop-shadow(0 0 1.7rem color-mix(in srgb, var(--accent) 38%, transparent));
+  /* One halo — the old 11-shadow stack recomposited over the hero film and Lenis. */
+  filter: drop-shadow(0 0 0.55rem color-mix(in srgb, var(--accent) 55%, transparent));
   animation: page-atmosphere-drift var(--drift, 20s) ease-in-out infinite;
   animation-delay: var(--delay, 0s);
 }
 
 [data-style="nocturne"] .page-atmosphere__glyph {
-  filter:
-    drop-shadow(0.7px 0 0 var(--atmosphere-glyph-fill))
-    drop-shadow(-0.7px 0 0 var(--atmosphere-glyph-fill))
-    drop-shadow(0 0.7px 0 var(--atmosphere-glyph-fill))
-    drop-shadow(0 -0.7px 0 var(--atmosphere-glyph-fill))
-    drop-shadow(0.55px 0.55px 0 var(--atmosphere-glyph-fill))
-    drop-shadow(-0.55px -0.55px 0 var(--atmosphere-glyph-fill))
-    drop-shadow(0 0 0.5rem color-mix(in srgb, var(--accent) 85%, transparent))
-    drop-shadow(0 0 1.15rem color-mix(in srgb, var(--mint) 65%, transparent))
-    drop-shadow(0 0 1.8rem rgb(226 163 58 / 0.5));
+  filter: drop-shadow(0 0 0.65rem color-mix(in srgb, var(--accent) 70%, transparent));
 }
 
 @keyframes page-atmosphere-drift {
@@ -1542,7 +1523,9 @@ button.reserve-purchase {
   }
 }
 
-/* Wider viewports get depth + brand-edge glow — flat (no tilt; taste forbids it). */
+/* Wider viewports get depth + brand-edge glow — flat (no tilt; taste forbids it).
+ * No backdrop-filter: blur over the live hero film — that recomposite every
+ * decoded frame and froze desktop wheel through the bay and membership. */
 @media (min-width: 768px) {
   .hero-panel-depth {
     box-shadow:
@@ -1550,7 +1533,9 @@ button.reserve-purchase {
       0 0 40px color-mix(in srgb, var(--accent) 8%, transparent),
       inset 0 1px 0 rgb(255 255 255 / 0.16);
     transform: none;
-    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background-color: color-mix(in srgb, var(--hero-panel) 96%, transparent);
   }
 }
 
@@ -2092,8 +2077,53 @@ button.reserve-purchase {
 }
 
 html.hero-scroll-lock,
-html.hero-scroll-lock body {
+html.hero-scroll-lock body,
+html.landing-booting,
+html.landing-booting body {
   overflow: hidden;
+}
+
+/* Plain home boot plate — nothing else until hero + membership assets are warm. */
+.landing-boot {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  background: #020806;
+  pointer-events: all;
+}
+
+.landing-boot__ring {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+.landing-boot__track,
+.landing-boot__value {
+  fill: none;
+  stroke-width: 2;
+}
+
+.landing-boot__track {
+  stroke: rgb(255 255 255 / 0.35);
+}
+
+.landing-boot__value {
+  stroke: var(--accent, #9aff4a);
+  stroke-linecap: round;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.motion-paused) .landing-boot__ring {
+    animation: hero-buffer-spin 1.1s linear infinite;
+  }
+}
+
+html.landing-booting #lcp-poster,
+html.landing-booting #root {
+  visibility: hidden;
 }
 
 /* Lenis owns scroll animation; keep native anchors from fighting it. */
@@ -2126,6 +2156,7 @@ html.lenis.lenis-smooth {
 
 .hero-bay-frame--full {
   transform: none;
+  will-change: auto;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -2133,9 +2164,9 @@ html.lenis.lenis-smooth {
     transition: transform var(--motion-expand) var(--motion-ease-wipe);
   }
 
-  /* Ken Burns only where GPU budget is comfortable. */
+  /* Ken Burns off while the film is live — transform + decode stacked poorly. */
   @media (min-width: 768px) {
-    html:not(.motion-paused) .hero-bay-frame--breathe {
+    html:not(.motion-paused):not(.media-on) .hero-bay-frame--breathe {
       animation: hero-breathe 18s var(--motion-ease-enter) alternate infinite;
       transform-origin: 50% 42%;
     }
@@ -2677,6 +2708,30 @@ html.ticker-on .benefit-track {
   animation: usp-marquee 36s linear infinite;
 }
 
+/* Yield continuous paint while the page is moving — resume when the wheel settles. */
+html.is-scrolling.ticker-on .usp-track,
+html.is-scrolling.ticker-on .benefit-track {
+  animation-play-state: paused;
+}
+
+html.is-scrolling .page-atmosphere__floaters {
+  opacity: 0;
+}
+
+html.is-scrolling .page-atmosphere__glyph {
+  animation-play-state: paused;
+}
+
+html.is-scrolling .hero-bay-frame--breathe {
+  animation-play-state: paused;
+}
+
+html.is-scrolling .membership-film__intro,
+html.is-scrolling .hero-panel-depth {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
 .usp-static,
 .benefit-static {
   display: none;
@@ -3090,6 +3145,11 @@ html.motion-paused .benefit-card--dim {
 }
 
 /* Membership film — title, CTAs, and bento grid over the montage. */
+.membership-band {
+  /* Limit style/layout invalidation from the looping hero above. */
+  contain: layout style;
+}
+
 .membership-film {
   isolation: isolate;
 }
@@ -3122,9 +3182,9 @@ html.motion-paused .benefit-card--dim {
   text-align: center;
   padding: 1.15rem 1.35rem 1.35rem;
   border-radius: 1.5rem;
-  background: rgb(5 12 8 / 0.48);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgb(5 12 8 / 0.84);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   box-shadow: 0 12px 40px rgb(0 0 0 / 0.35);
 }
 
@@ -3909,8 +3969,8 @@ html.motion-paused .benefit-card--dim {
 
 /*
  * Phone scroll budget. Backdrop blurs, floating glyphs, and the grain blend
- * are the expensive layers during the first swipes. The benefit ticker stays
- * on: it is a transform loop, and turning it off left the strip frozen.
+ * are the expensive layers during the first swipes. The benefit ticker keeps
+ * its transform loop when idle; html.is-scrolling pauses it for the swipe.
  */
 @media (max-width: 767px), (pointer: coarse) {
   .section-title::before,

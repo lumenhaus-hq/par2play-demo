@@ -33,7 +33,10 @@
     <div id="root"></div>
     <script>
       window.addEventListener("load", function () {
-        var start = function () { document.documentElement.classList.add("media-on", "ticker-on"); };
+        var start = function () {
+          if (document.documentElement.classList.contains("landing-booting")) return;
+          document.documentElement.classList.add("media-on", "ticker-on");
+        };
         if (window.requestIdleCallback) requestIdleCallback(start, { timeout: 1500 });
         else setTimeout(start, 1);
       });
