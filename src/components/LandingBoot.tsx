@@ -8,14 +8,29 @@ const TURN = 2 * Math.PI * RADIUS;
 /**
  * Full-viewport plain loader. Covers the home experience until hero film,
  * membership still, and fonts are warm — then unmounts in one shot.
+ *
+ * Starts unmounted so prerendered HTML hydrates cleanly (no portal SVG
+ * mismatch). The plate mounts in useLayoutEffect before the first paint.
  */
 export function LandingBoot({ onReady }: { onReady?: () => void } = {}) {
-  const [booting, setBooting] = useState(true);
+  const [booting, setBooting] = useState(false);
 
-  // Layout effect so the plate covers the first paint — no flash of unfinished home.
   useLayoutEffect(() => {
     let cancel = false;
     let dispose = () => {};
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("prerender") === "1") {
+      void runLandingBoot().then(() => {
+        if (!cancel) onReady?.();
+      });
+      return () => {
+        cancel = true;
+      };
+    }
+
+    // Sync class + plate before paint so the unfinished home never flashes.
+    setBooting(true);
     void runLandingBoot().then((stop) => {
       dispose = stop;
       if (cancel) return;
@@ -28,7 +43,7 @@ export function LandingBoot({ onReady }: { onReady?: () => void } = {}) {
     };
   }, [onReady]);
 
-  if (!booting || typeof document === "undefined") return null;
+  if (!booting) return null;
 
   return createPortal(
     <div className="landing-boot" data-testid="landing-boot" role="status" aria-live="polite" aria-busy="true">
