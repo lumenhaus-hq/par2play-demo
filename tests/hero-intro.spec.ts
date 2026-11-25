@@ -56,26 +56,27 @@ test("the film autoplays without the Earth zoom or a scroll lock", async ({ page
   expect(after.y).toBeGreaterThan(0);
 });
 
-test("a slow film keeps the poster and a corner loader without locking scroll", async ({ page }) => {
+test("a slow film keeps the boot plate up without locking scroll under the gate", async ({ page }) => {
   await asVisitor(page);
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.route(/\/media\/hero\.(mp4|webm)/, async (route) => {
+  await page.route(/\/media\/hero(-mobile)?\.(mp4|webm)/, async (route) => {
     await new Promise((resolve) => setTimeout(resolve, 2_000));
     await route.continue();
   });
-  await page.goto("./");
-  await expect(page.locator("#lcp-poster")).toBeVisible();
-  await expect(page.locator("[data-hero-loader]")).toBeVisible({ timeout: 8_000 });
+  await page.goto("./", { waitUntil: "domcontentloaded" });
+  // Boot gate owns the wait — plain plate, not the old in-hero corner loader.
+  await expect(page.getByTestId("landing-boot")).toBeVisible({ timeout: 5_000 });
   const mid = await page.evaluate(() => ({
+    booting: document.documentElement.classList.contains("landing-booting"),
     locked: document.documentElement.classList.contains("hero-scroll-lock"),
     zoom: document.documentElement.dataset.earthZoom ?? "",
-    opacity: getComputedStyle(document.getElementById("lcp-poster")!).opacity,
   }));
-  expect(mid.locked).toBe(false);
+  expect(mid.booting).toBe(true);
+  expect(mid.locked).toBe(true);
   expect(mid.zoom).toBe("");
-  expect(Number(mid.opacity)).toBeGreaterThan(0.9);
 
+  await expect(page.getByTestId("landing-boot")).toBeHidden({ timeout: 20_000 });
   await page.mouse.wheel(0, 700);
   await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 4_000 }).toBeGreaterThan(40);
   await page.waitForTimeout(350);
