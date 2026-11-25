@@ -20,6 +20,14 @@ function expandMs(): number {
  * is shown, so the swap matches the poster.
  */
 const EARTH_FRAME_AT = 0.5;
+/**
+ * First readable storefront frame in hero.mp4 / hero-mobile / hero.webm.
+ * The source dive lands here around 6s; we cut after a brief Earth beat so
+ * the storefront is on screen in under one second for real visitors.
+ */
+const STOREFRONT_AT = 5.9;
+/** How long the Earth opening stays before the hard cut to the storefront. */
+const EARTH_HOLD_MS = 420;
 
 function bufferedSpan(loop: HTMLVideoElement): number {
   if (loop.buffered.length === 0) return 0;
@@ -236,6 +244,29 @@ export function HeroVideo({
     };
 
     let expandArmed = false;
+    let storefrontCut = false;
+    let cutTimer = 0;
+
+    const jumpToStorefront = () => {
+      const loop = loopEl();
+      if (!loop || cancel) return;
+      storefrontCut = true;
+      if (loop.currentTime < STOREFRONT_AT - 0.12) {
+        try {
+          loop.currentTime = STOREFRONT_AT;
+        } catch {
+          /* ignore seek errors on early readyState */
+        }
+      }
+    };
+
+    /** After the first cut, loop restarts must not replay the long aerial dive. */
+    const keepStorefrontSide = () => {
+      const loop = loopEl();
+      if (!loop || cancel || !storefrontCut) return;
+      if (loop.currentTime < STOREFRONT_AT - 0.2) jumpToStorefront();
+    };
+
     const scheduleExpand = () => {
       if (expandArmed || skipIntro) return;
       expandArmed = true;
@@ -249,6 +280,16 @@ export function HeroVideo({
       }, 420);
     };
 
+    const scheduleStorefrontCut = () => {
+      // ?intro=play keeps the Earth dive; default visitors get the storefront fast.
+      if (forceIntro || params.get("film") === "1") return;
+      window.clearTimeout(cutTimer);
+      cutTimer = window.setTimeout(() => {
+        if (cancel) return;
+        jumpToStorefront();
+      }, EARTH_HOLD_MS);
+    };
+
     const revealFilm = () => {
       const loop = loopEl();
       if (!loop || loop.classList.contains("is-live")) return;
@@ -259,6 +300,7 @@ export function HeroVideo({
       hideLcpPoster();
       setBuffering(false);
       scheduleExpand();
+      scheduleStorefrontCut();
     };
 
     const publishBuffer = (loop: HTMLVideoElement) => {
@@ -307,6 +349,8 @@ export function HeroVideo({
       started = true;
       loop.setAttribute("fetchpriority", "low");
       if (loop.preload !== "auto") loop.preload = "metadata";
+      loop.addEventListener("timeupdate", keepStorefrontSide);
+      loop.addEventListener("seeked", keepStorefrontSide);
       const arm = () => {
         if (cancel) return;
         const start = () => {
@@ -432,6 +476,7 @@ export function HeroVideo({
       window.clearTimeout(expandTimer);
       window.clearTimeout(arriveTimer);
       window.clearTimeout(seekTimer);
+      window.clearTimeout(cutTimer);
       document.removeEventListener("visibilitychange", onVis);
       window.removeEventListener("scroll", onScrollFilm);
       window.removeEventListener("wheel", onScrollFilm);
@@ -440,7 +485,9 @@ export function HeroVideo({
       loop?.removeEventListener("seeked", revealFilm);
       loop?.removeEventListener("timeupdate", revealFilm);
       loop?.removeEventListener("timeupdate", syncFit);
+      loop?.removeEventListener("timeupdate", keepStorefrontSide);
       loop?.removeEventListener("seeked", syncFit);
+      loop?.removeEventListener("seeked", keepStorefrontSide);
       observer.disconnect();
       viewObserver.disconnect();
       loop?.pause();

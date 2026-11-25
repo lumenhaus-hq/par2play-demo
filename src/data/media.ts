@@ -7,8 +7,9 @@
  * The aerial is fully generated, so there is no satellite-imagery credit.
  * Open Graph still uses the storefront still (hero-poster.jpg).
  * The on-screen LCP poster is the zoomed Earth frame at 0.5s, the same
- * frame the film seeks to before it is shown. The separate NY→NJ map
- * files are not requested.
+ * frame the film seeks to before it is shown. Default playback then cuts
+ * to the storefront (~5.9s) within one second so visitors are not stuck
+ * on the long aerial dive. The separate NY→NJ map files are not requested.
  *   public/media/hero.mp4
  *   public/media/hero.webm
  *   public/media/hero-mobile.mp4
