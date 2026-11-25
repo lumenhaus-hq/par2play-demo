@@ -78,14 +78,10 @@ export function PageAtmosphere({
       if (root) {
         layer.style.setProperty("--frame-h", `${root.clientHeight}px`);
       }
-      layer.style.setProperty(
-        "--floater-shift",
-        reduce || progress === 0 ? "0rem" : `${(progress * -3.25).toFixed(3)}rem`,
-      );
-      layer.style.setProperty(
-        "--floater-spin",
-        reduce || progress === 0 ? "0deg" : `${(progress * 48).toFixed(2)}deg`,
-      );
+      // Idle drift on the glyph is enough. Scroll-linked shift/spin restyles
+      // every multi-shadow mask on each wheel tick and fights Lenis on desktop.
+      layer.style.setProperty("--floater-shift", "0rem");
+      layer.style.setProperty("--floater-spin", "0deg");
     };
 
     const onScroll = () => {
@@ -94,8 +90,8 @@ export function PageAtmosphere({
     };
 
     paint();
-    // Coarse pointers and phones skip the scroll-linked style writes. Those
-    // updates restyle every filtered glyph on each frame and fight native scroll.
+    // Phones / coarse pointers skip scroll listeners entirely. Desktop only
+    // refreshes the wash after the wheel settles (see is-scrolling gate).
     const quiet = reduce || prefersNativeScroll() || window.matchMedia("(max-width: 767px)").matches;
     if (quiet) {
       if (root) layer.style.setProperty("--frame-h", `${root.clientHeight}px`);

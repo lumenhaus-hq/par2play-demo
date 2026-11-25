@@ -21,14 +21,6 @@ function expandMs(): number {
  */
 const EARTH_FRAME_AT = 0.5;
 
-/**
- * After the poster has painted, mount on idle or this long after load —
- * whichever comes first. A gesture still mounts immediately.
- */
-const AUTOPLAY_IDLE_MS = 1200;
-
-const FILM_GESTURES = ["pointerdown", "keydown", "touchstart", "wheel", "scroll"] as const;
-
 function bufferedSpan(loop: HTMLVideoElement): number {
   if (loop.buffered.length === 0) return 0;
   return loop.buffered.end(loop.buffered.length - 1) - loop.buffered.start(0);
@@ -182,7 +174,10 @@ function frameClassFor(phase: HeroIntroPhase): string {
   }
 }
 
-export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => void } = {}) {
+export function HeroVideo({
+  onPhase,
+  bootReady = true,
+}: { onPhase?: (phase: HeroIntroPhase) => void; bootReady?: boolean } = {}) {
   const reduce = usePrefersReducedMotion();
   const loopRef = useRef<HTMLVideoElement>(null);
   const bayRef = useRef<HTMLDivElement>(null);
@@ -199,6 +194,8 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
   }, [phase, onPhase]);
 
   useEffect(() => {
+    // Hold the film until the landing boot plate lifts — assets are already warm.
+    if (!bootReady) return;
     // `?intro=play` forces the Earth zoom even under Playwright's webdriver flag.
     const params = new URLSearchParams(window.location.search);
     const forceIntro = params.get("intro") === "play";
@@ -211,6 +208,7 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
     if (reduce) {
       registerHeroVideo(null);
       bootAmbient();
+      hideLcpPoster();
       return;
     }
 
@@ -363,31 +361,22 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
       loop?.addEventListener("seeked", syncFit);
     };
 
-    const onVis = () => {
-      const loop = loopEl();
-      if (!loop) return;
-      if (document.hidden) {
-        loop.pause();
-        return;
-      }
-      if (started) void loop.play().catch(() => undefined);
-    };
-
-    // ?intro=play and ?film=1 mount immediately and may run the Earth zoom.
-    // Automatic start must not: the zoom phase sets hero-scroll-lock and scrollTo(0, 0).
-    const eager = forceIntro || params.get("film") === "1";
+    // Boot plate already warmed the film. Start immediately after reveal.
+    // ?intro=play still runs the Earth zoom; ?film=1 forces an eager cut.
+    const eager = true;
+    const forceZoom = forceIntro || params.get("film") === "1";
 
     const begin = () => {
       if (cancel) return;
-      const zoom = eager && !skipIntro;
+      const zoom = forceZoom && !skipIntro;
       setPreloadMode(zoom ? "metadata" : "auto");
-      setBuffering(!zoom);
+      setBuffering(false);
       setFilmOn(true);
       if (!zoom) {
         setPhase("arrived");
         window.requestAnimationFrame(() => {
           window.requestAnimationFrame(() => {
-            playFilm(true);
+            playFilm(Boolean(eager));
             armFit();
           });
         });
@@ -404,90 +393,48 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
       });
     };
 
-    // Poster paints first. Then mount on idle or ~1.2s after load, whichever
-    // is sooner, or on the first gesture if that happens earlier.
-    let releaseGate = () => {};
-    const ready = new Promise<void>((resolve) => {
-      if (eager) {
-        resolve();
-        return;
-      }
-      let settled = false;
-      let timer = 0;
-      let idleId = 0;
-      const posterAbort = new AbortController();
-      const clearWait = () => {
-        window.clearTimeout(timer);
-        if (idleId) window.cancelIdleCallback(idleId);
-        window.removeEventListener("load", onLoad);
-        for (const type of FILM_GESTURES) window.removeEventListener(type, onGesture, { capture: true });
-        posterAbort.abort();
-      };
-      const finish = () => {
-        if (settled || cancel) return;
-        settled = true;
-        clearWait();
-        resolve();
-      };
-      const armIdle = () => {
-        if (settled || cancel) return;
-        setBuffering(true);
-        window.requestAnimationFrame(() => {
-          window.requestAnimationFrame(() => {
-            if (settled || cancel) return;
-            timer = window.setTimeout(finish, AUTOPLAY_IDLE_MS);
-            if (typeof window.requestIdleCallback === "function") {
-              idleId = window.requestIdleCallback(() => finish(), { timeout: AUTOPLAY_IDLE_MS });
-            }
-          });
-        });
-      };
-      const posterReady = () => {
-        const poster = document.getElementById("lcp-poster");
-        return !(poster instanceof HTMLImageElement) || poster.complete;
-      };
-      const whenPoster = (andThen: () => void) => {
-        if (posterReady()) {
-          andThen();
-          return;
-        }
-        const poster = document.getElementById("lcp-poster");
-        poster?.addEventListener("load", andThen, { once: true, signal: posterAbort.signal });
-        poster?.addEventListener("error", andThen, { once: true, signal: posterAbort.signal });
-      };
-      const onGesture = () => {
-        whenPoster(finish);
-      };
-      const onLoad = () => {
-        whenPoster(armIdle);
-      };
-      for (const type of FILM_GESTURES) {
-        window.addEventListener(type, onGesture, { capture: true, passive: true });
-      }
-      if (document.readyState === "complete") whenPoster(armIdle);
-      else window.addEventListener("load", onLoad);
-      releaseGate = () => {
-        if (settled) return;
-        settled = true;
-        clearWait();
-      };
-    });
-    void ready.then(() => {
-      if (!cancel) begin();
-    });
+    begin();
 
-    document.addEventListener("visibilitychange", onVis);
     const observer = new ResizeObserver(syncFit);
     if (frame) observer.observe(frame);
 
+    // Freeze decode on the first wheel/scroll — even while the bay still fills
+    // the screen — then only resume when the visitor is parked back at the top.
+    const heroNode = document.getElementById("hero");
+    const filmShouldPlay = (ratio: number) =>
+      !document.hidden && window.scrollY < 32 && ratio >= 0.55;
+
+    const syncPlayback = (ratio = 1) => {
+      const loop = loopEl();
+      if (!loop || !started || cancel) return;
+      if (filmShouldPlay(ratio)) void loop.play().catch(() => undefined);
+      else loop.pause();
+    };
+
+    const onVis = () => syncPlayback();
+    const onScrollFilm = () => syncPlayback();
+    document.addEventListener("visibilitychange", onVis);
+    window.addEventListener("scroll", onScrollFilm, { passive: true });
+    window.addEventListener("wheel", onScrollFilm, { passive: true });
+
+    const viewObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry) return;
+        syncPlayback(entry.intersectionRatio);
+      },
+      { threshold: [0, 0.2, 0.55, 0.75, 1] },
+    );
+    if (heroNode) viewObserver.observe(heroNode);
+
     return () => {
       cancel = true;
-      releaseGate();
       stopBufferWait();
       window.clearTimeout(expandTimer);
       window.clearTimeout(arriveTimer);
       window.clearTimeout(seekTimer);
       document.removeEventListener("visibilitychange", onVis);
+      window.removeEventListener("scroll", onScrollFilm);
+      window.removeEventListener("wheel", onScrollFilm);
       const loop = loopEl();
       loop?.removeEventListener("playing", revealFilm);
       loop?.removeEventListener("seeked", revealFilm);
@@ -495,11 +442,12 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
       loop?.removeEventListener("timeupdate", syncFit);
       loop?.removeEventListener("seeked", syncFit);
       observer.disconnect();
+      viewObserver.disconnect();
       loop?.pause();
       registerHeroVideo(null);
       document.documentElement.classList.remove("hero-bay");
     };
-  }, [reduce]);
+  }, [reduce, bootReady]);
 
   if (reduce) {
     return (
@@ -538,7 +486,8 @@ export function HeroVideo({ onPhase }: { onPhase?: (phase: HeroIntroPhase) => vo
           muted
           aria-hidden="true"
         >
-          {/* 1080p on every width. The separate map intro is not loaded. */}
+          {/* Phones decode 720p; desktop keeps the 1080p webm/mp4 pair. */}
+          <source src={HERO_MEDIA.mp4Mobile} type="video/mp4" media="(max-width: 767px)" />
           <source src={HERO_MEDIA.webm} type="video/webm" media="(min-width: 768px)" />
           <source src={HERO_MEDIA.mp4} type="video/mp4" />
         </video>

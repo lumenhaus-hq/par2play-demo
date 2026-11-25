@@ -4,9 +4,14 @@ for (const width of [390, 1280]) {
   test(`home benefit ticker scrolls at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: width === 390 ? 844 : 800 });
     await page.goto("./");
+    await expect(page.getByTestId("landing-boot")).toBeHidden({ timeout: 20_000 });
+    await page.evaluate(() => document.documentElement.classList.remove("is-scrolling"));
     const track = page.locator(".benefit-track");
     await expect(track).toBeVisible();
     await expect.poll(async () => track.evaluate((node) => getComputedStyle(node).animationName)).toBe("usp-marquee");
+    await expect.poll(async () => track.evaluate((node) => getComputedStyle(node).animationPlayState)).toBe(
+      "running",
+    );
     const readX = () =>
       track.evaluate((node) => {
         const value = getComputedStyle(node).transform;

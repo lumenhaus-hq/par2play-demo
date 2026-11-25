@@ -1,6 +1,9 @@
 /**
- * Hero film paths. The current cut is v3 (29.3s, 1920×1080) with the
- * approved soundtrack muxed in: AAC on the mp4, Opus on the webm.
+ * Hero film paths. The current cut is v3 (29.3s) with the approved soundtrack
+ * muxed in: AAC on the mp4, Opus on the webm.
+ * Desktop: 1920×1080 (hero.mp4 / hero.webm).
+ * Phones (max-width 767px): 1280×720 hero-mobile.mp4 — fewer decode pixels so
+ * the first swipe past the bay stays responsive.
  * The aerial is fully generated, so there is no satellite-imagery credit.
  * Open Graph still uses the storefront still (hero-poster.jpg).
  * The on-screen LCP poster is the zoomed Earth frame at 0.5s, the same
@@ -8,6 +11,7 @@
  * files are not requested.
  *   public/media/hero.mp4
  *   public/media/hero.webm
+ *   public/media/hero-mobile.mp4
  *   public/media/hero-poster.jpg
  */
 const media = (path: string) => `${import.meta.env.BASE_URL}${path}`;

@@ -4,6 +4,7 @@ import { bindHeroWatch } from "../audio/soundtrack";
 import { CtaAnchor, CtaPair, HeroMembershipAction, MembershipLink } from "../components/Cta";
 import { HeroProof } from "../components/HeroProof";
 import { HeroTryNow } from "../components/HeroTryNow";
+import { LandingBoot } from "../components/LandingBoot";
 import { MembershipBand } from "../components/MembershipBand";
 import { HeroVideo, type HeroIntroPhase } from "../components/Media";
 import { PageAtmosphere } from "../components/PageAtmosphere";
@@ -31,16 +32,20 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
   const flow = useFlow();
   const [active, setActive] = useState<string | null>(null);
   const [intro, setIntro] = useState<HeroIntroPhase>("arrived");
+  const [bootReady, setBootReady] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const mobile = flow.layout === "mobile";
   const scroll = mobile ? "h-full overflow-y-auto" : "";
-  const chromeReady = intro === "expand" || intro === "arrived";
+  const chromeReady = bootReady && (intro === "expand" || intro === "arrived");
 
   const onPhase = useCallback((phase: HeroIntroPhase) => {
     setIntro(phase);
   }, []);
 
-  useEffect(() => bindHeroWatch("hero", mobile ? scrollRef.current : null), [mobile]);
+  useEffect(() => {
+    if (!bootReady) return;
+    return bindHeroWatch("hero", mobile ? scrollRef.current : null);
+  }, [mobile, bootReady]);
 
   useEffect(() => {
     const root = mobile ? scrollRef.current : null;
@@ -76,13 +81,21 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
     return () => document.documentElement.classList.remove("hero-scroll-lock");
   }, [chromeReady]);
 
+  const onBootReady = useCallback(() => {
+    setBootReady(true);
+  }, []);
+
   return (
+    <>
+      <LandingBoot onReady={onBootReady} />
     <div
       ref={scrollRef}
       data-smooth-root={mobile ? "" : undefined}
+      data-landing-ready={bootReady ? "1" : "0"}
       className={`@container page-grid text-base text-ink ${scroll} ${chromeReady ? "" : "overflow-hidden"}`}
+      aria-busy={bootReady ? undefined : true}
     >
-      <PageAtmosphere scrollRoot={mobile ? scrollRef : undefined} intensity="strong" />
+      <PageAtmosphere scrollRoot={mobile ? scrollRef : undefined} intensity="base" />
       <div
         data-smooth-content={mobile ? "" : undefined}
         className={`relative z-10 ${mobile ? "flex min-h-full flex-col" : ""}`}
@@ -97,7 +110,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
         }`}
         aria-busy={chromeReady ? undefined : true}
       >
-        <HeroVideo onPhase={onPhase} />
+        <HeroVideo onPhase={onPhase} bootReady={bootReady} />
         <div className="hero-top-shade pointer-events-none absolute inset-x-0 top-0" aria-hidden="true" />
         <HeroTryNow visible={chromeReady} />
         <div
@@ -283,5 +296,6 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
       <SiteFooter />
       </div>
     </div>
+    </>
   );
 }

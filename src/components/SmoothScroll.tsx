@@ -1,16 +1,44 @@
 import { useEffect } from "react";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 import { prefersNativeScroll } from "../motion/nativeScroll";
+import { bindScrollIdle } from "../motion/scrollIdle";
 import { bindSmoothScroll, unbindSmoothScroll } from "../motion/smoothScroll";
 import { useFlow } from "../state/flow";
 
 /**
  * Site-wide Lenis smooth scroll. Window scroll on desktop; the phone-frame
  * scroller on mobile preview. Off when OS reduce or Pause motion is on.
+ * Always marks html.is-scrolling so marquees can yield during a swipe.
  */
 export function SmoothScroll() {
   const reduce = usePrefersReducedMotion();
   const layout = useFlow().layout;
+
+  useEffect(() => {
+    let cancel = false;
+    let stopIdle = () => {};
+    let tries = 0;
+
+    const mountIdle = () => {
+      if (cancel) return;
+      if (layout === "mobile") {
+        const wrapper = document.querySelector<HTMLElement>("[data-smooth-root]");
+        if (!wrapper) {
+          if (tries++ < 40) requestAnimationFrame(mountIdle);
+          return;
+        }
+        stopIdle = bindScrollIdle(wrapper);
+        return;
+      }
+      stopIdle = bindScrollIdle(null);
+    };
+
+    mountIdle();
+    return () => {
+      cancel = true;
+      stopIdle();
+    };
+  }, [layout]);
 
   useEffect(() => {
     // Prefer the live media query so hydration's reduce=false snapshot cannot
