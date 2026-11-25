@@ -237,20 +237,25 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
         </div>
       </section>
 
-      <section id="events" className={sectionSpace}>
-        <ScrollReveal tone="sheen">
-          <DisplayTitle as="h2" className="section-title offer-title" text="Events" accent="Events" />
-          <p className="mt-6 max-w-xl text-lg leading-relaxed">
-            Four enclosed bays, with a golf pro for mini-lessons and casual games.
+      <section id="events" className={`${sectionSpace} events-band`}>
+        <ScrollReveal tone="sheen" className="events-band__panel">
+          <DisplayTitle
+            as="h2"
+            className="section-title section-title--on-dark offer-title display-title--on-dark"
+            text="Events"
+            accent="Events"
+          />
+          <p className="events-band__lead mt-5 max-w-xl font-display text-xl font-semibold leading-snug tracking-tight">
+            Four enclosed Full Swing bays. A golf pro for mini-lessons. Built for your group.
           </p>
           <div className="mt-6">
             <EventTypeList />
           </div>
           <CtaPair className="mt-8">
-            <CtaAnchor href={pageHref("events")} className="w-full">
+            <CtaAnchor href={pageHref("events")} className="w-full min-w-[12rem]">
               See events
             </CtaAnchor>
-            <CtaAnchor href={pageHref("events")} tone="line" className="w-full">
+            <CtaAnchor href={pageHref("events")} tone="line" className="w-full min-w-[12rem]">
               Check availability
             </CtaAnchor>
           </CtaPair>
@@ -279,12 +284,12 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
             text="Your bay is waiting."
             accent="bay"
           />
-          <p className="mx-auto mt-6 max-w-md text-lg leading-relaxed text-white/85">
-            Book a simulator bay or become a member — Somerset’s indoor golf clubhouse is ready when you are.
+          <p className="bay-wait__lead mx-auto mt-5 max-w-md font-display text-xl font-semibold leading-snug tracking-tight text-white">
+            Full Swing launch data. Book a bay — or join. Somerset’s clubhouse, live when you are.
           </p>
-          <CtaPair className="mx-auto mt-10 justify-center">
-            <MembershipLink className="cta-sheen w-full">Become a Member</MembershipLink>
-            <CtaAnchor href="#hero" tone="inverted" className="w-full">
+          <CtaPair className="mt-10">
+            <MembershipLink className="cta-sheen w-full min-w-[12rem]">Become a Member</MembershipLink>
+            <CtaAnchor href="#hero" tone="inverted" className="w-full min-w-[12rem]">
               Book a Bay
             </CtaAnchor>
           </CtaPair>

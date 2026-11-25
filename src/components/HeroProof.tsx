@@ -25,6 +25,16 @@ function Stars() {
   );
 }
 
+function FinderLights() {
+  return (
+    <span className="hero-proof__lights" aria-hidden="true">
+      <span className="hero-proof__light hero-proof__light--close" />
+      <span className="hero-proof__light hero-proof__light--min" />
+      <span className="hero-proof__light hero-proof__light--max" />
+    </span>
+  );
+}
+
 export function HeroProof() {
   const reduce = usePrefersReducedMotion();
   const [index, setIndex] = useState(0);
@@ -59,32 +69,38 @@ export function HeroProof() {
 
   return (
     <div
-      className="hero-proof flex w-full min-w-0 flex-col gap-1.5 border-t border-white/10 pt-2.5 text-sm text-white @3xl:mt-0 @3xl:gap-2 @3xl:pt-3"
+      className="hero-proof finder-window flex w-full min-w-0 flex-col text-sm text-white"
       onMouseEnter={() => setHeld(true)}
       onMouseLeave={() => setHeld(false)}
       onFocus={() => setHeld(true)}
       onBlur={release}
     >
-      <div className="hero-proof__rating flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
-        <p className="shrink-0 font-display text-base font-semibold leading-none @3xl:text-lg">{GOOGLE_RATING}</p>
-        <Stars />
-        <span className="sr-only">5 stars on Google.</span>
-        <a
-          href={GOOGLE_REVIEWS_URL}
-          className={`inline-flex min-h-9 shrink-0 items-center text-xs font-semibold text-white underline decoration-2 underline-offset-4 @3xl:min-h-11 @3xl:text-base ${buttonFocus}`}
-          target="_blank"
-          rel="noreferrer"
-        >
-          {`${GOOGLE_REVIEW_COUNT} Google reviews`}
-        </a>
+      <div className="hero-proof__titlebar finder-window__titlebar">
+        <FinderLights />
+        <p className="hero-proof__chrome-label">Google reviews</p>
       </div>
-      <p
-        key={reduce ? "static" : active.id}
-        className="hero-proof__quote quote-fade min-w-0 text-sm leading-snug text-white/80"
-      >
-        <span className="font-semibold text-white">{active.name}</span>
-        {`. ${active.line}`}
-      </p>
+      <div className="hero-proof__body finder-window__body flex flex-col gap-1.5 @3xl:gap-2">
+        <div className="hero-proof__rating flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+          <p className="shrink-0 font-display text-base font-semibold leading-none @3xl:text-lg">{GOOGLE_RATING}</p>
+          <Stars />
+          <span className="sr-only">5 stars on Google.</span>
+          <a
+            href={GOOGLE_REVIEWS_URL}
+            className={`inline-flex min-h-9 shrink-0 items-center text-xs font-semibold text-white underline decoration-2 underline-offset-4 @3xl:min-h-11 @3xl:text-base ${buttonFocus}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {`${GOOGLE_REVIEW_COUNT} Google reviews`}
+          </a>
+        </div>
+        <p
+          key={reduce ? "static" : active.id}
+          className="hero-proof__quote quote-fade min-w-0 text-sm leading-snug text-white/90"
+        >
+          <span className="font-semibold text-white">{active.name}</span>
+          {`. ${active.line}`}
+        </p>
+      </div>
     </div>
   );
 }

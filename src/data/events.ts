@@ -9,10 +9,10 @@ export type EventTypeId = "corporate" | "parties" | "leagues" | "outings";
  * or the holiday page, and it is not a gallery caption.
  */
 export const EVENT_TYPES: readonly { id: EventTypeId; label: string; line: string }[] = [
-  { id: "corporate", label: "Corporate & team events", line: "Company visits, team building, and groups of 50 or more." },
-  { id: "parties", label: "Private parties & celebrations", line: "Holiday parties and birthdays, for groups of 6 to 40." },
-  { id: "leagues", label: "Leagues & tournaments", line: "Tournaments, fundraisers, and contests on the simulators." },
-  { id: "outings", label: "Group outings", line: "Small groups, including bachelor parties." },
+  { id: "corporate", label: "Corporate & team events", line: "Team building for groups of 50+." },
+  { id: "parties", label: "Private parties", line: "Holidays & birthdays, groups of 6–40." },
+  { id: "leagues", label: "Leagues & tournaments", line: "Fundraisers and contests on the sims." },
+  { id: "outings", label: "Group outings", line: "Bachelor parties and small crews." },
 ];
 
 export const EVENT_FACTS = [
