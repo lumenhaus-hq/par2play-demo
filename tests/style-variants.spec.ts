@@ -53,4 +53,19 @@ test("hero toolbar is black with an accent edge while on film", async ({ page })
   await expect(bar.getByText("Turn sound on", { exact: true })).toHaveCount(0);
   const book = bar.getByRole("link", { name: "Book a Bay", exact: true });
   await expect(book).toHaveClass(/cta-brand/);
+  await page.locator("#coaching").scrollIntoViewIfNeeded();
+  await expect(bar).toHaveClass(/hero-toolbar/);
+  await expect.poll(async () => bar.evaluate((node) => getComputedStyle(node).backgroundColor)).toBe("rgb(0, 0, 0)");
+});
+
+test("subpage toolbars match the dark home bar", async ({ page }) => {
+  for (const route of ["membership/", "events/", "privacy-policy/"]) {
+    await page.goto(route);
+    const bar = page.locator("header.hero-toolbar").first();
+    await expect(bar).toBeVisible();
+    await expect.poll(async () => bar.evaluate((node) => getComputedStyle(node).backgroundColor)).toBe("rgb(0, 0, 0)");
+    await expect(bar.locator("img[alt='Par2Play']")).not.toHaveClass(/bg-slate-950/);
+    await expect(bar.getByRole("link", { name: "Book a Bay", exact: true })).toBeVisible();
+    await expect(bar.getByRole("button", { name: "Open menu" })).toBeVisible();
+  }
 });

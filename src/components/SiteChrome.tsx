@@ -35,31 +35,46 @@ function atmosphereFor(route: SiteRoute): AtmosphereIntensity {
   }
 }
 
-const navClass = `nav-link inline-flex min-h-11 items-center px-1 text-base font-semibold text-ink ${buttonFocus}`;
+const navClass = `nav-link inline-flex min-h-11 items-center px-1 text-base font-semibold text-white ${buttonFocus}`;
 
-export function SiteHeader() {
+/** Dark toolbar shared by every page, at rest and after scroll. */
+export function SiteHeader({
+  active,
+  ready = true,
+}: {
+  /** Homepage section in view. Other pages mark the current route. */
+  active?: string | null;
+  ready?: boolean;
+} = {}) {
   const route = currentRoute();
+  const current = active === undefined ? route : active;
 
   return (
-    <header className="site-header header-bar relative sticky top-0 z-30 py-3">
+    <header
+      className={`site-header hero-toolbar relative sticky top-0 z-30 shrink-0 py-3 ${
+        ready ? (route === "home" ? "hero-chrome-in" : "") : "pointer-events-none opacity-0"
+      }`}
+      aria-hidden={ready ? undefined : true}
+    >
       <div className="site-header__row">
         <a href={pageHref("")} className={`inline-flex min-h-11 items-center ${buttonFocus}`}>
-          <Mark />
+          <Mark light />
         </a>
         <div className="site-header__tools">
-          {showDemoChrome() ? <LayoutToggle className="text-ink" /> : null}
-          <SoundToggle className="text-ink" />
-          <BookLink offer="bay" className="cta-raised shrink-0">
+          {showDemoChrome() ? <LayoutToggle className="text-white" /> : null}
+          <SoundToggle className="text-white" />
+          <BookLink offer="bay" tone="brand" className="cta-raised shrink-0">
             Book a Bay
           </BookLink>
           <SiteMenu
-            className="text-ink"
+            className="text-white"
             linkClass={navClass}
+            panelClass="bg-ink text-white"
             items={SITE_NAV.map((item) => ({
               slug: item.slug,
               label: item.label,
               href: pageHref(item.slug),
-              current: route === item.slug,
+              current: current === item.slug,
             }))}
           />
         </div>

@@ -55,13 +55,13 @@ test("mobile hero keeps membership and phone CTAs visible above the ticker", asy
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("./");
   await setDemoLayout(page, "mobile");
-  const member = page.locator("#hero").getByRole("link", { name: "Become a Member", exact: true });
+  const member = page.locator("#hero").getByRole("link", { name: "Free Members’ Day Invite!", exact: true });
   const phone = page.locator("#hero").getByRole("link", { name: "Call us at (732) 448-2769", exact: true });
   await expect(member).toBeVisible();
   await expect(phone).toBeVisible();
   const metrics = await phone.evaluate((node) => {
     const rect = node.getBoundingClientRect();
-    const memberRect = document.querySelector("#hero a[data-membership]")!.getBoundingClientRect();
+    const memberRect = document.querySelector("#hero .hero-cta-pair a.cta-brand")!.getBoundingClientRect();
     const hero = document.getElementById("hero")!.getBoundingClientRect();
     const dock = document.querySelector("[data-hero-offer]")!.getBoundingClientRect();
     return {
@@ -90,7 +90,7 @@ test("mobile hero keeps membership and phone CTAs visible above the ticker", asy
 test("hero CTAs sit side by side and equal width on a wide card", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto("./");
-  const member = page.locator("#hero").getByRole("link", { name: "Become a Member", exact: true });
+  const member = page.locator("#hero").getByRole("link", { name: "Free Members’ Day Invite!", exact: true });
   const phone = page.locator("#hero").getByRole("link", { name: "Call us at (732) 448-2769", exact: true });
   const boxes = await Promise.all([
     member.evaluate((node) => ({ top: node.offsetTop, width: node.offsetWidth, height: node.offsetHeight })),
