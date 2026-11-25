@@ -54,6 +54,16 @@ export function BentoGrid({ children }: { children: ReactNode }) {
   );
 }
 
+function FinderLights() {
+  return (
+    <span className="finder-window__lights" aria-hidden="true">
+      <span className="finder-window__light finder-window__light--close" />
+      <span className="finder-window__light finder-window__light--min" />
+      <span className="finder-window__light finder-window__light--max" />
+    </span>
+  );
+}
+
 export function BentoTile({
   className = "",
   children,
@@ -64,8 +74,16 @@ export function BentoTile({
   label?: string;
 }) {
   return (
-    <article className={`membership-bento__tile ${className}`} role="listitem" aria-label={label}>
-      {children}
+    <article
+      className={`membership-bento__tile finder-window ${className}`}
+      role="listitem"
+      aria-label={label}
+    >
+      <div className="membership-bento__titlebar finder-window__titlebar">
+        <FinderLights />
+        {label ? <p className="membership-bento__chrome-label">{label}</p> : null}
+      </div>
+      <div className="membership-bento__body finder-window__body">{children}</div>
     </article>
   );
 }

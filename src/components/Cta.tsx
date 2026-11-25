@@ -82,11 +82,13 @@ export function PrimaryLink({
   );
 }
 
-/** Equal-width pair. Stacked full width in a narrow container, side by side once the container is wide. */
+/** Equal-width pair. Stacked full width when narrow; side-by-side and centered when wide. */
 export function CtaPair({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <div className={`@container w-full max-w-full ${className}`}>
-      <div className="grid w-full grid-cols-1 gap-3 @3xl:w-fit @3xl:max-w-full @3xl:grid-cols-2">{children}</div>
+    <div className={`@container flex w-full max-w-full justify-center ${className}`}>
+      <div className="grid w-full grid-cols-1 gap-3 @3xl:w-fit @3xl:max-w-full @3xl:grid-cols-2">
+        {children}
+      </div>
     </div>
   );
 }
