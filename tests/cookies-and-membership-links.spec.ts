@@ -34,7 +34,7 @@ for (const width of [390, 1280]) {
     }
     const phone = page.locator("#hero").getByRole("link", { name: "Call us at (732) 448-2769", exact: true });
     await expect(phone).toHaveAttribute("href", "tel:+17324482769");
-    await expect(page.locator("#hero").getByRole("link", { name: "Free Members’ Day Invite!", exact: true })).toHaveAttribute(
+    await expect(page.locator("#hero").getByRole("link", { name: "Experience a Member's Day", exact: true })).toHaveAttribute(
       "href",
       siteHref("members-day/"),
     );

@@ -117,7 +117,7 @@ export function CookieNotice() {
             />
           </ul>
           <p className="mt-3 text-sm leading-snug">
-            Booking and checkout happen on par2play.oclock.app (GolfClock), which has its own cookies and privacy policy. More detail is in
+            Booking and checkout happen on our third-party booking site, which has its own cookies and privacy policy. More detail is in
             our{" "}
             <a className={`underline decoration-2 underline-offset-4 ${buttonFocus}`} href={pageHref("privacy-policy")}>
               Privacy Policy

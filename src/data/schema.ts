@@ -337,12 +337,12 @@ export function membersDayGraph() {
       {
         "@type": "WebPage",
         url: absoluteUrl("members-day/"),
-        name: "Try a free members day",
+        name: "Experience a Member's Day",
         description:
-          "A free members day at Par2Play in Somerset, NJ: a Full Swing simulator, 100+ courses, premium clubs, and shot data.",
+          "A member’s day at Par2Play in Somerset, NJ: a Full Swing simulator, 100+ courses, premium clubs, and shot data.",
         about: { "@id": id("/#location") },
       },
-      breadcrumb("Free members day", "members-day/"),
+      breadcrumb("Experience a Member's Day", "members-day/"),
     ],
   };
 }

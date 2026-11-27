@@ -42,7 +42,7 @@ function MembershipStage() {
           <div className="grid w-full grid-cols-1 gap-3">
             <MembershipLink className="cta-sheen w-full">Become a Member</MembershipLink>
             <CtaAnchor href={pageHref("members-day")} tone="inverted" className="w-full">
-              Try a free members day
+              Experience a Member's Day
             </CtaAnchor>
           </div>
         </div>

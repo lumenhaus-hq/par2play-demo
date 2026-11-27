@@ -83,10 +83,10 @@ export function PrimaryLink({
 }
 
 /** Equal-width pair. Stacked full width in a narrow container, side by side once the container is wide. */
-export function CtaPair({ children, className = "" }: { children: ReactNode; className?: string }) {
+export function CtaPair({ children, className = "", centered = false }: { children: ReactNode; className?: string; centered?: boolean }) {
   return (
     <div className={`@container w-full max-w-full ${className}`}>
-      <div className="grid w-full grid-cols-1 gap-3 @3xl:w-fit @3xl:max-w-full @3xl:grid-cols-2">{children}</div>
+      <div className={`grid w-full grid-cols-1 gap-3 @3xl:w-fit @3xl:max-w-full @3xl:grid-cols-2 ${centered ? "mx-auto" : ""}`}>{children}</div>
     </div>
   );
 }
@@ -175,7 +175,7 @@ export function HeroMembershipAction({ className = "" }: { className?: string })
     <div className={`hero-cta-pair ${className}`}>
       <div className="hero-cta-pair__grid">
         <CtaAnchor href={pageHref("members-day")} className="hero-cta-pair__button cta-sheen">
-          Free Members’ Day Invite!
+          Experience a Member's Day
         </CtaAnchor>
         <Stamped>
           <PhoneLink className={`${tones.inverted} hero-cta-pair__button`} offer="bay">

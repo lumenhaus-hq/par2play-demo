@@ -48,7 +48,7 @@ test("mobile membership Member Day CTA stays a single readable line", async ({ p
   await setDemoLayout(page, "mobile");
   const band = page.locator("#membership");
   await band.scrollIntoViewIfNeeded();
-  const cta = band.getByRole("link", { name: "Try a free members day", exact: true });
+  const cta = band.getByRole("link", { name: "Experience a Member's Day", exact: true });
   await expect(cta).toBeVisible();
   const metrics = await cta.evaluate((node) => {
     const label = node.querySelector(".cta-label-text") as HTMLElement;

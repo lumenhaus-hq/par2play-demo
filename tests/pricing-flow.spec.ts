@@ -58,14 +58,14 @@ test("index CTAs open subpages and the header Book a Bay stays on GolfClock", as
     "href",
     "tel:+17324482769",
   );
-  await expect(page.locator("#hero").getByRole("link", { name: "Free Members’ Day Invite!", exact: true })).toHaveAttribute(
+  await expect(page.locator("#hero").getByRole("link", { name: "Experience a Member's Day", exact: true })).toHaveAttribute(
     "href",
     siteHref("members-day/"),
   );
 
   const membership = page.locator("#membership");
   await expect(membership.getByRole("link", { name: "Become a Member", exact: true })).toHaveAttribute("href", siteHref("membership/"));
-  await expect(membership.getByRole("link", { name: "Try a free members day", exact: true })).toHaveAttribute(
+  await expect(membership.getByRole("link", { name: "Experience a Member's Day", exact: true })).toHaveAttribute(
     "href",
     siteHref("members-day/"),
   );
@@ -100,6 +100,21 @@ test("index CTAs open subpages and the header Book a Bay stays on GolfClock", as
   await expect(page.locator("#tournament").getByRole("button", { name: "Reserve your tournament spot", exact: true })).toBeVisible();
   await expect(page.locator('a[href*="par2play.oclock.app"]')).toHaveCount(1);
   await expectNoHorizontalOverflow(page);
+});
+
+test("the closing CTA pair is centered on desktop", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("./");
+  const closing = page.getByRole("heading", { name: "Your bay is waiting." }).locator("xpath=ancestor::section[1]");
+  const member = closing.getByRole("link", { name: "Become a Member", exact: true });
+  const bay = closing.getByRole("link", { name: "Book a Bay", exact: true });
+  await expect(member).toBeVisible();
+  const [sectionBox, memberBox, bayBox] = await Promise.all([closing.boundingBox(), member.boundingBox(), bay.boundingBox()]);
+  expect(sectionBox && memberBox && bayBox).toBeTruthy();
+  expect(Math.abs(memberBox!.y - bayBox!.y)).toBeLessThanOrEqual(2);
+  const pairCenter = (memberBox!.x + bayBox!.x + bayBox!.width) / 2;
+  const sectionCenter = sectionBox!.x + sectionBox!.width / 2;
+  expect(Math.abs(pairCenter - sectionCenter)).toBeLessThanOrEqual(2);
 });
 
 test("membership pricing is title, bento, toggles, invoice, then Complete booking", async ({ page }) => {

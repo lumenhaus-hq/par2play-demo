@@ -26,7 +26,7 @@ for (const width of [360, 1280]) {
     await expect(panel.getByLabel("Member benefits")).toHaveCount(0);
     await expect(panel.getByRole("button", { name: /^Monthly/ })).toHaveAttribute("aria-pressed", "true");
     await expect(panel.getByRole("button", { name: "Reserve time & day", exact: true })).toHaveAttribute("aria-expanded", "false");
-    await expect(panel.getByRole("link", { name: "Try a free members day", exact: true })).toHaveCount(0);
+    await expect(panel.getByRole("link", { name: "Experience a Member's Day", exact: true })).toHaveCount(0);
     await expect(panel.getByRole("heading", { name: "Finalize your booking" })).toHaveCount(0);
     await expect(panel.getByLabel("Name")).toHaveCount(0);
     await expect(panel.getByLabel("Email")).toHaveCount(0);
@@ -55,7 +55,7 @@ test("mobile hero keeps membership and phone CTAs visible above the ticker", asy
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("./");
   await setDemoLayout(page, "mobile");
-  const member = page.locator("#hero").getByRole("link", { name: "Free Members’ Day Invite!", exact: true });
+  const member = page.locator("#hero").getByRole("link", { name: "Experience a Member's Day", exact: true });
   const phone = page.locator("#hero").getByRole("link", { name: "Call us at (732) 448-2769", exact: true });
   await expect(member).toBeVisible();
   await expect(phone).toBeVisible();
@@ -90,7 +90,7 @@ test("mobile hero keeps membership and phone CTAs visible above the ticker", asy
 test("hero CTAs sit side by side and equal width on a wide card", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto("./");
-  const member = page.locator("#hero").getByRole("link", { name: "Free Members’ Day Invite!", exact: true });
+  const member = page.locator("#hero").getByRole("link", { name: "Experience a Member's Day", exact: true });
   const phone = page.locator("#hero").getByRole("link", { name: "Call us at (732) 448-2769", exact: true });
   const boxes = await Promise.all([
     member.evaluate((node) => ({ top: node.offsetTop, width: node.offsetWidth, height: node.offsetHeight })),
@@ -252,7 +252,7 @@ test("mobile homepage membership uses the golf bento grid", async ({ page }) => 
   await expect(band.getByLabel("Preferred availability")).toBeVisible();
   await expect(band.locator(".membership-bento__benefits")).toHaveCount(0);
   await expect(page.locator("#events img")).toHaveCount(0);
-  await expect(band.getByRole("link", { name: "Try a free members day", exact: true })).toBeVisible();
+  await expect(band.getByRole("link", { name: "Experience a Member's Day", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Around the club" })).toHaveCount(0);
   await page.locator("#coaching").scrollIntoViewIfNeeded();
   await expect(page.locator("#coaching").getByRole("heading", { name: "Get fitted and swinging!" })).toBeVisible();

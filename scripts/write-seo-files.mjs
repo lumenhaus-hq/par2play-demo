@@ -31,7 +31,7 @@ const routes = [
   ["juniors/", "Junior golf"],
   ["events/", "Events"],
   ["tournament/", "Fall League"],
-  ["members-day/", "Free members day"],
+  ["members-day/", "Experience a Member's Day"],
   ["junior-golf-experience/", "Junior golf experience"],
   ["privacy-policy/", "Privacy policy"],
 ];
@@ -117,7 +117,7 @@ const llms = `# Par2Play
 - [Junior golf](${origin}/juniors/): junior coaching once or twice a week
 - [Events](${origin}/events/): holiday parties, company events, birthdays. Price on request
 - [Fall League](${origin}/tournament/): indoor golf league. Price on request
-- [Free members day](${origin}/members-day/): one visit on a Full Swing simulator, premium clubs on hand
+- [Experience a Member's Day](${origin}/members-day/): one visit on a Full Swing simulator, premium clubs on hand
 - [Junior golf experience](${origin}/junior-golf-experience/): a free junior visit on a Full Swing simulator
 `;
 

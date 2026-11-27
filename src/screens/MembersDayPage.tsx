@@ -20,14 +20,16 @@ const DAY_GET: readonly [GetCard, GetCard, GetCard, GetCard] = [
   { icon: "club-strike.png", title: "Shot data", line: "Every swing shows up on the screen." },
 ];
 
+const DAY_TITLE = "Experience a Member's Day";
+
 type DayChoice = "day";
 
 function MembersDayOffer() {
   const [choice, setChoice] = useState<DayChoice>("day");
   const was = PRICES.membersDayValue == null ? undefined : money(PRICES.membersDayValue);
   const live = was
-    ? `Free members day. You pay FREE. ${was} is struck through.`
-    : "Free members day. You pay FREE.";
+    ? `${DAY_TITLE}. You pay zero dollars. Regular price: ${was}.`
+    : `${DAY_TITLE}. You pay zero dollars.`;
 
   return (
     <OfferSheet
@@ -36,14 +38,14 @@ function MembersDayOffer() {
       value={choice}
       onChange={setChoice}
       offer="bay"
-      options={[{ value: "day", label: "Members day", price: "Free", note: "FREE", noteIcon: "gift" }]}
+      options={[{ value: "day", label: "Member’s Day" }]}
       invoice={
         <>
           <CouponConfetti />
           <PriceInvoice
-            title="Free members day"
+            title={DAY_TITLE}
             rows={[
-              { label: "Offer", value: "Free members day" },
+              { label: "Offer", value: DAY_TITLE },
               { label: "Time", value: "Up to one hour" },
               { label: "Bay", value: "Full Swing simulator" },
             ]}
@@ -65,8 +67,8 @@ export function MembersDayPage() {
         <OfferLayout
           title={
             <>
-              <Breadcrumbs current="Free members day" />
-              <DisplayTitle as="h1" className="offer-title play-title" text="Try a free members day" accent="free" />
+              <Breadcrumbs current="Member’s Day" />
+              <DisplayTitle as="h1" className="offer-title play-title" text={DAY_TITLE} accent="Member's Day" />
             </>
           }
           buy={<MembersDayOffer />}
@@ -76,7 +78,7 @@ export function MembersDayPage() {
               <OfferFacts
                 heading="Before you come"
                 items={[
-                  { q: "Just show up", a: "Walk in for your free hour. No membership yet — just curiosity." },
+                  { q: "Just show up", a: "Walk in for your visit. No membership yet — just curiosity." },
                   { q: "Settle in", a: "Take your time getting comfortable in the bay. Staff help you start." },
                   {
                     q: "Then you get it",

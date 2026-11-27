@@ -282,7 +282,7 @@ export function Landing({ heroType = "plate" }: { heroType?: HeroTypeId }) {
           <p className="mx-auto mt-6 max-w-md text-lg leading-relaxed text-white/85">
             Book a simulator bay or become a member — Somerset’s indoor golf clubhouse is ready when you are.
           </p>
-          <CtaPair className="mx-auto mt-10 justify-center">
+          <CtaPair className="mt-10" centered>
             <MembershipLink className="cta-sheen w-full">Become a Member</MembershipLink>
             <CtaAnchor href="#hero" tone="inverted" className="w-full">
               Book a Bay
