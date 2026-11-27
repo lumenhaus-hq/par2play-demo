@@ -284,7 +284,7 @@ export function RecommendStep() {
       </ul>
       <p className="mt-4 text-sm text-slate-500">{money(plan.monthly)} a month, tax included. No minimum term.</p>
       <p className="mt-3 max-w-md text-sm text-slate-500">
-        These answers are held in this browser for a GolfClock profile. Saving them there is TODO. Nothing is sent.
+        Your answers are stored in this browser.
       </p>
       <OfferCard />
     </ScreenFrame>
@@ -523,9 +523,9 @@ export function PayStep() {
       footer={<Button variant="ghost" onPress={flow.goBack}>Back</Button>}
     >
       <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-700">Pay</p>
-      <h1 className="mt-4 text-4xl font-semibold tracking-tighter">Checkout is on GolfClock.</h1>
+      <h1 className="mt-4 text-4xl font-semibold tracking-tighter">Continue to checkout</h1>
       <p className="mt-3 max-w-md text-slate-600">
-        This page does not take a card. If the GolfClock link is still TODO, the button calls {NAP.phoneDisplay}.
+        Complete payment on the booking site. For help, call {NAP.phoneDisplay}.
       </p>
       <QuoteList includeVisit />
       <OfferCard />
@@ -565,7 +565,7 @@ export function ConfirmStep() {
       <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-700">Confirm</p>
       <h1 className="mt-4 text-4xl font-semibold tracking-tighter">You're booked at Par2Play.</h1>
       <p className="mt-3 max-w-md text-sm text-slate-500">
-        Payment is completed on GolfClock. This screen is the receipt copy only. Nothing is sent from here.
+        Payment is handled by our booking site.
       </p>
       <p className="mt-3 text-slate-600">
         {flow.profile.firstName || "Guest"} · {SATURDAY} at {slot.time} · {productLabel(flow.product ?? "round")} · {money(priced.total)}

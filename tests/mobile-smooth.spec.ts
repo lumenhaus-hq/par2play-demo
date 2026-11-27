@@ -119,7 +119,7 @@ for (const width of [360, 390]) {
     await page.setViewportSize({ width, height: 844 });
     await page.goto("./");
     const hero = page.locator("#hero");
-    const member = hero.getByRole("link", { name: "Free Members’ Day Invite!", exact: true });
+    const member = hero.getByRole("link", { name: "Experience a Member's Day", exact: true });
     const phone = hero.getByRole("link", { name: "Call us at (732) 448-2769", exact: true });
     await expect(member).toBeVisible();
     await expect(phone).toHaveAttribute("href", "tel:+17324482769");

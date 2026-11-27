@@ -15,8 +15,8 @@ test.beforeEach(async ({ page }) => {
 test("members day walks the visit and books the bay", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("members-day/");
-  await expect(page).toHaveTitle("Try a free members day | Par2Play");
-  await expect(page.getByRole("heading", { level: 1, name: "Try a free members day" })).toBeVisible();
+  await expect(page).toHaveTitle("Experience a Member's Day | Par2Play");
+  await expect(page.getByRole("heading", { level: 1, name: "Experience a Member's Day" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Arrive" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Pick up a club" })).toBeVisible();
   await expect(page.getByText("Full Swing simulators and 100+ courses.")).toBeVisible();
@@ -24,7 +24,9 @@ test("members day walks the visit and books the bay", async ({ page }) => {
   await expect(invoice).toContainText("You pay");
   await expect(invoice.locator(".scorecard__was")).toHaveText("$70");
   await expect(invoice.locator(".scorecard__free")).toHaveText("FREE");
-  await expect(page.locator(".joint-toggle__badge")).toContainText("FREE");
+  const freeLabels = page.getByText(/^free$/i);
+  await expect(freeLabels).toHaveCount(1);
+  await expect(freeLabels).toHaveClass("scorecard__free");
   await expect(page.locator(".coupon-burst.is-on")).toHaveCount(0);
   const book = page.getByRole("button", { name: "Reserve time & day", exact: true });
   await expect(book).toHaveAttribute("aria-expanded", "false");

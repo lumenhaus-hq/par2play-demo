@@ -8,7 +8,7 @@ import { MotionToggle } from "./MotionToggle";
 import { PageAtmosphere, type AtmosphereIntensity } from "./PageAtmosphere";
 import { SoundToggle } from "./SoundToggle";
 import { openCookieSettings } from "../analytics/consent";
-import { golfClockBookingReady, NAP } from "../data/business";
+import { NAP } from "../data/business";
 import { SITE_NAV, currentRoute, pageHref, type SiteRoute } from "../data/routes";
 import { HOURS_LABEL, INSTAGRAM_URL, MAPS_URL, showDemoChrome } from "../data/site";
 import { useFlow } from "../state/flow";
@@ -177,9 +177,6 @@ export function SiteFooter({ className = "" }: { className?: string }) {
         </button>
         <MotionToggle className="site-footer__link" />
       </div>
-      {!golfClockBookingReady() && (
-        <p className="site-footer__note">GolfClock booking link: TODO. Book calls {NAP.phoneDisplay}.</p>
-      )}
     </footer>
   );
 }

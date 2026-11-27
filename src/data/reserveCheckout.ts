@@ -24,7 +24,7 @@ export type ReservePlan =
       note: string;
     };
 
-const SLOT_NOTE = "These times are inside our 10am–10pm hours. GolfClock confirms the time on the next step.";
+const SLOT_NOTE = "These times are inside our 10am–10pm hours. Confirm your time on the next step.";
 
 const BAY_DURATIONS: readonly DurationChoice[] = [
   { id: "var_bay_30m", label: "30m", minutes: 30 },
@@ -42,10 +42,10 @@ const FITTING: readonly DurationChoice[] = [
   { id: "var_fitting_full_bag", label: "Club Fitting - Full Bag", minutes: 120 },
 ];
 
-const STORE_NOTE = "GolfClock sells this as a purchase, with no tee time. The start date is confirmed on the next step.";
-const EVENTS_NOTE = "GolfClock’s events list has no open registration and no time grid. The start date is confirmed on the next step.";
+const STORE_NOTE = "No tee time is needed. Confirm your start date on the next step.";
+const EVENTS_NOTE = "There are no time slots listed for this event. Check availability on the next step.";
 const LEAGUE_NOTE =
-  "This GolfClock link still opens the bay rental sheet. Pick a time inside 10am–10pm. GolfClock confirms it on the next step.";
+  "Pick a bay time between 10am and 10pm and confirm it on the next step.";
 
 export function reservePlan(offer: BookingOffer): ReservePlan {
   switch (offer) {
